@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>地利客户关系管理系统</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+    <meta name="author" content="Teaism">
+    <link rel="stylesheet" href="" />
+    <!-- jquery -->
+    <link rel="shortcut icon" href="${contextPath}/resources/images/icon/dili-logo.png" />
+    <script type="text/javascript" src="${contextPath}/resources/easyui/js/jquery-3.2.1.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="${contextPath}/resources/css/login.css">
+</head>
+
+<body>
+<div class="login">
+    <div>
+        <h2>地利客户关系管理系统</h2></div>
+    <div id="errMsg">
+    </div>
+    <form id="loginForm" method="post" action="${contextPath}/login/loginAction">
+        <table class="userinfo">
+            <tbody>
+            <tr>
+                <td width="40" class="login-icon login-user-icon">帐号</td>
+                <td>
+                    <input id="username" name="username" value="" type="text" placeholder="请输入用户名" />
+                </td>
+            </tr>
+            <tr>
+                <td width="40" class="login-icon login-password-icon">密码</td>
+                <td>
+                    <input id="password" name="password" value="" type="password" placeholder="请输入密码" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <input type="button" class="submit" value="登   录" onclick="doLogin()">
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </form>
+</div>
+<script type="text/javascript">
+    function doLogin() {
+        var username = document.getElementById("username").value;
+        if (null == username || "" == username) {
+            alert("账号不能为空");
+            return false;
+        }
+
+        var password = document.getElementById("password").value;
+        if (null == password || "" == password) {
+            alert("密码不能为空");
+            return false;
+        }
+
+        document.getElementById("loginForm").submit();
+    }
+
+    /*******************************************************************************
+     * 绑定指定表单元素类型的回车事件
+     *
+     * @param formId
+     *            表单
+     * @param element
+     *            元素类型 (input/select/radio/...)
+     * @param subFunction
+     *            回车后要执行的js函数
+     * @param eventName
+     *            键盘事件 (keyup/keydown/keypress...)
+     */
+    function bindEnter(formId, element, subFunction, eventName) {
+        $("#" + formId + " " + element).bind(eventName, function(event) {
+            //回车
+            if (event.keyCode == '13') {
+                subFunction();
+            }
+        });
+    }
+
+
+    /*******************************************************************************
+     * 表单回车事件绑定 表单光标定位
+     * @param formId
+     * @param subFunction 回车要执行的函数
+     */
+    function bindFormEvent(formId, subFunction) {
+        if (subFunction && subFunction != null) {
+            bindEnter(formId, 'input', subFunction, 'keyup');
+        }
+    }
+
+    $(function() {
+    <% if(has(msg)){%>
+            alert('${msg}');
+        <%}%>
+        window.setTimeout(function() {
+            $("#username").focus();
+        }, 0);
+        bindFormEvent("loginForm", doLogin);
+    });
+</script>
+</body>
+
+</html>

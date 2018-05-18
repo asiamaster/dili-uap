@@ -1,0 +1,104 @@
+<#body>
+<style>
+    html,
+    .easyui-layout {
+        background: #e7e9eb;
+    }
+    .panel-title {
+        font-size: 16px;
+    }
+    /*top-left 板块*/
+    #header,
+    #locationHeader,
+    #sellHeader,
+    #buyHeader {
+        height: 40px;
+        margin: 0;
+        padding-right: 30px;
+        text-indent: 50px;
+        line-height: 40px;
+    }
+    #grid  {
+        margin-left: 20px;
+        margin-right: 20px;
+        border-collapse:collapse;
+        border-spacing:0;
+    }
+    #grid tr {
+        border-bottom: 1px dashed #ddd;
+        line-height: 40px;
+        box-sizing: border-box;
+    }
+    #grid thead tr {
+        border-bottom: none;
+        height: 22px;
+        line-height: 22px;
+    }
+    #grid tr:first-child th {
+        color: #bbb;
+    }
+
+    /*模块 title*/
+    .linkmore {
+        float: right;
+        color: #999;
+        text-decoration: none;
+    }
+
+</style>
+<div class="maincontain" >
+
+    <!-- ====================================================================================================================== -->
+    <!-- 中间布局 -->
+    <!-- ====================================================================================================================== -->
+    <!--<div region="north" height="auto" align="center" style="height:520px;border:0px;  padding: 10px 25px 0; background: #e7e9eb ">-->
+    <div region="center" style="width:100%;" height="auto" align="center" border="false">
+        <div style="width: 96%;height: 100%;" align="center">
+            <!-- =========================================================表格========================================================= -->
+            <table class="easyui-datagrid" title="回访信息" id="grid" fitColumns="true" noheader="true"
+                   pagination="true" pageSize="30" pageNumber="1" pagePosition="top"  remoteSort="true"
+                   loadMsg="数据加载中..." singleSelect="true" method="post" multiSort="false" sortName="code" sortOrder="desc"
+                   align="center" fit="true" striped="true"  idField="id" data-options="onDblClickRow:openUpdate, onHeaderContextMenu:headerContextMenu">
+                <thead>
+                <tr>
+                    <th width="11%" data-options="field:'code',sortable:'true', order:'desc', align:'center', resizable:'true', fixed:'false'">
+                        回访编号
+                    </th>
+                    <th width="20%" data-options="field:'subject',sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        主题
+                    </th>
+                    <th width="10%" data-options="field:'customerName', _escapeFileds:{customerPhone:'phone', customerName:'name'}, _relationTablePkField:'id', _relationTable:'customer', _fkField:'customerId', _provider:'simpleBatchDisplayTextProvider',  order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        回访客户
+                    </th>
+                    <th width="10%" data-options="field:'customerPhone', sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        电话
+                    </th>
+                    <th width="8%" data-options="field:'priority',  _provider:'dataDictionaryValueProvider',_queryParams:{'dd_id':'10'}, sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        优先级
+                    </th>
+                    <th width="8%" data-options="field:'mode',  _provider:'dataDictionaryValueProvider',_queryParams:{'dd_id':'11'}, sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        回访方式
+                    </th>
+                    <th width="10%" data-options="field:'userId', _provider:'ownerProvider', order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        回访人
+                    </th>
+                    <th width="7%" data-options="field:'state',  _provider:'visitStateProvider', sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        状态
+                    </th>
+                    <th width="17%" data-options="field:'modified',  _provider:'datetimeProvider', sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        修改时间
+                    </th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+
+</div>
+
+<!-- ====================================================================================================================== -->
+<!-- style & script 分隔线 -->
+<!-- ====================================================================================================================== -->
+<script type="text/javascript">
+
+</script>
+</#body>
