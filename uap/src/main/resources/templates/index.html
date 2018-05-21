@@ -1,104 +1,192 @@
 <#body>
-<style>
-    html,
-    .easyui-layout {
-        background: #e7e9eb;
-    }
-    .panel-title {
-        font-size: 16px;
-    }
-    /*top-left 板块*/
-    #header,
-    #locationHeader,
-    #sellHeader,
-    #buyHeader {
-        height: 40px;
-        margin: 0;
-        padding-right: 30px;
-        text-indent: 50px;
-        line-height: 40px;
-    }
-    #grid  {
-        margin-left: 20px;
-        margin-right: 20px;
-        border-collapse:collapse;
-        border-spacing:0;
-    }
-    #grid tr {
-        border-bottom: 1px dashed #ddd;
-        line-height: 40px;
-        box-sizing: border-box;
-    }
-    #grid thead tr {
-        border-bottom: none;
-        height: 22px;
-        line-height: 22px;
-    }
-    #grid tr:first-child th {
-        color: #bbb;
-    }
+    <style>
+        td div div:first-child {
+            border: 0;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        .panel-body {
+            background: none;
+        }
+        /*2017-12-11 by chenliangfang*/
+        /*顶部导航条*/
+        .panel-body {
+            font-size: 15px;
+        }
+        #header-menu {
+            padding-top: 10px;
+            padding-bottom: 10px;
+            box-sizing: border-box;
+            background: url(${contextPath}/resources/images/header-bg.png) no-repeat 0 center;
+            background-size: cover;
+        }
+        .mainMenu {
+            width: auto;
+            text-align: center;
+        }
+        .l-btn-plain.cur,
+        .l-btn-plain {
+            width: 120px;
+            /*padding-left: 20px;*/
+            /*padding-right: 20px;*/
+            text-align: center;
+            margin-right: 10px;
+            background: rgba(10,32,51,0.8);
+            color: #fff;
+        }
+        .l-btn-text {
+            line-height: 40px;
+        }
+        .l-btn-plain:hover {
+            background: #2b9eff;
+        }
+        .menu-text {
+            /*width: 100%;*/
+            width: 118px;
+            padding-left: 0;
+            text-align: center;
+        }
+        /*
+        通知暂时取消
+        .header-user .inform {
+            float: left;
+            margin-top: 10px;
+            margin-right: 20px
+        }
+        .header-user .inform-num {
+            display:inline-block;
+            padding:2px;
+            margin-left:-8px;
+            background:#f00;
+            color: #fff;
+            border-radius:50%;
+            vertical-align: top;
+            font-size: 12px;
+        }*/
+        .header-user .userhead {
+            float: left;
+            width: 30px;
+            height: 30px;
+            margin-top: 5px;
+            margin-right: 20px
+        }
 
-    /*模块 title*/
-    .linkmore {
-        float: right;
-        color: #999;
-        text-decoration: none;
-    }
+    </style>
 
-</style>
-<div class="maincontain" >
-
-    <!-- ====================================================================================================================== -->
-    <!-- 中间布局 -->
-    <!-- ====================================================================================================================== -->
-    <!--<div region="north" height="auto" align="center" style="height:520px;border:0px;  padding: 10px 25px 0; background: #e7e9eb ">-->
-    <div region="center" style="width:100%;" height="auto" align="center" border="false">
-        <div style="width: 96%;height: 100%;" align="center">
-            <!-- =========================================================表格========================================================= -->
-            <table class="easyui-datagrid" title="回访信息" id="grid" fitColumns="true" noheader="true"
-                   pagination="true" pageSize="30" pageNumber="1" pagePosition="top"  remoteSort="true"
-                   loadMsg="数据加载中..." singleSelect="true" method="post" multiSort="false" sortName="code" sortOrder="desc"
-                   align="center" fit="true" striped="true"  idField="id" data-options="onDblClickRow:openUpdate, onHeaderContextMenu:headerContextMenu">
-                <thead>
+    <div class="easyui-layout" fit="true">
+        <!-- ====================================================================================================================== -->
+        <!-- 上方布局 -->
+        <!-- ====================================================================================================================== -->
+        <div  id="header-menu" region="north"height="auto" style="border:0px; width: 99.9%" align="center" >
+            <table width="99.9%" style="padding: 0px; margin:0px;border-spacing: 0; border: 0px inset #0092DC;" >
                 <tr>
-                    <th width="11%" data-options="field:'code',sortable:'true', order:'desc', align:'center', resizable:'true', fixed:'false'">
-                        回访编号
-                    </th>
-                    <th width="20%" data-options="field:'subject',sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false'">
-                        主题
-                    </th>
-                    <th width="10%" data-options="field:'customerName', _escapeFileds:{customerPhone:'phone', customerName:'name'}, _relationTablePkField:'id', _relationTable:'customer', _fkField:'customerId', _provider:'simpleBatchDisplayTextProvider',  order:'asc', align:'center', resizable:'true', fixed:'false'">
-                        回访客户
-                    </th>
-                    <th width="10%" data-options="field:'customerPhone', sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false'">
-                        电话
-                    </th>
-                    <th width="8%" data-options="field:'priority',  _provider:'dataDictionaryValueProvider',_queryParams:{'dd_id':'10'}, sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false'">
-                        优先级
-                    </th>
-                    <th width="8%" data-options="field:'mode',  _provider:'dataDictionaryValueProvider',_queryParams:{'dd_id':'11'}, sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false'">
-                        回访方式
-                    </th>
-                    <th width="10%" data-options="field:'userId', _provider:'ownerProvider', order:'asc', align:'center', resizable:'true', fixed:'false'">
-                        回访人
-                    </th>
-                    <th width="7%" data-options="field:'state',  _provider:'visitStateProvider', sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false'">
-                        状态
-                    </th>
-                    <th width="17%" data-options="field:'modified',  _provider:'datetimeProvider', sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false'">
-                        修改时间
-                    </th>
+                    <td style="padding-left: 30px"><img class="logo" src="${contextPath}/resources/images/logo.png" alt=""></td>
+                    <td>
+                        <#menubutton _divId="mainMenu" _panelAlign="center" _service="menuServiceImpl" _method="findUserMenu" _queryParams="${userid}" _menuWidth="120" _menuHeight="40"
+                                _textField="name" _idField="id" _parentIdField="parentId" plain="true" hasDownArrow="false" itemWidth="120" itemHeight="40" minWidth="50"
+                                align="left" noline="true" onClick="menuClickHandler">
+                        </#menubutton>
+                    </td>
+
+                    <td class="header-user" width="200px">
+                        <!--<a href="" class="inform"><img src="${contextPath}/resources/images/icon/inform-icon.png" alt=""><span class="inform-num">99</span>-->
+                        <!--</a>-->
+                        <a href="javascript:;" class="userhead"><img src="${contextPath}/resources/images/icon/head-default.png" alt=""></a>
+                        <div id="userMenu" class="easyui-panel" style="padding:1px; float: left">
+                            <a id="menubutton_right" href="#" class="easyui-menubutton" data-options="menu:'#menu_right', plain:true, hasDownArrow:false">${username}</a>
+                        </div>
+                        <div id="menu_right" style="width:88px" data-options="zIndex:'110000' , align:'left', noline:true, onClick:menuClickHandler" itemHeight="40">
+                            <div id="menu_userDetail" data-options="menuUrl:'${contextPath}/main/userDetail.html' ">
+                                用户信息
+                            </div>
+                            <div id="menu_changePwd" data-options="menuUrl:'${contextPath}/main/changePwd.html'">
+                                修改密码
+                            </div>
+                            <div id="menu_logout" data-options="blankKey:'' ">
+                                注销
+                            </div>
+                        </div>
+                    </td>
                 </tr>
-                </thead>
             </table>
         </div>
+        <!-- ====================================================================================================================== -->
+        <!-- 中央布局 -->
+        <!-- ====================================================================================================================== -->
+        <div region="center" style="width:100%;" height="auto">
+            <div id="mainPanel" class="easyui-panel" style="width: 100%; height: 100%" data-options="">
 
-</div>
+            </div>
+        </div>
+    </div>
 
-<!-- ====================================================================================================================== -->
-<!-- style & script 分隔线 -->
-<!-- ====================================================================================================================== -->
-<script type="text/javascript">
+    <!-- ====================================================================================================================== -->
+    <!-- style & script 分隔线 -->
+    <!-- ====================================================================================================================== -->
+    <script type="text/javascript">
+        //返回登录页面，供子页面调用
+        function toLogin() {
+            window.location.href="${contextPath}/login/index.html";
+        }
+        //监听子页面的toLogin事件消息
+        window.addEventListener('message',function(e){
+            var cmd=e.data;
+            if(cmd=="toLogin"){
+                toLogin();
+            }
+        },false);
 
-</script>
+        function menuClickHandler(item) {
+            //如果没有子菜单，当前调用者则是easyui-linkbutton，回调事件没有item参数，只能从options中获取
+            if(item == null){
+                item = $(this).linkbutton("options");
+            }
+            var title = item.text;
+            var url = item.menuUrl;
+            if ("menu_logout" == item.id) {
+                logout();
+                return;
+            }
+            if(!url || null == url || url===""){
+                return;
+            }
+            renderPage(title,url);
+        }
+
+        function renderPage(title, url) {
+//            if ("用户信息" == title) {
+//                url = "${contextPath}/main/userDetail.html";
+//
+//            } else if ("修改密码" == title) {
+//                url = "${contextPath}/main/changePwd.html"
+//            }
+
+            var content = '<iframe scrolling="auto" frameborder="0" src="'+url+'" onLoad="" style="width:100%; height: 99.2%;"></iframe>';
+
+            $('#mainPanel').panel({
+                content:content,
+                cache:false
+
+            });
+
+        }
+
+        function logout() {
+            $.post('${contextPath!}/login/logoutAction',null,function(data){
+                if ("200" == data.code) {
+                    window.location.href = "${contextPath}/login/index.html";
+                } else {
+                    $.messager.alert('提示','注销失败');
+                }
+            });
+        }
+
+
+
+        $(function () {
+            renderPage("主页", "${@com.dili.ss.util.SystemConfigUtils.getProperty("sysadmin.indexPage", "about:blank")}");
+        });
+    </script>
 </#body>

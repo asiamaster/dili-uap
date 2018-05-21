@@ -88,11 +88,11 @@
 			<version>4.1</version>
 		</dependency>
 		<!-- 内部包 -->
-		<!--<dependency>-->
-			<!--<groupId>com.dili</groupId>-->
-			<!--<artifactId>uap-sdk</artifactId>-->
-			<!--<version>${project.parent.version}</version>-->
-		<!--</dependency>-->
+		<dependency>
+			<groupId>com.dili</groupId>
+			<artifactId>uap-sdk</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
 		<!-- 利刃框架引入 -->
 		<dependency>
 			<groupId>com.dili</groupId>

@@ -1,0 +1,99 @@
+body {
+    /*font-family:verdana,helvetica,arial,sans-serif;*/
+    font-size: 15px;
+    padding:15px;
+    margin:0;
+}
+.panel-body {
+    font-size: 15px;
+}
+
+h2 {
+    font-size:18px;
+    font-weight:bold;
+    margin:0;
+    margin-bottom:15px;
+}
+.demo-info{
+    padding:0 0 12px 0;
+}
+.demo-tip{
+    display:none;
+}
+.label-top{
+    display: block;
+    height: 22px;
+    line-height: 22px;
+    vertical-align: middle;
+}
+/* datagrid row border st */
+.lines-both .datagrid-body td{
+}
+.lines-no .datagrid-body td{
+    border-right:1px dotted transparent;
+    border-bottom:1px dotted transparent;
+}
+.lines-right .datagrid-body td{
+    border-bottom:1px dotted transparent;
+}
+.lines-bottom .datagrid-body td{
+    border-right:1px dotted transparent;
+}
+
+/* datagrid row border end */
+
+/* 无边框文本框 */
+.noborder{
+    border:none;
+}
+
+/* easyui基础字体设置 */
+/*更改表格标题文字大小*/
+.datagrid-header span {     font-size: 15px !important; }  .datagrid-header-row {     /* background-color: #e3e3e3; */     /* color: #111 */     Height: 30px; }
+
+/*更改表格中单元格行间距*/
+#table .datagrid-btable tr{height: 60px;}
+
+/*更改表格标题的行间距*/
+.panel-title {
+    margin-top: 4px;
+    margin-bottom: 4px;
+    font-size: 15px;
+    color: inherit;
+}
+/*更改datagrid中的数据*/
+.datagrid-cell{
+    font-size: 14px;
+}
+/*更改treegrid的递归列*/
+.tree-title{
+    font-size: 14px;
+}
+/*textbox的label字体*/
+.textbox-label{
+    font-size: 14px;
+}
+/*按钮字体*/
+.l-btn-text{
+    font-size: 17px;
+}
+/*菜单字体*/
+.menu-text{
+    font-size: 17px;
+}
+/*tab字体*/
+.tabs-title{
+    font-size: 14px;
+}
+/*表格分页条字体*/
+.pagination-info{
+    font-size: 14px;
+}
+/*表格行高*/
+.datagrid-row {
+    height: 38px;
+}
+
+
+
+
