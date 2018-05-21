@@ -11,8 +11,6 @@ function endDdGridEditing() {
 	if (ddGrid.datagrid('validateRow', ddGridEditIndex)) {
 		ddGrid.datagrid('endEdit', ddGridEditIndex);
 		ddGridEditIndex = undefined;
-        $("#save_btn").linkbutton('disable');
-        $("#cancel_btn").linkbutton('disable');
 		return true;
 	} else {
 		return false;
@@ -29,15 +27,6 @@ function cancelDdGridEdit() {
 
 // 新增一行空数据并开启编辑模式
 function openInsertDd() {
-	ddGrid.datagrid('addEditor', [{
-						field : 'code',
-						editor : {
-							type : 'textbox',
-							options : {
-								required : true
-							}
-						}
-					}]);
 	ddGridEditIndex = ddGrid.datagrid('getRows').length;
 	ddGrid.datagrid('appendRow', {
 				type : 0
@@ -201,25 +190,6 @@ function getKey(e) {
 	}
 }
 
-/**
- * 显示编辑行最后一列的操作按钮
- * 
- * @param {}
- *            index 行索引
- */
-function showDdGridOptButtons(index) {
-	$('#btnDdSave' + index + ',#btnDdCancel' + index).show();
-}
-
-/**
- * 显示编辑行最后一列的操作按钮
- * 
- * @param {}
- *            index 行索引
- */
-function hideDdGridOptButtons(index) {
-	$('#btnDdSave' + index + ',#btnDdCancel' + index).hide();
-}
 
 /**
  * 开始编辑行的毁掉函数
@@ -230,13 +200,6 @@ function hideDdGridOptButtons(index) {
  *            row 行数据
  */
 function onBeginEditDdGrid(index, row) {
-	showDdGridOptButtons(index);
-	ddGrid.datagrid('resizeColumn', {
-				field : 'description',
-				width : '30%'
-			});
-
-	// ddGrid.datagrid('showColumn', 'opt');
     $("#save_btn").linkbutton('enable');
     $("#cancel_btn").linkbutton('enable');
 	var editors = ddGrid.datagrid('getEditors', index);
@@ -245,12 +208,6 @@ function onBeginEditDdGrid(index, row) {
 
 function formatName(value, row, index) {
 	return '<a href="javascript:void(0);" data-value="' + row.code + '" onclick="openDdValueWindow(this);">' + value + '</a>';
-}
-
-function formatDdGridOps(value, row, index) {
-	var content = '<input type="button" id="btnDdSave' + index + '" style="margin:0px 4px;display:none;" value="保存" onclick="javascript:endDdGridEditing();">';
-	content += '<input type="button" id="btnDdCancel' + index + '" style="margin:0px 4px;display:none;" value="取消" onclick="javascript:cancelDdGridEdit();">';
-	return content;
 }
 
 /**
@@ -290,6 +247,8 @@ function insertOrUpdate(index, row, changes) {
 				}
 
 				ddGrid.datagrid('reload');
+        $("#save_btn").linkbutton('disable');
+        $("#cancel_btn").linkbutton('disable');
 			}, 'json');
 }
 
@@ -336,13 +295,6 @@ function onClickDdGridRow(index, row) {
  *            changes 当前行被修改的数据
  */
 function onAfterEditDdGrid(index, row, changes) {
-	ddGrid.datagrid('resizeColumn', [{
-						field : 'description',
-						width : '40%'
-					}]);
-	hideDdGridOptButtons(index);
-	ddGrid.datagrid('hideColumn', 'opt');
-	ddGrid.datagrid('removeEditor', 'code');
 	insertOrUpdate(index, row, changes);
 }
 
@@ -355,16 +307,11 @@ function onAfterEditDdGrid(index, row, changes) {
  *            row
  */
 function onCancelEditDdGrid(index, row) {
+    $("#save_btn").linkbutton('disable');
+    $("#cancel_btn").linkbutton('disable');
 	if (!row.id) {
 		ddGrid.datagrid('deleteRow', index);
 	}
-	ddGrid.datagrid('resizeColumn', [{
-						field : 'description',
-						width : '40%'
-					}]);
-	hideDdGridOptButtons(index);
-	ddGrid.datagrid('hideColumn', 'opt');
-	ddGrid.datagrid('removeEditor', 'code');
 }
 
 function onClickDdGridRow(index, row) {
@@ -378,14 +325,6 @@ function onClickDdGridRow(index, row) {
 	}
 }
 
-function onTreeLoadSuccess(node, data) {
-	var selectedNode = $('#ddValueTree').tree('getSelected');
-	if (!selectedNode) {
-		selectedNode = $('#ddValueTree').tree('getRoot');
-	}
-	$('#ddValueTree').tree('select', selectedNode.target);
-	queryDdValueGrid(selectedNode.attributes.ddId);
-}
 
 function openDdValueWindow(obj) {
     var code = $(obj).attr("data-value");
@@ -401,7 +340,6 @@ function openDdValueWindow(obj) {
 				onLoad : function() {
 					window.ddCode = code;
 					ddValueGrid = $('#ddValueGrid');
-					ddValueTree = $('#ddValueTree');
 				},
 				onClose : function() {
 					ddValueGrid = undefined;
@@ -422,58 +360,6 @@ function clearForm() {
  * @submitFun 表单提交需执行的任务
  */
 $(function() {
-			// 扩展datagrid:动态添加删除editor
-			$.extend($.fn.datagrid.methods, {
-						addEditor : function(jq, param) {
-							if (param instanceof Array) {
-								$.each(param, function(index, item) {
-											var e = $(jq).datagrid('getColumnOption', item.field);
-											e.editor = item.editor;
-										});
-							} else {
-								var e = $(jq).datagrid('getColumnOption', param.field);
-								e.editor = param.editor;
-							}
-						},
-						removeEditor : function(jq, param) {
-							if (param instanceof Array) {
-								$.each(param, function(index, item) {
-											var e = $(jq).datagrid('getColumnOption', item);
-											e.editor = {};
-										});
-							} else {
-								var e = $(jq).datagrid('getColumnOption', param);
-								e.editor = {};
-							}
-						}
-					});
-
-			$.extend($.fn.datagrid.methods, {
-						resizeColumn : function(jq, param) {
-							return jq.each(function() {
-										var dg = $(this);
-										var fn = function(item) {
-											var col = dg.datagrid('getColumnOption', item.field);
-											col.width = item.width;
-											if (typeof(col.width) == 'string') {
-												var width = parseInt(col.width.replace('%', ''));
-												col.boxWidth = col.boxWidth * width / 100;
-											} else {
-												col.boxWidth = col.width;
-											}
-											dg.datagrid('fixColumnSize', param.field);
-										};
-										if (param instanceof Array) {
-											$(param).each(function(index, item) {
-														fn.call(this, item);
-													});
-										} else {
-											fn.call(this, param);
-										}
-									})
-						}
-					});
-
 			window.ddGrid = $('#grid');
 			if (document.addEventListener) {
 				document.addEventListener("keyup", getKey, false);

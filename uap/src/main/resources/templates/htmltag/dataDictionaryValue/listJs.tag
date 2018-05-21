@@ -24,20 +24,11 @@ function cancelEditDdValue() {
 	ddValueEditIndex = undefined;
 }
 
-function formatOpsDdValue(value, row, index) {
-	var content = '<input type="button" id="btnSaveDdValue' + index + '" style="margin:0px 4px;display:none;" value="保存" onclick="javascript:endDdValueGridEditing();">';
-	content += '<input type="button" id="btnCancelDdValue' + index + '" style="margin:0px 4px;display:none;" value="取消" onclick="javascript:cancelEditDdValue();">';
-	return content;
-}
 
 function onBeginEditDdValue(index, row) {
-	showDdValueOptButtons(index);
-	ddValueGrid.datagrid('resizeColumn', {
-				field : 'description',
-				width : '20%'
-			});
 
-	ddValueGrid.datagrid('showColumn', 'opt');
+    $("#save_btn_ddValue").linkbutton('enable');
+    $("#cancel_btn_ddValue").linkbutton('enable');
 	var editors = ddValueGrid.datagrid('getEditors', index);
 	editors[0].target.trigger('focus');
 }
@@ -48,27 +39,16 @@ function onAfterEditDdValue(index, row, changes) {
 		return false;
 	}
 
-	ddValueGrid.datagrid('resizeColumn', [{
-						field : 'description',
-						width : '40%'
-					}]);
 
-	hideDdValueOptButtons(index);
-	ddValueGrid.datagrid('hideColumn', 'opt');
 	insertOrUpdateDdValue(index, row, changes);
 }
 
 function onCancelEditDdValue(index, row) {
+    $("#save_btn_ddValue").linkbutton('disable');
+    $("#cancel_btn_ddValue").linkbutton('disable');
 	if (!row.id) {
 		ddValueGrid.datagrid('deleteRow', index);
 	}
-	ddValueGrid.datagrid('resizeColumn', [{
-						field : 'description',
-						width : '40%'
-					}]);
-	hideDdValueOptButtons(index);
-	ddValueGrid.datagrid('hideColumn', 'opt');
-	ddValueGrid.datagrid('removeEditor', 'value');
 }
 
 // 打开新增窗口
@@ -77,15 +57,6 @@ function openInsertDdValue() {
 		return;
 	}
 
-	ddValueGrid.datagrid('addEditor', [{
-						field : 'name',
-						editor : {
-							type : 'textbox',
-							options : {
-								required : true
-							}
-						}
-					}]);
 	ddValueEditIndex = ddValueGrid.datagrid('getRows').length;
 	ddValueGrid.datagrid('appendRow', {
 				type : 0
@@ -112,28 +83,11 @@ function openUpdateDdValue() {
 	}
 }
 
-function showDdValueOptButtons(index) {
-	$('#btnSaveDdValue' + index + ',#btnCancelDdValue' + index).show();
-}
-
-function hideDdValueOptButtons(index) {
-	$('#btnSaveDdValue' + index + ',#btnCancelDdValue' + index).hide();
-}
-
-function getSelectedTreeNode() {
-	var selectedNode = ddValueTree.tree('getSelected');
-	if (!selectedNode) {
-		selectedNode = ddValueTree.tree('getRoot');
-	}
-	return selectedNode;
-}
 
 function insertOrUpdateDdValue(index, row, changes) {
 	var oldRecord;
 	var url = contextPath + '/dataDictionaryValue/';
 	if (!row.id) {
-		var selectedNode = getSelectedTreeNode();
-		row.parentId = selectedNode.id > 0 ? selectedNode.id : undefined;
 		row.ddCode = ddCode;
 		url += 'insert';
 	} else {
@@ -154,25 +108,14 @@ function insertOrUpdateDdValue(index, row, changes) {
 					$.messager.alert('提示', data.result);
 					return;
 				}
-				if (!row.id) {
-					row.id = data.data.id;
-					ddValueTree.tree('append', {
-								parent : getSelectedTreeNode().target,
-								data : [{
-											id : data.data.id,
-											parentId : data.data.parentId,
-											name : data.data.name,
-											attributes : {
-												ddCode : data.data.ddCode
-											}
-										}]
-							});
-				}
 				ddValueGrid.datagrid('updateRow', {
 							index : index,
 							row : row
 						});
 				ddValueGrid.datagrid('refreshRow', index);
+
+                $("#save_btn_ddValue").linkbutton('disable');
+                $("#cancel_btn_ddValue").linkbutton('disable');
 			}, 'json');
 }
 
@@ -201,7 +144,6 @@ function delDdValue() {
 								success : function(data) {
 									if (data.code == "200") {
 										ddValueGrid.datagrid('deleteRow', ddValueGrid.datagrid('getRowIndex', selected));
-										ddValueTree.tree('remove', ddValueTree.tree('find', selected.id).target);
 										$('#dlg').dialog('close');
 									} else {
 										$.messager.alert('错误', data.result);
@@ -259,7 +201,19 @@ $(function() {
 				handler:function(){
 					delDdValue();
 				}
-			}
+			},
+            {
+                id:'save_btn_ddValue',
+                disabled: true,
+                iconCls:'icon-ok',
+                handler:function(){endDdValueGridEditing();}
+            },
+            {
+                id:'cancel_btn_ddValue',
+                iconCls:'icon-clear',
+                disabled: true,
+                handler:function(){cancelEditDdValue();}
+            }
 		]
 	});
 	//表格仅显示下边框

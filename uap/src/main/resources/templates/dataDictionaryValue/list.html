@@ -13,13 +13,12 @@
                 <thead>
                 <tr>
                     <th  data-options="field:'ddCode',sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false', hidden:true">字典id</th>
+                    <th width="15%" data-options="field:'name',sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false',editor:{type : 'textbox',options : {required : true}}">名称</th>
                     <th width="15%" data-options="field:'code',sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false',editor:{type : 'textbox',options : {required : true}}">编码</th>
-                    <th width="15%" data-options="field:'name',sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false',editor:{type : 'textbox',options : {required : true}}">值</th>
                     <th width="8%" data-options="field:'orderNumber',sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false',
 						editor:{type : 'numberbox',options : {required : true}}">排序号</th>
                     <th width="22%" data-options="field:'description',sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false',
 						editor:{type : 'textbox',options : {required : true}}">备注</th>
-                    <th width="12%" data-options="field:'opt',title:'操作', hidden : true,formatter:formatOpsDdValue"></th>
                 </tr>
                 </thead>
             </table>

@@ -37,15 +37,14 @@
                 <thead>
                 <tr>
                     <th data-options="field:'id',width:'6%',sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false'">ID</th>
-                    <th data-options="field:'code',width:'17%',sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false'">编码</th>
                     <th
                             data-options="field:'name',width:'17%',sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false', formatter:formatName,
 						editor : {type : 'textbox',options : {required : true}}">名称</th>
+                    <th data-options="field:'code',width:'17%',sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false'">编码</th>
                     <th data-options="field:'description',width:'30%',sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false',
 						editor : {type : 'textbox',options : {required : true}}">备注</th>
                     <th data-options="field:'created',width:'15%',  _provider:'datetimeProvider', sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false'">创建时间</th>
                     <th data-options="field:'modified',width:'15%',  _provider:'datetimeProvider', sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false'">更新时间</th>
-                    <th data-options="field:'opt',title:'操作',width:'10%',hidden : true,formatter:formatDdGridOps"></th>
                 </tr>
                 </thead>
             </table>
