@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8" />
-    <title>地利统一鉴权平台</title>
+    <title>地利统一登录平台</title>
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="keywords" content="" />
@@ -19,7 +19,7 @@
 <body>
 <div class="login">
     <div>
-        <h2>地利统一鉴权平台</h2></div>
+        <h2>地利统一登录平台</h2></div>
     <div id="errMsg">
     </div>
     <form id="loginForm" method="post" action="${contextPath}/login/loginAction">
@@ -28,7 +28,7 @@
             <tr>
                 <td width="40" class="login-icon login-user-icon">帐号</td>
                 <td>
-                    <input id="username" name="username" value="" type="text" placeholder="请输入用户名" />
+                    <input id="userName" name="userName" value="" type="text" placeholder="请输入用户名" />
                 </td>
             </tr>
             <tr>
@@ -48,7 +48,7 @@
 </div>
 <script type="text/javascript">
     function doLogin() {
-        var username = document.getElementById("username").value;
+        var username = document.getElementById("userName").value;
         if (null == username || "" == username) {
             alert("账号不能为空");
             return false;
@@ -101,7 +101,7 @@
             alert('${msg}');
         <%}%>
         window.setTimeout(function() {
-            $("#username").focus();
+            $("#userName").focus();
         }, 0);
         bindFormEvent("loginForm", doLogin);
     });
