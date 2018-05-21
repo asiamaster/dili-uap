@@ -6,6 +6,7 @@ import com.dili.uap.domain.dto.LoginResult;
 import com.dili.uap.sdk.util.WebContent;
 import com.dili.uap.service.LoginService;
 import com.dili.uap.utils.WebUtil;
+import org.springframework.stereotype.Component;
 
 import static com.dili.uap.glossary.LoginConstants.COOKIE_SESSION_ID;
 
@@ -13,6 +14,7 @@ import static com.dili.uap.glossary.LoginConstants.COOKIE_SESSION_ID;
  * 登录服务
  * Created by asiam on 2018/5/18 0018.
  */
+@Component
 public class LoginServiceImpl implements LoginService {
     @Override
     public BaseOutput<LoginResult> login(String userName, String password) {
