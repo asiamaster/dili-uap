@@ -19,8 +19,8 @@ public class IndexController {
 	//跳转到首页Controller
 	public static final String REDIRECT_INDEX_PAGE = "redirect:/index/index.html";
 
-	public static final String USERDETAIL_PATH = "main/userDetail";
-	public static final String CHANGEPWD_PATH = "main/changePwd";
+	public static final String USERDETAIL_PATH = "index/userDetail";
+	public static final String CHANGEPWD_PATH = "index/changePwd";
 
 	@ApiOperation("跳转到Main页面")
 	@RequestMapping(value = "/index.html", method = RequestMethod.GET)

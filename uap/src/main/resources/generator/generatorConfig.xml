@@ -49,12 +49,12 @@
 		</plugin>
 
 		<!-- beetl模板文件生成插件 -->
-		<plugin type="com.dili.ss.mbg.beetl.BeetlTemplatesPlugin">
-			<property name="targetDir" value="${targetResourcesProject}"></property>
-			<property name="templateRootDir" value="${templateRootDir}"></property>
-			<property name="basePackage_dir" value="com/dili/utils" />
-			<property name="overwrite" value="true" />
-		</plugin>
+		<!--<plugin type="com.dili.ss.mbg.beetl.BeetlTemplatesPlugin">-->
+			<!--<property name="targetDir" value="${targetResourcesProject}"></property>-->
+			<!--<property name="templateRootDir" value="${templateRootDir}"></property>-->
+			<!--<property name="basePackage_dir" value="com/dili/utils" />-->
+			<!--<property name="overwrite" value="true" />-->
+		<!--</plugin>-->
 
 		<commentGenerator
 			type="org.mybatis.generator.internal.DefaultCommentGenerator">
@@ -78,7 +78,7 @@
 			targetProject="${targetJavaProject}" type="XMLMAPPER" />
 
 		<!-- 生成所有表模型 -->
-		<table tableName="test">
+		<table tableName="resource">
 			<generatedKey column="id" sqlStatement="Mysql" identity="true" />
 		</table>
 		<!-- 生成指定表模型 -->

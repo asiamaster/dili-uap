@@ -40,8 +40,8 @@ public class LoginController {
 
 	//跳转到登录页面
 	public static final String INDEX_PATH = "login/index";
-	//跳转到首页Controller
-    public static final String REDIRECT_INDEX_PAGE = "redirect:/index/index.html";
+	//跳转到登录页Controller
+    public static final String REDIRECT_INDEX_PAGE = "redirect:/login/index.html";
 
 	@ApiOperation("跳转到Login页面")
 	@RequestMapping(value = "/index.html", method = RequestMethod.GET)

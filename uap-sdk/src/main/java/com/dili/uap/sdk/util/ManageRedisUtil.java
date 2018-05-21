@@ -16,7 +16,6 @@ import java.util.concurrent.TimeUnit;
  */
 @SuppressWarnings("unchecked")
 @Component
-//@ConditionalOnExpression("'${manage.redis.enable}'=='true'")
 public class ManageRedisUtil {
 
     @Resource(name="manageRedisTemplate")

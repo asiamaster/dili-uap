@@ -1,0 +1,54 @@
+<#body>
+<form id="changePwdForm" class="easyui-form" fit="true" method="post" novalidate="novalidate">
+	<div style="width: 360px; margin: 50px auto 0">
+		<table width="100%">
+			<tr>
+				<td style="padding: 5px;"><input class="easyui-textbox" id="currentPwd" name="oldPassword" style="width: 100%" data-options="label:'当前密码:', validType:'length[0,32]',labelAlign:'right'"
+					type="password" required="true" validateOnCreate="false" /></td>
+			</tr>
+			<tr>
+				<td style="padding: 5px;"><input class="easyui-textbox" id="newPwd" name="newPassword" style="width: 100%" data-options="label:'新密码:',validType:'length[0,32]',labelAlign:'right'"
+					type="password" required="true" validateOnCreate="false" /></td>
+			</tr>
+			<tr>
+				<td style="padding: 5px;"><input class="easyui-textbox" id="reNewPwd" name="confirmPassword" style="width: 100%" data-options="label:'确认新密码:',labelAlign:'right'" type="password"
+					validType="pwdEquals['#newPwd']" required="true" validateOnCreate="false" /></td>
+			</tr>
+			<tr>
+				<td align="center"><a href="javascript:void(0)" class="easyui-linkbutton" data-options="width:80" iconCls="icon-ok" onclick="changePwd()">确认</a></td>
+			</tr>
+		</table>
+	</div>
+
+</form>
+
+<script type="text/javascript">
+	function changePwd() {
+		if (!$('#changePwdForm').form("validate")) {
+			return false;
+		}
+
+		var formData = $("#changePwdForm").serializeObject();
+
+		$.ajax({
+			type : "POST",
+			url : "${contextPath!}/user/changePwd",
+			data : formData,
+			processData : true,
+			dataType : "json",
+			async : true,
+			success : function(data) {
+				if (data.code == "200") {
+//					parent.closeTab("修改密码");
+                    $.messager.alert('提示','修改密码成功', 'info');
+					$('#changePwdForm').form("clear");
+                } else {
+					$.messager.alert('错误', data.result);
+				}
+			},
+			error : function() {
+				$.messager.alert('错误', '远程访问失败');
+			}
+		});
+	}
+</script> </#body>

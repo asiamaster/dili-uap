@@ -6660,11 +6660,12 @@ LABL 0 新宋体,8,N</a:FontList>
 <a:Code>id</a:Code>
 <a:CreationDate>1499139121</a:CreationDate>
 <a:Creator>asiamaster</a:Creator>
-<a:ModificationDate>1508230082</a:ModificationDate>
-<a:Modifier>asiamaster</a:Modifier>
+<a:ModificationDate>1526891643</a:ModificationDate>
+<a:Modifier>asiam</a:Modifier>
 <a:Comment>主键</a:Comment>
 <a:DataType>bigint(20)</a:DataType>
 <a:Length>20</a:Length>
+<a:Identity>1</a:Identity>
 <a:Column.Mandatory>1</a:Column.Mandatory>
 </o:Column>
 <o:Column Id="o184">
