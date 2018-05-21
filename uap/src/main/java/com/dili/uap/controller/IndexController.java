@@ -33,7 +33,7 @@ public class IndexController {
 		}
 	}
 
-	@ApiOperation("跳转到信息页面")
+	@ApiOperation("跳转到个人信息页面")
 	@RequestMapping(value = "/userDetail.html", method = RequestMethod.GET)
 	public String userDetail(ModelMap modelMap) {
 		return USERDETAIL_PATH;
