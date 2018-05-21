@@ -8,6 +8,10 @@ package com.dili.uap.manager;
  */
 public interface ResourceManager {
 
+	/**
+	 * 初始化用户资源权限到redis
+	 * @param userId
+	 */
 	void initUserResourceCodeInRedis(Long userId);
 
 }

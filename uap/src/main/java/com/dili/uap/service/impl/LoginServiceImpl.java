@@ -8,6 +8,7 @@ import com.dili.uap.domain.User;
 import com.dili.uap.domain.dto.LoginResult;
 import com.dili.uap.glossary.UserState;
 import com.dili.uap.manager.MenuManager;
+import com.dili.uap.manager.ResourceManager;
 import com.dili.uap.sdk.session.SessionConstants;
 import com.dili.uap.sdk.util.ManageRedisUtil;
 import com.dili.uap.sdk.util.WebContent;
@@ -50,6 +51,9 @@ public class LoginServiceImpl implements LoginService {
     @Autowired
     private MenuManager menuManager;
 
+    @Autowired
+    private ResourceManager resourceManager;
+
     @Override
     public BaseOutput<LoginResult> login(String userName, String password) {
         User record = new User();
@@ -66,8 +70,8 @@ public class LoginServiceImpl implements LoginService {
 
         // 加载用户url
         this.menuManager.initUserMenuUrlsInRedis(user.getId());
-//        // 加载用户resource
-//        this.resourceManager.initUserResourceCodeInRedis(user.getId());
+        // 加载用户resource
+        this.resourceManager.initUserResourceCodeInRedis(user.getId());
 //        // 加载用户数据权限
 //        this.dataAuthManager.initUserDataAuthsInRedis(user.getId());
 
