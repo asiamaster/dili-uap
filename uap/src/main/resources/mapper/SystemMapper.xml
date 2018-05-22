@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.dili.uap.dao.SystemMapper">
+<mapper namespace="mapper.SystemMapper">
   <resultMap id="BaseResultMap" type="com.dili.uap.domain.System">
     <!--
       WARNING - @mbg.generated
@@ -12,7 +12,8 @@
     <result column="description" jdbcType="VARCHAR" property="description" />
     <result column="url" jdbcType="VARCHAR" property="url" />
     <result column="icon_url" jdbcType="VARCHAR" property="iconUrl" />
-    <result column="firm_id" jdbcType="BIGINT" property="firmCode" />
+    <result column="firm_code" jdbcType="VARCHAR" property="firmCode" />
+    <result column="logo_url" jdbcType="VARCHAR" property="logoUrl" />
     <result column="created" jdbcType="TIMESTAMP" property="created" />
     <result column="modified" jdbcType="TIMESTAMP" property="modified" />
     <result column="type" jdbcType="INTEGER" property="type" />
@@ -21,8 +22,8 @@
     <!--
       WARNING - @mbg.generated
     -->
-    id, parent_id, name, code, description, url, icon_url, firm_id, created, modified, 
-    type
+    id, parent_id, name, code, description, url, icon_url, firm_code, logo_url, created, 
+    modified, type
   </sql>
   <select id="selectBy" parameterType="java.lang.Long" resultMap="BaseResultMap">
     <!--
@@ -58,7 +59,10 @@
         icon_url = #{iconUrl,jdbcType=VARCHAR},
       </if>
       <if test="firmCode != null">
-        firm_id = #{firmCode,jdbcType=BIGINT},
+        firm_code = #{firmCode,jdbcType=VARCHAR},
+      </if>
+      <if test="logoUrl != null">
+        logo_url = #{logoUrl,jdbcType=VARCHAR},
       </if>
       <if test="created != null">
         created = #{created,jdbcType=TIMESTAMP},
