@@ -83,7 +83,7 @@
                 <tr>
                     <td style="padding-left: 30px"><img class="logo" src="${contextPath}/resources/images/logo.png" alt=""></td>
                     <td>
-                        <#menubutton _divId="mainMenu" _panelAlign="center" _service="menuServiceImpl" _method="findUserMenu" _queryParams="${userid}" _menuWidth="120" _menuHeight="40"
+                        <#menubutton _divId="mainMenu" _panelAlign="center" _service="menuServiceImpl" _method="findDirAndLinksByUserId" _queryParams="${userid}" _menuWidth="120" _menuHeight="40"
                                 _textField="name" _idField="id" _parentIdField="parentId" plain="true" hasDownArrow="false" itemWidth="120" itemHeight="40" minWidth="50"
                                 align="left" noline="true" onClick="menuClickHandler">
                         </#menubutton>
@@ -97,10 +97,10 @@
                             <a id="menubutton_right" href="#" class="easyui-menubutton" data-options="menu:'#menu_right', plain:true, hasDownArrow:false">${username}</a>
                         </div>
                         <div id="menu_right" style="width:88px" data-options="zIndex:'110000' , align:'left', noline:true, onClick:menuClickHandler" itemHeight="40">
-                            <div id="menu_userDetail" data-options="menuUrl:'${contextPath}/index/userDetail.html' ">
+                            <div id="menu_userDetail" data-options="url:'${contextPath}/index/userDetail.html' ">
                                 用户信息
                             </div>
-                            <div id="menu_changePwd" data-options="menuUrl:'${contextPath}/index/changePwd.html'">
+                            <div id="menu_changePwd" data-options="url:'${contextPath}/index/changePwd.html'">
                                 修改密码
                             </div>
                             <div id="menu_logout" data-options="blankKey:'' ">
@@ -143,7 +143,7 @@
                 item = $(this).linkbutton("options");
             }
             var title = item.text;
-            var url = item.menuUrl;
+            var url = item.url;
             if ("menu_logout" == item.id) {
                 logout();
                 return;
@@ -155,25 +155,16 @@
         }
 
         function renderPage(title, url) {
-//            if ("用户信息" == title) {
-//                url = "${contextPath}/main/userDetail.html";
-//
-//            } else if ("修改密码" == title) {
-//                url = "${contextPath}/main/changePwd.html"
-//            }
-
             var content = '<iframe scrolling="auto" frameborder="0" src="'+url+'" onLoad="" style="width:100%; height: 99.2%;"></iframe>';
-
             $('#mainPanel').panel({
                 content:content,
                 cache:false
-
             });
 
         }
 
         function logout() {
-            $.post('${contextPath!}/login/logoutAction',null,function(data){
+            $.post('${contextPath!}/login/logout.action',null,function(data){
                 if ("200" == data.code) {
                     window.location.href = "${contextPath}/login/index.html";
                 } else {
@@ -185,7 +176,7 @@
 
 
         $(function () {
-            renderPage("主页", "${@com.dili.ss.util.SystemConfigUtils.getProperty("sysadmin.indexPage", "about:blank")}");
+            renderPage("主页", "${@com.dili.ss.util.SystemConfigUtils.getProperty("uap.indexPage", "about:blank")}");
         });
     </script>
 </#body>

@@ -82,7 +82,7 @@ public class LoginServiceImpl implements LoginService {
         User record = DTOUtils.newDTO(User.class);
         record.setUserName(loginDto.getUserName());
         User user = this.userMapper.selectOne(record);
-        if (user == null || !StringUtils.equalsIgnoreCase(user.getPassword(), this.encryptPwd(user.getPassword()))) {
+        if (user == null || !StringUtils.equalsIgnoreCase(user.getPassword(), this.encryptPwd(loginDto.getPassword()))) {
             lockUser(user);
             return BaseOutput.failure("用户名或密码错误").setCode(ResultCode.NOT_AUTH_ERROR);
         }
