@@ -1,8 +1,11 @@
 package com.dili.uap.controller;
 
 import com.dili.ss.domain.BaseOutput;
+import com.dili.ss.dto.DTOUtils;
+import com.dili.uap.domain.dto.LoginDto;
 import com.dili.uap.sdk.util.WebContent;
 import com.dili.uap.service.LoginService;
+import com.dili.uap.utils.WebUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * <B>Description</B>地利后台管理系统登录 <B>Copyright</B> Copyright (c) 2014 www.dili7
@@ -51,11 +55,12 @@ public class LoginController {
 
     @ApiOperation("执行login请求，跳转到Main页面或者返回login页面")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "action", paramType = "form", value = "用户信息", required = false, dataType = "string") })
-    @RequestMapping(value = "/loginAction", method = { RequestMethod.GET, RequestMethod.POST })
-    public String loginAction(@RequestParam("userName") String userName, @RequestParam("password") String password, ModelMap modelMap) {
-//        String requestPath = WebUtil.fetchReferer(request);
-		BaseOutput<Boolean> output = loginService.loginAndTag(userName, password);
+            @ApiImplicitParam(name = "loginDto", paramType = "form", value = "用户信息", required = false, dataType = "string") })
+    @RequestMapping(value = "/login.action", method = { RequestMethod.GET, RequestMethod.POST })
+    public String loginAction(LoginDto loginDto, ModelMap modelMap, HttpServletRequest request) {
+		loginDto.setLoginPath(WebUtil.fetchReferer(request));
+		loginDto.setRemoteIP(WebUtil.getRemoteIP(request));
+		BaseOutput<Boolean> output = loginService.loginAndTag(loginDto);
 		if (output.isSuccess()) {
 			return IndexController.REDIRECT_INDEX_PAGE;
 		}

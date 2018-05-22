@@ -8,7 +8,7 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="user_name" jdbcType="VARCHAR" property="userName" />
     <result column="password" jdbcType="VARCHAR" property="password" />
-    <result column="firm_id" jdbcType="BIGINT" property="firmId" />
+    <result column="firm_id" jdbcType="BIGINT" property="firmCode" />
     <result column="department_id" jdbcType="BIGINT" property="departmentId" />
     <result column="position" jdbcType="VARCHAR" property="position" />
     <result column="card_number" jdbcType="VARCHAR" property="cardNumber" />
@@ -50,8 +50,8 @@
       <if test="password != null">
         password = #{password,jdbcType=VARCHAR},
       </if>
-      <if test="firmId != null">
-        firm_id = #{firmId,jdbcType=BIGINT},
+      <if test="firmCode != null">
+        firm_id = #{firmCode,jdbcType=BIGINT},
       </if>
       <if test="departmentId != null">
         department_id = #{departmentId,jdbcType=BIGINT},

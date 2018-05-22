@@ -1,13 +1,14 @@
 package com.dili.uap.domain.dto;
 
 import com.dili.ss.dto.IBaseDomain;
+import com.dili.ss.dto.IDTO;
 import com.dili.uap.domain.User;
 
 /**
  * 登录结果
  * Created by asiam on 2018/5/18 0018.
  */
-public interface LoginResult extends IBaseDomain {
+public interface LoginResult extends IDTO {
 
     //登录会话id
     String getSessionId();

@@ -12,7 +12,7 @@
     <result column="description" jdbcType="VARCHAR" property="description" />
     <result column="url" jdbcType="VARCHAR" property="url" />
     <result column="icon_url" jdbcType="VARCHAR" property="iconUrl" />
-    <result column="firm_id" jdbcType="BIGINT" property="firmId" />
+    <result column="firm_id" jdbcType="BIGINT" property="firmCode" />
     <result column="created" jdbcType="TIMESTAMP" property="created" />
     <result column="modified" jdbcType="TIMESTAMP" property="modified" />
     <result column="type" jdbcType="INTEGER" property="type" />
@@ -57,8 +57,8 @@
       <if test="iconUrl != null">
         icon_url = #{iconUrl,jdbcType=VARCHAR},
       </if>
-      <if test="firmId != null">
-        firm_id = #{firmId,jdbcType=BIGINT},
+      <if test="firmCode != null">
+        firm_id = #{firmCode,jdbcType=BIGINT},
       </if>
       <if test="created != null">
         created = #{created,jdbcType=TIMESTAMP},

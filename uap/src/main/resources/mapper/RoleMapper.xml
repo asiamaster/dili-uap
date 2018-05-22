@@ -8,7 +8,7 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="role_name" jdbcType="VARCHAR" property="roleName" />
     <result column="description" jdbcType="VARCHAR" property="description" />
-    <result column="firm_id" jdbcType="BIGINT" property="firmId" />
+    <result column="firm_id" jdbcType="BIGINT" property="firmCode" />
     <result column="created" jdbcType="TIMESTAMP" property="created" />
     <result column="modified" jdbcType="TIMESTAMP" property="modified" />
   </resultMap>
@@ -39,8 +39,8 @@
       <if test="description != null">
         description = #{description,jdbcType=VARCHAR},
       </if>
-      <if test="firmId != null">
-        firm_id = #{firmId,jdbcType=BIGINT},
+      <if test="firmCode != null">
+        firm_id = #{firmCode,jdbcType=BIGINT},
       </if>
       <if test="created != null">
         created = #{created,jdbcType=TIMESTAMP},

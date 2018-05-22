@@ -37,8 +37,8 @@ public class User extends BaseDomain {
     /**
      * 归属市场
      */
-    @Column(name = "`firm_id`")
-    private Long firmId;
+    @Column(name = "`firm_code`")
+    private Long firmCode;
 
     /**
      * 归属部门
@@ -175,21 +175,21 @@ public class User extends BaseDomain {
     /**
      * 获取归属市场
      *
-     * @return firm_id - 归属市场
+     * @return firm_code - 归属市场
      */
     @FieldDef(label="归属市场")
     @EditMode(editor = FieldEditor.Number, required = false)
-    public Long getFirmId() {
-        return firmId;
+    public Long getFirmCode() {
+        return firmCode;
     }
 
     /**
      * 设置归属市场
      *
-     * @param firmId 归属市场
+     * @param firmCode 归属市场
      */
-    public void setFirmId(Long firmId) {
-        this.firmId = firmId;
+    public void setFirmCode(Long firmCode) {
+        this.firmCode = firmCode;
     }
 
     /**
