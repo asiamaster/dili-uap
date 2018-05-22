@@ -194,11 +194,11 @@ public class LoginServiceImpl implements LoginService {
         String key = SessionConstants.USER_PWD_ERROR_KEY + user.getId();
         BoundListOperations<Object, Object> ops = redisUtil.getRedisTemplate().boundListOps(key);
         while (true) {
-            String s = ops.index(-1).toString();
+            Object s = ops.index(-1);
             if (s == null) {
                 break;
             }
-            Long t = Long.valueOf(s);
+            Long t = Long.valueOf(s.toString());
             if (t == 0) {
                 break;
             }

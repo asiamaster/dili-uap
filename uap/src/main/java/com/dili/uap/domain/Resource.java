@@ -1,200 +1,71 @@
 package com.dili.uap.domain;
 
-import com.dili.ss.domain.BaseDomain;
+import com.dili.ss.dto.IBaseDomain;
 import com.dili.ss.metadata.FieldEditor;
 import com.dili.ss.metadata.annotation.EditMode;
 import com.dili.ss.metadata.annotation.FieldDef;
 import java.util.Date;
 import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 /**
  * 由MyBatis Generator工具自动生成
  * 
- * This file was generated on 2018-05-21 16:46:27.
+ * This file was generated on 2018-05-22 11:26:46.
  */
 @Table(name = "`resource`")
-public class Resource extends BaseDomain {
-    /**
-     * 主键
-     */
+public interface Resource extends IBaseDomain {
     @Id
-    @Column(name = "`id`")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    /**
-     * 名称
-     */
-    @Column(name = "`name`")
-    private String name;
-
-    /**
-     * 描述
-     */
-    @Column(name = "`description`")
-    private String description;
-
-    /**
-     * 外键，关联menu表
-     */
-    @Column(name = "`menu_id`")
-    private Long menuId;
-
-    /**
-     * 编码##原resource URL
-     */
-    @Column(name = "`code`")
-    private String code;
-
-    /**
-     * 创建时间
-     */
-    @Column(name = "`created`")
-    private Date created;
-
-    /**
-     * 修改时间
-     */
-    @Column(name = "`modified`")
-    private Date modified;
-
-    /**
-     * 获取主键
-     *
-     * @return id - 主键
-     */
+    @Column(name = "`id`")
     @FieldDef(label="主键")
     @EditMode(editor = FieldEditor.Number, required = true)
-    public Long getId() {
-        return id;
-    }
+    Long getId();
 
-    /**
-     * 设置主键
-     *
-     * @param id 主键
-     */
-    public void setId(Long id) {
-        this.id = id;
-    }
+    void setId(Long id);
 
-    /**
-     * 获取名称
-     *
-     * @return name - 名称
-     */
+    @Column(name = "`name`")
     @FieldDef(label="名称", maxLength = 255)
     @EditMode(editor = FieldEditor.Text, required = true)
-    public String getName() {
-        return name;
-    }
+    String getName();
 
-    /**
-     * 设置名称
-     *
-     * @param name 名称
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
+    void setName(String name);
 
-    /**
-     * 获取描述
-     *
-     * @return description - 描述
-     */
+    @Column(name = "`description`")
     @FieldDef(label="描述", maxLength = 255)
     @EditMode(editor = FieldEditor.Text, required = false)
-    public String getDescription() {
-        return description;
-    }
+    String getDescription();
 
-    /**
-     * 设置描述
-     *
-     * @param description 描述
-     */
-    public void setDescription(String description) {
-        this.description = description;
-    }
+    void setDescription(String description);
 
-    /**
-     * 获取外键，关联menu表
-     *
-     * @return menu_id - 外键，关联menu表
-     */
+    @Column(name = "`menu_id`")
     @FieldDef(label="外键，关联menu表")
     @EditMode(editor = FieldEditor.Number, required = true)
-    public Long getMenuId() {
-        return menuId;
-    }
+    Long getMenuId();
 
-    /**
-     * 设置外键，关联menu表
-     *
-     * @param menuId 外键，关联menu表
-     */
-    public void setMenuId(Long menuId) {
-        this.menuId = menuId;
-    }
+    void setMenuId(Long menuId);
 
-    /**
-     * 获取编码##原resource URL
-     *
-     * @return code - 编码##原resource URL
-     */
+    @Column(name = "`code`")
     @FieldDef(label="编码", maxLength = 255)
     @EditMode(editor = FieldEditor.Text, required = false)
-    public String getCode() {
-        return code;
-    }
+    String getCode();
 
-    /**
-     * 设置编码##原resource URL
-     *
-     * @param code 编码##原resource URL
-     */
-    public void setCode(String code) {
-        this.code = code;
-    }
+    void setCode(String code);
 
-    /**
-     * 获取创建时间
-     *
-     * @return created - 创建时间
-     */
+    @Column(name = "`created`")
     @FieldDef(label="创建时间")
     @EditMode(editor = FieldEditor.Datetime, required = true)
-    public Date getCreated() {
-        return created;
-    }
+    Date getCreated();
 
-    /**
-     * 设置创建时间
-     *
-     * @param created 创建时间
-     */
-    public void setCreated(Date created) {
-        this.created = created;
-    }
+    void setCreated(Date created);
 
-    /**
-     * 获取修改时间
-     *
-     * @return modified - 修改时间
-     */
+    @Column(name = "`modified`")
     @FieldDef(label="修改时间")
     @EditMode(editor = FieldEditor.Datetime, required = true)
-    public Date getModified() {
-        return modified;
-    }
+    Date getModified();
 
-    /**
-     * 设置修改时间
-     *
-     * @param modified 修改时间
-     */
-    public void setModified(Date modified) {
-        this.modified = modified;
-    }
+    void setModified(Date modified);
 }
