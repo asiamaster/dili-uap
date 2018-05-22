@@ -33,21 +33,12 @@ public class MenuController {
         return "menu/index";
     }
 
-    @ApiOperation(value="查询Menu", notes = "查询Menu，返回列表信息")
-    @ApiImplicitParams({
-		@ApiImplicitParam(name="Menu", paramType="form", value = "Menu的form信息", required = false, dataType = "string")
-	})
-    @RequestMapping(value="/list", method = {RequestMethod.GET, RequestMethod.POST})
-    public @ResponseBody List<Menu> list(@ModelAttribute Menu menu) {
-        return menuService.list(menu);
-    }
-
     @ApiOperation(value="分页查询Menu", notes = "分页查询Menu，返回easyui分页信息")
     @ApiImplicitParams({
 		@ApiImplicitParam(name="Menu", paramType="form", value = "Menu的form信息", required = false, dataType = "string")
 	})
-    @RequestMapping(value="/listPage", method = {RequestMethod.GET, RequestMethod.POST})
-    public @ResponseBody String listPage(@ModelAttribute Menu menu) throws Exception {
+    @RequestMapping(value="/listPage.action", method = {RequestMethod.GET, RequestMethod.POST})
+    public @ResponseBody String listPage(Menu menu) throws Exception {
         return menuService.listEasyuiPageByExample(menu, true).toString();
     }
 
@@ -55,8 +46,8 @@ public class MenuController {
     @ApiImplicitParams({
 		@ApiImplicitParam(name="Menu", paramType="form", value = "Menu的form信息", required = true, dataType = "string")
 	})
-    @RequestMapping(value="/insert", method = {RequestMethod.GET, RequestMethod.POST})
-    public @ResponseBody BaseOutput insert(@ModelAttribute Menu menu) {
+    @RequestMapping(value="/insert.action", method = {RequestMethod.GET, RequestMethod.POST})
+    public @ResponseBody BaseOutput insert(Menu menu) {
         menuService.insertSelective(menu);
         return BaseOutput.success("新增成功");
     }
@@ -65,8 +56,8 @@ public class MenuController {
     @ApiImplicitParams({
 		@ApiImplicitParam(name="Menu", paramType="form", value = "Menu的form信息", required = true, dataType = "string")
 	})
-    @RequestMapping(value="/update", method = {RequestMethod.GET, RequestMethod.POST})
-    public @ResponseBody BaseOutput update(@ModelAttribute Menu menu) {
+    @RequestMapping(value="/update.action", method = {RequestMethod.GET, RequestMethod.POST})
+    public @ResponseBody BaseOutput update(Menu menu) {
         menuService.updateSelective(menu);
         return BaseOutput.success("修改成功");
     }
@@ -75,7 +66,7 @@ public class MenuController {
     @ApiImplicitParams({
 		@ApiImplicitParam(name="id", paramType="form", value = "Menu的主键", required = true, dataType = "long")
 	})
-    @RequestMapping(value="/delete", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value="/delete.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody BaseOutput delete(Long id) {
         menuService.delete(id);
         return BaseOutput.success("删除成功");

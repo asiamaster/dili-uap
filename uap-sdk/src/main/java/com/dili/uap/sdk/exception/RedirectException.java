@@ -1,6 +1,8 @@
 package com.dili.uap.sdk.exception;
 
 /**
+ * URL重定向异常
+ * 用于SessionFilter拦截后抛出， 内容为重定向的URL
  * Created by Administrator on 2016/10/19.
  */
 public class RedirectException extends RuntimeException {

@@ -8,9 +8,16 @@ import java.util.List;
 public interface MenuMapper extends MyMapper<Menu> {
 
     /**
-     * 查询用户拥有的菜单权限
+     * 根据用户id查询用户拥有的所有菜单权限
      * @param userId
      * @return
      */
     List<Menu> findByUserId(Long userId);
+
+    /**
+     * 根据用户id查询目录和链接菜单权限
+     * @param userId
+     * @return
+     */
+    List<Menu> findDirAndLinksByUserId(Long userId);
 }

@@ -69,7 +69,7 @@ public class LoginController {
     }
 
     @ApiOperation("执行logout请求，跳转login页面或者弹出错误")
-    @RequestMapping(value = "/logoutAction", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/logout.action", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public @ResponseBody BaseOutput logoutAction(ModelMap modelMap) {
         String sessionId = WebContent.getPC().getSessionId();
 //        this.userService.logout(sessionId);
