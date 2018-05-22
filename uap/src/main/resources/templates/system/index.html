@@ -10,10 +10,6 @@
                     <table style="padding:10px;">
                         <tr>
                             <td style="padding:5px;">
-                                <input class="easyui-numberbox" name="parentId" id="parentId" style="width:100%" data-options="label:'上级系统标识:', validType:'length[0,19]'" />
-
-                            </td>
-                            <td style="padding:5px;">
                                 <input class="easyui-textbox" name="name" id="name" style="width:100%" data-options="label:'系统名称:', validType:'length[0,50]'" />
 
                             </td>
@@ -22,40 +18,11 @@
 
                             </td>
                             <td style="padding:5px;">
-                                <input class="easyui-textbox" name="description" id="description" style="width:100%" data-options="label:'系统描述:', validType:'length[0,255]'" />
-
-                            </td>
-                            <td style="padding:5px;">
-                                <input class="easyui-textbox" name="url" id="url" style="width:100%" data-options="label:'系统url:', validType:'length[0,255]'" />
-
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="padding:5px;">
-                                <input class="easyui-textbox" name="iconUrl" id="iconUrl" style="width:100%" data-options="label:'图标URL:', validType:'length[0,255]'" />
-
-                            </td>
-                            <td style="padding:5px;">
                                 <input class="easyui-textbox" name="firmCode" id="firmCode" style="width:100%" data-options="label:'所属市场:', validType:'length[0,50]'" />
-
                             </td>
                             <td style="padding:5px;">
-                                <input class="easyui-textbox" name="logoUrl" id="logoUrl" style="width:100%" data-options="label:'LOGO URL:', validType:'length[0,255]'" />
-
-                            </td>
-                            <td style="padding:5px;">
-                                <input class="easyui-datetimebox" name="created" id="created" style="width:100%" data-options="label:'创建时间:'" />
-
-                            </td>
-                            <td style="padding:5px;">
-                                <input class="easyui-datetimebox" name="modified" id="modified" style="width:100%" data-options="label:'修改时间:'" />
-
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="padding:5px;">
-                                <input class="easyui-numberbox" name="type" id="type" style="width:100%" data-options="label:'类型:', validType:'length[0,10]'" />
-
+                                   <input name="type" id="type" style="width:100%;" editable="false" panelWidth="auto" panelHeight="auto" label="类型:" value=""/>
+                                <#comboProvider _id="type" _data='[{"text":"-- 请选择 --","value":""},{"text":"内部系统","value":"1"},{"text":"外部系统","value":"0"}]'/>
                             </td>
                             <td>
                                 <a href="#" class="easyui-linkbutton" data-options="width:80"   iconCls="icon-search" id="queryBtn"
@@ -162,7 +129,7 @@
             </tr>
             <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-textbox" name="_url" id="_url" style="width:100%" data-options="label:'系统url，为空则跳到内部系统权限菜单，外部系统可定制:', validType:'length[0,255]'" />
+                    <input class="easyui-textbox" name="_url" id="_url" style="width:100%" data-options="label:'系统url:', validType:'length[0,255]'" />
                 </td>
             </tr>
             <tr>
@@ -178,18 +145,6 @@
             <tr>
                 <td style="padding:5px;">
                     <input class="easyui-textbox" name="_logoUrl" id="_logoUrl" style="width:100%" data-options="label:'LOGO URL:', validType:'length[0,255]'" />
-                </td>
-            </tr>
-            <tr>
-                <td style="padding:5px;">
-                    <input class="easyui-datetimebox" name="_created" id="_created" style="width:100%" data-options="label:'创建时间:'" 
-                        required="true" />
-                </td>
-            </tr>
-            <tr>
-                <td style="padding:5px;">
-                    <input class="easyui-datetimebox" name="_modified" id="_modified" style="width:100%" data-options="label:'修改时间:'" 
-                        required="true" />
                 </td>
             </tr>
             <tr>
@@ -356,8 +311,8 @@
          *          表单提交需执行的任务
          */
         $(function () {
-            bindFormEvent("form", "parentId", queryGrid);
-            bindFormEvent("_form", "_parentId", saveOrUpdate, function (){$('#dlg').dialog('close');});
+            bindFormEvent("form", "name", queryGrid);
+            bindFormEvent("_form", "_name", saveOrUpdate, function (){$('#dlg').dialog('close');});
             if (document.addEventListener) {
                 document.addEventListener("keyup",getKey,false);
             } else if (document.attachEvent) {
@@ -409,6 +364,10 @@
             });
             //表格仅显示下边框
             $('#grid').datagrid('getPanel').removeClass('lines-both lines-no lines-right lines-bottom').addClass("lines-bottom");
+            
+            //打开页面时查询
+            queryGrid();
+            
         })
     </script>
 </#body>

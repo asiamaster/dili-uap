@@ -14,11 +14,11 @@
                             </td>
                             <td style="padding:5px;">
                                  <input name="type" id="type" style="width:100%;" editable="false" panelWidth="auto" panelHeight="auto" label="异常类型:" value=""/>
-                                <#comboProvider _id="type" _data='[{"text":"-- 请选择 --","value":""},{"text":"异常类型","value":1},{"text":"异常类型","value":0}]'/>
+                                <#comboProvider _id="type" _data='[{"text":"-- 请选择 --","value":""},{"text":"系统内部异常","value":"1"},{"text":"登录异常","value":"0"}]'/>
                             </td>
                             </td>
                             <td style="padding:5px;">
-                                <input class="easyui-textbox" name="firmCode" id="firmCode" style="width:100%" data-options="label:'市场编码:', validType:'length[0,50]'" />
+                                <input class="easyui-textbox" name="firmCode" id="firmCode" style="width:100%" data-options="label:'市场名称:', validType:'length[0,50]'" />
 
                             </td>
                             <td>
@@ -296,8 +296,8 @@
          *          表单提交需执行的任务
          */
         $(function () {
-            bindFormEvent("form", "host", queryGrid);
-            bindFormEvent("_form", "_host", saveOrUpdate, function (){$('#dlg').dialog('close');});
+            bindFormEvent("form", "systemId", queryGrid);
+            bindFormEvent("_form", "_systemId", saveOrUpdate, function (){$('#dlg').dialog('close');});
             if (document.addEventListener) {
                 document.addEventListener("keyup",getKey,false);
             } else if (document.attachEvent) {
@@ -321,6 +321,10 @@
             });
             //表格仅显示下边框
             $('#grid').datagrid('getPanel').removeClass('lines-both lines-no lines-right lines-bottom').addClass("lines-bottom");
+            //打开页面时查询
+            queryGrid();
+            
+            
         })
     </script>
 </#body>

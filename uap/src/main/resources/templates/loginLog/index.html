@@ -23,14 +23,13 @@
 
                             </td>
                             <td style="padding:5px;">
-                                <input class="easyui-textbox" name="firmCode" id="firmCode" style="width:100%" data-options="label:'市场编码:', validType:'length[0,50]'" />
+                                <input class="easyui-textbox" name="firmCode" id="firmCode" style="width:100%" data-options="label:'市场名称:', validType:'length[0,50]'" />
 
                             </td>
                             <td style="padding:5px;">
                                  <input name="success" id="success" style="width:100%;" editable="false" panelWidth="auto" panelHeight="auto" label="是否成功:" value=""/>
-                                <#comboProvider _id="success" _data='[{"text":"-- 请选择 --","value":""},{"text":"是","value":1},{"text":"否","value":0}]'/>
+                                <#comboProvider _id="success" _data='[{"text":"-- 请选择 --","value":""},{"text":"是","value":"1"},{"text":"否","value":"0"}]'/>
                             </td>
-                            
                         </tr>
                         <tr>
                             <td>
@@ -51,7 +50,7 @@
             <!-- =========================================================表格========================================================= -->
             <table class="easyui-datagrid"   id="grid"  fitColumns="true"  title="LoginLog列表" noheader="true"
                    pagination="true" pageSize="30" pageNumber="1" pagePosition="top" remoteSort="true"
-                   loadMsg="数据加载中..." singleSelect="true" method="post" multiSort="false" sortName="created" sortOrder="desc"
+                   loadMsg="数据加载中..." singleSelect="true" method="post" multiSort="false" sortName="login_time" sortOrder="desc"
                    align="center" fit="true" striped="true"
                     toolbar="#toolbar" idField="id">
                 <thead>
@@ -77,7 +76,7 @@
                         <th data-options="field:'firmCode',width:'10%',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             市场编码
                         </th>
-                        <th data-options="field:'success',width:'10%',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th data-options="field:'success',width:'10%',  _data:[{'text':'是','value':1},{'text':'否','value':0}],   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             是否成功
                         </th>
                         <th data-options="field:'reason',width:'20%',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
@@ -338,6 +337,8 @@
             });
             //表格仅显示下边框
             $('#grid').datagrid('getPanel').removeClass('lines-both lines-no lines-right lines-bottom').addClass("lines-bottom");
+            //打开页面时查询
+            queryGrid();
         })
     </script>
 </#body>
