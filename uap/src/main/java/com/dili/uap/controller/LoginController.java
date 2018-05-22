@@ -3,8 +3,10 @@ package com.dili.uap.controller;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.domain.dto.LoginDto;
+import com.dili.uap.sdk.session.SessionConstants;
 import com.dili.uap.sdk.util.WebContent;
 import com.dili.uap.service.LoginService;
+import com.dili.uap.service.UserService;
 import com.dili.uap.utils.WebUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -12,6 +14,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -39,8 +42,11 @@ public class LoginController {
 
 	private static final Logger LOG = LoggerFactory.getLogger(LoginController.class);
 
-	@Resource
+	@Autowired
 	private LoginService loginService;
+
+	@Autowired
+	private UserService userService;
 
 	//跳转到登录页面
 	public static final String INDEX_PATH = "login/index";
@@ -72,12 +78,12 @@ public class LoginController {
     @RequestMapping(value = "/logout.action", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public @ResponseBody BaseOutput logoutAction(ModelMap modelMap) {
         String sessionId = WebContent.getPC().getSessionId();
-//        this.userService.logout(sessionId);
-//        try {
-//            WebContent.setCookie(COOKIE_SESSION_ID, null);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+        this.userService.logout(sessionId);
+        try {
+            WebContent.setCookie(SessionConstants.COOKIE_SESSION_ID, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return BaseOutput.success();
     }
 

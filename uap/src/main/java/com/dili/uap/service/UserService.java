@@ -8,4 +8,10 @@ import com.dili.uap.domain.User;
  * This file was generated on 2018-05-18 10:46:46.
  */
 public interface UserService extends BaseService<User, Long> {
+
+    /**
+     * 登出
+     * @param sessionId
+     */
+    void logout(String sessionId);
 }
