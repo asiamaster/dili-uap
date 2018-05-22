@@ -27,12 +27,16 @@ function cancelDdGridEdit() {
 
 // 新增一行空数据并开启编辑模式
 function openInsertDd() {
-	ddGridEditIndex = ddGrid.datagrid('getRows').length;
-	ddGrid.datagrid('appendRow', {
-				type : 0
-			});
-	ddGrid.datagrid('selectRow', ddGridEditIndex);
-	ddGrid.datagrid('beginEdit', ddGridEditIndex);
+    if (endDdGridEditing()) {
+        ddGridEditIndex = ddGrid.datagrid('getRows').length;
+
+        ddGrid.datagrid('appendRow', {
+            type : 0
+        });
+
+        ddGrid.datagrid('selectRow', ddGridEditIndex);
+        ddGrid.datagrid('beginEdit', ddGridEditIndex);
+    }
 }
 
 // 开启选中行的编辑模式
@@ -63,7 +67,7 @@ function delDd(selected) {
 				if (r) {
 					$.ajax({
 								type : "POST",
-								url : '${contextPath!}/dataDictionary/delete',
+								url : '${contextPath!}/dataDictionary/delete.action',
 								data : {
 									id : selected.id
 								},
@@ -90,7 +94,7 @@ function delDd(selected) {
 function queryDdGrid() {
 	var opts = ddGrid.datagrid("options");
 	if (null == opts.url || "" == opts.url) {
-		opts.url = "${contextPath}/dataDictionary/listPage";
+		opts.url = "${contextPath}/dataDictionary/listPage.action";
 	}
 	if (!$('#form').form("validate")) {
 		return;
@@ -200,10 +204,9 @@ function getKey(e) {
  *            row 行数据
  */
 function onBeginEditDdGrid(index, row) {
-    $("#save_btn").linkbutton('enable');
-    $("#cancel_btn").linkbutton('enable');
 	var editors = ddGrid.datagrid('getEditors', index);
 	editors[0].target.trigger('focus');
+	setOptBtnDisplay(true);
 }
 
 function formatName(value, row, index) {
@@ -223,33 +226,40 @@ function formatName(value, row, index) {
  *            changes 被修改的数据
  */
 function insertOrUpdate(index, row, changes) {
-	var oldRecord;
-	var url = '${contextPath!}/dataDictionary/';
-	if (!row.id) {
-		url += 'insert';
-	} else {
-		oldRecord = new Object();
-		$.extend(true, oldRecord, row);
-		url += 'update'
-	}
-	$.post(url, row, function(data) {
-				if (data.code != 200) {
-					if (oldRecord) {
-						ddGrid.datagrid('updateRow', {
-									index : index,
-									row : oldRecord
-								});
-					} else {
-						ddGrid.datagrid('deleteRow', index);
-					}
-					$.messager.alert('提示', data.result);
-					return;
-				}
+    var oldRecord;
+    var url = '${contextPath!}/dataDictionary/';
+    if (!row.id) {
+        url += 'insert.action';
+    } else {
+        oldRecord = new Object();
+        $.extend(true, oldRecord, row);
+        url += 'update.action'
+    }
+    $.post(url, row, function (data) {
+        if (data.code != 200) {
+            if (oldRecord) {
+                ddGrid.datagrid('updateRow', {
+                    index: index,
+                    row: oldRecord
+                });
+            } else {
+                ddGrid.datagrid('deleteRow', index);
+            }
+            $.messager.alert('提示', data.result);
+            return;
+        }
 
-				ddGrid.datagrid('reload');
-        $("#save_btn").linkbutton('disable');
-        $("#cancel_btn").linkbutton('disable');
-			}, 'json');
+        if (!row.id) {
+            row.id = data.data.id;
+            row.created = data.data.created;
+        }
+        row.modified = data.data.modified;
+        ddGrid.datagrid('updateRow', {
+            index: index,
+            row: row
+        });
+        ddGrid.datagrid('refreshRow', index);
+    }, 'json');
 }
 
 function formatLongToDate(value, row, index) {
@@ -275,9 +285,10 @@ function formatLongToDate(value, row, index) {
  *            row
  */
 function onClickDdGridRow(index, row) {
-	if (endDdGridEditing()) {
+	if (!ddGrid.datagrid('validateRow', ddGridEditIndex)) {
 		return;
 	}
+
 	if (ddGridEditIndex != index) {
 		ddGrid.datagrid('endEdit', ddGridEditIndex);
 		ddGridEditIndex = undefined;
@@ -296,6 +307,7 @@ function onClickDdGridRow(index, row) {
  */
 function onAfterEditDdGrid(index, row, changes) {
 	insertOrUpdate(index, row, changes);
+	setOptBtnDisplay(false);
 }
 
 /**
@@ -307,22 +319,22 @@ function onAfterEditDdGrid(index, row, changes) {
  *            row
  */
 function onCancelEditDdGrid(index, row) {
-    $("#save_btn").linkbutton('disable');
-    $("#cancel_btn").linkbutton('disable');
+        setOptBtnDisplay(false);
 	if (!row.id) {
 		ddGrid.datagrid('deleteRow', index);
 	}
 }
 
-function onClickDdGridRow(index, row) {
-	if (endDdGridEditing()) {
-		return;
-	}
-	ddGrid.datagrid('cancelEdit', editIndex);
-	if (!row.id) {
-		ddGrid.datagrid('deleteRow', editIndex);
-		ddGridEditIndex = undefined;
-	}
+function setOptBtnDisplay(show){
+    var $btnSave = $("#save_btn");
+    var $btnCancel = $("#cancel_btn");
+    if(show){
+        $btnSave.show();
+        $btnCancel.show();
+    }else{
+        $btnSave.hide();
+        $btnCancel.hide();
+    }
 }
 
 
@@ -336,7 +348,7 @@ function openDdValueWindow(obj) {
 				height : 500,
 				modal : true,
 				collapsible : false,
-				href : '${contextPath}/dataDictionaryValue/list?ddCode=' + code,
+				href : '${contextPath}/dataDictionaryValue/list.html?ddCode=' + code,
 				onLoad : function() {
 					window.ddCode = code;
 					ddValueGrid = $('#ddValueGrid');
@@ -395,14 +407,12 @@ $(function() {
 					},
 					{
 						id:'save_btn',
-                        disabled: true,
 						iconCls:'icon-ok',
 						handler:function(){endDdGridEditing();}
 					},
                     {
                         id:'cancel_btn',
                         iconCls:'icon-clear',
-                        disabled: true,
                         handler:function(){cancelDdGridEdit();}
                     }
 				]
@@ -410,5 +420,6 @@ $(function() {
 			//表格仅显示下边框
 			$('#grid').datagrid('getPanel').removeClass('lines-both lines-no lines-right lines-bottom').addClass("lines-bottom");
 			queryDdGrid();
+			setOptBtnDisplay(false);
 		});
 </script>

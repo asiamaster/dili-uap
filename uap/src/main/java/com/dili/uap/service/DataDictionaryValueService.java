@@ -2,7 +2,6 @@ package com.dili.uap.service;
 
 import com.dili.ss.base.BaseService;
 import com.dili.uap.domain.DataDictionaryValue;
-import com.dili.uap.domain.dto.DataDictionaryValueTreeView;
 
 import java.util.List;
 

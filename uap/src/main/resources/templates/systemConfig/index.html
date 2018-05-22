@@ -1,0 +1,414 @@
+<#body>
+<div class="easyui-layout" fit="true">
+    <!-- ====================================================================================================================== -->
+    <!-- 上方布局 -->
+    <!-- ====================================================================================================================== -->
+    <div region="north" height="auto" align="center" border="false">
+        <div id="nav" style="padding-left:15px;padding-top:10px;" align="left">
+        </div>
+        <!-- =========================================================表单========================================================= -->
+        <div class="easyui-panel" style="width:100%;border: 0px;" align="left">
+            <form id="form" class="easyui-form" method="post" fit="true">
+                <div style="padding: 5px;">
+                    <table>
+                        <tr>
+                            <td style="padding: 5px;"><input class="easyui-textbox" name="code" id="code"
+                                                             style="width: 100%"
+                                                             data-options="labelWidth:50,labelAlign:'right',label:'编码:', validType:'length[0,50]'"/>
+                            </td>
+                            <td style="padding: 5px;"><input class="easyui-textbox" name="name" id="name"
+                                                             style="width: 100%"
+                                                             data-options="labelWidth:50,labelAlign:'right',label:'名称:', validType:'length[0,50]'"/>
+                            </td>
+                            <td>
+                                <a href="#" class="easyui-linkbutton" iconCls="icon-search" id="queryBtn"
+                                   onclick="queryGrid();">查询</a>&nbsp;&nbsp;<a href="javascript:void(0)"
+                                                                                 class="easyui-linkbutton"
+                                                                                 iconCls="icon-clear"
+                                                                                 onclick="clearForm()">清除</a>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- ====================================================================================================================== -->
+    <!-- 中央布局 -->
+    <!-- ====================================================================================================================== -->
+    <!-- 表格 -->
+    <div region="center" style="width: 100%;" height="auto" align="center" border="false">
+        <!-- =========================================================表格========================================================= -->
+        <div style="width: 96%;height: 100%;" align="center">
+            <table class="easyui-datagrid" title="" noheader="true" id="grid" fitColumns="true" pagination="true" pageSize="30" pageNumber="1" pagePosition="top" rownumbers="false" remoteSort="false" loadMsg="数据加载中..."
+                   singleSelect="true" method="post" multiSort="true" sortName="code" align="center" fit="true" striped="true"  idField="id" data-options="onClickRow:onClickDdGridRow,onDblClickRow:openUpdateDd,onBeginEdit:onBeginEditDdGrid,onAfterEdit:onAfterEditDdGrid,onCancelEdit:onCancelEditDdGrid">
+                <thead>
+                <tr>
+                    <th data-options="field:'id',width:'6%',sortable:'true', order:'asc', align:'center', hidden:true,resizable:'true', fixed:'false'">
+                        ID
+                    </th>
+                    <th data-options="editor : {type : 'textbox',options : {required : true}},field:'name',   width:'14%',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        名称
+                    </th>
+                    <th data-options="editor : {type : 'textbox',options : {required : true}},field:'code',   width:'14%',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        编码
+                    </th>
+                    <th data-options="editor : {type : 'textbox',options : {required : true}},field:'value',   width:'14%',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        值
+                    </th>
+                    <th data-options="editor : {type : 'textbox',options : {required : true}},field:'description',  width:'30%', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        描述
+                    </th>
+                    <th data-options="field:'created', width:'14%', _provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        创建时间
+                    </th>
+                    <th data-options="field:'modified', width:'14%', _provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        修改时间
+                    </th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+<!-- 隐藏编辑框 -->
+
+
+</div>
+<!-- ====================================================================================================================== -->
+<!-- style & script 分隔线 -->
+<!-- ====================================================================================================================== -->
+<script type="text/javascript">
+    // 编辑行索引
+    var ddGridEditIndex = undefined;
+
+    // 结束行编辑
+    function endDdGridEditing() {
+        if (ddGridEditIndex == undefined) {
+            return true
+        }
+        if (ddGrid.datagrid('validateRow', ddGridEditIndex)) {
+            ddGrid.datagrid('endEdit', ddGridEditIndex);
+            ddGridEditIndex = undefined;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * 取消行编辑
+     */
+    function cancelDdGridEdit() {
+        ddGrid.datagrid('cancelEdit', ddGridEditIndex);
+        ddGridEditIndex = undefined;
+    };
+
+    // 新增一行空数据并开启编辑模式
+    function openInsertDd() {
+        if (endDdGridEditing()) {
+            ddGridEditIndex = ddGrid.datagrid('getRows').length;
+
+            ddGrid.datagrid('appendRow', {
+                type : 0
+            });
+
+            ddGrid.datagrid('selectRow', ddGridEditIndex);
+            ddGrid.datagrid('beginEdit', ddGridEditIndex);
+        }
+    }
+
+    // 开启选中行的编辑模式
+    function openUpdateDd() {
+        if (!endDdGridEditing()) {
+            return;
+        }
+        var selected = ddGrid.datagrid("getSelected");
+        if (!selected) {
+            $.messager.alert('警告', '请选中一条数据');
+            return;
+        }
+        var index = ddGrid.datagrid('getRowIndex', selected);
+        if (endDdGridEditing()) {
+            ddGrid.datagrid('selectRow', index).datagrid('beginEdit', index);
+            ddGridEditIndex = index;
+        }
+    }
+
+    /**
+     * 开始编辑行的毁掉函数
+     *
+     * @param {}
+     *            index 行索引
+     * @param {}
+     *            row 行数据
+     */
+    function onBeginEditDdGrid(index, row) {
+        var editors = ddGrid.datagrid('getEditors', index);
+        editors[0].target.trigger('focus');
+        setOptBtnDisplay(true);
+    }
+
+    /**
+     * 插入或者修改菜单信息
+     *
+     * @param {}
+     *            node 菜单树被选中的节点
+     * @param {}
+     *            index 行索引
+     * @param {}
+     *            row 行数据
+     * @param {}
+     *            changes 被修改的数据
+     */
+    function insertOrUpdate(index, row, changes) {
+        var oldRecord;
+        var url = '${contextPath!}/systemConfig/';
+        if (!row.id) {
+            url += 'insert.action';
+        } else {
+            oldRecord = new Object();
+            $.extend(true, oldRecord, row);
+            url += 'update.action'
+        }
+        $.post(url, row, function (data) {
+            if (data.code != 200) {
+                if (oldRecord) {
+                    ddGrid.datagrid('updateRow', {
+                        index: index,
+                        row: oldRecord
+                    });
+                } else {
+                    ddGrid.datagrid('deleteRow', index);
+                }
+                $.messager.alert('提示', data.result);
+                return;
+            }
+
+            if (!row.id) {
+                row.id = data.data.id;
+                row.created = data.data.created;
+            }
+            row.modified = data.data.modified;
+            ddGrid.datagrid('updateRow', {
+                index: index,
+                row: row
+            });
+            ddGrid.datagrid('refreshRow', index);
+        }, 'json');
+    }
+
+    /**
+     * 单击含回调方法，逻辑是结束之前的行编辑模式
+     *
+     * @param {}
+     *            index
+     * @param {}
+     *            row
+     */
+    function onClickDdGridRow(index, row) {
+        if (!ddGrid.datagrid('validateRow', ddGridEditIndex)) {
+            return;
+        }
+
+        if (ddGridEditIndex != index) {
+            ddGrid.datagrid('endEdit', ddGridEditIndex);
+            ddGridEditIndex = undefined;
+        }
+    }
+
+    /**
+     * 结束编辑回调函数
+     *
+     * @param {}
+     *            index 行索引
+     * @param {}
+     *            row 行数据
+     * @param {}
+     *            changes 当前行被修改的数据
+     */
+    function onAfterEditDdGrid(index, row, changes) {
+        insertOrUpdate(index, row, changes);
+        setOptBtnDisplay(false);
+    }
+
+    /**
+     * 取消行编辑回调方法
+     *
+     * @param {}
+     *            index
+     * @param {}
+     *            row
+     */
+    function onCancelEditDdGrid(index, row) {
+        setOptBtnDisplay(false);
+        if (!row.id) {
+            ddGrid.datagrid('deleteRow', index);
+        }
+    }
+
+    function setOptBtnDisplay(show){
+        var $btnSave = $("#save_btn");
+        var $btnCancel = $("#cancel_btn");
+        if(show){
+            $btnSave.show();
+            $btnCancel.show();
+        }else{
+            $btnSave.hide();
+            $btnCancel.hide();
+        }
+    }
+
+    //根据主键删除
+    function del() {
+        var selected = $("#grid").datagrid("getSelected");
+        if (null == selected) {
+            $.messager.alert('警告', '请选中一条数据');
+            return;
+        }
+        $.messager.confirm('确认', '您确认想要删除记录吗？', function (r) {
+            if (r) {
+                $.ajax({
+                    type: "POST",
+                    url: "${contextPath}/systemConfig/delete.action",
+                    data: {id: selected.id},
+                    processData: true,
+                    dataType: "json",
+                    async: true,
+                    success: function (data) {
+                        if (data.code == "200") {
+                            $("#grid").datagrid("reload");
+                            $('#dlg').dialog('close');
+                        } else {
+                            $.messager.alert('错误', data.result);
+                        }
+                    },
+                    error: function () {
+                        $.messager.alert('错误', '远程访问失败');
+                    }
+                });
+            }
+        });
+
+    }
+
+    //表格查询
+    function queryGrid() {
+        var opts = $("#grid").datagrid("options");
+        if (null == opts.url || "" == opts.url) {
+            opts.url = "${contextPath}/systemConfig/listPage.action";
+        }
+        if (!$('#form').form("validate")) {
+            return;
+        }
+        $("#grid").datagrid("load", bindGridMeta2Form("grid", "form"));
+    }
+
+
+    //清空表单
+    function clearForm() {
+        $('#form').form('clear');
+        queryGrid();
+    }
+
+    //表格表头右键菜单
+    function headerContextMenu(e, field) {
+        e.preventDefault();
+        if (!cmenu) {
+            createColumnMenu("grid");
+        }
+        cmenu.menu('show', {
+            left: e.pageX,
+            top: e.pageY
+        });
+    }
+
+    $.messager.progress({
+        title: "提示",
+        msg: "加载中,请稍候...",
+        value: '10',
+        text: '{value}%',
+        interval: 200
+    });
+    $.parser.onComplete = function () {
+        $.messager.progress("close");
+    }
+
+    //全局按键事件
+    function getKey(e) {
+        e = e || window.event;
+        var keycode = e.which ? e.which : e.keyCode;
+        if (keycode == 46) { //如果按下删除键
+            var selected = $("#grid").datagrid("getSelected");
+            if (selected && selected != null) {
+                del();
+            }
+        }
+    }
+
+    /**
+     * 绑定页面回车事件，以及初始化页面时的光标定位
+     * @formId
+     *          表单ID
+     * @elementName
+     *          光标定位在指点表单元素的name属性的值
+     * @submitFun
+     *          表单提交需执行的任务
+     */
+    $(function () {
+        window.ddGrid = $('#grid');
+        bindFormEvent("form", "name", queryGrid);
+        if (document.addEventListener) {
+            document.addEventListener("keyup", getKey, false);
+        } else if (document.attachEvent) {
+            document.attachEvent("onkeyup", getKey);
+        } else {
+            document.onkeyup = getKey;
+        }
+        var pager = $('#grid').datagrid('getPager');    // get the pager of treegrid
+        pager.pagination({
+            buttons: [
+                {
+                    iconCls: 'icon-add',
+                    text: '新增',
+                    handler: function () {
+                        openInsertDd();
+                    }
+                },
+                {
+                    iconCls: 'icon-edit',
+                    text: '修改',
+                    handler: function () {
+                        openUpdateDd();
+                    }
+                },
+                {
+                    iconCls: 'icon-remove',
+                    text: '删除',
+                    handler: function () {
+                        del();
+                    }
+                },
+                {
+                    id: 'save_btn',
+                    iconCls: 'icon-ok',
+                    handler: function () {
+                        endDdGridEditing();
+                    }
+                },
+                {
+                    id: 'cancel_btn',
+                    iconCls: 'icon-clear',
+                    handler: function () {
+                        cancelDdGridEdit();
+                    }
+                }
+            ]
+        });
+        //表格仅显示下边框
+        $('#grid').datagrid('getPanel').removeClass('lines-both lines-no lines-right lines-bottom').addClass("lines-bottom");
+        queryGrid();
+        setOptBtnDisplay(false);
+    })
+</script>
+</#body>

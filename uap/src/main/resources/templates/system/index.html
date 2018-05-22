@@ -8,6 +8,63 @@
             <div class="easyui-panel" style="width:100%;" align="left">
                 <form id="form" class="easyui-form" method="post" fit="true">
                     <table style="padding:10px;">
+                        <tr>
+                            <td style="padding:5px;">
+                                <input class="easyui-numberbox" name="parentId" id="parentId" style="width:100%" data-options="label:'上级系统标识:', validType:'length[0,19]'" />
+
+                            </td>
+                            <td style="padding:5px;">
+                                <input class="easyui-textbox" name="name" id="name" style="width:100%" data-options="label:'系统名称:', validType:'length[0,50]'" />
+
+                            </td>
+                            <td style="padding:5px;">
+                                <input class="easyui-textbox" name="code" id="code" style="width:100%" data-options="label:'系统编码:', validType:'length[0,50]'" />
+
+                            </td>
+                            <td style="padding:5px;">
+                                <input class="easyui-textbox" name="description" id="description" style="width:100%" data-options="label:'系统描述:', validType:'length[0,255]'" />
+
+                            </td>
+                            <td style="padding:5px;">
+                                <input class="easyui-textbox" name="url" id="url" style="width:100%" data-options="label:'系统url，为空则跳到内部系统权限菜单，外部系统可定制:', validType:'length[0,255]'" />
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding:5px;">
+                                <input class="easyui-textbox" name="iconUrl" id="iconUrl" style="width:100%" data-options="label:'图标URL:', validType:'length[0,255]'" />
+
+                            </td>
+                            <td style="padding:5px;">
+                                <input class="easyui-textbox" name="firmCode" id="firmCode" style="width:100%" data-options="label:'所属市场:', validType:'length[0,50]'" />
+
+                            </td>
+                            <td style="padding:5px;">
+                                <input class="easyui-textbox" name="logoUrl" id="logoUrl" style="width:100%" data-options="label:'LOGO URL:', validType:'length[0,255]'" />
+
+                            </td>
+                            <td style="padding:5px;">
+                                <input class="easyui-datetimebox" name="created" id="created" style="width:100%" data-options="label:'创建时间:'" />
+
+                            </td>
+                            <td style="padding:5px;">
+                                <input class="easyui-datetimebox" name="modified" id="modified" style="width:100%" data-options="label:'修改时间:'" />
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding:5px;">
+                                <input class="easyui-numberbox" name="type" id="type" style="width:100%" data-options="label:'类型:', validType:'length[0,10]'" />
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <a href="#" class="easyui-linkbutton" iconCls="icon-search" id="queryBtn"
+                                   onclick="queryGrid()">查询</a>
+                                <a href="javascript:void(0)" class="easyui-linkbutton" onclick="clearForm()">清除</a>
+                            </td>
+                        </tr>
                     </table>
                 </form>
             </div>
@@ -44,6 +101,9 @@
                         </th>
                         <th data-options="field:'firmCode',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             所属市场
+                        </th>
+                        <th data-options="field:'logoUrl',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            LOGO URL
                         </th>
                         <th data-options="field:'created',  _provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             创建时间
@@ -126,7 +186,12 @@
             </tr>
             <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-numberbox" name="_firmId" id="_firmId" style="width:100%" data-options="label:'所属市场:'" />
+                    <input class="easyui-textbox" name="_firmCode" id="_firmCode" style="width:100%" data-options="label:'所属市场:', validType:'length[0,50]'" />
+                </td>
+            </tr>
+            <tr>
+                <td style="padding:5px;">
+                    <input class="easyui-textbox" name="_logoUrl" id="_logoUrl" style="width:100%" data-options="label:'LOGO URL:', validType:'length[0,255]'" />
                 </td>
             </tr>
             <tr>
