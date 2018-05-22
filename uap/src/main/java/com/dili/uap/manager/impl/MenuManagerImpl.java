@@ -1,5 +1,6 @@
 package com.dili.uap.manager.impl;
 
+import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.dao.MenuMapper;
 import com.dili.uap.domain.Menu;
 import com.dili.uap.manager.MenuManager;
@@ -40,7 +41,7 @@ public class MenuManagerImpl implements MenuManager {
 
 	public Boolean save(Menu menu) {
 		// 去重
-		Menu record = new Menu();
+		Menu record = DTOUtils.newDTO(Menu.class);
 		menu.setParentId(menu.getParentId());
 		menu.setName(menu.getName());
 		if (menuMapper.selectCount(record) > 0) {
