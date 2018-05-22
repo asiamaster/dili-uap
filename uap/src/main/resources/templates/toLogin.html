@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8" />
+    <script type="text/javascript">
+        //到登录页面
+        if(window === window.top){
+            window.location.href = '<#config name="uap.contextPath"/>';
+        }else{
+            window.parent.postMessage('toLogin','<#config name="uap.contextPath"/>');
+        }
+    </script>
+</head>
+
+<body>
+
+
+</body>
+
+</html>

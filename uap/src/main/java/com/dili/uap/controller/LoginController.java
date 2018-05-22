@@ -87,6 +87,10 @@ public class LoginController {
         return BaseOutput.success();
     }
 
-
+	@ApiOperation("跳转到登录页面")
+	@RequestMapping(value = "/toLogin.html", method = RequestMethod.GET)
+	public String toLogin(ModelMap modelMap) {
+		return "toLogin";
+	}
 
 }
