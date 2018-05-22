@@ -14,7 +14,7 @@ import javax.persistence.Id;
 /**
  * 由MyBatis Generator工具自动生成
  * 
- * This file was generated on 2018-05-22 11:25:00.
+ * This file was generated on 2018-05-22 16:24:56.
  */
 @Table(name = "`system`")
 public interface System extends IBaseDomain {

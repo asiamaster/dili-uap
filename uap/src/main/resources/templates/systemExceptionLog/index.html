@@ -10,57 +10,21 @@
                     <table style="padding:10px;">
                         <tr>
                             <td style="padding:5px;">
-                                <input class="easyui-numberbox" name="parentId" id="parentId" style="width:100%" data-options="label:'上级系统标识:', validType:'length[0,19]'" />
-
+                                <input class="easyui-numberbox" name="systemId" id="systemId" style="width:100%" data-options="label:'系统:', validType:'length[0,19]'" />
                             </td>
                             <td style="padding:5px;">
-                                <input class="easyui-textbox" name="name" id="name" style="width:100%" data-options="label:'系统名称:', validType:'length[0,50]'" />
-
+                                 <input name="type" id="type" style="width:100%;" editable="false" panelWidth="auto" panelHeight="auto" label="异常类型:" value=""/>
+                                <#comboProvider _id="type" _data='[{"text":"-- 请选择 --","value":""},{"text":"异常类型","value":1},{"text":"异常类型","value":0}]'/>
+                            </td>
                             </td>
                             <td style="padding:5px;">
-                                <input class="easyui-textbox" name="code" id="code" style="width:100%" data-options="label:'系统编码:', validType:'length[0,50]'" />
-
-                            </td>
-                            <td style="padding:5px;">
-                                <input class="easyui-textbox" name="description" id="description" style="width:100%" data-options="label:'系统描述:', validType:'length[0,255]'" />
-
-                            </td>
-                            <td style="padding:5px;">
-                                <input class="easyui-textbox" name="url" id="url" style="width:100%" data-options="label:'系统url:', validType:'length[0,255]'" />
-
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="padding:5px;">
-                                <input class="easyui-textbox" name="iconUrl" id="iconUrl" style="width:100%" data-options="label:'图标URL:', validType:'length[0,255]'" />
-
-                            </td>
-                            <td style="padding:5px;">
-                                <input class="easyui-textbox" name="firmCode" id="firmCode" style="width:100%" data-options="label:'所属市场:', validType:'length[0,50]'" />
-
-                            </td>
-                            <td style="padding:5px;">
-                                <input class="easyui-textbox" name="logoUrl" id="logoUrl" style="width:100%" data-options="label:'LOGO URL:', validType:'length[0,255]'" />
-
-                            </td>
-                            <td style="padding:5px;">
-                                <input class="easyui-datetimebox" name="created" id="created" style="width:100%" data-options="label:'创建时间:'" />
-
-                            </td>
-                            <td style="padding:5px;">
-                                <input class="easyui-datetimebox" name="modified" id="modified" style="width:100%" data-options="label:'修改时间:'" />
-
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="padding:5px;">
-                                <input class="easyui-numberbox" name="type" id="type" style="width:100%" data-options="label:'类型:', validType:'length[0,10]'" />
+                                <input class="easyui-textbox" name="firmCode" id="firmCode" style="width:100%" data-options="label:'市场编码:', validType:'length[0,50]'" />
 
                             </td>
                             <td>
-                                <a href="#" class="easyui-linkbutton" data-options="width:80"   iconCls="icon-search" id="queryBtn"
+                                <a href="#" class="easyui-linkbutton" data-options="width:80"  iconCls="icon-search" id="queryBtn"
                                    onclick="queryGrid()">查询</a>
-                                <a href="javascript:void(0)" class="easyui-linkbutton" data-options="width:80"  iconCls="icon-clear" onclick="clearForm()">清除</a>
+                                <a href="javascript:void(0)" class="easyui-linkbutton" data-options="width:80"  iconCls="icon-clear"  onclick="clearForm()">清除</a>
                             </td>
                         </tr>
                     </table>
@@ -73,56 +37,49 @@
         <!-- 表格 -->
         <div region="center" style="width:100%;" height="auto">
             <!-- =========================================================表格========================================================= -->
-            <table class="easyui-datagrid" title="System列表" id="grid" fitColumns="true" noheader="true"
+            <table class="easyui-datagrid" title="SystemExceptionLog列表" id="grid" fitColumns="true"
+                 noheader="true"
                    pagination="true" pageSize="30" pageNumber="1" pagePosition="top" remoteSort="true"
                    loadMsg="数据加载中..." singleSelect="true" method="post" multiSort="false" sortName="created" sortOrder="desc"
                    align="center" fit="true" striped="true"
-                    toolbar="#toolbar" idField="id"  data-options="onDblClickRow:openUpdate, onHeaderContextMenu:headerContextMenu">
-                <thead>
+                    toolbar="#toolbar" idField="id">
+                     <thead>
                     <tr>
-                        <th data-options="field:'parentId', width:'9%',  sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            上级系统标识
+                        <th data-options="field:'host', width:'12%',  sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            主机名
                         </th>
-                        <th data-options="field:'name',width:'9%',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            系统名称
+                        <th data-options="field:'systemId',width:'12%',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            系统
                         </th>
-                        <th data-options="field:'code',  width:'9%', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            系统编码
+                        <th data-options="field:'menuId',width:'12%',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            功能模块
                         </th>
-                        <th data-options="field:'description', width:'9%',  sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            系统描述
+                        <th data-options="field:'type',width:'8%',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            异常类型
                         </th>
-                        <th data-options="field:'url',  width:'9%', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            系统url
+                        <th data-options="field:'firmCode',width:'10%',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            市场编码
                         </th>
-                        <th data-options="field:'iconUrl', width:'9%',  sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            图标URL
+                        <th data-options="field:'version',width:'12%',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            版本号
                         </th>
-                        <th data-options="field:'firmCode',width:'9%',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            所属市场
+                        <th data-options="field:'exceptionTime',width:'12%',  _provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            异常时间
                         </th>
-                        <th data-options="field:'logoUrl', width:'9%',  sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            LOGO URL
-                        </th>
-                        <th data-options="field:'created', width:'9%', _provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            创建时间
-                        </th>
-                        <th data-options="field:'modified',width:'9%',  _provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            修改时间
-                        </th>
-                        <th data-options="field:'type',width:'10%',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            类型
+                        <th data-options="field:'msg',width:'22%',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            异常信息
                         </th>
                     </tr>
                 </thead>
             </table>
             <!-- datagrid工具栏 -->
             <div id="toolbar" style="padding:2px 5px;">
+               
             </div>
         </div>
     </div>
     <!-- 隐藏编辑框 -->
-    <div id="dlg" class="easyui-dialog" resizable="false" constrain="true" shadow="true" draggable="false" title="System信息" style="padding:20px" modal="true" border="thin" closed="true"
+    <div id="dlg" class="easyui-dialog" resizable="false" constrain="true" shadow="true" draggable="false" title="SystemExceptionLog信息" style="padding:20px" modal="true" border="thin" closed="true"
          data-options="
 				iconCls: 'icon-save',
 				height: 480,
@@ -142,60 +99,43 @@
         <table width="360px">
             <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-numberbox" name="_parentId" id="_parentId" style="width:100%" data-options="label:'上级系统标识:'" />
+                    <input class="easyui-textbox" name="_host" id="_host" style="width:100%" data-options="label:'备注:', validType:'length[0,255]'" />
                 </td>
             </tr>
             <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-textbox" name="_name" id="_name" style="width:100%" data-options="label:'系统名称:', validType:'length[0,50]'" />
+                    <input class="easyui-numberbox" name="_systemId" id="_systemId" style="width:100%" data-options="label:'系统:'" />
                 </td>
             </tr>
             <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-textbox" name="_code" id="_code" style="width:100%" data-options="label:'系统编码:', validType:'length[0,50]'" />
+                    <input class="easyui-numberbox" name="_menuId" id="_menuId" style="width:100%" data-options="label:'功能模块:'" />
                 </td>
             </tr>
             <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-textbox" name="_description" id="_description" style="width:100%" data-options="label:'系统描述:', validType:'length[0,255]'" />
+                    <input class="easyui-numberbox" name="_type" id="_type" style="width:100%" data-options="label:'异常类型:'" />
                 </td>
             </tr>
             <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-textbox" name="_url" id="_url" style="width:100%" data-options="label:'系统url，为空则跳到内部系统权限菜单，外部系统可定制:', validType:'length[0,255]'" />
+                    <input class="easyui-textbox" name="_firmCode" id="_firmCode" style="width:100%" data-options="label:'市场编码:', validType:'length[0,50]'" />
                 </td>
             </tr>
             <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-textbox" name="_iconUrl" id="_iconUrl" style="width:100%" data-options="label:'图标URL:', validType:'length[0,255]'" />
+                    <input class="easyui-numberbox" name="_version" id="_version" style="width:100%" data-options="label:'版本号:'" />
                 </td>
             </tr>
             <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-textbox" name="_firmCode" id="_firmCode" style="width:100%" data-options="label:'所属市场:', validType:'length[0,50]'" />
-                </td>
-            </tr>
-            <tr>
-                <td style="padding:5px;">
-                    <input class="easyui-textbox" name="_logoUrl" id="_logoUrl" style="width:100%" data-options="label:'LOGO URL:', validType:'length[0,255]'" />
-                </td>
-            </tr>
-            <tr>
-                <td style="padding:5px;">
-                    <input class="easyui-datetimebox" name="_created" id="_created" style="width:100%" data-options="label:'创建时间:'" 
+                    <input class="easyui-datetimebox" name="_exceptionTime" id="_exceptionTime" style="width:100%" data-options="label:'异常时间:'" 
                         required="true" />
                 </td>
             </tr>
             <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-datetimebox" name="_modified" id="_modified" style="width:100%" data-options="label:'修改时间:'" 
-                        required="true" />
-                </td>
-            </tr>
-            <tr>
-                <td style="padding:5px;">
-                    <input class="easyui-numberbox" name="_type" id="_type" style="width:100%" data-options="label:'类型:'" 
-                        required="true" />
+                    <input class="easyui-textbox" name="_msg" id="_msg" style="width:100%" data-options="label:'异常信息:', validType:'length[0,511]'" />
                 </td>
             </tr>
         </table>
@@ -211,7 +151,7 @@
             $('#dlg').dialog('open');
             $('#dlg').dialog('center');
             $('#_form').form('clear');
-            formFocus("_form", "_parentId");
+            formFocus("_form", "_host");
         }
 
         //打开修改窗口
@@ -223,7 +163,7 @@
             }
             $('#dlg').dialog('open');
             $('#dlg').dialog('center');
-            formFocus("_form", "_parentId");
+            formFocus("_form", "_host");
             var formData = $.extend({},selected);
             formData = addKeyStartWith(getOriginalData(formData),"_");
             $('#_form').form('load', formData);
@@ -237,9 +177,9 @@
             var _url = null;
             //没有id就新增
             if(_formData.id == null || _formData.id==""){
-                _url = "${contextPath}/system/insert";
+                _url = "${contextPath}/systemExceptionLog/insert";
             }else{//有id就修改
-                _url = "${contextPath}/system/update";
+                _url = "${contextPath}/systemExceptionLog/update";
             }
             $.ajax({
                 type: "POST",
@@ -273,7 +213,7 @@
                 if (r){
                     $.ajax({
                         type: "POST",
-                        url: "${contextPath}/system/delete",
+                        url: "${contextPath}/systemExceptionLog/delete",
                         data: {id:selected.id},
                         processData:true,
                         dataType: "json",
@@ -298,7 +238,7 @@
         function queryGrid() {
             var opts = $("#grid").datagrid("options");
             if (null == opts.url || "" == opts.url) {
-                opts.url = "${contextPath}/system/listPage";
+                opts.url = "${contextPath}/systemExceptionLog/listPage";
             }
             if(!$('#form').form("validate")){
                 return;
@@ -356,8 +296,8 @@
          *          表单提交需执行的任务
          */
         $(function () {
-            bindFormEvent("form", "parentId", queryGrid);
-            bindFormEvent("_form", "_parentId", saveOrUpdate, function (){$('#dlg').dialog('close');});
+            bindFormEvent("form", "host", queryGrid);
+            bindFormEvent("_form", "_host", saveOrUpdate, function (){$('#dlg').dialog('close');});
             if (document.addEventListener) {
                 document.addEventListener("keyup",getKey,false);
             } else if (document.attachEvent) {
@@ -370,34 +310,6 @@
             pager.pagination({
                 <#controls_paginationOpts/>
                 ,buttons:[
-                    {
-                        iconCls:'icon-detail',
-                        text:'详情',
-                            handler:function(){
-                            openDetail();
-                        }
-                    },
-                    {
-                        iconCls:'icon-add',
-                        text:'新增',
-                        handler:function(){
-                            openInsert();
-                        }
-                    },
-                    {
-                        iconCls:'icon-edit',
-                        text:'修改',
-                        handler:function(){
-                            openUpdate();
-                        }
-                    },
-                    {
-                        iconCls:'icon-remove',
-                        text:'删除',
-                        handler:function(){
-                            del();
-                        }
-                    },
                 	 {
                          iconCls:'icon-export',
                          text:'导出',

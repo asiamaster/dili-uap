@@ -11,14 +11,13 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * 由MyBatis Generator工具自动生成
- * This file was generated on 2018-05-18 11:15:40.
+ * This file was generated on 2018-05-22 16:24:56.
  */
 @Api("/system")
 @Controller
@@ -38,7 +37,7 @@ public class SystemController {
 		@ApiImplicitParam(name="System", paramType="form", value = "System的form信息", required = false, dataType = "string")
 	})
     @RequestMapping(value="/list", method = {RequestMethod.GET, RequestMethod.POST})
-    public @ResponseBody List<System> list(@ModelAttribute System system) {
+    public @ResponseBody List<System> list(System system) {
         return systemService.list(system);
     }
 
@@ -47,7 +46,7 @@ public class SystemController {
 		@ApiImplicitParam(name="System", paramType="form", value = "System的form信息", required = false, dataType = "string")
 	})
     @RequestMapping(value="/listPage", method = {RequestMethod.GET, RequestMethod.POST})
-    public @ResponseBody String listPage(@ModelAttribute System system) throws Exception {
+    public @ResponseBody String listPage(System system) throws Exception {
         return systemService.listEasyuiPageByExample(system, true).toString();
     }
 
@@ -56,7 +55,7 @@ public class SystemController {
 		@ApiImplicitParam(name="System", paramType="form", value = "System的form信息", required = true, dataType = "string")
 	})
     @RequestMapping(value="/insert", method = {RequestMethod.GET, RequestMethod.POST})
-    public @ResponseBody BaseOutput insert(@ModelAttribute System system) {
+    public @ResponseBody BaseOutput insert(System system) {
         systemService.insertSelective(system);
         return BaseOutput.success("新增成功");
     }
@@ -66,7 +65,7 @@ public class SystemController {
 		@ApiImplicitParam(name="System", paramType="form", value = "System的form信息", required = true, dataType = "string")
 	})
     @RequestMapping(value="/update", method = {RequestMethod.GET, RequestMethod.POST})
-    public @ResponseBody BaseOutput update(@ModelAttribute System system) {
+    public @ResponseBody BaseOutput update(System system) {
         systemService.updateSelective(system);
         return BaseOutput.success("修改成功");
     }
