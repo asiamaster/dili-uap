@@ -79,7 +79,7 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public BaseOutput<LoginResult> login(LoginDto loginDto) {
-        User record = new User();
+        User record = DTOUtils.newDTO(User.class);
         record.setUserName(loginDto.getUserName());
         User user = this.userMapper.selectOne(record);
         if (user == null || !StringUtils.equalsIgnoreCase(user.getPassword(), this.encryptPwd(user.getPassword()))) {
