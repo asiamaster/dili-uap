@@ -75,4 +75,9 @@
     and (m.`type` = 0 or m.`type` = 1)
     order by m.order_number
   </select>
+
+  <!-- 查询上级菜单 -->
+  <select id="getParentMenus" parameterType="java.lang.String" resultType="string">
+    select getParentMenus(#{id})
+  </select>
 </mapper>

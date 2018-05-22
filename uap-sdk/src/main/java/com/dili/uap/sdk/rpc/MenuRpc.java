@@ -24,6 +24,6 @@ public interface MenuRpc {
 	@POST("/menuApi/listByExample")
 	BaseOutput<List<Menu>> listByExample(@VOBody Menu user);
 
-	@POST("/menuApi/getParentMenusByUrl")
+	@POST("/menuApi/getParentMenusByUrl.api")
 	BaseOutput<List<Menu>> getParentMenusByUrl(@VOSingleParameter String url);
 }

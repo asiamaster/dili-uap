@@ -18,4 +18,18 @@ public interface MenuService extends BaseService<Menu, Long> {
      * @return
      */
     List<Menu> findDirAndLinksByUserId(String userId);
+
+    /**
+     * 根据id获取上级菜单
+     * @param id
+     * @return
+     */
+    List<Menu> getParentMenus(String id);
+
+    /**
+     * 根据url获取上级菜单
+     * @param url
+     * @return
+     */
+    List<Menu> getParentMenusByUrl(String url);
 }

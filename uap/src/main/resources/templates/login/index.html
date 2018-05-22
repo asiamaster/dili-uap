@@ -39,6 +39,7 @@
             </tr>
             <tr>
                 <td colspan="2">
+                    <label id="msg"></label>
                     <input type="button" class="submit" value="登   录" onclick="doLogin()">
                 </td>
             </tr>
@@ -97,8 +98,9 @@
     }
 
     $(function() {
-    <% if(has(msg)){%>
-            alert('${msg}');
+        <% if(has(msg)){%>
+//            alert('${msg}');
+            $("#msg").html("${msg}");
         <%}%>
         window.setTimeout(function() {
             $("#userName").focus();

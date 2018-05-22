@@ -1,18 +1,24 @@
 package com.dili.uap.sdk.session;
 
 public class SessionConstants {
-    
+
+    //Session Data的key prefix，后面加sessionId
 	public static final String SESSION_KEY_PREFIX = "DILI_MANAGE_SESSION_";
-	public static final String CACHED_RESOURCE_LIST_KEY = "DILI_MANAGE_RESOURCE_LIST";
-    //COMMON begin
+    //SessionData中取登录用户的key
     public static final String  LOGGED_USER             =        "common:loggedUser";
+    //Cookie, Request, Header, Session中取sessionId的key
     public static final String  SESSION_ID              =       "SessionId";
+    //SessionFilter中checkUser方法最后从Redis中获取UserTicket的key
     public static final String  AUTH_KEY              =       "authKey";
 
+    //WebContent中获取PermissionContext的key
     public static final String MANAGE_PERMISSION_CONTEXT = "manage.permission_context";
 
+    // sessionId - SessionData的Redis 过期时间
     public  static Long SESSION_TIMEOUT = 60 * 30L;  // 30分钟
+    // sessionId - userId和UserIdSessionData的Redis 过期时间
     public static Long SESSIONID_USERID_TIMEOUT = 60 * 60 * 24L;
+    //Cookie过期时间
     public  static Integer COOKIE_TIMEOUT = SESSION_TIMEOUT.intValue() * 48;
 
     // 新的redis关系 - kv定义表 - START
@@ -21,6 +27,7 @@ public class SessionConstants {
 
     // userUrl(用户和菜单URL关系)
     public static final String USER_MENU_URL_KEY = "manage:userMenuUrl:userId:";
+    // userId - resources Set
     public static final String USER_RESOURCE_CODE_KEY ="manage:userResourceCode:userId";
     // sessionId - userId
     public static final String SESSION_USERID_KEY = "manage:sessionUserId:sessionId";

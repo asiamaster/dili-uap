@@ -20,4 +20,11 @@ public interface MenuMapper extends MyMapper<Menu> {
      * @return
      */
     List<Menu> findDirAndLinksByUserId(Long userId);
+
+    /**
+     * 获取上级菜单的id列表，以逗号分隔
+     * @param id
+     * @return
+     */
+    String getParentMenus(String id);
 }

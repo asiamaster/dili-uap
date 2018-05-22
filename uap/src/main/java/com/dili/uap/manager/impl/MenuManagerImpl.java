@@ -39,33 +39,6 @@ public class MenuManagerImpl implements MenuManager {
 	@Autowired
 	private ManageRedisUtil redisUtils;
 
-	public Boolean save(Menu menu) {
-		// 去重
-		Menu record = DTOUtils.newDTO(Menu.class);
-		menu.setParentId(menu.getParentId());
-		menu.setName(menu.getName());
-		if (menuMapper.selectCount(record) > 0) {
-			return false;
-		}
-
-		if (menu.getParentId() != null) {
-			redisUtils.remove(LIST_CHILDREN_KEY + menu.getParentId());
-		}
-		redisUtils.remove(ALL_TREE_KEY);
-
-		return menuMapper.insert(menu) > 0;
-	}
-
-	public Boolean update(Menu menu) {
-
-		if (menu.getParentId() != null) {
-			redisUtils.remove(LIST_CHILDREN_KEY + menu.getParentId());
-		}
-		redisUtils.remove(ITEM_KEY + menu.getId());
-		redisUtils.remove(ALL_TREE_KEY);
-		return menuMapper.updateByPrimaryKey(menu) > 0;
-	}
-
 	@Override
 	public void initUserMenuUrlsInRedis(Long userId) {
 		List<String> urls = new ArrayList<>();
