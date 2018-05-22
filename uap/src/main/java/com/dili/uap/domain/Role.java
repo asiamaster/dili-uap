@@ -37,8 +37,8 @@ public class Role extends BaseDomain {
     /**
      * 所属市场
      */
-    @Column(name = "`firm_id`")
-    private Long firmId;
+    @Column(name = "`firm_code`")
+    private String firmCode;
 
     /**
      * 创建时间
@@ -59,6 +59,7 @@ public class Role extends BaseDomain {
      */
     @FieldDef(label="主键")
     @EditMode(editor = FieldEditor.Number, required = true)
+    @Override
     public Long getId() {
         return id;
     }
@@ -68,6 +69,7 @@ public class Role extends BaseDomain {
      *
      * @param id 主键
      */
+    @Override
     public void setId(Long id) {
         this.id = id;
     }
@@ -118,18 +120,18 @@ public class Role extends BaseDomain {
      * @return firm_id - 所属市场
      */
     @FieldDef(label="所属市场")
-    @EditMode(editor = FieldEditor.Number, required = false)
-    public Long getFirmId() {
-        return firmId;
+    @EditMode(editor = FieldEditor.Text, required = false)
+    public String getFirmCode() {
+        return firmCode;
     }
 
     /**
      * 设置所属市场
      *
-     * @param firmId 所属市场
+     * @param firmCode 所属市场
      */
-    public void setFirmId(Long firmId) {
-        this.firmId = firmId;
+    public void setFirmCode(String firmCode) {
+        this.firmCode = firmCode;
     }
 
     /**
