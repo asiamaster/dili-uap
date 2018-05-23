@@ -7,6 +7,7 @@
     -->
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="parent_id" jdbcType="BIGINT" property="parentId" />
     <result column="code" jdbcType="VARCHAR" property="code" />
     <result column="description" jdbcType="VARCHAR" property="description" />
     <result column="created" jdbcType="TIMESTAMP" property="created" />
@@ -16,7 +17,7 @@
     <!--
       WARNING - @mbg.generated
     -->
-    id, name, code, description, created, modified
+    id, name, parent_id, code, description, created, modified
   </sql>
   <select id="selectBy" parameterType="java.lang.Long" resultMap="BaseResultMap">
     <!--
@@ -35,6 +36,9 @@
     <set>
       <if test="name != null">
         name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=BIGINT},
       </if>
       <if test="code != null">
         code = #{code,jdbcType=VARCHAR},

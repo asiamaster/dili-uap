@@ -4,17 +4,14 @@ import com.dili.ss.dto.IBaseDomain;
 import com.dili.ss.metadata.FieldEditor;
 import com.dili.ss.metadata.annotation.EditMode;
 import com.dili.ss.metadata.annotation.FieldDef;
-import java.util.Date;
+
 import javax.persistence.*;
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import java.util.Date;
 
 /**
  * 由MyBatis Generator工具自动生成
  * 
- * This file was generated on 2018-05-22 16:59:28.
+ * This file was generated on 2018-05-23 14:31:07.
  */
 @Table(name = "`firm`")
 public interface Firm extends IBaseDomain {
@@ -33,6 +30,13 @@ public interface Firm extends IBaseDomain {
     String getName();
 
     void setName(String name);
+
+    @Column(name = "`parent_id`")
+    @FieldDef(label="上级id")
+    @EditMode(editor = FieldEditor.Number, required = false)
+    Long getParentId();
+
+    void setParentId(Long parentId);
 
     @Column(name = "`code`")
     @FieldDef(label="编号", maxLength = 20)
