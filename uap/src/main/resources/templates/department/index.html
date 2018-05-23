@@ -1,0 +1,64 @@
+<#body>
+<div class="easyui-layout" fit="true">
+    <!-- ====================================================================================================================== -->
+    <div region="north" height="auto" style="padding-left:15px;padding-top:10px;padding-bottom: 10px;" align="center"
+         border="false">
+        <div id="nav" align="left">
+        </div>
+    </div>
+    <!-- 中央布局 -->
+    <!-- ====================================================================================================================== -->
+    <!-- 表格 -->
+    <div region="center" style="width: 100%;border:0px;" height="auto" border="false" align="center">
+        <div class="easyui-panel" align="center" style="width:96%;height:100%;" border="false">
+            <!-- =========================================================表格========================================================= -->
+            <table class="easyui-treegrid" title="部门列表" noheader="true" id="grid" sortName="id" sortOrder="asc"
+                   fitColumns="true" remoteSort="false" loadMsg="数据加载中..." singleSelect="true" method="post"
+                   multiSort="true"
+                   sortName="id" align="center" fit="true" striped="true" toolbar="#toolbar" idField="id"
+                   treeField="name" url="${contextPath!}/department/list.action"
+                   data-options="loadFilter:loadFilter,onClickRow:onClickRow,onDblClickRow:onDblClickRow, onAfterEdit:onAfterEdit,onCancelEdit:onCancelEdit,onBeforeEdit:onBeforeEdit,onEndEdit:onEndEdit">
+                <thead>
+                <tr>
+                    <th data-options="field:'id',hidden:true">id</th>
+                    <th data-options="field:'name',width:'20%',editor : {
+										type : 'textbox',
+										options : {
+											required : true
+										}
+									}">部门名称
+                    </th>
+                    <th data-options="field:'code',width:'20%'">编码</th>
+                    <th width="60%" data-options="field:'description',width:'60%',editor : 'textbox'">描述</th>
+                </tr>
+                </thead>
+            </table>
+            <div id="toolbar" style="padding: 2px 5px;">
+                <span>市场：</span>
+                <input class="easyui-combobox" name="firm" panelWidth="auto" panelHeight="auto" editable="false" id="firm" style="width:8%;"
+                       labelAlign="right" data-options="onLoadSuccess:function(){
+                           $('#firm').combobox('select',$('#firm').combobox('getData')[0].value);
+                       },onChange:function(newValue,oldValue){
+                            window.firmCode = newValue;
+                            $('#grid').treegrid('reload', {firmCode:newValue});
+                       }"/>
+                <#comboProvider _id="firm" _provider='firmProvider' />
+                <a href="#" class="easyui-linkbutton" iconCls="icon-add" onclick="openInsert()" plain="true">新增</a>
+                <a href="#" class="easyui-linkbutton" iconCls="icon-edit" onclick="openUpdate()" plain="true">修改</a>
+                <a href="#" class="easyui-linkbutton" iconCls="icon-remove" onclick="del()" plain="true">删除</a>
+                <a href="#" class="easyui-linkbutton" iconCls="icon-ok" style="display: none" onclick="endEditing()" plain="true">确定</a>
+                <a href="#" class="easyui-linkbutton" iconCls="icon-clear" onclick="cancelEdit()" style="display: none" plain="true">取消</a>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var dataAuth = {
+        addDept: true,
+        editDept: true,
+        deleteDept: true
+    };
+
+</script>
+<#department_indexJs/>
+</#body>
