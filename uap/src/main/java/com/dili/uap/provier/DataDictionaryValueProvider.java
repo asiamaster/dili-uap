@@ -10,6 +10,7 @@ import com.dili.uap.service.DataDictionaryValueService;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -20,6 +21,7 @@ import java.util.Map;
  * 数据字典批量提供者
  */
 @Component
+@Scope("prototype")
 public class DataDictionaryValueProvider extends BatchDisplayTextProviderAdaptor {
 
 
@@ -80,6 +82,6 @@ public class DataDictionaryValueProvider extends BatchDisplayTextProviderAdaptor
      */
     @Override
     protected String getRelationTablePkField(Map metaMap) {
-        return "value";
+        return "code";
     }
 }
