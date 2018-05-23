@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dili.uap.dao.DataAuthMapper">
+  <resultMap id="BaseResultMap" type="com.dili.uap.domain.DataAuth">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="data_id" jdbcType="VARCHAR" property="dataId" />
+    <result column="parent_data_id" jdbcType="VARCHAR" property="parentDataId" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    id, name, type, data_id, parent_data_id, description
+  </sql>
+
+  <select id="findByUserId" parameterType="Long" resultMap="BaseResultMap">
+      SELECT
+		da.id,
+		da.type,
+		da.data_id,
+		da.`name`,
+		da.parent_data_id,
+		da.description
+		FROM
+		data_auth da
+		INNER JOIN
+		user_data_auth uda ON da.id = uda.data_auth_id
+		WHERE
+		ud.user_id =  #{userId}
+  </select>
+
+</mapper>
