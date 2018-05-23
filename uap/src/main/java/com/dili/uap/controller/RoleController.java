@@ -1,12 +1,16 @@
 package com.dili.uap.controller;
 
 import com.dili.ss.domain.BaseOutput;
+import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.domain.Role;
+import com.dili.uap.sdk.util.DateUtils;
 import com.dili.uap.service.RoleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+
+import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -47,7 +51,7 @@ public class RoleController {
 		@ApiImplicitParam(name="Role", paramType="form", value = "Role的form信息", required = false, dataType = "string")
 	})
     @RequestMapping(value="/listPage", method = {RequestMethod.GET, RequestMethod.POST})
-    public @ResponseBody String listPage(@ModelAttribute Role role) throws Exception {
+    public @ResponseBody String listPage(Role role) throws Exception {
         return roleService.listEasyuiPageByExample(role, true).toString();
     }
 
@@ -55,20 +59,26 @@ public class RoleController {
     @ApiImplicitParams({
 		@ApiImplicitParam(name="Role", paramType="form", value = "Role的form信息", required = true, dataType = "string")
 	})
-    @RequestMapping(value="/insert", method = {RequestMethod.GET, RequestMethod.POST})
-    public @ResponseBody BaseOutput insert(@ModelAttribute Role role) {
+    @RequestMapping(value="/insert.action", method = {RequestMethod.GET, RequestMethod.POST})
+    public @ResponseBody BaseOutput insert(Role role) {
+        role.setCreated(new Date());
+        role.setModified(role.getCreated());
         roleService.insertSelective(role);
-        return BaseOutput.success("新增成功");
+        return BaseOutput.success("新增成功").setData(role);
     }
 
     @ApiOperation("修改Role")
     @ApiImplicitParams({
 		@ApiImplicitParam(name="Role", paramType="form", value = "Role的form信息", required = true, dataType = "string")
 	})
-    @RequestMapping(value="/update", method = {RequestMethod.GET, RequestMethod.POST})
-    public @ResponseBody BaseOutput update(@ModelAttribute Role role) {
-        roleService.updateSelective(role);
-        return BaseOutput.success("修改成功");
+    @RequestMapping(value="/update.action", method = {RequestMethod.GET, RequestMethod.POST})
+    public @ResponseBody BaseOutput update(Role role) {
+        Role updateRole = DTOUtils.newDTO(Role.class);
+        updateRole.setId(role.getId());
+        updateRole.setDescription(role.getDescription());
+        updateRole.setRoleName(role.getRoleName());
+        roleService.updateSelective(updateRole);
+        return BaseOutput.success("修改成功").setData(role);
     }
 
     @ApiOperation("删除Role")

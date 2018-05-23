@@ -75,13 +75,7 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-properties-migrator</artifactId>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
-		<!--<dependency>-->
-			<!--<groupId>org.projectlombok</groupId>-->
-			<!--<artifactId>lombok</artifactId>-->
-			<!--<version>1.16.18</version>-->
-		<!--</dependency>-->
-		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-collections4 -->
+	
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-collections4</artifactId>
@@ -118,15 +112,6 @@
 			<version>1.5.16</version>
 		</dependency>
 
-		<!-- mariadb -->
-		<!--<dependency> -->
-		<!--<groupId>org.mariadb.jdbc</groupId> -->
-		<!--<artifactId>mariadb-java-client</artifactId> -->
-		<!--<version>1.1.7</version> -->
-		<!--</dependency> -->
-
-
-
 
 		<!-- if you enable json support in spring mvc. -->
 		<dependency>
@@ -143,36 +128,7 @@
 			<!--<version>${boot.version}</version> -->
 			<scope>test</scope>
 		</dependency>
-		<!--mybatis -->
-		<!--<dependency>-->
-			<!--<groupId>org.mybatis.spring.boot</groupId>-->
-			<!--<artifactId>mybatis-spring-boot-starter</artifactId>-->
-			<!--<version>1.1.1</version>-->
-		<!--</dependency>-->
-		<!--pagehelper -->
-		<!--<dependency>-->
-			<!--<groupId>com.github.pagehelper</groupId>-->
-			<!--<artifactId>pagehelper-spring-boot-starter</artifactId>-->
-			<!--<version>1.1.1</version>-->
-		<!--</dependency>-->
-
-		<!--<dependency> -->
-		<!--<groupId>com.github.pagehelper</groupId> -->
-		<!--<artifactId>pagehelper</artifactId> -->
-		<!--<version>5.0.0</version> -->
-		<!--</dependency> -->
-		<!--mapper -->
-		<!--<dependency>-->
-			<!--<groupId>tk.mybatis</groupId>-->
-			<!--<artifactId>mapper-spring-boot-starter</artifactId>-->
-			<!--<version>1.1.1</version>-->
-		<!--</dependency>-->
-		<!-- mongo -->
-		<!--<dependency> -->
-		<!--<groupId>org.springframework.boot</groupId> -->
-		<!--<artifactId>spring-boot-starter-data-mongodb</artifactId> -->
-		<!--</dependency> -->
-		<!-- redis -->
+		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-redis</artifactId>
@@ -189,46 +145,6 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
-		<!--<dependency>-->
-			<!--<groupId>org.springframework.boot</groupId>-->
-			<!--<artifactId>spring-boot-starter-freemarker</artifactId>-->
-		<!--</dependency>-->
-
-		<!--<dependency>-->
-			<!--<groupId>com.github.ulisesbocchio</groupId>-->
-			<!--<artifactId>jasypt-spring-boot-starter</artifactId>-->
-			<!--<version>1.18</version>-->
-		<!--</dependency>-->
-		<!--&lt;!&ndash; https://mvnrepository.com/artifact/org.jasypt/jasypt-spring31 &ndash;&gt;-->
-		<!--<dependency>-->
-			<!--<groupId>org.jasypt</groupId>-->
-			<!--<artifactId>jasypt-spring31</artifactId>-->
-			<!--<version>1.9.2</version>-->
-		<!--</dependency>-->
-
-		<!-- starter-security -->
-		<!--<dependency> -->
-		<!--<groupId>org.springframework.boot</groupId> -->
-		<!--<artifactId>spring-boot-starter-security</artifactId> -->
-		<!--</dependency> -->
-		<!-- ===========================================spring cloud=========================================== -->
-		<!-- eureka-server -->
-		<!--<dependency>-->
-			<!--<groupId>org.springframework.cloud</groupId>-->
-			<!--<artifactId>spring-cloud-starter-eureka</artifactId>-->
-		<!--</dependency>-->
-		<!--<dependency>-->
-			<!--<groupId>org.springframework.cloud</groupId>-->
-			<!--<artifactId>spring-cloud-starter-ribbon</artifactId>-->
-		<!--</dependency>-->
-		<!--<dependency>-->
-			<!--<groupId>org.springframework.cloud</groupId>-->
-			<!--<artifactId>spring-cloud-starter-feign</artifactId>-->
-		<!--</dependency>-->
-		<!--<dependency>-->
-			<!--<groupId>org.springframework.cloud</groupId>-->
-			<!--<artifactId>spring-cloud-starter-hystrix</artifactId>-->
-		<!--</dependency>-->
 
 		<!-- admin server依赖 st -->
 		<dependency>
@@ -241,51 +157,12 @@
 			<artifactId>jolokia-core</artifactId>
 			<!--<version>1.5.0</version>-->
 		</dependency>
-		<!--<dependency>-->
-			<!--<groupId>org.springframework.cloud</groupId>-->
-			<!--<artifactId>spring-cloud-starter-eureka</artifactId>-->
-		<!--</dependency>-->
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
 		<!-- admin server依赖 end -->
-
-		<!--<dependency>-->
-		<!--<groupId>org.springframework.cloud</groupId>-->
-		<!--<artifactId>spring-cloud-starter-hystrix-dashboard</artifactId>-->
-		<!--</dependency>-->
-		<!--<dependency>-->
-		<!--<groupId>org.springframework.boot</groupId>-->
-		<!--<artifactId>spring-boot-starter-freemarker</artifactId>-->
-		<!--</dependency>-->
-		<!--<dependency>-->
-		<!--<groupId>org.springframework.cloud</groupId>-->
-		<!--<artifactId>spring-cloud-starter-config</artifactId>-->
-		<!--</dependency>-->
-
-		<!--<dependency>-->
-		<!--<groupId>org.springframework.cloud</groupId>-->
-		<!--<artifactId>spring-cloud-starter-turbine</artifactId>-->
-		<!--</dependency>-->
-		<!--<dependency>-->
-		<!--<groupId>org.springframework.cloud</groupId>-->
-		<!--<artifactId>spring-cloud-stream</artifactId>-->
-		<!--</dependency>-->
-		<!--<dependency>-->
-		<!--<groupId>org.springframework.cloud</groupId>-->
-		<!--<artifactId>spring-cloud-stream-binder-kafka</artifactId>-->
-		<!--</dependency>-->
-		<!--<dependency>-->
-		<!--<groupId>org.springframework.cloud</groupId>-->
-		<!--<artifactId>spring-cloud-stream-reactive</artifactId>-->
-		<!--</dependency>-->
-		<!-- eureka-client -->
-		<!--<dependency>-->
-		<!--<groupId>org.springframework.cloud</groupId>-->
-		<!--<artifactId>spring-cloud-starter-bus-kafka</artifactId>-->
-		<!--</dependency>-->
-
 
 	</dependencies>
 
