@@ -15,5 +15,5 @@ public interface ResourceMapper extends MyMapper<Resource> {
      * @param userId
      * @return
      */
-    List<Resource> findByUserId(Long userId);
+    List<Resource> listByUserId(Long userId);
 }

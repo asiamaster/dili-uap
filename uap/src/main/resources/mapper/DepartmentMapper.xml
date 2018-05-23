@@ -37,7 +37,7 @@
     </sql>
 
     <!-- 根据用户id查询部门 -->
-    <select id="findByUserId" parameterType="Long" resultMap="BaseResultMap">
+    <select id="listByUserId" parameterType="Long" resultMap="BaseResultMap">
     SELECT
 		d.id,
 		d.name,
@@ -54,7 +54,7 @@
   </select>
 
     <!-- 根据用户id查询部门数据权限 -->
-    <select id="findDataAuthByUserId" parameterType="map" resultMap="DataAuthResultMap">
+    <select id="listDataAuthes" parameterType="map" resultMap="DataAuthResultMap">
         SELECT
         d.id data_id,
         d.name,

@@ -9,10 +9,7 @@ import com.dili.uap.domain.User;
 import com.dili.uap.domain.dto.LoginDto;
 import com.dili.uap.domain.dto.LoginResult;
 import com.dili.uap.glossary.UserState;
-import com.dili.uap.manager.MenuManager;
-import com.dili.uap.manager.ResourceManager;
-import com.dili.uap.manager.SessionRedisManager;
-import com.dili.uap.manager.UserManager;
+import com.dili.uap.manager.*;
 import com.dili.uap.sdk.session.ManageConfig;
 import com.dili.uap.sdk.session.SessionConstants;
 import com.dili.uap.sdk.util.ManageRedisUtil;
@@ -77,6 +74,9 @@ public class LoginServiceImpl implements LoginService {
     @Autowired
     private UserManager userManager;
 
+    @Autowired
+    private DataAuthManager dataAuthManager;
+
     @Override
     public BaseOutput<LoginResult> login(LoginDto loginDto) {
         User record = DTOUtils.newDTO(User.class);
@@ -96,10 +96,8 @@ public class LoginServiceImpl implements LoginService {
         // 加载用户resource
         this.resourceManager.initUserResourceCodeInRedis(user.getId());
 //        // 加载用户数据权限
-//        this.dataAuthManager.initUserDataAuthsInRedis(user.getId());
+        this.dataAuthManager.initUserDataAuthesInRedis(user.getId());
 
-        user.setLastLoginTime(new Date());
-        user.setLastLoginIp(loginDto.getRemoteIP());
         if (this.userMapper.updateByPrimaryKey(user) <= 0) {
             LOG.error("登录过程更新用户信息失败");
             return BaseOutput.failure("用户已被禁用, 不能进行登录!").setCode(ResultCode.NOT_AUTH_ERROR);
@@ -158,7 +156,7 @@ public class LoginServiceImpl implements LoginService {
      * @param sessionId
      */
     private void makeRedisTag(User user, String sessionId) {
-        Map<String, Object> sessionData = new HashMap<>();
+        Map<String, Object> sessionData = new HashMap<>(1);
         sessionData.put(SessionConstants.LOGGED_USER, JSON.toJSONString(user));
 
         LOG.debug("--- Save Session Data To Redis ---");

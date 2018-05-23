@@ -1,9 +1,11 @@
 package com.dili.uap.manager.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.dao.DataAuthMapper;
 import com.dili.uap.dao.DepartmentMapper;
 import com.dili.uap.domain.DataAuth;
+import com.dili.uap.domain.dto.UserDataAuthCondition;
 import com.dili.uap.manager.DataAuthManager;
 import com.dili.uap.sdk.session.SessionConstants;
 import com.dili.uap.sdk.util.ManageRedisUtil;
@@ -34,17 +36,20 @@ public class DataAuthManagerImpl implements DataAuthManager {
 	private ManageRedisUtil redisUtil;
 
 	@Override
-	public void initUserDataAuthsInRedis(Long userId) {
+	public void initUserDataAuthesInRedis(Long userId) {
 		//查询数据权限，需要合并下面的部门数据权限列表
-		List<DataAuth> dataAuths = this.dataAuthMapper.findByUserId(userId);
+		List<DataAuth> dataAuths = this.dataAuthMapper.listByUserId(userId);
 		//部门数据权限直接从用户部门关系表查询
         Map<String, Object> param = new HashMap<>();
         param.put("userId", userId);
-		List<DataAuth> departmentsDataAuth = departmentMapper.findDataAuthes(param);
+		List<DataAuth> departmentsDataAuth = departmentMapper.listDataAuthes(param);
 		//合并
 		dataAuths.addAll(departmentsDataAuth);
 		String key = SessionConstants.USER_DATA_AUTH_KEY + userId;
 		this.redisUtil.remove(key);
+		if(CollectionUtils.isEmpty(dataAuths)){
+			return;
+		}
 		BoundSetOperations<String, Object> ops = this.redisUtil.getRedisTemplate().boundSetOps(key);
 		for (DataAuth dataAuth : dataAuths) {
 			ops.add(JSON.toJSONString(dataAuth));
@@ -52,25 +57,54 @@ public class DataAuthManagerImpl implements DataAuthManager {
 	}
 
 	@Override
-	public DataAuth getUserCurrentDataAuth(Long userId, String dataType) {
-		DataAuth currentDataAuth = null;
+	public List<DataAuth> listUserDataAuthesByType(Long userId, String dataType) {
 		String key = SessionConstants.USER_DATA_AUTH_KEY + userId + ":" + dataType;
 		String json = this.redisUtil.get(key, String.class);
+		List<DataAuth> dataAuthes = null;
 		if (StringUtil.isEmpty(json)) {
-			List<DataAuth> dataAuths = this.dataAuthMapper.findByUserId(userId);
-			if (CollectionUtils.isEmpty(dataAuths)) {
+			//单独处理用户部门数据权限
+			if(dataType.equals(SessionConstants.USER_DATA_AUTH_DEPARTMENT_KEY)){
+				//部门数据权限直接从用户部门关系表查询
+				Map<String, Object> param = new HashMap<>();
+				param.put("userId", userId);
+				dataAuthes = departmentMapper.listDataAuthes(param);
+			}else {
+				UserDataAuthCondition userDataAuthCondition = DTOUtils.newDTO(UserDataAuthCondition.class);
+				userDataAuthCondition.setUserId(userId);
+				userDataAuthCondition.setType(dataType);
+				dataAuthes = this.dataAuthMapper.list(userDataAuthCondition);
+			}
+
+			if (CollectionUtils.isEmpty(dataAuthes)) {
 				return null;
 			}
-			currentDataAuth = dataAuths.get(0);
-			this.redisUtil.set(key, JSON.toJSONString(currentDataAuth));
+			BoundSetOperations<String, Object> ops = this.redisUtil.getRedisTemplate().boundSetOps(key);
+			for (DataAuth dataAuth : dataAuthes) {
+				ops.add(JSON.toJSONString(dataAuth));
+			}
 		}
-		currentDataAuth = JSON.parseObject(json, DataAuth.class);
-		return currentDataAuth;
+		return dataAuthes;
 	}
 
 	@Override
-	public List<DataAuth> getUserDataAuth(Long userId) {
-		return this.dataAuthMapper.findByUserId(userId);
+	public List<DataAuth> listUserDataAuthes(Long userId) {
+		//查询数据权限，需要合并下面的部门数据权限列表
+		List<DataAuth> dataAuths = this.dataAuthMapper.listByUserId(userId);
+		//部门数据权限直接从用户部门关系表查询
+		Map<String, Object> param = new HashMap<>();
+		param.put("userId", userId);
+		List<DataAuth> departmentsDataAuth = departmentMapper.listDataAuthes(param);
+		//合并
+		dataAuths.addAll(departmentsDataAuth);
+		return dataAuths;
+	}
+
+	@Override
+	public List<DataAuth> listUserDepartmentDataAuthes(Long userId, String firmCode){
+		Map<String, Object> param = new HashMap<>();
+		param.put("userId", userId);
+		param.put("firmCode", firmCode);
+		return departmentMapper.listDataAuthes(param);
 	}
 
 }

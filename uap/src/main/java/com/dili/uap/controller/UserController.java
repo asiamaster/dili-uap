@@ -11,14 +11,13 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * 由MyBatis Generator工具自动生成
- * This file was generated on 2018-05-18 10:46:46.
+ * This file was generated on 2018-05-23 16:17:38.
  */
 @Api("/user")
 @Controller
@@ -38,7 +37,7 @@ public class UserController {
 		@ApiImplicitParam(name="User", paramType="form", value = "User的form信息", required = false, dataType = "string")
 	})
     @RequestMapping(value="/list", method = {RequestMethod.GET, RequestMethod.POST})
-    public @ResponseBody List<User> list(@ModelAttribute User user) {
+    public @ResponseBody List<User> list(User user) {
         return userService.list(user);
     }
 
@@ -47,7 +46,7 @@ public class UserController {
 		@ApiImplicitParam(name="User", paramType="form", value = "User的form信息", required = false, dataType = "string")
 	})
     @RequestMapping(value="/listPage", method = {RequestMethod.GET, RequestMethod.POST})
-    public @ResponseBody String listPage(@ModelAttribute User user) throws Exception {
+    public @ResponseBody String listPage(User user) throws Exception {
         return userService.listEasyuiPageByExample(user, true).toString();
     }
 
@@ -56,7 +55,7 @@ public class UserController {
 		@ApiImplicitParam(name="User", paramType="form", value = "User的form信息", required = true, dataType = "string")
 	})
     @RequestMapping(value="/insert", method = {RequestMethod.GET, RequestMethod.POST})
-    public @ResponseBody BaseOutput insert(@ModelAttribute User user) {
+    public @ResponseBody BaseOutput insert(User user) {
         userService.insertSelective(user);
         return BaseOutput.success("新增成功");
     }
@@ -66,7 +65,7 @@ public class UserController {
 		@ApiImplicitParam(name="User", paramType="form", value = "User的form信息", required = true, dataType = "string")
 	})
     @RequestMapping(value="/update", method = {RequestMethod.GET, RequestMethod.POST})
-    public @ResponseBody BaseOutput update(@ModelAttribute User user) {
+    public @ResponseBody BaseOutput update(User user) {
         userService.updateSelective(user);
         return BaseOutput.success("修改成功");
     }

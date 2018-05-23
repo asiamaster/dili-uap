@@ -25,6 +25,9 @@ public class SessionConstants {
     // 用户数据权限 redis的key
     public static final String USER_DATA_AUTH_KEY = "manage:dataAuth:userId:";
 
+    //用户部门数据权限 redis的key
+    public static final String USER_DATA_AUTH_DEPARTMENT_KEY = "department";
+
     // userUrl(用户和菜单URL关系)
     public static final String USER_MENU_URL_KEY = "manage:userMenuUrl:userId:";
     // userId - resources Set

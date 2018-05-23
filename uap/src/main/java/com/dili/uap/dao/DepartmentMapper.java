@@ -14,12 +14,12 @@ public interface DepartmentMapper extends MyMapper<Department> {
      * @param userId
      * @return
      */
-    List<Department> findByUserId(Long userId);
+    List<Department> listByUserId(Long userId);
 
     /**
      * 根据用户id和市场编码(firm_code，可选)查询所有部门数据权限
-     * @param param userId和firmCode
+     * @param param key:userId(必填)和firmCode(选填)
      * @return
      */
-    List<DataAuth> findDataAuthes(Map<String, Object> param);
+    List<DataAuth> listDataAuthes(Map<String, Object> param);
 }

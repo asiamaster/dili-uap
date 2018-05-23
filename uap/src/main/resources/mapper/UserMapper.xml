@@ -8,12 +8,10 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="user_name" jdbcType="VARCHAR" property="userName" />
     <result column="password" jdbcType="VARCHAR" property="password" />
-    <result column="firm_id" jdbcType="BIGINT" property="firmCode" />
+    <result column="firm_code" jdbcType="VARCHAR" property="firmCode" />
     <result column="department_id" jdbcType="BIGINT" property="departmentId" />
     <result column="position" jdbcType="VARCHAR" property="position" />
     <result column="card_number" jdbcType="VARCHAR" property="cardNumber" />
-    <result column="last_login_ip" jdbcType="VARCHAR" property="lastLoginIp" />
-    <result column="last_login_time" jdbcType="TIMESTAMP" property="lastLoginTime" />
     <result column="created" jdbcType="TIMESTAMP" property="created" />
     <result column="modified" jdbcType="TIMESTAMP" property="modified" />
     <result column="state" jdbcType="INTEGER" property="state" />
@@ -26,8 +24,8 @@
     <!--
       WARNING - @mbg.generated
     -->
-    id, user_name, password, firm_id, department_id, position, card_number, last_login_ip, 
-    last_login_time, created, modified, state, real_name, serial_number, cellphone, email
+    id, user_name, password, firm_code, department_id, position, card_number, created, 
+    modified, state, real_name, serial_number, cellphone, email
   </sql>
   <select id="selectBy" parameterType="java.lang.Long" resultMap="BaseResultMap">
     <!--
@@ -51,7 +49,7 @@
         password = #{password,jdbcType=VARCHAR},
       </if>
       <if test="firmCode != null">
-        firm_id = #{firmCode,jdbcType=BIGINT},
+        firm_code = #{firmCode,jdbcType=VARCHAR},
       </if>
       <if test="departmentId != null">
         department_id = #{departmentId,jdbcType=BIGINT},
@@ -61,12 +59,6 @@
       </if>
       <if test="cardNumber != null">
         card_number = #{cardNumber,jdbcType=VARCHAR},
-      </if>
-      <if test="lastLoginIp != null">
-        last_login_ip = #{lastLoginIp,jdbcType=VARCHAR},
-      </if>
-      <if test="lastLoginTime != null">
-        last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP},
       </if>
       <if test="created != null">
         created = #{created,jdbcType=TIMESTAMP},

@@ -32,7 +32,7 @@ public class ResourceManagerImpl implements ResourceManager {
 
 	@Override
 	public void initUserResourceCodeInRedis(Long userId) {
-		List<Resource> resources = this.resourceMapper.findByUserId(userId);
+		List<Resource> resources = this.resourceMapper.listByUserId(userId);
 		if (CollectionUtils.isEmpty(resources)) {
 			return;
 		}

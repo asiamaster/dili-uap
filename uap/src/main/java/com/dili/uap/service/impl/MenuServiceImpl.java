@@ -27,11 +27,11 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, Long> implements Menu
     }
 
     @Override
-    public List<Menu> findDirAndLinksByUserId(String userId){
+    public List<Menu> listDirAndLinksByUserId(String userId){
         if (StringUtils.isBlank(userId)) {
             throw new RuntimeException("用户id为空");
         }
-        return this.menuMapper.findDirAndLinksByUserId(Long.valueOf(userId));
+        return this.menuMapper.listDirAndLinksByUserId(Long.valueOf(userId));
     }
 
     @Override

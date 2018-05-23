@@ -54,7 +54,7 @@
   </sql>
 
   <!--根据用户id查询所有菜单 -->
-  <select id="findByUserId" parameterType="Long" resultMap="BaseResultMap">
+  <select id="listByUserId" parameterType="Long" resultMap="BaseResultMap">
     SELECT DISTINCT
     <include refid="column_List" />
     from menu m, role_menu rm, user_role ur
@@ -65,7 +65,7 @@
   </select>
 
   <!--根据用户id查询目录和链接菜单 -->
-  <select id="findDirAndLinksByUserId" parameterType="Long" resultMap="BaseResultMap">
+  <select id="listDirAndLinksByUserId" parameterType="Long" resultMap="BaseResultMap">
     SELECT DISTINCT
     <include refid="column_List" />
     from menu m, role_menu rm, user_role ur

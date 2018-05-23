@@ -13,23 +13,31 @@ import java.util.List;
 public interface DataAuthManager {
 
 	/**
-	 * 初始化用户数据权限到Redis
-	 * @param userId
+	 * 初始化用户所有数据权限到Redis
+	 * @param userId 用户id
 	 */
-	void initUserDataAuthsInRedis(Long userId);
+	void initUserDataAuthesInRedis(Long userId);
 
 	/**
 	 * 根据用户id和数据权限类型获取指定数据权限
-	 * @param userId
-	 * @param dataType
+	 * @param userId 用户id
+	 * @param dataType 数据权限类型
 	 * @return
 	 */
-	DataAuth getUserCurrentDataAuth(Long userId, String dataType);
+	List<DataAuth> listUserDataAuthesByType(Long userId, String dataType);
 
 	/**
 	 * 根据用户id获取所有数据权限
-	 * @param userId
+	 * @param userId 用户id
 	 * @return
 	 */
-	List<DataAuth> getUserDataAuth(Long userId);
+	List<DataAuth> listUserDataAuthes(Long userId);
+
+	/**
+	 * 根据用户id和市场编码获取所有数据权限
+	 * @param userId	用户id	必填
+	 * @param firmCode 市场编码	必填
+	 * @return
+	 */
+	List<DataAuth> listUserDepartmentDataAuthes(Long userId, String firmCode);
 }

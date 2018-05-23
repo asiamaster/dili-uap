@@ -12,14 +12,14 @@ public interface MenuMapper extends MyMapper<Menu> {
      * @param userId
      * @return
      */
-    List<Menu> findByUserId(Long userId);
+    List<Menu> listByUserId(Long userId);
 
     /**
      * 根据用户id查询目录和链接菜单权限
      * @param userId
      * @return
      */
-    List<Menu> findDirAndLinksByUserId(Long userId);
+    List<Menu> listDirAndLinksByUserId(Long userId);
 
     /**
      * 获取上级菜单的id列表，以逗号分隔

@@ -17,7 +17,7 @@ public interface MenuService extends BaseService<Menu, Long> {
      * @param userId
      * @return
      */
-    List<Menu> findDirAndLinksByUserId(String userId);
+    List<Menu> listDirAndLinksByUserId(String userId);
 
     /**
      * 根据id获取上级菜单

@@ -14,7 +14,7 @@ import javax.persistence.Id;
 /**
  * 由MyBatis Generator工具自动生成
  * 
- * This file was generated on 2018-05-22 11:23:31.
+ * This file was generated on 2018-05-23 16:17:38.
  */
 @Table(name = "`user`")
 public interface User extends IBaseDomain {
@@ -68,20 +68,6 @@ public interface User extends IBaseDomain {
     String getCardNumber();
 
     void setCardNumber(String cardNumber);
-
-    @Column(name = "`last_login_ip`")
-    @FieldDef(label="最后登录ip", maxLength = 20)
-    @EditMode(editor = FieldEditor.Text, required = false)
-    String getLastLoginIp();
-
-    void setLastLoginIp(String lastLoginIp);
-
-    @Column(name = "`last_login_time`")
-    @FieldDef(label="最后登录时间")
-    @EditMode(editor = FieldEditor.Datetime, required = false)
-    Date getLastLoginTime();
-
-    void setLastLoginTime(Date lastLoginTime);
 
     @Column(name = "`created`")
     @FieldDef(label="创建时间")

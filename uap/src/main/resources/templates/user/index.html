@@ -18,7 +18,7 @@
 
                             </td>
                             <td style="padding:5px;">
-                                <input class="easyui-numberbox" name="firmCode" id="firmCode" style="width:100%" data-options="label:'归属市场:', validType:'length[0,19]'" />
+                                <input class="easyui-textbox" name="firmCode" id="firmCode" style="width:100%" data-options="label:'归属市场编码:', validType:'length[0,50]'" />
 
                             </td>
                             <td style="padding:5px;">
@@ -36,14 +36,6 @@
 
                             </td>
                             <td style="padding:5px;">
-                                <input class="easyui-textbox" name="lastLoginIp" id="lastLoginIp" style="width:100%" data-options="label:'最后登录ip:', validType:'length[0,20]'" />
-
-                            </td>
-                            <td style="padding:5px;">
-                                <input class="easyui-datetimebox" name="lastLoginTime" id="lastLoginTime" style="width:100%" data-options="label:'最后登录时间:'" />
-
-                            </td>
-                            <td style="padding:5px;">
                                 <input class="easyui-datetimebox" name="created" id="created" style="width:100%" data-options="label:'创建时间:'" />
 
                             </td>
@@ -51,17 +43,16 @@
                                 <input class="easyui-datetimebox" name="modified" id="modified" style="width:100%" data-options="label:'修改时间:'" />
 
                             </td>
-                        </tr>
-                        <tr>
                             <td style="padding:5px;">
-                                    <input name="state" id="state" style="width:100%;" editable="false" panelWidth="auto" panelHeight="auto" label="状态:"/>
-                                <#comboProvider _id="state" _data='[{"text":"-- 请选择 --"},{"text":"启用","value":1},{"text":"停用","value":0}]'/>
+                                <input class="easyui-numberbox" name="state" id="state" style="width:100%" data-options="label:'状态:', validType:'length[0,10]'" />
 
                             </td>
                             <td style="padding:5px;">
                                 <input class="easyui-textbox" name="realName" id="realName" style="width:100%" data-options="label:'真实姓名:', validType:'length[0,64]'" />
 
                             </td>
+                        </tr>
+                        <tr>
                             <td style="padding:5px;">
                                 <input class="easyui-textbox" name="serialNumber" id="serialNumber" style="width:100%" data-options="label:'用户编号:', validType:'length[0,128]'" />
 
@@ -105,7 +96,7 @@
                             密码
                         </th>
                         <th data-options="field:'firmCode',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            归属市场
+                            归属市场编码
                         </th>
                         <th data-options="field:'departmentId',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             归属部门
@@ -116,19 +107,13 @@
                         <th data-options="field:'cardNumber',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             卡号
                         </th>
-                        <th data-options="field:'lastLoginIp',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            最后登录ip
-                        </th>
-                        <th data-options="field:'lastLoginTime',  _provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            最后登录时间
-                        </th>
                         <th data-options="field:'created',  _provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             创建时间
                         </th>
                         <th data-options="field:'modified',  _provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             修改时间
                         </th>
-                        <th data-options="field:'state', _data:[{'text':'启用','value':1},{'text':'停用','value':0}],  sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th data-options="field:'state',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             状态
                         </th>
                         <th data-options="field:'realName',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
@@ -197,7 +182,7 @@
             </tr>
             <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-numberbox" name="_firmId" id="_firmId" style="width:100%" data-options="label:'归属市场:'" />
+                    <input class="easyui-textbox" name="_firmCode" id="_firmCode" style="width:100%" data-options="label:'归属市场编码:', validType:'length[0,50]'" />
                 </td>
             </tr>
             <tr>
@@ -217,17 +202,6 @@
             </tr>
             <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-textbox" name="_lastLoginIp" id="_lastLoginIp" style="width:100%" data-options="label:'最后登录ip:', validType:'length[0,20]'" />
-                </td>
-            </tr>
-            <tr>
-                <td style="padding:5px;">
-                    <input class="easyui-datetimebox" name="_lastLoginTime" id="_lastLoginTime" style="width:100%" data-options="label:'最后登录时间:'" 
-                        required="true" />
-                </td>
-            </tr>
-            <tr>
-                <td style="padding:5px;">
                     <input class="easyui-datetimebox" name="_created" id="_created" style="width:100%" data-options="label:'创建时间:'" 
                         required="true" />
                 </td>
@@ -240,9 +214,8 @@
             </tr>
             <tr>
                 <td style="padding:5px;">
-                       <input name="_state" id="_state" style="width:100%;" editable="false" panelWidth="auto" panelHeight="auto" label="状态:"  required="true" />
-                    <#comboProvider _id="_state" _data='[{"text":"-- 请选择 --"},{"text":"启用","value":1},{"text":"停用","value":0}]'/>
-
+                    <input class="easyui-numberbox" name="_state" id="_state" style="width:100%" data-options="label:'状态:'" 
+                        required="true" />
                 </td>
             </tr>
             <tr>
@@ -253,20 +226,17 @@
             </tr>
             <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-textbox" name="_serialNumber" id="_serialNumber" style="width:100%" data-options="label:'用户编号:', validType:'length[0,128]'" 
-                        required="true" />
+                    <input class="easyui-textbox" name="_serialNumber" id="_serialNumber" style="width:100%" data-options="label:'用户编号:', validType:'length[0,128]'" />
                 </td>
             </tr>
             <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-textbox" name="_cellphone" id="_cellphone" style="width:100%" data-options="label:'手机号码:', validType:'length[0,24]'" 
-                        required="true" />
+                    <input class="easyui-textbox" name="_cellphone" id="_cellphone" style="width:100%" data-options="label:'手机号码:', validType:'length[0,24]'" />
                 </td>
             </tr>
             <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-textbox" name="_email" id="_email" style="width:100%" data-options="label:'邮箱:', validType:'length[0,64]'" 
-                        required="true" />
+                    <input class="easyui-textbox" name="_email" id="_email" style="width:100%" data-options="label:'邮箱:', validType:'length[0,64]'" />
                 </td>
             </tr>
         </table>

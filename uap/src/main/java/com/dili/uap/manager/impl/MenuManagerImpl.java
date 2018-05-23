@@ -1,6 +1,5 @@
 package com.dili.uap.manager.impl;
 
-import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.dao.MenuMapper;
 import com.dili.uap.domain.Menu;
 import com.dili.uap.manager.MenuManager;
@@ -42,7 +41,7 @@ public class MenuManagerImpl implements MenuManager {
 	@Override
 	public void initUserMenuUrlsInRedis(Long userId) {
 		List<String> urls = new ArrayList<>();
-		List<Menu> menus = this.menuMapper.findByUserId(userId);
+		List<Menu> menus = this.menuMapper.listByUserId(userId);
 		if (CollectionUtils.isEmpty(menus)) {
 			return;
 		}

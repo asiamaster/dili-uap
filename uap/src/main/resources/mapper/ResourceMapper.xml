@@ -20,7 +20,7 @@
     id, name, description, menu_id, code, created, modified
   </sql>
 
-  <select id="findByUserId" parameterType="Long" resultMap="BaseResultMap">
+  <select id="listByUserId" parameterType="Long" resultMap="BaseResultMap">
     SELECT
     r.id, r.`code`, r.created, r.description, r.menu_id,
     r.`name`
