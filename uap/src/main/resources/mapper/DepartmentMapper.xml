@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dili.uap.dao.DepartmentMapper">
+    <resultMap id="BaseResultMap" type="com.dili.uap.domain.Department">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="parent_id" jdbcType="BIGINT" property="parentId"/>
+        <result column="firm_code" jdbcType="VARCHAR" property="firmCode"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="code" jdbcType="VARCHAR" property="code"/>
+        <result column="description" jdbcType="VARCHAR" property="description"/>
+        <result column="created_id" jdbcType="BIGINT" property="createdId"/>
+        <result column="created" jdbcType="TIMESTAMP" property="created"/>
+        <result column="modified" jdbcType="TIMESTAMP" property="modified"/>
+        <result column="modified_id" jdbcType="BIGINT" property="modifiedId"/>
+    </resultMap>
+
+    <resultMap id="DataAuthResultMap" type="com.dili.uap.domain.DataAuth">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="type" jdbcType="VARCHAR" property="type"/>
+        <result column="data_id" jdbcType="VARCHAR" property="dataId"/>
+        <result column="parent_data_id" jdbcType="VARCHAR" property="parentDataId"/>
+        <result column="description" jdbcType="VARCHAR" property="description"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        id, parent_id, firm_code, name, code, description, created_id, created, modified,
+        modified_id
+    </sql>
+
+    <!-- 根据用户id查询部门 -->
+    <select id="findByUserId" parameterType="Long" resultMap="BaseResultMap">
+    SELECT
+		d.id,
+		d.name,
+		d.parent_id,
+		d.firm_code,
+		d.code,
+		d.description
+		FROM
+		department d
+		INNER JOIN
+		user_department ud ON d.id = ud.department_id
+		WHERE
+		ud.user_id =  #{userId}
+  </select>
+
+    <!-- 根据用户id查询部门数据权限 -->
+    <select id="findDataAuthByUserId" parameterType="Long" resultMap="DataAuthResultMap">
+        SELECT
+        d.id data_id,
+        d.name,
+        'department' type,
+        d.parent_id parent_data_id,
+        d.description
+        FROM
+        department d
+        INNER JOIN
+        user_department ud ON d.id = ud.department_id
+        WHERE
+        ud.user_id =  #{userId}
+    </select>
+
+</mapper>

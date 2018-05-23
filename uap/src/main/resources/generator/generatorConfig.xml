@@ -17,16 +17,6 @@
 			<property name="mappers" value="${mapper.Mapper}" />
 			<property name="isDTO" value="true"/>
 		</plugin>
-
-		<!-- Mybatis配置文件生成插件 -->
-		<!-- targetProject和targetPackage必填 -->
-		<!-- fileName不填默认为mybatis-config.xml -->
-		<plugin type="${myMapperConfig.Plugin}">
-			<property name="targetProject" value="${targetResourcesProject}"></property>
-			<property name="targetPackage" value="/"></property>
-			<property name="fileName" value="mybatis-config.xml" />
-		</plugin>
-
 		<!-- Service生成插件 -->
 		<!-- targetProject和targetPackage必填 -->
 		<plugin type="${myService.Plugin}">
@@ -75,11 +65,11 @@
 		<sqlMapGenerator targetPackage="${targetXMLPackage}"
 			targetProject="${targetResourcesProject}" />
 
-		<!--<javaClientGenerator targetPackage="${targetMapperPackage}"-->
-			<!--targetProject="${targetJavaProject}" type="XMLMAPPER" />-->
+		<javaClientGenerator targetPackage="${targetMapperPackage}"
+			targetProject="${targetJavaProject}" type="XMLMAPPER" />
 
 		<!-- 生成所有表模型 -->
-		<table tableName="system">
+		<table tableName="department">
 			<generatedKey column="id" sqlStatement="Mysql" identity="true" />
 		</table>
 		<!-- 生成指定表模型 -->
