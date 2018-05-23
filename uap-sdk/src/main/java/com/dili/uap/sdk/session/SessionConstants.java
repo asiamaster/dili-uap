@@ -28,6 +28,9 @@ public class SessionConstants {
     //用户部门数据权限 redis的key
     public static final String USER_DATA_AUTH_DEPARTMENT_KEY = "department";
 
+    //数据权限表， 数据类型为:数据范围
+    public static final String DATA_AUTH_TYPE_DATA_RANGE = "dataRange";
+
     // userUrl(用户和菜单URL关系)
     public static final String USER_MENU_URL_KEY = "manage:userMenuUrl:userId:";
     // userId - resources Set
