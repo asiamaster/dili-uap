@@ -11,4 +11,11 @@ import java.util.List;
  */
 public interface DataDictionaryValueService extends BaseService<DataDictionaryValue, Long> {
 
+    /**
+     * 根据数据字典编码获取数据字典值
+     * @param code
+     * @return
+     */
+    List<DataDictionaryValue> listDictionaryValueByCode(String code);
+
 }

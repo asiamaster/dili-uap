@@ -6,6 +6,8 @@ import com.dili.uap.domain.DataDictionaryValue;
 import com.dili.uap.service.DataDictionaryValueService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * 由MyBatis Generator工具自动生成
  * This file was generated on 2018-05-21 10:40:13.
@@ -18,4 +20,8 @@ public class DataDictionaryValueServiceImpl extends BaseServiceImpl<DataDictiona
         return (DataDictionaryValueMapper) getDao();
     }
 
+    @Override
+    public List<DataDictionaryValue> listDictionaryValueByCode(String code) {
+        return null;
+    }
 }
