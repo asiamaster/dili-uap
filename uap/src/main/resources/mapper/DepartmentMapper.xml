@@ -54,7 +54,7 @@
   </select>
 
     <!-- 根据用户id查询部门数据权限 -->
-    <select id="findDataAuthByUserId" parameterType="Long" resultMap="DataAuthResultMap">
+    <select id="findDataAuthByUserId" parameterType="map" resultMap="DataAuthResultMap">
         SELECT
         d.id data_id,
         d.name,
@@ -67,6 +67,9 @@
         user_department ud ON d.id = ud.department_id
         WHERE
         ud.user_id =  #{userId}
+        <if test="firm_code != null and firm_code != ''">
+            d.firm_code = #{firmCode}
+        </if>
     </select>
 
 </mapper>

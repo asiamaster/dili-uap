@@ -1,11 +1,9 @@
 package com.dili.uap.manager.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.dao.DataAuthMapper;
 import com.dili.uap.dao.DepartmentMapper;
 import com.dili.uap.domain.DataAuth;
-import com.dili.uap.domain.Department;
 import com.dili.uap.manager.DataAuthManager;
 import com.dili.uap.sdk.session.SessionConstants;
 import com.dili.uap.sdk.util.ManageRedisUtil;
@@ -17,7 +15,9 @@ import org.springframework.data.redis.core.BoundSetOperations;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -38,10 +38,12 @@ public class DataAuthManagerImpl implements DataAuthManager {
 		//查询数据权限，需要合并下面的部门数据权限列表
 		List<DataAuth> dataAuths = this.dataAuthMapper.findByUserId(userId);
 		//部门数据权限直接从用户部门关系表查询
-		List<DataAuth> departmentsDataAuth = departmentMapper.findDataAuthByUserId(userId);
+        Map<String, Object> param = new HashMap<>();
+        param.put("userId", userId);
+		List<DataAuth> departmentsDataAuth = departmentMapper.findDataAuthes(param);
 		//合并
 		dataAuths.addAll(departmentsDataAuth);
-		String key = SessionConstants.USER_CURRENT_KEY + userId;
+		String key = SessionConstants.USER_DATA_AUTH_KEY + userId;
 		this.redisUtil.remove(key);
 		BoundSetOperations<String, Object> ops = this.redisUtil.getRedisTemplate().boundSetOps(key);
 		for (DataAuth dataAuth : dataAuths) {
@@ -52,7 +54,7 @@ public class DataAuthManagerImpl implements DataAuthManager {
 	@Override
 	public DataAuth getUserCurrentDataAuth(Long userId, String dataType) {
 		DataAuth currentDataAuth = null;
-		String key = SessionConstants.USER_CURRENT_KEY + userId + ":" + dataType;
+		String key = SessionConstants.USER_DATA_AUTH_KEY + userId + ":" + dataType;
 		String json = this.redisUtil.get(key, String.class);
 		if (StringUtil.isEmpty(json)) {
 			List<DataAuth> dataAuths = this.dataAuthMapper.findByUserId(userId);

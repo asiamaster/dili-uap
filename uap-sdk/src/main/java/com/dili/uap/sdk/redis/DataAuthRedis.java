@@ -27,7 +27,7 @@ public class DataAuthRedis {
      * @return  DataAuth List<Map>
      */
     public List<Map> dataAuth(String type, Long userId) {
-        BoundSetOperations<String, String> boundSetOperations = redisUtil.getRedisTemplate().boundSetOps (SessionConstants.USER_CURRENT_KEY + userId);
+        BoundSetOperations<String, String> boundSetOperations = redisUtil.getRedisTemplate().boundSetOps (SessionConstants.USER_DATA_AUTH_KEY + userId);
         List<Map> dataAuthMap = new ArrayList<>();
         if(boundSetOperations.size()<=0) {
             return dataAuthMap;
@@ -49,7 +49,7 @@ public class DataAuthRedis {
      * @return
      */
     public List<Map> dataAuth(Long userId) {
-        BoundSetOperations<String, String> boundSetOperations = redisUtil.getRedisTemplate().boundSetOps (SessionConstants.USER_CURRENT_KEY + userId);
+        BoundSetOperations<String, String> boundSetOperations = redisUtil.getRedisTemplate().boundSetOps (SessionConstants.USER_DATA_AUTH_KEY + userId);
         List<Map> dataAuthMap = new ArrayList<>();
         if(boundSetOperations.size()<=0) {
             return dataAuthMap;

@@ -22,8 +22,8 @@ public class SessionConstants {
     public  static Integer COOKIE_TIMEOUT = SESSION_TIMEOUT.intValue() * 48;
 
     // 新的redis关系 - kv定义表 - START
-    // userRole(用户角色) redis的key
-    public static final String USER_CURRENT_KEY = "manage:current:userId:";
+    // 用户数据权限 redis的key
+    public static final String USER_DATA_AUTH_KEY = "manage:dataAuth:userId:";
 
     // userUrl(用户和菜单URL关系)
     public static final String USER_MENU_URL_KEY = "manage:userMenuUrl:userId:";
