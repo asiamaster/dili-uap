@@ -1,13 +1,22 @@
 package com.dili.uap.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.dili.ss.domain.BaseOutput;
+import com.dili.ss.domain.EasyuiPageOutput;
+import com.dili.ss.metadata.ValueProviderUtils;
 import com.dili.uap.domain.LoginLog;
+import com.dili.uap.domain.dto.LoginLogDto;
 import com.dili.uap.service.LoginLogService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -46,8 +55,9 @@ public class LoginLogController {
 		@ApiImplicitParam(name="LoginLog", paramType="form", value = "LoginLog的form信息", required = false, dataType = "string")
 	})
     @RequestMapping(value="/listPage", method = {RequestMethod.GET, RequestMethod.POST})
-    public @ResponseBody String listPage(LoginLog loginLog) throws Exception {
-        return loginLogService.listEasyuiPageByExample(loginLog, true).toString();
+    public @ResponseBody String listPage(LoginLogDto loginLog) throws Exception {
+    	EasyuiPageOutput output=loginLogService.listEasyuiPageByExample(loginLog, true);
+        return output.toString();
     }
 
     @ApiOperation("新增LoginLog")
@@ -79,4 +89,17 @@ public class LoginLogController {
         loginLogService.delete(id);
         return BaseOutput.success("删除成功");
     }
+    private Map<Object, Object> getLoginLogMetadata(){
+		Map<Object, Object> metadata = new HashMap<>();
+
+		metadata.put("firmCode", getDDProvider());
+		return metadata;
+	}
+	//获取数据字典提供者
+	private JSONObject getDDProvider(){
+		JSONObject dataDictionaryValueProvider = new JSONObject();
+		dataDictionaryValueProvider.put("provider", "firmProvider");
+		dataDictionaryValueProvider.put("queryParams", "{}");
+		return dataDictionaryValueProvider;
+	}
 }

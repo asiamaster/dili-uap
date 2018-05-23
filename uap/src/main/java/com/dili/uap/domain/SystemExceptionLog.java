@@ -27,12 +27,12 @@ public interface SystemExceptionLog extends IBaseDomain {
 
     void setId(Long id);
 
-    @Column(name = "`host`")
-    @FieldDef(label="主机名", maxLength = 255)
+    @Column(name = "`ip`")
+    @FieldDef(label="服务器IP", maxLength = 20)
     @EditMode(editor = FieldEditor.Text, required = false)
-    String getHost();
+    String getIp();
 
-    void setHost(String host);
+    void setIp(String ip);
 
     @Column(name = "`system_id`")
     @FieldDef(label="系统")

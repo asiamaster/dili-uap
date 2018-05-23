@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dili.uap.dao.LoginLogMapper">
+  <resultMap id="BaseResultMap" type="com.dili.uap.domain.LoginLog">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="ip" jdbcType="VARCHAR" property="ip" />
+    <result column="host" jdbcType="VARCHAR" property="host" />
+    <result column="login_time" jdbcType="TIMESTAMP" property="loginTime" />
+    <result column="logout_time" jdbcType="TIMESTAMP" property="logoutTime" />
+    <result column="system_id" jdbcType="BIGINT" property="systemId" />
+    <result column="firm_code" jdbcType="VARCHAR" property="firmCode" />
+    <result column="success" jdbcType="INTEGER" property="success" />
+    <result column="reason" jdbcType="VARCHAR" property="reason" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    id, user_id, ip, host, login_time, logout_time, system_id,firm_code,success,reason
+  </sql>
+
+  <!--根据用户输入查询所有登录日志 -->
+  <select id="findByLoginLogDto" parameterType="com.dili.uap.domain.dto.LoginLogDto" resultMap="BaseResultMap">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    select 
+    <include refid="Base_Column_List" />
+    from login_log
+    WHERE 1=1 
+    <if test="userName !=null and userName !=''">
+    AND user_id IN (SELECT id FROM user WHERE user_name LIKE '%${userName}')
+    </if>
+    
+    <if test="ip !=null and ip !=''">
+    AND ip =#{ip}
+    </if>
+    <if test="systemId !=null">
+    AND system_id =#{systemId}
+    </if>
+    <if test="firmCode !=null and firmCode !=''">
+    AND firm_code =#{firmCode}
+    </if>
+    <if test="success !=null">
+    AND success =#{success}
+    </if>
+  </select>
+</mapper>

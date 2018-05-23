@@ -10,7 +10,7 @@
                     <table style="padding:10px;">
                         <tr>
                             <td style="padding:5px;">
-                                <input class="easyui-textbox" name="userId" id="userId" style="width:100%" data-options="label:'用户id:', validType:'length[0,20]'" />
+                                <input class="easyui-textbox" name="userName" id="userName" style="width:100%" data-options="label:'用户名:', validType:'length[0,20]'" />
 
                             </td>
                             <td style="padding:5px;">
@@ -19,16 +19,17 @@
                             </td>
                      
                             <td style="padding:5px;">
-                                <input class="easyui-numberbox" name="systemId" id="systemId" style="width:100%" data-options="label:'登录系统:', validType:'length[0,19]'" />
+                                 <input name="systemId" id="systemId" style="width:100%;" panelWidth="auto" data-options="editable:false, labelAlign:'right'" panelHeight="auto" label="登录系统:"/>
+                                 <#comboProvider _id="systemId" _provider='systemProvider' _queryParams='{}'/>
 
                             </td>
-                            <td style="padding:5px;">
-                                <input class="easyui-textbox" name="firmCode" id="firmCode" style="width:100%" data-options="label:'市场名称:', validType:'length[0,50]'" />
-
+ 							<td style="padding:10px;">
+                                <input name="firmCode" id="firmCode" style="width:100%;" panelWidth="auto" data-options="editable:false, labelAlign:'right'" panelHeight="auto" label="市场名称:"/>
+                                <#comboProvider _id="firmCode" _provider='firmProvider' _queryParams='{}'/>
                             </td>
                             <td style="padding:5px;">
-                                 <input name="success" id="success" style="width:100%;" editable="false" panelWidth="auto" panelHeight="auto" label="是否成功:" value=""/>
-                                <#comboProvider _id="success" _data='[{"text":"-- 请选择 --","value":""},{"text":"是","value":"1"},{"text":"否","value":"0"}]'/>
+                                 <input name="success" id="success" style="width:100%;" editable="false" panelWidth="auto" panelHeight="auto" label="是否成功:" />
+                                <#comboProvider _id="success" _data='[{"text":"是","value":"1"},{"text":"否","value":"0"}]'/>
                             </td>
                         </tr>
                         <tr>
@@ -70,13 +71,13 @@
                         <th data-options="field:'logoutTime',width:'10%',  _provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             登出时间
                         </th>
-                        <th data-options="field:'systemId',width:'10%',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th data-options="field:'systemId',width:'10%',    _provider:'systemProvider', _queryParams:{},  sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             登录系统
                         </th>
-                        <th data-options="field:'firmCode',width:'10%',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            市场编码
+                        <th data-options="field:'firmCode',width:'10%',  _provider:'firmProvider', _queryParams:{},  sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            市场
                         </th>
-                        <th data-options="field:'success',width:'10%',  _data:[{'text':'是','value':1},{'text':'否','value':0}],   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th data-options="field:'success',width:'10%', _data:[{'text':'否','value':0},{'text':'是','value':1}],sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             是否成功
                         </th>
                         <th data-options="field:'reason',width:'20%',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
@@ -312,8 +313,8 @@
          *          表单提交需执行的任务
          */
         $(function () {
-            bindFormEvent("form", "userId", queryGrid);
-            bindFormEvent("_form", "_userId", saveOrUpdate, function (){$('#dlg').dialog('close');});
+            bindFormEvent("form", "userName", queryGrid);
+           // bindFormEvent("_form", "_userName", saveOrUpdate, function (){$('#dlg').dialog('close');});
             if (document.addEventListener) {
                 document.addEventListener("keyup",getKey,false);
             } else if (document.attachEvent) {
