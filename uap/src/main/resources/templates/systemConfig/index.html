@@ -23,9 +23,9 @@
                             <td>
                                 <a href="#" class="easyui-linkbutton" iconCls="icon-search" id="queryBtn"
                                    onclick="queryGrid();">查询</a>&nbsp;&nbsp;<a href="javascript:void(0)"
-                                                                                 class="easyui-linkbutton"
-                                                                                 iconCls="icon-clear"
-                                                                                 onclick="clearForm()">清除</a>
+                                                                               class="easyui-linkbutton"
+                                                                               iconCls="icon-clear"
+                                                                               onclick="clearForm()">清除</a>
                             </td>
                         </tr>
                     </table>
@@ -40,8 +40,12 @@
     <div region="center" style="width: 100%;" height="auto" align="center" border="false">
         <!-- =========================================================表格========================================================= -->
         <div style="width: 96%;height: 100%;" align="center">
-            <table class="easyui-datagrid" title="" noheader="true" id="grid" fitColumns="true" pagination="true" pageSize="30" pageNumber="1" pagePosition="top" rownumbers="false" remoteSort="false" loadMsg="数据加载中..."
-                   singleSelect="true" method="post" multiSort="true" sortName="code" align="center" fit="true" striped="true"  idField="id" data-options="onClickRow:onClickDdGridRow,onDblClickRow:openUpdateDd,onBeginEdit:onBeginEditDdGrid,onAfterEdit:onAfterEditDdGrid,onCancelEdit:onCancelEditDdGrid">
+            <table class="easyui-datagrid" title="" noheader="true" id="grid" fitColumns="true" pagination="true"
+                   pageSize="30" pageNumber="1" pagePosition="top" rownumbers="false" remoteSort="false"
+                   loadMsg="数据加载中..."
+                   singleSelect="true" method="post" multiSort="true" sortName="code" align="center" fit="true"
+                   striped="true" idField="id"
+                   data-options="">
                 <thead>
                 <tr>
                     <th data-options="field:'id',width:'6%',sortable:'true', order:'asc', align:'center', hidden:true,resizable:'true', fixed:'false'">
@@ -79,217 +83,17 @@
 <!-- style & script 分隔线 -->
 <!-- ====================================================================================================================== -->
 <script type="text/javascript">
-    // 编辑行索引
-    var ddGridEditIndex = undefined;
 
-    // 结束行编辑
-    function endDdGridEditing() {
-        if (ddGridEditIndex == undefined) {
-            return true
-        }
-        if (ddGrid.datagrid('validateRow', ddGridEditIndex)) {
-            ddGrid.datagrid('endEdit', ddGridEditIndex);
-            ddGridEditIndex = undefined;
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * 取消行编辑
-     */
-    function cancelDdGridEdit() {
-        ddGrid.datagrid('cancelEdit', ddGridEditIndex);
-        ddGridEditIndex = undefined;
-    };
-
-    // 新增一行空数据并开启编辑模式
-    function openInsertDd() {
-        if (endDdGridEditing()) {
-            ddGridEditIndex = ddGrid.datagrid('getRows').length;
-
-            ddGrid.datagrid('appendRow', {
-                type : 0
-            });
-
-            ddGrid.datagrid('selectRow', ddGridEditIndex);
-            ddGrid.datagrid('beginEdit', ddGridEditIndex);
-        }
-    }
-
-    // 开启选中行的编辑模式
-    function openUpdateDd() {
-        if (!endDdGridEditing()) {
-            return;
-        }
-        var selected = ddGrid.datagrid("getSelected");
-        if (!selected) {
-            $.messager.alert('警告', '请选中一条数据');
-            return;
-        }
-        var index = ddGrid.datagrid('getRowIndex', selected);
-        if (endDdGridEditing()) {
-            ddGrid.datagrid('selectRow', index).datagrid('beginEdit', index);
-            ddGridEditIndex = index;
-        }
-    }
-
-    /**
-     * 开始编辑行的毁掉函数
-     *
-     * @param {}
-     *            index 行索引
-     * @param {}
-     *            row 行数据
-     */
-    function onBeginEditDdGrid(index, row) {
-        var editors = ddGrid.datagrid('getEditors', index);
-        editors[0].target.trigger('focus');
-        setOptBtnDisplay(true);
-    }
-
-    /**
-     * 插入或者修改菜单信息
-     *
-     * @param {}
-     *            node 菜单树被选中的节点
-     * @param {}
-     *            index 行索引
-     * @param {}
-     *            row 行数据
-     * @param {}
-     *            changes 被修改的数据
-     */
-    function insertOrUpdate(index, row, changes) {
-        var oldRecord;
-        var url = '${contextPath!}/systemConfig/';
-        if (!row.id) {
-            url += 'insert.action';
-        } else {
-            oldRecord = new Object();
-            $.extend(true, oldRecord, row);
-            url += 'update.action'
-        }
-        $.post(url, row, function (data) {
-            if (data.code != 200) {
-                if (oldRecord) {
-                    ddGrid.datagrid('updateRow', {
-                        index: index,
-                        row: oldRecord
-                    });
-                } else {
-                    ddGrid.datagrid('deleteRow', index);
-                }
-                $.messager.alert('提示', data.result);
-                return;
-            }
-
-            if (!row.id) {
-                row.id = data.data.id;
-                row.created = data.data.created;
-            }
-            row.modified = data.data.modified;
-            ddGrid.datagrid('updateRow', {
-                index: index,
-                row: row
-            });
-            ddGrid.datagrid('refreshRow', index);
-        }, 'json');
-    }
-
-    /**
-     * 单击含回调方法，逻辑是结束之前的行编辑模式
-     *
-     * @param {}
-     *            index
-     * @param {}
-     *            row
-     */
-    function onClickDdGridRow(index, row) {
-        if (!ddGrid.datagrid('validateRow', ddGridEditIndex)) {
-            return;
-        }
-
-        if (ddGridEditIndex != index) {
-            ddGrid.datagrid('endEdit', ddGridEditIndex);
-            ddGridEditIndex = undefined;
-        }
-    }
-
-    /**
-     * 结束编辑回调函数
-     *
-     * @param {}
-     *            index 行索引
-     * @param {}
-     *            row 行数据
-     * @param {}
-     *            changes 当前行被修改的数据
-     */
-    function onAfterEditDdGrid(index, row, changes) {
-        insertOrUpdate(index, row, changes);
-        setOptBtnDisplay(false);
-    }
-
-    /**
-     * 取消行编辑回调方法
-     *
-     * @param {}
-     *            index
-     * @param {}
-     *            row
-     */
-    function onCancelEditDdGrid(index, row) {
-        setOptBtnDisplay(false);
-        if (!row.id) {
-            ddGrid.datagrid('deleteRow', index);
-        }
-    }
-
-    function setOptBtnDisplay(show){
+    function setOptBtnDisplay(show) {
         var $btnSave = $("#save_btn");
         var $btnCancel = $("#cancel_btn");
-        if(show){
+        if (show) {
             $btnSave.show();
             $btnCancel.show();
-        }else{
+        } else {
             $btnSave.hide();
             $btnCancel.hide();
         }
-    }
-
-    //根据主键删除
-    function del() {
-        var selected = $("#grid").datagrid("getSelected");
-        if (null == selected) {
-            $.messager.alert('警告', '请选中一条数据');
-            return;
-        }
-        $.messager.confirm('确认', '您确认想要删除记录吗？', function (r) {
-            if (r) {
-                $.ajax({
-                    type: "POST",
-                    url: "${contextPath}/systemConfig/delete.action",
-                    data: {id: selected.id},
-                    processData: true,
-                    dataType: "json",
-                    async: true,
-                    success: function (data) {
-                        if (data.code == "200") {
-                            $("#grid").datagrid("reload");
-                            $('#dlg').dialog('close');
-                        } else {
-                            $.messager.alert('错误', data.result);
-                        }
-                    },
-                    error: function () {
-                        $.messager.alert('错误', '远程访问失败');
-                    }
-                });
-            }
-        });
-
     }
 
     //表格查询
@@ -311,17 +115,6 @@
         queryGrid();
     }
 
-    //表格表头右键菜单
-    function headerContextMenu(e, field) {
-        e.preventDefault();
-        if (!cmenu) {
-            createColumnMenu("grid");
-        }
-        cmenu.menu('show', {
-            left: e.pageX,
-            top: e.pageY
-        });
-    }
 
     $.messager.progress({
         title: "提示",
@@ -356,7 +149,6 @@
      *          表单提交需执行的任务
      */
     $(function () {
-        window.ddGrid = $('#grid');
         bindFormEvent("form", "name", queryGrid);
         if (document.addEventListener) {
             document.addEventListener("keyup", getKey, false);
@@ -365,6 +157,18 @@
         } else {
             document.onkeyup = getKey;
         }
+        $("#grid").dataGridEditor({
+            insertUrl: "${contextPath!}/systemConfig/insert.action",
+            updateUrl: "${contextPath!}/systemConfig/update.action",
+            deleteUrl: '${contextPath!}/systemConfig/delete.action',
+            onBeforeEdit: function () {
+                setOptBtnDisplay(true)
+            },
+            onAfterEdit: function () {
+                setOptBtnDisplay(true);
+            }
+        });
+
         var pager = $('#grid').datagrid('getPager');    // get the pager of treegrid
         pager.pagination({
             buttons: [
@@ -372,35 +176,35 @@
                     iconCls: 'icon-add',
                     text: '新增',
                     handler: function () {
-                        openInsertDd();
+                        $("#grid").dataGridEditor().insert();
                     }
                 },
                 {
                     iconCls: 'icon-edit',
                     text: '修改',
                     handler: function () {
-                        openUpdateDd();
+                        $("#grid").dataGridEditor().update();
                     }
                 },
                 {
                     iconCls: 'icon-remove',
                     text: '删除',
                     handler: function () {
-                        del();
+                        $("#grid").dataGridEditor().delete();
                     }
                 },
                 {
                     id: 'save_btn',
                     iconCls: 'icon-ok',
                     handler: function () {
-                        endDdGridEditing();
+                        $("#grid").dataGridEditor().save();
                     }
                 },
                 {
                     id: 'cancel_btn',
                     iconCls: 'icon-clear',
                     handler: function () {
-                        cancelDdGridEdit();
+                        $("#grid").dataGridEditor().cancel();
                     }
                 }
             ]

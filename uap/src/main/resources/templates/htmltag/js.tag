@@ -9,6 +9,7 @@
 
 <!-- 本项目全局js -->
 <script type="text/javascript" src="${contextPath}/resources/js/main.js"></script>
+<script type="text/javascript" src="${contextPath}/resources/js/easyui-datagrid-editor.js"></script>
 <!-- 导出功能 -->
 <#export></#export>
 <!-- 框架提供的js -->
