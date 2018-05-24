@@ -50,7 +50,7 @@
             <table class="easyui-datagrid" title="SystemExceptionLog列表" id="grid" fitColumns="true"
                  noheader="true"
                    pagination="true" pageSize="30" pageNumber="1" pagePosition="top" remoteSort="true"
-                   loadMsg="数据加载中..." singleSelect="true" method="post" multiSort="false" sortName="created" sortOrder="desc"
+                   loadMsg="数据加载中..." singleSelect="true" method="post" multiSort="false" sortName="exceptionTime" sortOrder="desc"
                    align="center" fit="true" striped="true"
                     toolbar="#toolbar" idField="id">
                      <thead>
@@ -58,17 +58,23 @@
                         <th data-options="field:'ip', width:'12%',  sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             服务器ip
                         </th>
-                        <th data-options="field:'systemId',width:'12%',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th data-options="field:'systemId',width:'12%'
+                        , _provider:'simpleBatchDisplayTextProvider',_escapeFileds:{'systemId':'name'},_fkField:'systemId',_relationTable:'system',_relationTablePkField:'id', _queryParams:{}
+                        ,   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             系统
                         </th>
-                        <th data-options="field:'menuId',width:'12%',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th data-options="field:'menuId',width:'12%'
+                        , _provider:'simpleBatchDisplayTextProvider',_escapeFileds:{'menuId':'name'},_fkField:'menuId',_relationTable:'menu',_relationTablePkField:'id', _queryParams:{}
+                        ,   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             功能模块
                         </th>
                         <th data-options="field:'type',width:'8%',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             异常类型
                         </th>
-                        <th data-options="field:'firmCode',width:'10%',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            市场编码
+                        <th data-options="field:'firmCode',width:'10%'
+                         , _provider:'simpleBatchDisplayTextProvider',_escapeFileds:{'firmCode':'name'},_fkField:'firmCode',_relationTable:'firm',_relationTablePkField:'code', _queryParams:{}
+                        ,   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            市场
                         </th>
                         <th data-options="field:'version',width:'12%',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             版本号

@@ -56,8 +56,10 @@
                     toolbar="#toolbar" idField="id">
                 <thead>
                     <tr>
-                        <th data-options="field:'userId',width:'10%',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            用户id
+                        <th data-options="field:'userId',width:'10%'
+                        , _provider:'simpleBatchDisplayTextProvider',_escapeFileds:{'userId':'user_name'},_fkField:'userId',_relationTable:'user',_relationTablePkField:'id', _queryParams:{}
+                         ,sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            用户名
                         </th>
                         <th data-options="field:'ip',width:'10%',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                 IP地址
@@ -71,7 +73,9 @@
                         <th data-options="field:'logoutTime',width:'10%',  _provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             登出时间
                         </th>
-                        <th data-options="field:'systemId',width:'10%',    _provider:'systemProvider', _queryParams:{},  sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th data-options="field:'systemId',width:'10%'
+                        , _provider:'simpleBatchDisplayTextProvider',_escapeFileds:{'systemId':'name'},_fkField:'systemId',_relationTable:'system',_relationTablePkField:'id', _queryParams:{}
+                        ,  sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             登录系统
                         </th>
                         <th data-options="field:'firmCode',width:'10%',  _provider:'firmProvider', _queryParams:{},  sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
