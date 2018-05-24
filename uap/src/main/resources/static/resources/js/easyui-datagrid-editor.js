@@ -67,12 +67,13 @@
             var index = this.editId;
 
             if (this.options.target == 'datagrid') {
-                index = this.element.datagrid('getRowIndex', this.element.datagrid('getSelected'));
+                index = this.editIndex;
             }
 
             if (this.element[this.options.target]('validateRow', index)) {
                 this.element[this.options.target]('endEdit', index);
                 this.editId = undefined;
+                this.editIndex = undefined;
                 return true;
             } else {
                 return false;
@@ -107,6 +108,7 @@
             if (this.endEditing()) {
                 if (this.options.target == 'datagrid') {
                     var index = this.element.datagrid('getRowIndex', selected);
+                    this.editIndex = index;
                     this.element.datagrid('selectRow', index).datagrid('beginEdit', index);
                 } else {
                     this.element.treegrid('select', selected.id).treegrid('beginEdit', selected.id);

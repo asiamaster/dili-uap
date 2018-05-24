@@ -1,94 +1,7 @@
 <script type="text/javascript">
 // 编辑行索引
-var ddGridEditIndex = undefined;
 var ddValueGrid = undefined;
 
-// 结束行编辑
-function endDdGridEditing() {
-	if (ddGridEditIndex == undefined) {
-		return true
-	}
-	if (ddGrid.datagrid('validateRow', ddGridEditIndex)) {
-		ddGrid.datagrid('endEdit', ddGridEditIndex);
-		ddGridEditIndex = undefined;
-		return true;
-	} else {
-		return false;
-	}
-}
-
-/**
- * 取消行编辑
- */
-function cancelDdGridEdit() {
-	ddGrid.datagrid('cancelEdit', ddGridEditIndex);
-	ddGridEditIndex = undefined;
-};
-
-// 新增一行空数据并开启编辑模式
-function openInsertDd() {
-    if (endDdGridEditing()) {
-        ddGridEditIndex = ddGrid.datagrid('getRows').length;
-
-        ddGrid.datagrid('appendRow', {
-            type : 0
-        });
-
-        ddGrid.datagrid('selectRow', ddGridEditIndex);
-        ddGrid.datagrid('beginEdit', ddGridEditIndex);
-    }
-}
-
-// 开启选中行的编辑模式
-function openUpdateDd() {
-	if (!endDdGridEditing()) {
-		return;
-	}
-	var selected = ddGrid.datagrid("getSelected");
-	if (!selected) {
-		$.messager.alert('警告', '请选中一条数据');
-		return;
-	}
-	var index = ddGrid.datagrid('getRowIndex', selected);
-	if (endDdGridEditing()) {
-		ddGrid.datagrid('selectRow', index).datagrid('beginEdit', index);
-		ddGridEditIndex = index;
-	}
-}
-
-// 根据主键删除
-function delDd(selected) {
-	selected = null == selected ? ddGrid.datagrid("getSelected") : selected;
-	if (null == selected) {
-		$.messager.alert('警告', '请选中一条数据');
-		return;
-	}
-	$.messager.confirm('确认', '您确认想要删除记录吗？', function(r) {
-				if (r) {
-					$.ajax({
-								type : "POST",
-								url : '${contextPath!}/dataDictionary/delete.action',
-								data : {
-									id : selected.id
-								},
-								processData : true,
-								dataType : "json",
-								async : true,
-								success : function(data) {
-									if (data.code == "200") {
-										ddGrid.datagrid('deleteRow', ddGrid.datagrid('getRowIndex', selected));
-										$('#dlg').dialog('close');
-									} else {
-										$.messager.alert('错误', data.result);
-									}
-								},
-								error : function() {
-									$.messager.alert('错误', '远程访问失败');
-								}
-							});
-				}
-			});
-}
 
 // 表格查询
 function queryDdGrid() {
@@ -195,72 +108,11 @@ function getKey(e) {
 }
 
 
-/**
- * 开始编辑行的毁掉函数
- * 
- * @param {}
- *            index 行索引
- * @param {}
- *            row 行数据
- */
-function onBeginEditDdGrid(index, row) {
-	var editors = ddGrid.datagrid('getEditors', index);
-	editors[0].target.trigger('focus');
-	setOptBtnDisplay(true);
-}
-
 function formatName(value, row, index) {
 	return '<a href="javascript:void(0);" data-value="' + row.code + '" onclick="openDdValueWindow(this);">' + value + '</a>';
 }
 
-/**
- * 插入或者修改菜单信息
- * 
- * @param {}
- *            node 菜单树被选中的节点
- * @param {}
- *            index 行索引
- * @param {}
- *            row 行数据
- * @param {}
- *            changes 被修改的数据
- */
-function insertOrUpdate(index, row, changes) {
-    var oldRecord;
-    var url = '${contextPath!}/dataDictionary/';
-    if (!row.id) {
-        url += 'insert.action';
-    } else {
-        oldRecord = new Object();
-        $.extend(true, oldRecord, row);
-        url += 'update.action'
-    }
-    $.post(url, row, function (data) {
-        if (data.code != 200) {
-            if (oldRecord) {
-                ddGrid.datagrid('updateRow', {
-                    index: index,
-                    row: oldRecord
-                });
-            } else {
-                ddGrid.datagrid('deleteRow', index);
-            }
-            $.messager.alert('提示', data.result);
-            return;
-        }
 
-        if (!row.id) {
-            row.id = data.data.id;
-            row.created = data.data.created;
-        }
-        row.modified = data.data.modified;
-        ddGrid.datagrid('updateRow', {
-            index: index,
-            row: row
-        });
-        ddGrid.datagrid('refreshRow', index);
-    }, 'json');
-}
 
 function formatLongToDate(value, row, index) {
 	if (!value) {
@@ -276,54 +128,8 @@ function formatLongToDate(value, row, index) {
 	return year + "-" + month + "-" + date + " " + hour + ":" + minute + ":" + second;
 }
 
-/**
- * 单击含回调方法，逻辑是结束之前的行编辑模式
- * 
- * @param {}
- *            index
- * @param {}
- *            row
- */
-function onClickDdGridRow(index, row) {
-	if (!ddGrid.datagrid('validateRow', ddGridEditIndex)) {
-		return;
-	}
 
-	if (ddGridEditIndex != index) {
-		ddGrid.datagrid('endEdit', ddGridEditIndex);
-		ddGridEditIndex = undefined;
-	}
-}
 
-/**
- * 结束编辑回调函数
- * 
- * @param {}
- *            index 行索引
- * @param {}
- *            row 行数据
- * @param {}
- *            changes 当前行被修改的数据
- */
-function onAfterEditDdGrid(index, row, changes) {
-	insertOrUpdate(index, row, changes);
-	setOptBtnDisplay(false);
-}
-
-/**
- * 取消行编辑回调方法
- * 
- * @param {}
- *            index
- * @param {}
- *            row
- */
-function onCancelEditDdGrid(index, row) {
-        setOptBtnDisplay(false);
-	if (!row.id) {
-		ddGrid.datagrid('deleteRow', index);
-	}
-}
 
 function setOptBtnDisplay(show){
     var $btnSave = $("#save_btn");
@@ -366,7 +172,7 @@ function clearForm() {
 
 /**
  * 绑定页面回车事件，以及初始化页面时的光标定位
- * 
+ *
  * @formId 表单ID
  * @elementName 光标定位在指点表单元素的name属性的值
  * @submitFun 表单提交需执行的任务
@@ -380,6 +186,19 @@ $(function() {
 			} else {
 				document.onkeyup = getKey;
 			}
+
+    $("#grid").dataGridEditor({
+        insertUrl: "${contextPath!}/dataDictionary/insert.action",
+        updateUrl: "${contextPath!}/dataDictionary/update.action",
+        deleteUrl: '${contextPath!}/dataDictionary/delete.action',
+        onBeforeEdit: function () {
+            setOptBtnDisplay(true)
+        },
+        onAfterEdit: function () {
+            setOptBtnDisplay(false);
+        }
+    });
+
 			var pager = $('#grid').datagrid('getPager');    // get the pager of treegrid
 			pager.pagination({
 				<#controls_paginationOpts/>,
@@ -388,32 +207,32 @@ $(function() {
 						iconCls:'icon-add',
 						text:'新增',
 						handler:function(){
-							openInsertDd();
+                            $("#grid").dataGridEditor().insert();
 						}
 					},
 					{
 						iconCls:'icon-edit',
 						text:'修改',
 						handler:function(){
-							openUpdateDd();
+                            $("#grid").dataGridEditor().update();
 						}
 					},
 					{
 						iconCls:'icon-remove',
 						text:'删除',
 						handler:function(){
-							delDd();
+                            $("#grid").dataGridEditor().delete();
 						}
 					},
 					{
 						id:'save_btn',
 						iconCls:'icon-ok',
-						handler:function(){endDdGridEditing();}
+						handler:function(){  $("#grid").dataGridEditor().save();}
 					},
                     {
                         id:'cancel_btn',
                         iconCls:'icon-clear',
-                        handler:function(){cancelDdGridEdit();}
+                        handler:function(){  $("#grid").dataGridEditor().cancel();}
                     }
 				]
 			});
