@@ -4,11 +4,15 @@ import com.alibaba.fastjson.JSON;
 import com.dili.ss.constant.ResultCode;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
+import com.dili.uap.constants.UapConstants;
+import com.dili.uap.dao.SystemConfigMapper;
 import com.dili.uap.dao.UserMapper;
+import com.dili.uap.domain.SystemConfig;
 import com.dili.uap.domain.User;
 import com.dili.uap.domain.dto.LoginDto;
 import com.dili.uap.domain.dto.LoginResult;
 import com.dili.uap.glossary.UserState;
+import com.dili.uap.glossary.Yn;
 import com.dili.uap.manager.*;
 import com.dili.uap.sdk.session.ManageConfig;
 import com.dili.uap.sdk.session.SessionConstants;
@@ -76,6 +80,9 @@ public class LoginServiceImpl implements LoginService {
 
     @Autowired
     private DataAuthManager dataAuthManager;
+
+    @Autowired
+    private SystemConfigMapper systemConfigMapper;
 
     @Override
     public BaseOutput<LoginResult> login(LoginDto loginDto) {
@@ -213,7 +220,17 @@ public class LoginServiceImpl implements LoginService {
             ops.rightPop();
         }
         ops.leftPush(String.valueOf(System.currentTimeMillis()));
-        if (ops.size() < pwdErrorCount) {
+        //查询系统配置的密码错误锁定次数
+        SystemConfig systemConfigCondition = DTOUtils.newDTO(SystemConfig.class);
+        systemConfigCondition.setYn(Yn.YES.getCode());
+        systemConfigCondition.setCode(UapConstants.LOGIN_FAILED_TIMES);
+        systemConfigCondition.setSystemCode(UapConstants.SYSTEM_CODE);
+        SystemConfig systemConfig = systemConfigMapper.selectOne(systemConfigCondition);
+        //以系统变量配置为主，没有则使用配置文件中的配置
+        if(StringUtils.isNotBlank(systemConfig.getValue())){
+            pwdErrorCount = Integer.parseInt(systemConfig.getValue());
+        }
+        if (ops.size() < Integer.parseInt(systemConfig.getValue())) {
             return;
         }
         //如果当前用户不是锁定状态，则进行锁定

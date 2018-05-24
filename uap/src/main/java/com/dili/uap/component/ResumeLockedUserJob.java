@@ -4,9 +4,11 @@ import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.quartz.domain.ScheduleMessage;
 import com.dili.ss.quartz.service.ScheduleJobService;
 import com.dili.uap.constants.UapConstants;
+import com.dili.uap.dao.SystemConfigMapper;
 import com.dili.uap.domain.SystemConfig;
 import com.dili.uap.domain.User;
 import com.dili.uap.glossary.UserState;
+import com.dili.uap.glossary.Yn;
 import com.dili.uap.service.SystemConfigService;
 import com.dili.uap.service.UserService;
 import org.slf4j.Logger;
@@ -33,16 +35,11 @@ public class ResumeLockedUserJob implements ApplicationListener<ContextRefreshed
 	private UserService userService;
 
 	@Autowired
-	private SystemConfigService systemConfigService;
+	private SystemConfigMapper systemConfigMapper;
 
 	@Override
 	public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
-//		if (contextRefreshedEvent.getApplicationContext().getParent() == null) {
-//			List<ScheduleJob> scheduleJobs = scheduleJobService.list(null);
-//			for (ScheduleJob job : scheduleJobs) {
-//				scheduleJobService.addJob(job, true);
-//			}
-//		}
+        resumeLockedUser();
 	}
 
 	/**
@@ -51,7 +48,7 @@ public class ResumeLockedUserJob implements ApplicationListener<ContextRefreshed
 	 * @param scheduleMessage
 	 */
 	public void scan(ScheduleMessage scheduleMessage) {
-
+        resumeLockedUser();
 	}
 
 	/**
@@ -65,14 +62,18 @@ public class ResumeLockedUserJob implements ApplicationListener<ContextRefreshed
 			return;
 		}
 		Long now = System.currentTimeMillis();
-		SystemConfig systemConfig = DTOUtils.newDTO(SystemConfig.class);
-		systemConfig.setYn(1);
-		systemConfig.setCode(UapConstants.SYSTEM_CODE);
-//		systemConfig.set
-		systemConfigService.listByExample(systemConfig);
+		//查询锁定用户恢复时长
+		SystemConfig systemConfigCondition = DTOUtils.newDTO(SystemConfig.class);
+		systemConfigCondition.setYn(Yn.YES.getCode());
+		systemConfigCondition.setCode(UapConstants.RESUME_DURATION);
+        systemConfigCondition.setSystemCode(UapConstants.SYSTEM_CODE);
+		SystemConfig systemConfig = systemConfigMapper.selectOne(systemConfigCondition);
+        Long resumeDuration = Long.parseLong(systemConfig.getValue());
 		lockedUsers.forEach( lockedUser -> {
-			if((now - lockedUser.getModified().getTime()) > 0){
-
+		    //超过锁定时长就解锁
+			if((now - lockedUser.getModified().getTime()) >= resumeDuration){
+                lockedUser.setState(UserState.NORMAL.getCode());
+                userService.updateSelective(lockedUser);
 			}
 		});
 	}
