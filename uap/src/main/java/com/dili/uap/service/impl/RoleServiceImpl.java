@@ -3,24 +3,23 @@ package com.dili.uap.service.impl;
 import com.dili.ss.base.BaseServiceImpl;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
-import com.dili.uap.dao.MenuMapper;
+import com.dili.uap.constants.UapConstants;
 import com.dili.uap.dao.RoleMapper;
-import com.dili.uap.domain.Menu;
-import com.dili.uap.domain.Resource;
 import com.dili.uap.domain.Role;
-import com.dili.uap.domain.dto.MenuDto;
+import com.dili.uap.domain.System;
 import com.dili.uap.domain.dto.SystemResourceDto;
-import com.dili.uap.service.MenuService;
+import com.dili.uap.glossary.Yn;
 import com.dili.uap.service.RoleService;
-import com.dili.uap.service.SystemConfigService;
-import com.google.common.collect.Lists;
+import com.dili.uap.service.SystemService;
+import com.google.common.collect.Sets;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 由MyBatis Generator工具自动生成
@@ -34,9 +33,7 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements Role
     }
 
     @Autowired
-    SystemConfigService systemConfigService;
-    @Autowired
-    MenuMapper menuMapper;
+    SystemService systemService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -94,29 +91,63 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements Role
     }
 
     @Override
-    public List<SystemResourceDto> list() {
-        List<MenuDto> menuDtos = menuMapper.selectMenuDto();
-        List<SystemResourceDto> target = new ArrayList(menuDtos.size());
-        for (MenuDto menuDto : menuDtos) {
-            SystemResourceDto dto = new SystemResourceDto();
-            dto.setId("menu_"+menuDto.getId());
-            dto.setName(menuDto.getName());
-            if (null == menuDto.getParentId()){
-                dto.setParentId("sys_"+menuDto.getSystemId());
-            }else{
-                dto.setParentId("menu_"+menuDto.getParentId());
-            }
-            target.add(dto);
-            if (CollectionUtils.isNotEmpty(menuDto.getResources())) {
-                for (Resource resource : menuDto.getResources()) {
-                    SystemResourceDto resourceDto = new SystemResourceDto();
-                    resourceDto.setId("resource_"+resource.getId());
-                    resourceDto.setName(resource.getName());
-                    resourceDto.setParentId(dto.getId());
-                    target.add(resourceDto);
-                }
-            }
+    public List<SystemResourceDto> getRoleMenuAndResource(Long roleId) {
+        //检索所以的系统信息
+        List<System> systemList = systemService.list(null);
+        if (CollectionUtils.isEmpty(systemList)){
+            return null;
         }
+        //加载所有的系统菜单-资源
+        List<SystemResourceDto> target = getActualDao().getRoleMenuAndResource();
+        //根据角色ID加载对应的菜单-资源信息
+        List<SystemResourceDto> checkedRoleList = getActualDao().getRoleMenuAndResourceByRoleId(roleId);
+        Set<String> checkedRole = Sets.newHashSet();
+        /**
+         * 遍历已选择的资源信息，根据是否是菜单，添加不同的前缀
+         */
+        checkedRoleList.stream().forEach(s -> {
+            //如果是菜单，则ID加上对应前缀
+            if (s.getMenu().intValue() == Yn.YES.getCode().intValue()) {
+                checkedRole.add(UapConstants.MENU_PREFIX + s.getTreeId());
+            } else {
+                checkedRole.add(UapConstants.RESOURCE_PREFIX + s.getTreeId());
+            }
+        });
+        /**
+         * 遍历菜单-资源信息，根据是否菜单，设置tree中菜单ID显示信息
+         * 设置是否选中等相关信息
+         */
+        target.stream().forEach(s -> {
+            //如果是菜单，则ID加上对应前缀
+            if (s.getMenu().intValue() == Yn.YES.getCode().intValue()) {
+                s.setTreeId(UapConstants.MENU_PREFIX + s.getTreeId());
+            } else {
+                s.setTreeId(UapConstants.RESOURCE_PREFIX + s.getTreeId());
+            }
+            //只有在菜单中，才会存在父ID为空的情况
+            if (StringUtils.isBlank(s.getParentId())) {
+                //如果父ID为空，则设置父ID为系统ID
+                s.setParentId(UapConstants.SYSTEM_PREFIX + s.getSystemId());
+            } else {
+                //如果父ID不为空，因为资源本身不存在父ID，所以统一更改父ID为菜单的前缀
+                s.setParentId(UapConstants.MENU_PREFIX + s.getParentId());
+            }
+            //设置节点为关闭
+            s.setState("closed");
+            //如果角色-资源信息已存在关联
+            if (checkedRole.contains(s.getTreeId())) {
+                s.setChecked(true);
+            }
+        });
+
+        systemList.stream().forEach(s -> {
+            SystemResourceDto dto = DTOUtils.newDTO(SystemResourceDto.class);
+            dto.setTreeId(UapConstants.SYSTEM_PREFIX + s.getId());
+            dto.setName(s.getName());
+            dto.setDescription(s.getDescription());
+            target.add(dto);
+        });
+
         return target;
     }
 }

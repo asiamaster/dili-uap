@@ -29,7 +29,9 @@ public interface RoleService extends BaseService<Role, Long> {
 
     /**
      * 获取系统及相关的菜单、资源
+     * 并根据当前角色ID进行是否选中的设置
+     * @param roleId 角色ID
      * @return
      */
-    List<SystemResourceDto> list();
+    List<SystemResourceDto> getRoleMenuAndResource(Long roleId);
 }

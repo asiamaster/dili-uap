@@ -66,4 +66,30 @@
   <delete id="deleteRoleResourceByRoleId" parameterType="long">
       delete from role_resource where role_id=#{value}
   </delete>
+
+  <!-- 查询所有的菜单及资源信息 -->
+  <select id="getRoleMenuAndResource" resultType="com.dili.uap.domain.dto.SystemResourceDto">
+      SELECT m.id AS treeId,m.parent_id AS parentId,
+        m.system_id AS systemId,m.`name`,m.description,1 AS menu
+      FROM menu m
+    UNION ALL
+      SELECT
+          r.id AS treeId,r.menu_id AS parentId,NULL AS systemId,r.`name`,r.description,0 AS menu
+      FROM resource r
+  </select>
+
+  <!-- 根据角色ID查询对应的菜单及资源信息 -->
+  <select id="getRoleMenuAndResourceByRoleId" parameterType="long" resultType="com.dili.uap.domain.dto.SystemResourceDto">
+      SELECT
+          rm.menu_id AS treeId,1 AS menu
+      FROM
+          role_menu rm where role_id=#{value}
+      UNION ALL
+      SELECT
+            rr.resource_id AS treeId,
+            0 AS menu
+      FROM
+            role_resource rr where role_id=#{value}
+  </select>
+
 </mapper>

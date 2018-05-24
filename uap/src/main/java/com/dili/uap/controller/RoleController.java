@@ -98,9 +98,9 @@ public class RoleController {
         return roleService.del(id);
     }
 
-    @RequestMapping(value = "/list.action", method = { RequestMethod.GET, RequestMethod.POST })
-    public @ResponseBody String listJson() {
-        List<SystemResourceDto> list = roleService.list();
+    @RequestMapping(value = "/getRoleMenuAndResource.action", method = { RequestMethod.GET, RequestMethod.POST })
+    public @ResponseBody String getRoleMenuAndResource(Long roleId) {
+        List<SystemResourceDto> list = roleService.getRoleMenuAndResource(roleId);
         return new EasyuiPageOutput(list.size(), list).toString();
     }
 }

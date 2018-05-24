@@ -1,5 +1,8 @@
 package com.dili.uap.domain.dto;
 
+import com.dili.ss.dto.IBaseDomain;
+import com.dili.ss.dto.IDTO;
+
 /**
  * <B>Description</B>
  * <B>Copyright</B>
@@ -9,41 +12,61 @@ package com.dili.uap.domain.dto;
  * @author yuehongbo
  * @createTime 2018/5/24 14:45
  */
-public class SystemResourceDto {
-
-    private String id;
+public interface SystemResourceDto extends IBaseDomain {
 
     /**
-     * 父级菜单id
+     * 数据ID
+     * @return
      */
-    private String parentId;
+    String getTreeId();
+    void setTreeId(String treeId);
 
     /**
-     * 名称
+     * 父级ID
+     * @return
      */
-    private String name;
+    String getParentId();
+    void setParentId(String parentId);
 
-    public String getId() {
-        return id;
-    }
+    /**
+     * 节点名称
+     * @return
+     */
+    String getName();
+    void setName(String name);
 
-    public void setId(String id) {
-        this.id = id;
-    }
+    /**
+     * 系统ID
+     * @return
+     */
+    Long getSystemId();
+    void setSystemId(Long systemId);
 
-    public String getParentId() {
-        return parentId;
-    }
+    /**
+     * 资源描述
+     * @return
+     */
+    String getDescription();
+    void setDescription(String description);
 
-    public void setParentId(String parentId) {
-        this.parentId = parentId;
-    }
+    /**
+     * 是否是菜单
+     * @return
+     */
+    Integer getMenu();
+    void setMenu(Long menu);
 
-    public String getName() {
-        return name;
-    }
+    /**
+     * 节点状态，'open' 或 'closed'，如果为'closed'的时候，将不自动展开该节点。
+     * @return
+     */
+    String getState();
+    void setState(String state);
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    /**
+     * 
+     * @return
+     */
+    Boolean isChecked();
+    void setChecked(Boolean checked);
 }

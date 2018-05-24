@@ -2,6 +2,9 @@ package com.dili.uap.dao;
 
 import com.dili.ss.base.MyMapper;
 import com.dili.uap.domain.Role;
+import com.dili.uap.domain.dto.SystemResourceDto;
+
+import java.util.List;
 
 public interface RoleMapper extends MyMapper<Role> {
 
@@ -25,4 +28,19 @@ public interface RoleMapper extends MyMapper<Role> {
      * @return 受影响行数
      */
     Integer deleteRoleResourceByRoleId(Long roleId);
+
+    /**
+     * 加载所有的菜单及资源信息
+     * @return
+     */
+    List<SystemResourceDto> getRoleMenuAndResource();
+
+    /**
+     * 根据角色ID查询对应的菜单及资源信息
+     * @param roleId 角色ID
+     * @return
+     */
+    List<SystemResourceDto> getRoleMenuAndResourceByRoleId(Long roleId);
+
+
 }

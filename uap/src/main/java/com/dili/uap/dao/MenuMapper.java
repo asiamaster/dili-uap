@@ -28,6 +28,4 @@ public interface MenuMapper extends MyMapper<Menu> {
      * @return
      */
     String getParentMenus(String id);
-
-    List<MenuDto> selectMenuDto();
 }

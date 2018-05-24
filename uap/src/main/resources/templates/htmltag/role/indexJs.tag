@@ -346,16 +346,33 @@
     function clearForm() {
         $('#form').form('clear');
     }
-    
+
+    /**
+     * 打开权限设置页面
+     */
     function editRoleMenuAndResource() {
         $('#roleMenuAndResourceDlg').dialog('open');
         $('#roleMenuAndResourceDlg').dialog('center');
         var opts = $('#roleMenuAndResourceGrid').treegrid("options");
         if (null == opts.url || "" == opts.url) {
-            opts.url = "${contextPath}/role/list.action";
+            opts.url = "${contextPath}/role/getRoleMenuAndResource.action";
         }
         $('#roleMenuAndResourceGrid').treegrid("load");
 
+    }
+
+    /**
+     * 保存角色-菜单-资源新
+     */
+    function saveRoleMenuAndResource() {
+        var nodes = $('#roleMenuAndResourceGrid').treegrid('getSelected');
+        debugger;
+        var s = '';
+        for(var i=0; i<nodes.length; i++){
+            if (s != '') s += ',';
+            s += nodes[i].text;
+        }
+        alert(s);
     }
 
 </script>
