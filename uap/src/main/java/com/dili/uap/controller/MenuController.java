@@ -41,7 +41,7 @@ public class MenuController {
 	})
     @RequestMapping(value="/listPage.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody String listPage(Menu menu) throws Exception {
-        SessionContext.getSessionContext().getUserTicket();
+//        SessionContext.getSessionContext().dataAuth(SessionConstants.DATA_AUTH_TYPE_)
         return menuService.listEasyuiPageByExample(menu, true).toString();
     }
 

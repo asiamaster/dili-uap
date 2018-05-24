@@ -50,7 +50,11 @@ public class SessionContext {
 		return userTicket;
 	}
 
-	public UserTicket getAuthorizer(){
+	/**
+	 * 这个方法好像是个后门，暂时改为私有方法
+	 * @return
+	 */
+	private UserTicket getAuthorizer(){
 		return pc.getAuthorizer();
 	}
 

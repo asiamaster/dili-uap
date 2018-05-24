@@ -61,11 +61,13 @@ public class LoginController {
     @RequestMapping(value = "/login.action", method = { RequestMethod.GET, RequestMethod.POST })
     public String loginAction(LoginDto loginDto, ModelMap modelMap, HttpServletRequest request) {
 		loginDto.setLoginPath(WebUtil.fetchReferer(request));
-		loginDto.setRemoteIP(WebUtil.getRemoteIP(request));
+//		loginDto.setRemoteIP(WebUtil.getRemoteIP(request));
 		BaseOutput<Boolean> output = loginService.loginAndTag(loginDto);
+		//登录成功后跳到首页
 		if (output.isSuccess()) {
 			return IndexController.REDIRECT_INDEX_PAGE;
 		}
+		//登录失败放入登录结果信息
 		modelMap.put("msg", output.getResult());
         return INDEX_PATH;
     }
@@ -73,8 +75,7 @@ public class LoginController {
     @ApiOperation("执行logout请求，跳转login页面或者弹出错误")
     @RequestMapping(value = "/logout.action", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public @ResponseBody BaseOutput logoutAction(ModelMap modelMap) {
-        String sessionId = WebContent.getPC().getSessionId();
-        this.userService.logout(sessionId);
+        this.userService.logout(WebContent.getPC().getSessionId());
         try {
             WebContent.setCookie(SessionConstants.COOKIE_SESSION_ID, null);
         } catch (Exception e) {

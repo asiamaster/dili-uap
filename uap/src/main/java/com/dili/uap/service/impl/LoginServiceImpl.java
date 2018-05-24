@@ -82,6 +82,7 @@ public class LoginServiceImpl implements LoginService {
         User record = DTOUtils.newDTO(User.class);
         record.setUserName(loginDto.getUserName());
         User user = this.userMapper.selectOne(record);
+        //判断密码不正确，三次后锁定用户、锁定后的用户12小时后自动解锁
         if (user == null || !StringUtils.equalsIgnoreCase(user.getPassword(), this.encryptPwd(loginDto.getPassword()))) {
             lockUser(user);
             return BaseOutput.failure("用户名或密码错误").setCode(ResultCode.NOT_AUTH_ERROR);
@@ -98,15 +99,20 @@ public class LoginServiceImpl implements LoginService {
 //        // 加载用户数据权限
         this.dataAuthManager.initUserDataAuthesInRedis(user.getId());
 
-        if (this.userMapper.updateByPrimaryKey(user) <= 0) {
-            LOG.error("登录过程更新用户信息失败");
-            return BaseOutput.failure("用户已被禁用, 不能进行登录!").setCode(ResultCode.NOT_AUTH_ERROR);
-        }
+        //原来的代码是更新用户的最后登录IP和最后登录时间，现在暂时不需要了
+//        user.setLastLoginTime(new Date());
+//        user.setLastLoginIp(dto.getRemoteIP());
+//        if (this.userMapper.updateByPrimaryKey(user) <= 0) {
+//            LOG.error("登录过程更新用户信息失败");
+//            return BaseOutput.failure("用户已被禁用, 不能进行登录!").setCode(ResultCode.NOT_AUTH_ERROR);
+//        }
         LOG.info(String.format("用户登录成功，用户名[%s] | 用户IP[%s]", loginDto.getUserName(), loginDto.getRemoteIP()));
         // 用户登陆 挤掉 旧登陆用户
         jamUser(user);
         String sessionId = UUID.randomUUID().toString();
+        //缓存用户相关信息到Redis
         makeRedisTag(user, sessionId);
+        //构建返回的登录信息
         LoginResult loginResult = DTOUtils.newDTO(LoginResult.class);
         loginResult.setUser(user);
         loginResult.setSessionId(sessionId);

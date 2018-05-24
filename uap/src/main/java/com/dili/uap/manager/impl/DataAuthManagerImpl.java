@@ -7,6 +7,7 @@ import com.dili.uap.dao.DepartmentMapper;
 import com.dili.uap.domain.DataAuth;
 import com.dili.uap.domain.dto.UserDataAuthCondition;
 import com.dili.uap.manager.DataAuthManager;
+import com.dili.uap.sdk.glossary.DataAuthType;
 import com.dili.uap.sdk.session.SessionConstants;
 import com.dili.uap.sdk.util.ManageRedisUtil;
 import com.github.pagehelper.util.StringUtil;
@@ -63,7 +64,7 @@ public class DataAuthManagerImpl implements DataAuthManager {
 		List<DataAuth> dataAuthes = null;
 		if (StringUtil.isEmpty(json)) {
 			//单独处理用户部门数据权限
-			if(dataType.equals(SessionConstants.USER_DATA_AUTH_DEPARTMENT_KEY)){
+			if(dataType.equals(DataAuthType.DEPARTMENT.getCode())){
 				//部门数据权限直接从用户部门关系表查询
 				Map<String, Object> param = new HashMap<>();
 				param.put("userId", userId);
@@ -74,7 +75,6 @@ public class DataAuthManagerImpl implements DataAuthManager {
 				userDataAuthCondition.setType(dataType);
 				dataAuthes = this.dataAuthMapper.list(userDataAuthCondition);
 			}
-
 			if (CollectionUtils.isEmpty(dataAuthes)) {
 				return null;
 			}

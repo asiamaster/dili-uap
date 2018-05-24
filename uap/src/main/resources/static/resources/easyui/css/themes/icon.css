@@ -176,3 +176,7 @@
 .l-btn:hover .icon-add-child{
 	background-image:url('icons/edit_add_child-on.png');
 }
+
+.icon-detail{
+	background:url('icons/detail.png') no-repeat;
+}
