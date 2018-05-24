@@ -57,10 +57,15 @@
                 <thead>
                     <tr>
                         <th data-options="field:'userId',width:'10%'
-                        , _provider:'simpleBatchDisplayTextProvider',_escapeFileds:{'userId':'user_name'},_fkField:'userId',_relationTable:'user',_relationTablePkField:'id', _queryParams:{}
+                        , _provider:'simpleBatchDisplayTextProvider',_escapeFileds:{'userId':'user_name','realName':'real_name'},_fkField:'userId',_relationTable:'user',_relationTablePkField:'id', _queryParams:{}
                          ,sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            用户名
+                            用户账号
                         </th>
+                        
+              			<th data-options="field:'realName',width:'10%',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            真实姓名
+                        </th>
+                        
                         <th data-options="field:'ip',width:'10%',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                 IP地址
                         </th>
