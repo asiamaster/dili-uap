@@ -26,12 +26,6 @@ public class MenuManagerImpl implements MenuManager {
 	 */
 	private static final String REDIS_MENU_TREE_KEY = "manage:menu:";
 
-	private static final String ALL_TREE_KEY = REDIS_MENU_TREE_KEY + "allTree";
-
-	private static final String LIST_CHILDREN_KEY = REDIS_MENU_TREE_KEY + "children:";
-
-	private static final String ITEM_KEY = REDIS_MENU_TREE_KEY + "item:";
-
 	@Autowired
 	private MenuMapper menuMapper;
 
@@ -50,10 +44,10 @@ public class MenuManagerImpl implements MenuManager {
 				urls.add(menu.getUrl().trim().replace("http://", "").replace("https://", ""));
 			}
 		}
-		String key = SessionConstants.USER_MENU_URL_KEY + userId;
-		this.redisUtils.remove(key);
-		BoundSetOperations<Object, Object> ops = this.redisUtils.getRedisTemplate().boundSetOps(key);
-		ops.add(urls.toArray());
-	}
+        String key = SessionConstants.USER_MENU_URL_KEY + userId;
+        this.redisUtils.remove(key);
+        BoundSetOperations<Object, Object> ops = this.redisUtils.getRedisTemplate().boundSetOps(key);
+        ops.add(urls.toArray());
+    }
 
 }

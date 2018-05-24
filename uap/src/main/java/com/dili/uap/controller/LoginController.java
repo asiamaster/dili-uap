@@ -27,13 +27,9 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * <B>Description</B>地利后台管理系统登录 <B>Copyright</B> Copyright (c) 2014 www.dili7
- * All rights reserved. <br />
- * 本软件源代码版权归地利集团,未经许可不得任意复制与传播.<br />
- * <B>Company</B> 地利集团
- * 
- * @createTime 2014-7-4 上午11:09:00
- * @author Nick
+ * 登录控制器
+ * @author wangmi
+ * @date 2018-5-22
  */
 @Api("/login")
 @Controller
