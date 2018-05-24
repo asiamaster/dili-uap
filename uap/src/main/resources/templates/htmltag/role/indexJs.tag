@@ -1,4 +1,10 @@
 <script type="text/javascript">
+    //用户所拥有的市场信息
+    var firms ='';
+    <%if (has(firms)){%>
+        firms = ${firms};
+    <%}%>
+    //编辑表格的索引
     var editIndex = undefined;
     // 结束行编辑
     function endEditing() {
@@ -73,14 +79,18 @@
      * @param row 行数据
      */
     function onBeginEdit(index, row) {
-        debugger;
         var editors = roleGrid.datagrid('getEditors', index);
         editors[0].target.trigger('focus');
         setOptBtnDisplay(true);
+        //获取市场字段的编辑框
+        var ed = roleGrid.datagrid('getEditor', {index:index,field:'firmCode'});
         //存在ID，数据编辑情况下
         if (row.id){
-            var ed = roleGrid.datagrid('getEditor', {index:index,field:'firmCode'});
+            $(ed.target).datebox('readonly');
             $(ed.target).datebox('disable');
+        }else{
+            //新增数据时，加载市场信息
+            $(ed.target).combobox("loadData", firms);
         }
     }
 
@@ -207,7 +217,7 @@
     };
     //根据主键删除
     function del() {
-        var selected = $("#roleGrid").datagrid("getSelected");
+        var selected = roleGrid.datagrid("getSelected");
         if (null == selected) {
             $.messager.alert('警告','请选中一条数据');
             return;
@@ -216,7 +226,7 @@
             if (r){
                 $.ajax({
                     type: "POST",
-                    url: "${contextPath}/role/delete",
+                    url: "${contextPath}/role/delete.action",
                     data: {id:selected.id},
                     processData:true,
                     dataType: "json",
@@ -245,7 +255,9 @@
      *          表单提交需执行的任务
      */
     $(function () {
+        //角色grid对象
         window.roleGrid = $('#roleGrid');
+        $("#firmCode").combobox("loadData", firms);
         bindFormEvent("form", "roleName", queryGrid);
         if (document.addEventListener) {
             document.addEventListener("keyup",getKey,false);
@@ -259,6 +271,13 @@
         pager.pagination({
             <#controls_paginationOpts/>,
             buttons:[
+                {
+                    iconCls:'icon-permission',
+                    text:'权限',
+                    handler:function(){
+                        editRoleMenuAndResource();
+                    }
+                },
                 {
                     iconCls:'icon-add',
                     text:'新增',
@@ -313,7 +332,7 @@
 
     //表格查询
     function queryGrid() {
-        var opts = $("#roleGrid").datagrid("options");
+        var opts = roleGrid.datagrid("options");
         if (null == opts.url || "" == opts.url) {
             opts.url = "${contextPath}/role/listPage";
         }
@@ -326,6 +345,17 @@
     //清空表单
     function clearForm() {
         $('#form').form('clear');
+    }
+    
+    function editRoleMenuAndResource() {
+        $('#roleMenuAndResourceDlg').dialog('open');
+        $('#roleMenuAndResourceDlg').dialog('center');
+        var opts = $('#roleMenuAndResourceGrid').treegrid("options");
+        if (null == opts.url || "" == opts.url) {
+            opts.url = "${contextPath}/role/list.action";
+        }
+        $('#roleMenuAndResourceGrid').treegrid("load");
+
     }
 
 </script>

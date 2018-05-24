@@ -10,8 +10,7 @@
                     <table style="padding:10px;">
                         <tr>
                             <td style="padding:5px;">
-                                <input class="easyui-numberbox" name="firmId" id="firmId" style="width:100%" data-options="label:'所属市场:',labelAlign:'right'" />
-
+                                <input class="easyui-combobox" name="firmCode" id="firmCode" style="width:100%" data-options="label:'所属市场:',editable:false,labelAlign:'right',valueField:'code',textField:'name'" panelHeight="auto" />
                             </td>
                             <td style="padding:5px;">
                                 <input class="easyui-textbox" name="roleName" id="roleName" style="width:100%" data-options="label:'角色名:',labelAlign:'right'" />
@@ -48,7 +47,7 @@
                             <th width="50%" data-options="field:'description',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false',editor:{type:'textbox',options:{required:true,validType:'length[0,255]'}}">
                                 角色描述
                             </th>
-                            <th width="15%" data-options="field:'firmCode',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false',editor:{type:'combobox',options:{required:true,editable:false}}">
+                            <th width="15%" data-options="field:'firmCode',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false',editor:{type:'combobox',options:{required:true,editable:false,valueField:'code',textField:'name',panelHeight:'auto'}}">
                                 归属市场
                             </th>
                             <th width="16%" data-options="field:'created',_provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
@@ -60,6 +59,30 @@
             </div>
         </div>
     </div>
+     <!-- 隐藏的权限编辑框 -->
+     <div id="roleMenuAndResourceDlg" class="easyui-dialog" resizable="false" constrain="true" shadow="true" draggable="false" title="权限分配" style="padding:20px" modal="true" border="thin" closed="true"
+          data-options="
+                    iconCls: 'icon-save',
+                    height: 480,
+                    buttons: [{
+                        text:'确认',
+                        iconCls:'icon-ok',
+                        handler:editRoleMenuAndResource
+                    }]
+                ">
+         <div class="easyui-panel" style="padding:5px">
+             <table title="资源列表" class="easyui-treegrid" noheader="true" style="width:700px;height:250px" id="roleMenuAndResourceGrid"
+                    data-options="pagination:false, checkbox: true,rownumbers: true,idField: 'id',treeField:'name',_parentIdField:'parentId',loadFilter:treegridLoadFilter">
+                 <thead>
+                 <tr>
+                     <th data-options="field:'name'" width="220">Name</th>
+
+                 </tr>
+                 </thead>
+             </table>
+         </div>
+
+     </div>
     <!-- ====================================================================================================================== -->
     <!-- style & script 分隔线 -->
     <!-- ====================================================================================================================== -->

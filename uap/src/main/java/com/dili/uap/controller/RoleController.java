@@ -3,7 +3,10 @@ package com.dili.uap.controller;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.domain.Role;
+import com.dili.uap.domain.dto.SystemResourceDto;
+import com.dili.uap.glossary.MenuType;
 import com.dili.uap.sdk.util.DateUtils;
+import com.dili.uap.service.FirmService;
 import com.dili.uap.service.RoleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -20,6 +23,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.annotation.Resource;
+
 /**
  * 由MyBatis Generator工具自动生成
  * This file was generated on 2018-05-18 11:45:41.
@@ -31,9 +36,12 @@ public class RoleController {
     @Autowired
     RoleService roleService;
 
+    private @Resource FirmService firmService;
+
     @ApiOperation("跳转到Role页面")
     @RequestMapping(value="/index.html", method = RequestMethod.GET)
     public String index(ModelMap modelMap) {
+        modelMap.put("firms",firmService.list(null));
         return "role/index";
     }
 
@@ -63,8 +71,7 @@ public class RoleController {
     public @ResponseBody BaseOutput insert(Role role) {
         role.setCreated(new Date());
         role.setModified(role.getCreated());
-        roleService.insertSelective(role);
-        return BaseOutput.success("新增成功").setData(role);
+        return roleService.save(role).setData(role);
     }
 
     @ApiOperation("修改Role")
@@ -77,17 +84,20 @@ public class RoleController {
         updateRole.setId(role.getId());
         updateRole.setDescription(role.getDescription());
         updateRole.setRoleName(role.getRoleName());
-        roleService.updateSelective(updateRole);
-        return BaseOutput.success("修改成功").setData(role);
+        return roleService.save(role).setData(role);
     }
 
     @ApiOperation("删除Role")
     @ApiImplicitParams({
 		@ApiImplicitParam(name="id", paramType="form", value = "Role的主键", required = true, dataType = "long")
 	})
-    @RequestMapping(value="/delete", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value="/delete.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody BaseOutput delete(Long id) {
-        roleService.delete(id);
-        return BaseOutput.success("删除成功");
+        return roleService.del(id);
+    }
+
+    @RequestMapping(value = "/list.action", method = { RequestMethod.GET, RequestMethod.POST })
+    public @ResponseBody List<SystemResourceDto> listJson() {
+        return roleService.list();
     }
 }

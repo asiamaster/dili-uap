@@ -51,4 +51,19 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
+
+  <!-- 根据角色ID查询该角色下是否存在有用户 -->
+  <select id="countUserByRoleId" resultType="long" parameterType="long">
+       select COUNT(id) from user_role ur where ur.role_id=#{value}
+  </select>
+
+  <!-- 根据角色ID删除角色-菜单 信息 -->
+  <delete id="deleteRoleMenuByRoleId" parameterType="long">
+      delete from role_menu  where role_id=#{value}
+  </delete>
+
+  <!-- 根据角色ID删除角色-资源 信息 -->
+  <delete id="deleteRoleResourceByRoleId" parameterType="long">
+      delete from role_resource where role_id=#{value}
+  </delete>
 </mapper>
