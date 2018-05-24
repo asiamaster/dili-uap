@@ -4,7 +4,7 @@ import com.dili.ss.metadata.FieldMeta;
 import com.dili.ss.metadata.ValuePair;
 import com.dili.ss.metadata.ValuePairImpl;
 import com.dili.ss.metadata.ValueProvider;
-import com.dili.uap.glossary.SystemTypeEnum;
+import com.dili.uap.glossary.SystemType;
 
 import org.springframework.stereotype.Component;
 
@@ -23,7 +23,7 @@ public class SystemTypeProvider implements ValueProvider {
     private static final List<ValuePair<?>> BUFFER;
 
     static {
-    	BUFFER= Stream.of(SystemTypeEnum.values())
+    	BUFFER= Stream.of(SystemType.values())
     			//enum 转换为ValuePair
     			.map(e->new ValuePairImpl<String>(e.getName(), e.getCode().toString()))
     			.collect(Collectors.toList());

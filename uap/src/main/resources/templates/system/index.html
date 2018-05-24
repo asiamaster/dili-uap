@@ -17,10 +17,7 @@
                                 <input class="easyui-textbox" name="code" id="code" style="width:100%" data-options="label:'系统编码:', validType:'length[0,50]'" />
 
                             </td>
-                            <td style="padding:5px;">
-                                <input name="firmCode" id="firmCode" style="width:100%;" panelWidth="auto" data-options="editable:false, labelAlign:'right'" panelHeight="auto" label="所属市场:"/>
-                                <#comboProvider _id="firmCode" _provider='firmProvider' _queryParams='{}'/>
-                            </td>
+
                             <td style="padding:5px;">
                                    <input name="type" id="type" style="width:100%;" editable="false" panelWidth="auto" panelHeight="auto" label="类型:" value=""/>
                                  <#comboProvider _id="type" _provider='systemTypeProvider' _queryParams='{}'/>
@@ -58,24 +55,20 @@
                         <th data-options="field:'description', width:'9%',  sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             系统描述
                         </th>
-                        <th data-options="field:'url',  width:'9%', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th data-options="field:'url',  width:'15%', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             系统url
                         </th>
-                        <th data-options="field:'iconUrl', width:'9%',  sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th data-options="field:'iconUrl', width:'15%',  sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             图标URL
                         </th>
-                        <th data-options="field:'firmCode',width:'8%'
-                        , _provider:'simpleBatchDisplayTextProvider',_escapeFileds:{'firmCode':'name'},_fkField:'firmCode',_relationTable:'firm',_relationTablePkField:'code', _queryParams:{}
-                        ,  sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            所属市场
-                        </th>
-                        <th data-options="field:'logoUrl', width:'9%',  sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+
+                        <th data-options="field:'logoUrl', width:'15%',  sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             LOGO URL
                         </th>
                         <th data-options="field:'created', width:'10%', _provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             创建时间
                         </th>
-                        <th data-options="field:'modified',width:'10%',  _provider:'systemTypeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th data-options="field:'modified',width:'10%',  _provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             修改时间
                         </th>
                         <th data-options="field:'type',width:'10%',  _provider:'systemTypeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
@@ -93,7 +86,7 @@
     <div id="dlg" class="easyui-dialog" resizable="false" constrain="true" shadow="true" draggable="false" title="System信息" style="padding:20px" modal="true" border="thin" closed="true"
          data-options="
 				iconCls: 'icon-save',
-				height: 400,
+				height: 370,
 				buttons: [{
 					text:'确认',
 					iconCls:'icon-ok',
@@ -131,12 +124,6 @@
             <tr>
                 <td style="padding:5px;">
                     <input class="easyui-textbox" name="_iconUrl" id="_iconUrl" style="width:100%" data-options="label:'图标URL:', validType:'length[0,255]'" />
-                </td>
-            </tr>
-            <tr>
-                <td style="padding:5px;">
-                    <input name="_firmCode" id="_firmCode" style="width:100%;" panelWidth="auto" data-options="editable:false" panelHeight="auto" label="所属市场:" required="true" />
-                    <#comboProvider _id="_firmCode" _provider='firmProvider' _queryParams='{}'/>
                 </td>
             </tr>
             <tr>
