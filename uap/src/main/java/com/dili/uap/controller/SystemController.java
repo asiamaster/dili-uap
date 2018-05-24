@@ -2,6 +2,7 @@ package com.dili.uap.controller;
 
 import com.dili.ss.domain.BaseOutput;
 import com.dili.uap.domain.System;
+import com.dili.uap.domain.dto.SystemDto;
 import com.dili.uap.service.SystemService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -46,7 +47,7 @@ public class SystemController {
 		@ApiImplicitParam(name="System", paramType="form", value = "System的form信息", required = false, dataType = "string")
 	})
     @RequestMapping(value="/listPage", method = {RequestMethod.GET, RequestMethod.POST})
-    public @ResponseBody String listPage(System system) throws Exception {
+    public @ResponseBody String listPage(SystemDto system) throws Exception {
         return systemService.listEasyuiPageByExample(system, true).toString();
     }
 
