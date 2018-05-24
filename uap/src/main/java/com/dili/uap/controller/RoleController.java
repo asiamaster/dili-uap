@@ -1,6 +1,8 @@
 package com.dili.uap.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.dili.ss.domain.BaseOutput;
+import com.dili.ss.domain.EasyuiPageOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.domain.Role;
 import com.dili.uap.domain.dto.SystemResourceDto;
@@ -97,7 +99,8 @@ public class RoleController {
     }
 
     @RequestMapping(value = "/list.action", method = { RequestMethod.GET, RequestMethod.POST })
-    public @ResponseBody List<SystemResourceDto> listJson() {
-        return roleService.list();
+    public @ResponseBody String listJson() {
+        List<SystemResourceDto> list = roleService.list();
+        return new EasyuiPageOutput(list.size(), list).toString();
     }
 }
