@@ -27,7 +27,7 @@ import java.util.List;
 @Api("/department")
 @Controller
 @RequestMapping("/department")
-public class DepartmentController extends BaseController{
+public class DepartmentController {
     @Autowired
     DepartmentService departmentService;
 

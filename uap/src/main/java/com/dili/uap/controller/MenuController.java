@@ -2,6 +2,8 @@ package com.dili.uap.controller;
 
 import com.dili.ss.domain.BaseOutput;
 import com.dili.uap.domain.Menu;
+import com.dili.uap.sdk.session.SessionConstants;
+import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.service.MenuService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -39,6 +41,7 @@ public class MenuController {
 	})
     @RequestMapping(value="/listPage.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody String listPage(Menu menu) throws Exception {
+        SessionContext.getSessionContext().getUserTicket();
         return menuService.listEasyuiPageByExample(menu, true).toString();
     }
 

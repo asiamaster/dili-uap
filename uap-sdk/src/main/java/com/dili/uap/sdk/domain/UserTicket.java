@@ -1,219 +1,116 @@
 package com.dili.uap.sdk.domain;
 
+import com.dili.ss.metadata.FieldEditor;
+import com.dili.ss.metadata.annotation.EditMode;
+import com.dili.ss.metadata.annotation.FieldDef;
+
 import java.sql.Timestamp;
 import java.util.Date;
 
 import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
-public class UserTicket {
-	/**
-	 * 用户ID
-	 */
-	private Long id;
-	/**
-	 * 用户名
-	 */
-	private String userName;
-	/**
-	 * 密码
-	 */
-	private String password;
-	/**
-	 * 最后登录ip
-	 */
-	private String lastLoginIp;
-	/**
-	 * 最后登录时间
-	 */
-	private Timestamp lastLoginTime;
-	/**
-	 * 真实姓名
-	 */
-	private String realName;
-	/**
-	 * 部门ID
-	 */
-	private Long depId;
-	/**
-	 * 部门名称
-	 */
-	private String depName;
-	/**
-	 * 用户编号
-	 */
-	private String serialNumber;
-	/**
-	 * 固定电话
-	 */
-	private String fixedLineTelephone;
-	/**
-	 * 手机号码
-	 */
-	private String cellphone;
-	/**
-	 * 邮箱
-	 */
-	private String email;
-	/**
-	 * 创建时间
-	 */
+public interface UserTicket {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "`id`")
+	@FieldDef(label="主键")
+	@EditMode(editor = FieldEditor.Number, required = true)
+	Long getId();
+
+	void setId(Long id);
+
+	@Column(name = "`user_name`")
+	@FieldDef(label="用户名", maxLength = 50)
+	@EditMode(editor = FieldEditor.Text, required = true)
+	String getUserName();
+
+	void setUserName(String userName);
+
+	@Column(name = "`password`")
+	@FieldDef(label="密码", maxLength = 128)
+	@EditMode(editor = FieldEditor.Text, required = true)
+	String getPassword();
+
+	void setPassword(String password);
+
+	@Column(name = "`firm_code`")
+	@FieldDef(label="归属市场编码", maxLength = 50)
+	@EditMode(editor = FieldEditor.Text, required = false)
+	String getFirmCode();
+
+	void setFirmCode(String firmCode);
+
+	@Column(name = "`department_id`")
+	@FieldDef(label="归属部门")
+	@EditMode(editor = FieldEditor.Number, required = false)
+	Long getDepartmentId();
+
+	void setDepartmentId(Long departmentId);
+
+	@Column(name = "`position`")
+	@FieldDef(label="职位", maxLength = 20)
+	@EditMode(editor = FieldEditor.Text, required = false)
+	String getPosition();
+
+	void setPosition(String position);
+
+	@Column(name = "`card_number`")
+	@FieldDef(label="卡号", maxLength = 20)
+	@EditMode(editor = FieldEditor.Text, required = false)
+	String getCardNumber();
+
+	void setCardNumber(String cardNumber);
+
 	@Column(name = "`created`")
-	private Date created;
+	@FieldDef(label="创建时间")
+	@EditMode(editor = FieldEditor.Datetime, required = true)
+	Date getCreated();
 
-	/**
-	 * 修改时间
-	 */
+	void setCreated(Date created);
+
 	@Column(name = "`modified`")
-	private Date modified;
+	@FieldDef(label="修改时间")
+	@EditMode(editor = FieldEditor.Datetime, required = true)
+	Date getModified();
 
-	/**
-	 * 有效时间开始点
-	 */
-	@Column(name = "`valid_time_begin`")
-	private Date validTimeBegin;
+	void setModified(Date modified);
 
-	/**
-	 * 有效时间结束点
-	 */
-	@Column(name = "`valid_time_end`")
-	private Date validTimeEnd;
+	@Column(name = "`state`")
+	@FieldDef(label="状态")
+	@EditMode(editor = FieldEditor.Number, required = true)
+	Integer getState();
 
-	public Long getId() {
-		return id;
-	}
+	void setState(Integer state);
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+	@Column(name = "`real_name`")
+	@FieldDef(label="真实姓名", maxLength = 64)
+	@EditMode(editor = FieldEditor.Text, required = true)
+	String getRealName();
 
-	public String getUserName() {
-		return userName;
-	}
+	void setRealName(String realName);
 
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
+	@Column(name = "`serial_number`")
+	@FieldDef(label="用户编号", maxLength = 128)
+	@EditMode(editor = FieldEditor.Text, required = false)
+	String getSerialNumber();
 
-	public String getPassword() {
-		return password;
-	}
+	void setSerialNumber(String serialNumber);
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
+	@Column(name = "`cellphone`")
+	@FieldDef(label="手机号码", maxLength = 24)
+	@EditMode(editor = FieldEditor.Text, required = false)
+	String getCellphone();
 
-	public String getLastLoginIp() {
-		return lastLoginIp;
-	}
+	void setCellphone(String cellphone);
 
-	public void setLastLoginIp(String lastLoginIp) {
-		this.lastLoginIp = lastLoginIp;
-	}
+	@Column(name = "`email`")
+	@FieldDef(label="邮箱", maxLength = 64)
+	@EditMode(editor = FieldEditor.Text, required = false)
+	String getEmail();
 
-	public Timestamp getLastLoginTime() {
-		return lastLoginTime;
-	}
-
-	public void setLastLoginTime(Timestamp lastLoginTime) {
-		this.lastLoginTime = lastLoginTime;
-	}
-
-	public String getRealName() {
-		return realName;
-	}
-
-	public void setRealName(String realName) {
-		this.realName = realName;
-	}
-
-	public Long getDepId() {
-		return depId;
-	}
-
-	public void setDepId(Long depId) {
-		this.depId = depId;
-	}
-
-	public String getDepName() {
-		return depName;
-	}
-
-	public void setDepName(String depName) {
-		this.depName = depName;
-	}
-
-	public String getSerialNumber() {
-		return serialNumber;
-	}
-
-	public void setSerialNumber(String serialNumber) {
-		this.serialNumber = serialNumber;
-	}
-
-	public String getFixedLineTelephone() {
-		return fixedLineTelephone;
-	}
-
-	public void setFixedLineTelephone(String fixedLineTelephone) {
-		this.fixedLineTelephone = fixedLineTelephone;
-	}
-
-	public String getCellphone() {
-		return cellphone;
-	}
-
-	public void setCellphone(String cellphone) {
-		this.cellphone = cellphone;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public Date getCreated() {
-		return created;
-	}
-
-	public void setCreated(Date created) {
-		this.created = created;
-	}
-
-	public Date getModified() {
-		return modified;
-	}
-
-	public void setModified(Date modified) {
-		this.modified = modified;
-	}
-
-	public Date getValidTimeBegin() {
-		return validTimeBegin;
-	}
-
-	public void setValidTimeBegin(Date validTimeBegin) {
-		this.validTimeBegin = validTimeBegin;
-	}
-
-	public Date getValidTimeEnd() {
-		return validTimeEnd;
-	}
-
-	public void setValidTimeEnd(Date validTimeEnd) {
-		this.validTimeEnd = validTimeEnd;
-	}
-
-	@Override
-	public String toString() {
-		return "UserTicket [id=" + id + ", userName=" + userName + ", password=" + password + ", lastLoginIp="
-				+ lastLoginIp + ", lastLoginTime=" + lastLoginTime + ", realName=" + realName + ", depId=" + depId
-				+ ", depName=" + depName + ", serialNumber=" + serialNumber + ", fixedLineTelephone="
-				+ fixedLineTelephone + ", cellphone=" + cellphone + ", email=" + email + ", created=" + created
-				+ ", modified=" + modified + ", validTimeBegin=" + validTimeBegin + ", validTimeEnd=" + validTimeEnd
-				+ "]";
-	}
+	void setEmail(String email);
 
 }

@@ -66,7 +66,7 @@ public class SystemController {
 	})
     @RequestMapping(value="/update", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody BaseOutput update(System system) {
-        systemService.updateExact(system);
+        systemService.updateExactSimple(system);
         return BaseOutput.success("修改成功");
     }
 
