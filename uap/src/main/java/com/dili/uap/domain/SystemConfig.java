@@ -14,7 +14,7 @@ import javax.persistence.Id;
 /**
  * 由MyBatis Generator工具自动生成
  * 
- * This file was generated on 2018-05-22 14:34:21.
+ * This file was generated on 2018-05-24 17:44:18.
  */
 @Table(name = "`system_config`")
 public interface SystemConfig extends IBaseDomain {
@@ -54,6 +54,13 @@ public interface SystemConfig extends IBaseDomain {
     String getDescription();
 
     void setDescription(String description);
+
+    @Column(name = "`system_code`")
+    @FieldDef(label="所属系统编码", maxLength = 50)
+    @EditMode(editor = FieldEditor.Text, required = false)
+    String getSystemCode();
+
+    void setSystemCode(String systemCode);
 
     @Column(name = "`created`")
     @FieldDef(label="创建时间")

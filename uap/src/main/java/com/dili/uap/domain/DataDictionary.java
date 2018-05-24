@@ -14,7 +14,7 @@ import javax.persistence.Id;
 /**
  * 由MyBatis Generator工具自动生成
  * 
- * This file was generated on 2018-05-22 11:25:24.
+ * This file was generated on 2018-05-24 17:44:01.
  */
 @Table(name = "`data_dictionary`")
 public interface DataDictionary extends IBaseDomain {
@@ -40,6 +40,13 @@ public interface DataDictionary extends IBaseDomain {
     String getName();
 
     void setName(String name);
+
+    @Column(name = "`system_code`")
+    @FieldDef(label="所属系统编码", maxLength = 50)
+    @EditMode(editor = FieldEditor.Text, required = false)
+    String getSystemCode();
+
+    void setSystemCode(String systemCode);
 
     @Column(name = "`description`")
     @FieldDef(label="描述", maxLength = 255)
