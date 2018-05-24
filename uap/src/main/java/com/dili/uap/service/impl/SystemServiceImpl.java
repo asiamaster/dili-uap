@@ -29,7 +29,7 @@ public class SystemServiceImpl extends BaseServiceImpl<System, Long> implements 
 		//根据名称和系统查询
 		System systemNameCondition = DTOUtils.newDTO(System.class);
 		systemNameCondition.setName(system.getName());
-		systemNameCondition.setFirmCode(system.getFirmCode());
+//		systemNameCondition.setFirmCode(system.getFirmCode());
 
 		int systemNameCount = this.getActualDao().selectCount(systemNameCondition);
 		if (systemNameCount > 0) {
@@ -38,7 +38,7 @@ public class SystemServiceImpl extends BaseServiceImpl<System, Long> implements 
 		//根据编码和系统查询
 		System systemCodeCondition = DTOUtils.newDTO(System.class);
 		systemCodeCondition.setCode(system.getCode());
-		systemCodeCondition.setFirmCode(system.getFirmCode());
+//		systemCodeCondition.setFirmCode(system.getFirmCode());
 		
 		int systemCodeCount = this.getActualDao().selectCount(systemNameCondition);
 		if (systemCodeCount > 0) {
@@ -59,7 +59,7 @@ public class SystemServiceImpl extends BaseServiceImpl<System, Long> implements 
 		//根据名称和系统查询
 		System systemNameCondition = DTOUtils.newDTO(System.class);
 		systemNameCondition.setName(system.getName());
-		systemNameCondition.setFirmCode(system.getFirmCode());
+//		systemNameCondition.setFirmCode(system.getFirmCode());
 
 		System systemWithSameName = this.getActualDao().selectOne(systemNameCondition);
 		if (systemWithSameName != null && !systemWithSameName.getId().equals(system.getId())) {
@@ -68,7 +68,7 @@ public class SystemServiceImpl extends BaseServiceImpl<System, Long> implements 
 		//根据编码和系统查询
 		System systemCodeCondition = DTOUtils.newDTO(System.class);
 		systemCodeCondition.setCode(system.getCode());
-		systemCodeCondition.setFirmCode(system.getFirmCode());
+//		systemCodeCondition.setFirmCode(system.getFirmCode());
 		
 		System systemWithSameCode = this.getActualDao().selectOne(systemNameCondition);
 		if (systemWithSameCode != null && !systemWithSameCode.getId().equals(system.getId())) {

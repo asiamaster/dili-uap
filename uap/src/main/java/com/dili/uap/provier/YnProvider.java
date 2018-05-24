@@ -4,8 +4,8 @@ import com.dili.ss.metadata.FieldMeta;
 import com.dili.ss.metadata.ValuePair;
 import com.dili.ss.metadata.ValuePairImpl;
 import com.dili.ss.metadata.ValueProvider;
-import com.dili.uap.glossary.SystemTypeEnum;
-import com.dili.uap.glossary.YNEnum;
+import com.dili.uap.glossary.SystemType;
+import com.dili.uap.glossary.Yn;
 
 import org.springframework.stereotype.Component;
 
@@ -25,7 +25,7 @@ public class YnProvider implements ValueProvider {
 
 
     static {
-    	BUFFER= Stream.of(YNEnum.values())
+    	BUFFER= Stream.of(Yn.values())
     			//enum 转换为ValuePair
     			.map(e->new ValuePairImpl<String>(e.getName(), e.getCode().toString()))
     			.collect(Collectors.toList());
