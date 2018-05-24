@@ -15,7 +15,7 @@
                             </td>
                             <td style="padding:5px;">
                                  <input name="type" id="type" style="width:100%;" editable="false" panelWidth="auto" panelHeight="auto" label="异常类型:" value=""/>
-                                <#comboProvider _id="type" _data='[{"text":"系统内部异常","value":"1"},{"text":"登录异常","value":"0"}]'/>
+                                 <#comboProvider _id="type" _provider='exceptionTypeProvider' _queryParams='{}'/>
                             </td>
                             </td>
                             <td style="padding:5px;">
@@ -68,7 +68,7 @@
                         ,   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             功能模块
                         </th>
-                        <th data-options="field:'type',width:'8%',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th data-options="field:'type',width:'8%',_provider:'exceptionTypeProvider', _queryParams:{},   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             异常类型
                         </th>
                         <th data-options="field:'firmCode',width:'10%'

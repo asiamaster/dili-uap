@@ -23,7 +23,7 @@
                             </td>
                             <td style="padding:5px;">
                                    <input name="type" id="type" style="width:100%;" editable="false" panelWidth="auto" panelHeight="auto" label="类型:" value=""/>
-                                <#comboProvider _id="type" _data='[{"text":"内部系统","value":"1"},{"text":"外部系统","value":"2"}]'/>
+                                 <#comboProvider _id="type" _provider='systemTypeProvider' _queryParams='{}'/>
                             </td>
                             <td>
                                 <a href="#" class="easyui-linkbutton" data-options="width:80"   iconCls="icon-search" id="queryBtn"
@@ -48,11 +48,7 @@
                     toolbar="#toolbar" idField="id"  data-options="onDblClickRow:openUpdate, onHeaderContextMenu:headerContextMenu">
                 <thead>
                     <tr>
-                        <th data-options="field:'parentId', width:'9%'
-                         , _provider:'simpleBatchDisplayTextProvider',_escapeFileds:{'parentId':'name'},_fkField:'parentId',_relationTable:'system',_relationTablePkField:'id', _queryParams:{}
-                        ,  sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            上级系统
-                        </th>
+                       
                         <th data-options="field:'name',width:'9%',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             系统名称
                         </th>
@@ -79,10 +75,10 @@
                         <th data-options="field:'created', width:'10%', _provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             创建时间
                         </th>
-                        <th data-options="field:'modified',width:'10%',  _provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th data-options="field:'modified',width:'10%',  _provider:'systemTypeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             修改时间
                         </th>
-                        <th data-options="field:'type',width:'10%',  _data:[{'text':'内部系统','value':'1'},{'text':'外部系统','value':'2'}] , sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th data-options="field:'type',width:'10%',  _provider:'systemTypeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             类型
                         </th>
                     </tr>
@@ -97,7 +93,7 @@
     <div id="dlg" class="easyui-dialog" resizable="false" constrain="true" shadow="true" draggable="false" title="System信息" style="padding:20px" modal="true" border="thin" closed="true"
          data-options="
 				iconCls: 'icon-save',
-				height: 480,
+				height: 400,
 				buttons: [{
 					text:'确认',
 					iconCls:'icon-ok',
@@ -112,13 +108,6 @@
     <form id="_form" class="easyui-form" method="post" fit="true">
         <input name="_id" id="_id" type="hidden">
         <table width="360px">
-            <tr>
-                <td style="padding:5px;">
-                     <input name="_parentId" id="_parentId" style="width:100%;" panelWidth="auto" data-options="editable:false" panelHeight="auto" label="上级系统:"/>
-                     <#comboProvider _id="_parentId" _provider='systemProvider' _queryParams='{}'/>
-                                 
-                </td>
-            </tr>
             <tr>
                 <td style="padding:5px;">
                     <input class="easyui-textbox" name="_name" id="_name" style="width:100%" data-options="label:'系统名称:', validType:'length[0,50]'" required="true" />
@@ -174,7 +163,7 @@
             $('#dlg').dialog('open');
             $('#dlg').dialog('center');
             $('#_form').form('clear');
-            formFocus("_form", "_parentId");
+            formFocus("_form", "_name");
         }
 
         //打开修改窗口
@@ -186,7 +175,7 @@
             }
             $('#dlg').dialog('open');
             $('#dlg').dialog('center');
-            formFocus("_form", "_parentId");
+            formFocus("_form", "_name");
             var formData = $.extend({},selected);
             formData = addKeyStartWith(getOriginalData(formData),"_");
             $('#_form').form('load', formData);

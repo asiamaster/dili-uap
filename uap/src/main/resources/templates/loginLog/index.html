@@ -29,7 +29,7 @@
                             </td>
                             <td style="padding:5px;">
                                  <input name="success" id="success" style="width:100%;" editable="false" panelWidth="auto" panelHeight="auto" label="是否成功:" />
-                                <#comboProvider _id="success" _data='[{"text":"是","value":"1"},{"text":"否","value":"0"}]'/>
+                                <#comboProvider _id="success" _provider='ynProvider' _queryParams='{}'/>
                             </td>
                         </tr>
                         <tr>
@@ -78,10 +78,12 @@
                         ,  sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             登录系统
                         </th>
-                        <th data-options="field:'firmCode',width:'10%',  _provider:'firmProvider', _queryParams:{},  sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th data-options="field:'firmCode',width:'10%'
+                        , _provider:'simpleBatchDisplayTextProvider',_escapeFileds:{'firmCode':'name'},_fkField:'firmCode',_relationTable:'firm',_relationTablePkField:'code', _queryParams:{}
+                        ,  sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             市场
                         </th>
-                        <th data-options="field:'success',width:'10%', _data:[{'text':'否','value':0},{'text':'是','value':1}],sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th data-options="field:'success',width:'10%',_provider:'ynProvider', _queryParams:{},sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             是否成功
                         </th>
                         <th data-options="field:'reason',width:'20%',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">

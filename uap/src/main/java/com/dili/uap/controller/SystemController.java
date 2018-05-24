@@ -56,8 +56,7 @@ public class SystemController {
 	})
     @RequestMapping(value="/insert", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody BaseOutput insert(System system) {
-        systemService.insertSelective(system);
-        return BaseOutput.success("新增成功");
+       return systemService.insertAfterCheck(system);
     }
 
     @ApiOperation("修改System")
@@ -66,8 +65,7 @@ public class SystemController {
 	})
     @RequestMapping(value="/update", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody BaseOutput update(System system) {
-        systemService.updateExactSimple(system);
-        return BaseOutput.success("修改成功");
+    	return systemService.updateAfterCheck(system);
     }
 
     @ApiOperation("删除System")
