@@ -66,7 +66,7 @@
                         <th data-options="field:'iconUrl', width:'9%',  sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             图标URL
                         </th>
-                        <th data-options="field:'firmCode',width:'9%', _provider:'firmProvider', _queryParams:{},  sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th data-options="field:'firmCode',width:'9%', _provider:'simpleBatchDisplayTextProvider',_escapeFileds:{'firmCode':'name'},_fkField:'firmCode',_relationTable:'firm',_relationTablePkField:'code', _queryParams:{},  sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             所属市场
                         </th>
                         <th data-options="field:'logoUrl', width:'9%',  sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
