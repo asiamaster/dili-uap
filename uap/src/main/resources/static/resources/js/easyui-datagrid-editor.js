@@ -1,5 +1,5 @@
 /**
- *  封装可编辑 EasyUi dataGrid 插件
+ *  封装可编辑 EasyUi dataGrid 插件 1.0.0
  */
 ;
 (function ($, window, document, undefined) {
@@ -148,7 +148,7 @@
                     this.element[this.options.target]('remove', row.id);
                 }
             } else {
-                if (!row.id) {
+                if (row.id == 'temp') {
                     this.element[this.options.target]('deleteRow', index);
                 }
             }
@@ -289,6 +289,7 @@
             this.editId = 'temp';
             if (this.options.target == 'datagrid') {
                 var index = this.element.datagrid('getRows').length;
+                this.editIndex = index;
                 this.element.datagrid('appendRow', {
                     id: 'temp'
                 });

@@ -13,6 +13,7 @@
                 <div style="padding: 5px;">
                     <table>
                         <tr>
+                            <td style="padding: 5px;"><input class="easyui-textbox" name="systemCode" id="systemCode" style="width: 100%" data-options="labelWidth:100,labelAlign:'right',label:'系统编码:', validType:'length[0,50]'" /></td>
                             <td style="padding: 5px;"><input class="easyui-textbox" name="code" id="code" style="width: 100%" data-options="labelWidth:50,labelAlign:'right',label:'编码:', validType:'length[0,50]'" /></td>
                             <td style="padding: 5px;"><input class="easyui-textbox" name="name" id="name" style="width: 100%" data-options="labelWidth:50,labelAlign:'right',label:'名称:', validType:'length[0,50]'" /></td>
                             <td>
@@ -37,7 +38,7 @@
                 <thead>
                 <tr>
                     <th data-options="field:'id',width:'6%',sortable:'true', order:'asc', align:'center', hidden:true,resizable:'true', fixed:'false'">ID</th>
-                    <th data-options="field:'systemCode',width:'6%',sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false'">系统编码</th>
+                    <th data-options="field:'systemCode',width:'6%',sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false',editor : {type : 'textbox',options : {required : true}}">系统编码</th>
                     <th
                             data-options="field:'name',width:'17%',sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false', formatter:formatName,
 						editor : {type : 'textbox',options : {required : true}}">名称</th>
