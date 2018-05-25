@@ -226,11 +226,13 @@ $(function() {
             {
                 id:'save_btn_ddValue',
                 iconCls:'icon-ok',
+                text:'确定',
                 handler:function(){endDdValueGridEditing();}
             },
             {
                 id:'cancel_btn_ddValue',
                 iconCls:'icon-clear',
+                text:'取消',
                 handler:function(){cancelEditDdValue();}
             }
 		]

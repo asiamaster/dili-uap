@@ -80,10 +80,7 @@
                 }
             },
             canEdit: function (row) {
-                if (row.id === -1) {
-                    return false;
-                }
-                return true;
+                return row.id !== -1;
             }
         });
     });

@@ -130,7 +130,7 @@ function formatLongToDate(value, row, index) {
 
 
 
-
+// 是否显示编辑框的确定取消按钮
 function setOptBtnDisplay(show){
     var $btnSave = $("#save_btn");
     var $btnCancel = $("#cancel_btn");
@@ -168,6 +168,7 @@ function openDdValueWindow(obj) {
 // 清空表单
 function clearForm() {
 	$('#form').form('clear');
+    queryDdGrid();
 }
 
 /**
@@ -226,11 +227,13 @@ $(function() {
 					},
 					{
 						id:'save_btn',
+                        text:'确定',
 						iconCls:'icon-ok',
 						handler:function(){  $("#grid").dataGridEditor().save();}
 					},
                     {
                         id:'cancel_btn',
+                        text:'取消',
                         iconCls:'icon-clear',
                         handler:function(){  $("#grid").dataGridEditor().cancel();}
                     }

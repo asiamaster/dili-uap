@@ -40,7 +40,7 @@ public class DepartmentController {
         // 是否是集团
         boolean isGroup = true;
 
-        modelMap.addAttribute("issGroup", isGroup);
+        modelMap.addAttribute("isGroup", isGroup);
         return "department/index";
     }
 
