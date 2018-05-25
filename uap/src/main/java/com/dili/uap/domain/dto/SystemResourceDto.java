@@ -67,6 +67,7 @@ public interface SystemResourceDto extends IBaseDomain {
      * 
      * @return
      */
-    Boolean isChecked();
+    Boolean getChecked();
     void setChecked(Boolean checked);
+    
 }

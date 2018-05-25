@@ -1,22 +1,20 @@
 package com.dili.uap.controller;
 
-import com.alibaba.fastjson.JSONArray;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.domain.EasyuiPageOutput;
 import com.dili.ss.dto.DTOUtils;
+import com.dili.uap.constants.UapConstants;
+import com.dili.uap.domain.Firm;
 import com.dili.uap.domain.Role;
 import com.dili.uap.domain.dto.SystemResourceDto;
-import com.dili.uap.glossary.MenuType;
-import com.dili.uap.sdk.util.DateUtils;
+import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.service.FirmService;
 import com.dili.uap.service.RoleService;
+import com.google.common.collect.Lists;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-
-import java.util.Date;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -26,6 +24,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
+import java.util.Date;
+import java.util.List;
 
 /**
  * 由MyBatis Generator工具自动生成
@@ -43,6 +43,15 @@ public class RoleController {
     @ApiOperation("跳转到Role页面")
     @RequestMapping(value="/index.html", method = RequestMethod.GET)
     public String index(ModelMap modelMap) {
+        List<Firm> firms = Lists.newArrayList();
+        String firmCode = SessionContext.getSessionContext().getUserTicket().getFirmCode();
+        Boolean isGroup = false;
+        Firm query = DTOUtils.newDTO(Firm.class);
+        if(UapConstants.GROUP_CODE.equals(firmCode)){
+            isGroup = true;
+            firms.addAll(firmService.list(null));
+        }else{
+        }
         modelMap.put("firms",firmService.list(null));
         return "role/index";
     }
@@ -60,7 +69,7 @@ public class RoleController {
     @ApiImplicitParams({
 		@ApiImplicitParam(name="Role", paramType="form", value = "Role的form信息", required = false, dataType = "string")
 	})
-    @RequestMapping(value="/listPage", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value="/listPage.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody String listPage(Role role) throws Exception {
         return roleService.listEasyuiPageByExample(role, true).toString();
     }
@@ -102,5 +111,16 @@ public class RoleController {
     public @ResponseBody String getRoleMenuAndResource(Long roleId) {
         List<SystemResourceDto> list = roleService.getRoleMenuAndResource(roleId);
         return new EasyuiPageOutput(list.size(), list).toString();
+    }
+
+    /**
+     * 保存角色对应的资源权限信息
+     * @param roleId 角色ID
+     * @param resourceIds 资源ID集合
+     * @return
+     */
+    @RequestMapping(value = "/saveRoleMenuAndResource.action", method = { RequestMethod.GET, RequestMethod.POST })
+    public @ResponseBody BaseOutput saveRoleMenuAndResource(Long roleId,String resourceIds[]) {
+        return roleService.saveRoleMenuAndResource(roleId,resourceIds);
     }
 }

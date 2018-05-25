@@ -334,7 +334,7 @@
     function queryGrid() {
         var opts = roleGrid.datagrid("options");
         if (null == opts.url || "" == opts.url) {
-            opts.url = "${contextPath}/role/listPage";
+            opts.url = "${contextPath}/role/listPage.action";
         }
         if(!$('#form').form("validate")){
             return;
@@ -351,11 +351,16 @@
      * 打开权限设置页面
      */
     function editRoleMenuAndResource() {
+        var selected = roleGrid.datagrid("getSelected");
+        if (null == selected) {
+            $.messager.alert('警告','请选中一条数据');
+            return;
+        }
         $('#roleMenuAndResourceDlg').dialog('open');
         $('#roleMenuAndResourceDlg').dialog('center');
         var opts = $('#roleMenuAndResourceGrid').treegrid("options");
         if (null == opts.url || "" == opts.url) {
-            opts.url = "${contextPath}/role/getRoleMenuAndResource.action";
+            opts.url = "${contextPath}/role/getRoleMenuAndResource.action?roleId="+selected.id;
         }
         $('#roleMenuAndResourceGrid').treegrid("load");
 
@@ -365,14 +370,31 @@
      * 保存角色-菜单-资源新
      */
     function saveRoleMenuAndResource() {
-        var nodes = $('#roleMenuAndResourceGrid').treegrid('getSelected');
-        debugger;
-        var s = '';
+        var nodes = $('#roleMenuAndResourceGrid').treegrid('getCheckedNodes');
+        //节点选中的ID，包括系统、菜单、资源
+        var ids = [];
         for(var i=0; i<nodes.length; i++){
-            if (s != '') s += ',';
-            s += nodes[i].text;
+            ids.push(nodes[i].treeId);
         }
-        alert(s);
+        var selected = roleGrid.datagrid("getSelected");
+        $.ajax({
+            type: "POST",
+            url: "${contextPath}/role/saveRoleMenuAndResource.action",
+            data: {roleId:selected.id,resourceIds:ids},
+            dataType: "json",
+            traditional:true,
+            async : true,
+            success: function (ret) {
+                if(ret.success){
+                    $('#roleMenuAndResourceDlg').dialog('close');
+                }else{
+                    $.messager.alert('错误',ret.result);
+                }
+            },
+            error: function(){
+                $.messager.alert('错误','远程访问失败');
+            }
+        });
     }
 
 </script>

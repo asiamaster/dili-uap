@@ -34,4 +34,12 @@ public interface RoleService extends BaseService<Role, Long> {
      * @return
      */
     List<SystemResourceDto> getRoleMenuAndResource(Long roleId);
+
+    /**
+     * 保存角色-资源信息
+     * @param roleId 角色ID
+     * @param resourceIds 资源ID集
+     * @return
+     */
+    BaseOutput saveRoleMenuAndResource(Long roleId,String resourceIds[]);
 }

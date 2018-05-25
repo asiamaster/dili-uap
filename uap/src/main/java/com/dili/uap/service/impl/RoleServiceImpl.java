@@ -5,14 +5,21 @@ import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.constants.UapConstants;
 import com.dili.uap.dao.RoleMapper;
+import com.dili.uap.dao.RoleMenuMapper;
+import com.dili.uap.dao.RoleResourceMapper;
+import com.dili.uap.dao.SystemMapper;
 import com.dili.uap.domain.Role;
+import com.dili.uap.domain.RoleMenu;
+import com.dili.uap.domain.RoleResource;
 import com.dili.uap.domain.System;
 import com.dili.uap.domain.dto.SystemResourceDto;
 import com.dili.uap.glossary.Yn;
 import com.dili.uap.service.RoleService;
 import com.dili.uap.service.SystemService;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,7 +40,12 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements Role
     }
 
     @Autowired
-    SystemService systemService;
+    SystemMapper systemMapper;
+    @Autowired
+    RoleMenuMapper roleMenuMapper;
+    @Autowired
+    RoleResourceMapper roleResourceMapper;
+
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -93,7 +105,7 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements Role
     @Override
     public List<SystemResourceDto> getRoleMenuAndResource(Long roleId) {
         //检索所以的系统信息
-        List<System> systemList = systemService.list(null);
+        List<System> systemList = systemMapper.selectAll();
         if (CollectionUtils.isEmpty(systemList)){
             return null;
         }
@@ -145,9 +157,51 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements Role
             dto.setTreeId(UapConstants.SYSTEM_PREFIX + s.getId());
             dto.setName(s.getName());
             dto.setDescription(s.getDescription());
+            dto.setState("closed");
             target.add(dto);
         });
 
         return target;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public BaseOutput saveRoleMenuAndResource(Long roleId, String[] resourceIds) {
+        //勾选的菜单数据集合
+        List<RoleMenu> roleMenus = Lists.newArrayList();
+        //勾选的资源ID集合
+        List<RoleResource> roleResources = Lists.newArrayList();
+        /**
+         * 循环所勾选的资源信息，分割出菜单、资源信息
+         */
+        if (null != resourceIds && resourceIds.length > 0) {
+            for (String id : resourceIds) {
+                //如果是菜单关系，则组装角色-菜单信息
+                if (id.startsWith(UapConstants.MENU_PREFIX)) {
+                    RoleMenu roleMenu = DTOUtils.newDTO(RoleMenu.class);
+                    roleMenu.setMenuId(Long.valueOf(id.replace(UapConstants.MENU_PREFIX, "")));
+                    roleMenu.setRoleId(roleId);
+                    roleMenus.add(roleMenu);
+                }
+                //如果是资源关系，则组装角色-资源信息
+                if (id.startsWith(UapConstants.RESOURCE_PREFIX)) {
+                    RoleResource roleResource = DTOUtils.newDTO(RoleResource.class);
+                    roleResource.setResourceId(Long.valueOf(id.replace(UapConstants.RESOURCE_PREFIX, "")));
+                    roleResource.setRoleId(roleId);
+                    roleResources.add(roleResource);
+                }
+            }
+        }
+        //删除对应的角色-菜单信息
+        getActualDao().deleteRoleMenuByRoleId(roleId);
+        //删除对应的角色-资源信息
+        getActualDao().deleteRoleResourceByRoleId(roleId);
+        if (CollectionUtils.isNotEmpty(roleMenus)) {
+            roleMenuMapper.insertList(roleMenus);
+        }
+        if (CollectionUtils.isNotEmpty(roleResources)) {
+            roleResourceMapper.insertList(roleResources);
+        }
+        return BaseOutput.success("操作成功");
     }
 }
