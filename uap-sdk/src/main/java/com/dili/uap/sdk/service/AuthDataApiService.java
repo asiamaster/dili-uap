@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by jk on 2017/5/11.
+ * Created by wm on 2018/5/25.
  */
 public class AuthDataApiService extends AbstractApiService {
     private static final Logger log = LoggerFactory.getLogger(AuthDataApiService.class);
@@ -23,12 +23,11 @@ public class AuthDataApiService extends AbstractApiService {
     public void refreshAuthData(String type){
         try {
             PermissionContext pc = (PermissionContext) WebContent.get(SessionConstants.MANAGE_PERMISSION_CONTEXT);
-
             Map<String, String> param = new HashMap<>();
             param.put("type", type);
             param.put("userId", SessionContext.getSessionContext().getUserTicket().getId().toString());
             param.put(SessionConstants.SESSION_ID, pc.getSessionId());
-            httpGet("/dataAuth/refreshAuthData.do", param);
+            httpGet("/dataAuth/refreshAuthData.api", param);
         } catch (IOException e) {
             log.info("刷新数据权限出现异常!", e);
         }

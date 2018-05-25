@@ -19,7 +19,7 @@ public interface DataAuthManager {
 	void initUserDataAuthesInRedis(Long userId);
 
 	/**
-	 * 根据用户id和数据权限类型获取指定数据权限
+	 * 根据用户id和数据权限类型获取指定数据权限，并缓存到redis
 	 * @param userId 用户id
 	 * @param dataType 数据权限类型
 	 * @return

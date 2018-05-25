@@ -50,6 +50,10 @@ public class SessionContext {
 		return userTicket;
 	}
 
+	public ManageConfig getManageConfig(){
+		return pc.getConfig();
+	}
+
 	/**
 	 * 这个方法好像是个后门，暂时改为私有方法
 	 * @return

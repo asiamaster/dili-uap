@@ -23,7 +23,7 @@ public class UserRedis {
      * @param sessionId
      * @return
      */
-    public Long getSessionUserIdKey(String sessionId) {
+    public Long getSessionUserId(String sessionId) {
         String rst = redisUtil.get(SessionConstants.SESSION_USERID_KEY + sessionId, String.class);
         if(rst == null){
             return null;
