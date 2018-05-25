@@ -180,7 +180,7 @@
                 url = this.options.updateUrl;
             }
             $.post(url, postData, function (data) {
-                if (data.code != 200) {
+                if (!data || data.code != 200) {
                     if (oldRecord) {
                         if (that.options.target != 'datagrid') {
                             that.element[that.options.target]('update', {
@@ -205,6 +205,8 @@
                     $.messager.alert('提示', data.result);
                     return;
                 }
+                //成功
+                //新增
                 if (postData.id == undefined) {
                     if (that.options.target != 'datagrid') {
                         that.element[that.options.target]('remove', 'temp');
@@ -262,7 +264,6 @@
                                 } else {
                                     that.element[that.options.target]('deleteRow', that.element[that.options.target]('getRowIndex', selected));
                                 }
-                                $('#dlg').dialog('close');
                             } else {
                                 $.messager.alert('错误', data.result);
                             }
