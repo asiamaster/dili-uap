@@ -33,6 +33,8 @@ public class DepartmentServiceImpl extends BaseServiceImpl<Department, Long> imp
             return BaseOutput.failure("存在相同名称的部门");
         }
         int result = this.getActualDao().insertSelective(department);
+        department.setCode(department.getFirmCode() + "-" + department.getId());
+        this.getActualDao().updateByPrimaryKey(department);
         if (result > 0) {
             return BaseOutput.success().setData(department);
         }

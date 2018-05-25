@@ -86,7 +86,7 @@
             }
             var index = this.editId;
             if (this.options.target == 'datagrid') {
-                index = this.element.datagrid('getRowIndex', this.element.datagrid('getSelected'));
+                index = this.editIndex;
             }
             this.element[this.options.target]('cancelEdit', index);
         },
@@ -235,7 +235,7 @@
                     }
                 }
                 if (that.options.onSaveSuccess) {
-                    that.options.onSaveSuccess(data.data);
+                    that.options.onSaveSuccess(row,data.data);
                 }
             }, 'json');
         },

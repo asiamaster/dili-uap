@@ -34,6 +34,7 @@
                 </thead>
             </table>
             <div id="toolbar" style="padding: 2px 5px;">
+                <%if(isGroup){%>
                 <span>市场：</span>
                 <input class="easyui-combobox" name="firm" panelWidth="auto" panelHeight="auto" editable="false" id="firm" style="width:8%;"
                        labelAlign="right" data-options="onLoadSuccess:function(){
@@ -43,6 +44,7 @@
                             $('#grid').treegrid('reload', {firmCode:newValue});
                        }"/>
                 <#comboProvider _id="firm" _provider='firmProvider' />
+                <%}%>
                 <a href="#" class="easyui-linkbutton" iconCls="icon-add" onclick="openInsert()" plain="true">新增</a>
                 <a href="#" class="easyui-linkbutton" iconCls="icon-edit" onclick="openUpdate()" plain="true">修改</a>
                 <a href="#" class="easyui-linkbutton" iconCls="icon-remove" onclick="del()" plain="true">删除</a>
@@ -58,6 +60,7 @@
         editDept: true,
         deleteDept: true
     };
+    window.firmCode = '${firmCode!}';
 
 </script>
 <#department_indexJs/>

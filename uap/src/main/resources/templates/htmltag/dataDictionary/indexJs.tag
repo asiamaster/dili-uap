@@ -113,23 +113,6 @@ function formatName(value, row, index) {
 }
 
 
-
-function formatLongToDate(value, row, index) {
-	if (!value) {
-		return '';
-	}
-	var now = new Date(value);
-	var year = now.getFullYear();
-	var month = now.getMonth() > 9 ? now.getMonth() + 1 : '0' + (now.getMonth() + 1);
-	var date = now.getDate();
-	var hour = now.getHours() > 10 ? now.getHours() : '0' + now.getHours();
-	var minute = now.getMinutes() > 10 ? now.getMinutes() : '0' + now.getMinutes();
-	var second = now.getSeconds() > 10 ? now.getSeconds() : '0' + now.getSeconds();
-	return year + "-" + month + "-" + date + " " + hour + ":" + minute + ":" + second;
-}
-
-
-
 // 是否显示编辑框的确定取消按钮
 function setOptBtnDisplay(show){
     var $btnSave = $("#save_btn");
@@ -197,6 +180,12 @@ $(function() {
         },
         onAfterEdit: function () {
             setOptBtnDisplay(false);
+        },
+        onSaveSuccess: function (row, data) {
+            row.created = UAP_TOOLS.getNowStr();
+            row.modified = UAP_TOOLS.getNowStr();
+            $("#grid").datagrid('updateRow', $("#grid").datagrid('getRowIndex', row), row);
+            $("#grid").datagrid('refreshRow', $("#grid").datagrid('getRowIndex', row));
         }
     });
 

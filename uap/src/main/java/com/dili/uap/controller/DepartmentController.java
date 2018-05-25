@@ -2,8 +2,10 @@ package com.dili.uap.controller;
 
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
+import com.dili.uap.constants.UapConstants;
 import com.dili.uap.domain.Department;
 import com.dili.uap.domain.Firm;
+import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.service.DepartmentService;
 import com.dili.uap.service.FirmService;
 import io.swagger.annotations.Api;
@@ -38,9 +40,10 @@ public class DepartmentController {
     @RequestMapping(value = "/index.html", method = RequestMethod.GET)
     public String index(ModelMap modelMap) {
         // 是否是集团
-        boolean isGroup = true;
+        boolean isGroup = SessionContext.getSessionContext().getUserTicket().getFirmCode().endsWith(UapConstants.GROUP_CODE);
 
         modelMap.addAttribute("isGroup", isGroup);
+        modelMap.addAttribute("firmCode",SessionContext.getSessionContext().getUserTicket().getFirmCode());
         return "department/index";
     }
 
@@ -54,14 +57,28 @@ public class DepartmentController {
 
         Department root = DTOUtils.newDTO(Department.class);
 
+        // 首次进入
         if (StringUtils.isEmpty(department.getFirmCode())) {
-            List<Firm> list = firmService.list(null);
+            List<Firm> list;
+            boolean isGroup = SessionContext.getSessionContext().getUserTicket().getFirmCode().endsWith(UapConstants.GROUP_CODE);
+
+            // 集团用户
+            if (isGroup) {
+                list = firmService.list(null);
+            } else {
+                Firm t = DTOUtils.newDTO(Firm.class);
+                t.setCode(SessionContext.getSessionContext().getUserTicket().getFirmCode());
+                list = firmService.list(t);
+            }
+
+
             Firm firm = list.get(0);
             root.setId(-1L);
             root.setName(firm.getName());
             root.setFirmCode(firm.getCode());
             department.setFirmCode(firm.getCode());
         } else {
+            // 切换市场
             Firm t = DTOUtils.newDTO(Firm.class);
             t.setCode(department.getFirmCode());
             List<Firm> list = firmService.list(t);
@@ -70,6 +87,7 @@ public class DepartmentController {
             root.setName(firm.getName());
             root.setFirmCode(firm.getCode());
         }
+
         List<Department> list = departmentService.list(department);
 
         list.add(root);
