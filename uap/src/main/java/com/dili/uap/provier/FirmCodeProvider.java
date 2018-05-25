@@ -1,0 +1,77 @@
+package com.dili.uap.provier;
+
+import com.dili.ss.dto.DTOUtils;
+import com.dili.ss.metadata.FieldMeta;
+import com.dili.ss.metadata.ValuePair;
+import com.dili.ss.metadata.ValuePairImpl;
+import com.dili.ss.metadata.provider.BatchDisplayTextProviderAdaptor;
+import com.dili.uap.domain.Firm;
+import com.dili.uap.domain.dto.FirmQueryDto;
+import com.dili.uap.service.FirmService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * 市场提供者
+ * 根据code转换
+ */
+@Component
+public class FirmCodeProvider extends BatchDisplayTextProviderAdaptor {
+
+	@Autowired
+	private FirmService firmService;
+
+	// 不提供下拉数据
+	@Override
+	public List<ValuePair<?>> getLookupList(Object val, Map metaMap, FieldMeta fieldMeta) {
+		List<ValuePair<?>> buffer = new ArrayList<ValuePair<?>>();
+		List<Firm> list = firmService.list(null);
+		list.forEach(firm -> {
+			buffer.add(new ValuePairImpl<>(firm.getName(), firm.getCode()));
+		});
+		return buffer;
+	}
+
+
+	@Override
+	protected List getFkList(List<String> relationIds, Map metaMap) {
+		FirmQueryDto firmQueryDto = DTOUtils.newDTO(FirmQueryDto.class);
+		firmQueryDto.setCodes(relationIds);
+		return firmService.list(firmQueryDto);
+	}
+
+	@Override
+	protected Map<String, String> getEscapeFileds(Map metaMap) {
+		if(metaMap.get(ESCAPE_FILEDS_KEY) instanceof Map){
+			return (Map)metaMap.get(ESCAPE_FILEDS_KEY);
+		}else {
+			Map<String, String> map = new HashMap<>();
+			//默认显示客户名
+			map.put(metaMap.get(FIELD_KEY).toString(), "name");
+			return map;
+		}
+	}
+
+	/**
+	 * 关联(数据库)表的主键的字段名
+	 * 默认取id，子类可自行实现
+	 * @return
+	 */
+	@Override
+	protected String getRelationTablePkField(Map metaMap) {
+		return "code";
+	}
+
+	@Override
+	protected String getFkField(Map metaMap) {
+//		String field = (String)metaMap.get(FIELD_KEY);
+		String fkField = (String)metaMap.get(FK_FILED_KEY);
+		return fkField == null ? "firmCode" : fkField;
+	}
+
+}
