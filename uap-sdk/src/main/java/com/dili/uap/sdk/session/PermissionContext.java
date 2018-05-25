@@ -216,7 +216,7 @@ public class PermissionContext {
             return null;
         }
         if (userId ==  null) {
-            userId = userRedis.getSessionUserIdKey(getSessionId());
+            userId = userRedis.getSessionUserId(getSessionId());
         }
         return userId;
     }

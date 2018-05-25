@@ -1,5 +1,6 @@
 package com.dili.uap.sdk.service;
 
+import com.dili.uap.sdk.session.SessionContext;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -35,7 +36,6 @@ public abstract class AbstractApiService {
 
 
     private Response getHttp(String url) throws IOException {
-        log.debug("访问: " + url);
         OkHttpClient.Builder build = new OkHttpClient.Builder();
         build.connectTimeout(60, TimeUnit.SECONDS);
         build.readTimeout(60, TimeUnit.SECONDS);
@@ -45,7 +45,7 @@ public abstract class AbstractApiService {
                 .addHeader("token",this.token)
                 .addHeader("Accept-Language","zh-CN,en-US;q=0.8")
                 .addHeader("User-Agent","Mozilla/5.0 (Linux; Android 4.4.4; Nexus 5 Build/KTU84P) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/33.0.0.0 Mobile Safari/537.36 baapp/null baversion/1.5.1 NetType/WIFI clientType/phone")
-                .addHeader("X-Requested-With","com.bookask.main");
+                .addHeader("X-Requested-With",SessionContext.getSessionContext().getManageConfig().getDomain());
         Request res = reqBuild.build();
         return cli.newCall(res).execute();
     }
