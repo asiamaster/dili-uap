@@ -2,7 +2,6 @@ package com.dili.uap.component;
 
 import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.quartz.domain.ScheduleMessage;
-import com.dili.ss.quartz.service.ScheduleJobService;
 import com.dili.uap.constants.UapConstants;
 import com.dili.uap.dao.SystemConfigMapper;
 import com.dili.uap.domain.SystemConfig;
