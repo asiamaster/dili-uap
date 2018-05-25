@@ -53,7 +53,7 @@ public class LoginServiceImpl implements LoginService {
     @Value("${pwd.error.check:false}")
     private Boolean pwdErrorCheck;
 
-    //密码错误范围
+    //密码错误范围，默认十分钟
     @Value("${pwd.error.range:600000}")
     private Long pwdErrorRange;
 
@@ -89,13 +89,14 @@ public class LoginServiceImpl implements LoginService {
         User record = DTOUtils.newDTO(User.class);
         record.setUserName(loginDto.getUserName());
         User user = this.userMapper.selectOne(record);
-        if(user.getState().equals(UserState.LOCKED.getCode())){
-            return BaseOutput.failure("用户已被锁定，请联系管理员").setCode(ResultCode.NOT_AUTH_ERROR);
-        }
         //判断密码不正确，三次后锁定用户、锁定后的用户12小时后自动解锁
         if (user == null || !StringUtils.equalsIgnoreCase(user.getPassword(), this.encryptPwd(loginDto.getPassword()))) {
             lockUser(user);
             return BaseOutput.failure("用户名或密码错误").setCode(ResultCode.NOT_AUTH_ERROR);
+        }
+        clearUserLock(user.getId());
+        if(user.getState().equals(UserState.LOCKED.getCode())){
+            return BaseOutput.failure("用户已被锁定，请联系管理员").setCode(ResultCode.NOT_AUTH_ERROR);
         }
         //用户状态为锁定和禁用不允许登录
         if (user.getState().equals(UserState.DISABLED.getCode()) || user.getState().equals(UserState.LOCKED.getCode())) {
@@ -194,6 +195,14 @@ public class LoginServiceImpl implements LoginService {
     }
 
     /**
+     * 清空用户登录密码错误锁定次数
+     * @param userId
+     */
+    private void clearUserLock(Long userId){
+        String key = SessionConstants.USER_PWD_ERROR_KEY + userId;
+        redisUtil.getRedisTemplate().delete(key);
+    }
+    /**
      * 锁定用户
      * @param user
      */
@@ -208,7 +217,7 @@ public class LoginServiceImpl implements LoginService {
         String key = SessionConstants.USER_PWD_ERROR_KEY + user.getId();
         BoundListOperations<Object, Object> ops = redisUtil.getRedisTemplate().boundListOps(key);
         while (true) {
-            Object s = ops.index(-1);
+            Object s = ops.index(0);
             if (s == null) {
                 break;
             }
@@ -233,6 +242,7 @@ public class LoginServiceImpl implements LoginService {
         if(StringUtils.isNotBlank(systemConfig.getValue())){
             pwdErrorCount = Integer.parseInt(systemConfig.getValue());
         }
+        //在锁定次数范围内不锁定
         if (ops.size() < Integer.parseInt(systemConfig.getValue())) {
             return;
         }
