@@ -40,7 +40,7 @@ public class DepartmentController {
     @RequestMapping(value = "/index.html", method = RequestMethod.GET)
     public String index(ModelMap modelMap) {
         // 是否是集团
-        boolean isGroup = SessionContext.getSessionContext().getUserTicket().getFirmCode().endsWith(UapConstants.GROUP_CODE);
+        boolean isGroup = SessionContext.getSessionContext().getUserTicket().getFirmCode().equalsIgnoreCase(UapConstants.GROUP_CODE);
 
         modelMap.addAttribute("isGroup", isGroup);
         modelMap.addAttribute("firmCode",SessionContext.getSessionContext().getUserTicket().getFirmCode());
@@ -60,7 +60,7 @@ public class DepartmentController {
         // 首次进入
         if (StringUtils.isEmpty(department.getFirmCode())) {
             List<Firm> list;
-            boolean isGroup = SessionContext.getSessionContext().getUserTicket().getFirmCode().endsWith(UapConstants.GROUP_CODE);
+            boolean isGroup = SessionContext.getSessionContext().getUserTicket().getFirmCode().equalsIgnoreCase(UapConstants.GROUP_CODE);
 
             // 集团用户
             if (isGroup) {

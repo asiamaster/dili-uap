@@ -95,6 +95,15 @@
     }
 
     /**
+     * 市场加载成功后，默认选中第一个
+     */
+    function firmLoadSuccess() {
+        var ed = roleGrid.datagrid('getEditor', {index:editIndex,field:'firmCode'});
+        var data = $(ed.target).combobox('getData');
+        $(ed.target).combobox('select',data[0].code);
+    }
+
+    /**
      * 单击含回调方法，逻辑是结束之前的行编辑模式
      *
      * @param index
@@ -178,16 +187,8 @@
                 $.messager.alert('提示', ret.result);
                 return;
             }
-            if (!row.id) {
-                row.id = ret.data.id;
-                row.created = ret.data.created;
-            }
-            row.modified = ret.data.modified;
-            roleGrid.datagrid('updateRow', {
-                index: index,
-                row: row
-            });
-            roleGrid.datagrid('refreshRow', index);
+            roleGrid.datagrid('load');
+            roleGrid.datagrid('unselectAll');
             setOptBtnDisplay(false);
         }, 'json');
     };
@@ -257,7 +258,14 @@
     $(function () {
         //角色grid对象
         window.roleGrid = $('#roleGrid');
-        $("#firmCode").combobox("loadData", firms);
+        var obj={};
+        obj.code='';
+        obj.name='-- 请选择 --';
+        //为了不改变原值，所以复制一遍数组
+        var firmData = firms.slice();
+        //动态添加'请选择'
+        firmData.unshift(obj);
+        $("#firmCode").combobox("loadData", firmData);
         bindFormEvent("form", "roleName", queryGrid);
         if (document.addEventListener) {
             document.addEventListener("keyup",getKey,false);
@@ -353,15 +361,13 @@
     function editRoleMenuAndResource() {
         var selected = roleGrid.datagrid("getSelected");
         if (null == selected) {
-            $.messager.alert('警告','请选中一条数据');
+            $.messager.alert('警告', '请选中一条数据');
             return;
         }
         $('#roleMenuAndResourceDlg').dialog('open');
         $('#roleMenuAndResourceDlg').dialog('center');
         var opts = $('#roleMenuAndResourceGrid').treegrid("options");
-        if (null == opts.url || "" == opts.url) {
-            opts.url = "${contextPath}/role/getRoleMenuAndResource.action?roleId="+selected.id;
-        }
+        opts.url = "${contextPath}/role/getRoleMenuAndResource.action?roleId=" + selected.id;
         $('#roleMenuAndResourceGrid').treegrid("load");
 
     }
@@ -373,26 +379,26 @@
         var nodes = $('#roleMenuAndResourceGrid').treegrid('getCheckedNodes');
         //节点选中的ID，包括系统、菜单、资源
         var ids = [];
-        for(var i=0; i<nodes.length; i++){
+        for (var i = 0; i < nodes.length; i++) {
             ids.push(nodes[i].treeId);
         }
         var selected = roleGrid.datagrid("getSelected");
         $.ajax({
             type: "POST",
             url: "${contextPath}/role/saveRoleMenuAndResource.action",
-            data: {roleId:selected.id,resourceIds:ids},
+            data: {roleId: selected.id, resourceIds: ids},
             dataType: "json",
-            traditional:true,
-            async : true,
+            traditional: true,
+            async: true,
             success: function (ret) {
-                if(ret.success){
+                if (ret.success) {
                     $('#roleMenuAndResourceDlg').dialog('close');
-                }else{
-                    $.messager.alert('错误',ret.result);
+                } else {
+                    $.messager.alert('错误', ret.result);
                 }
             },
-            error: function(){
-                $.messager.alert('错误','远程访问失败');
+            error: function () {
+                $.messager.alert('错误', '远程访问失败');
             }
         });
     }

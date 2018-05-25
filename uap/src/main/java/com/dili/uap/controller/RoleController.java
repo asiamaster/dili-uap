@@ -43,16 +43,18 @@ public class RoleController {
     @ApiOperation("跳转到Role页面")
     @RequestMapping(value="/index.html", method = RequestMethod.GET)
     public String index(ModelMap modelMap) {
-        List<Firm> firms = Lists.newArrayList();
         String firmCode = SessionContext.getSessionContext().getUserTicket().getFirmCode();
+        //用户是否属于集团
         Boolean isGroup = false;
         Firm query = DTOUtils.newDTO(Firm.class);
-        if(UapConstants.GROUP_CODE.equals(firmCode)){
+        if (UapConstants.GROUP_CODE.equals(firmCode)) {
             isGroup = true;
-            firms.addAll(firmService.list(null));
-        }else{
+        } else {
+            query.setCode(firmCode);
         }
-        modelMap.put("firms",firmService.list(null));
+        modelMap.put("firms", firmService.list(query));
+        modelMap.put("isGroup", isGroup);
+        modelMap.put("firmCode",firmCode);
         return "role/index";
     }
 

@@ -4,14 +4,23 @@
         <!-- 上方布局 -->
         <!-- ====================================================================================================================== -->
         <div region="north" height="auto" align="center" border="false">
+            <div id="nav" style="padding-left:15px;padding-top:10px;" align="left">
+                <#nav/>
+            </div>
             <!-- =========================================================表单========================================================= -->
             <div class="easyui-panel" style="width:100%;" align="left" border="false">
                 <form id="form" class="easyui-form" method="post" fit="true">
                     <table style="padding:10px;">
                         <tr>
-                            <td style="padding:5px;">
-                                <input class="easyui-combobox" name="firmCode" id="firmCode" style="width:100%" data-options="label:'所属市场:',editable:false,labelAlign:'right',valueField:'code',textField:'name'" panelHeight="auto" />
-                            </td>
+                            <%if(isGroup){%>
+                                <td style="padding:5px;">
+                                    <input class="easyui-combobox" name="firmCode" id="firmCode" style="width:100%" data-options="label:'所属市场:',editable:false,labelAlign:'right',valueField:'code',textField:'name'" panelHeight="auto" />
+                                </td>
+                            <%}else{%>
+                                <td>
+                                    <input type="hidden"  name="firmCode" value="${firmCode}" style="width:100%"/>
+                                </td>
+                            <%}%>
                             <td style="padding:5px;">
                                 <input class="easyui-textbox" name="roleName" id="roleName" style="width:100%" data-options="label:'角色名:',labelAlign:'right'" />
                             </td>
@@ -34,7 +43,7 @@
                 <!-- =========================================================表格========================================================= -->
                 <table class="easyui-datagrid" title="角色信息" id="roleGrid" fitColumns="true"  noheader="true"
                        pagination="true" pageSize="30" pageNumber="1" pagePosition="top" remoteSort="true"
-                       loadMsg="数据加载中..." singleSelect="true" method="post" sortName="id"
+                       loadMsg="数据加载中..." singleSelect="true" method="post" sortName="id" sortOrder="desc"
                        align="center" fit="true" striped="true"  idField="id" data-options="onHeaderContextMenu:headerContextMenu,onClickRow:onClickGridRow,onDblClickRow:openUpdate,onBeginEdit:onBeginEdit,onAfterEdit:onAfterEdit,onCancelEdit:onCancelEdit">
                     <thead>
                         <tr>
@@ -47,7 +56,7 @@
                             <th width="50%" data-options="field:'description',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false',editor:{type:'textbox',options:{required:true,validType:'length[0,255]'}}">
                                 角色描述
                             </th>
-                            <th width="15%" data-options="field:'firmCode', _provider:'firmCodeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false',editor:{type:'combobox',options:{required:true,editable:false,valueField:'code',textField:'name',panelHeight:'auto'}}">
+                            <th width="15%" data-options="field:'firmCode', _provider:'firmCodeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false',editor:{type:'combobox',options:{required:true,editable:false,valueField:'code',textField:'name',panelHeight:'auto',onLoadSuccess:firmLoadSuccess}}">
                                 归属市场
                             </th>
                             <th width="16%" data-options="field:'created',_provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
@@ -63,7 +72,7 @@
      <div id="roleMenuAndResourceDlg" class="easyui-dialog" resizable="false" constrain="true" shadow="true" draggable="false" title="权限分配" style="padding:10px;width: 80%" modal="true" border="thin" closed="true"
           data-options="
                     iconCls: 'icon-save',
-                    height: 550,
+                    height: 350,
                     buttons: [{
                         text:'确认',
                         iconCls:'icon-ok',
