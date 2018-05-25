@@ -45,6 +45,11 @@ public class FirmCodeProvider extends BatchDisplayTextProviderAdaptor {
 		return firmService.list(firmQueryDto);
 	}
 
+	/**
+	 * 返回主DTO和关联DTO需要转义的字段名
+	 * Map中key为主DTO在页面(datagrid)渲染时需要的字段名， value为关联DTO中对应的字段名
+	 * @return
+	 */
 	@Override
 	protected Map<String, String> getEscapeFileds(Map metaMap) {
 		if(metaMap.get(ESCAPE_FILEDS_KEY) instanceof Map){
@@ -67,6 +72,12 @@ public class FirmCodeProvider extends BatchDisplayTextProviderAdaptor {
 		return "code";
 	}
 
+	/**
+	 * 主DTO与关联DTO的关联(java bean)属性(外键)
+	 * 先从field属性取，没取到再取_fkField属性
+	 * 子类可自行实现
+	 * @return
+	 */
 	@Override
 	protected String getFkField(Map metaMap) {
 //		String field = (String)metaMap.get(FIELD_KEY);
