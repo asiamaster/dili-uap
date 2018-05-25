@@ -89,6 +89,9 @@ public class LoginServiceImpl implements LoginService {
         User record = DTOUtils.newDTO(User.class);
         record.setUserName(loginDto.getUserName());
         User user = this.userMapper.selectOne(record);
+        if(user.getState().equals(UserState.LOCKED.getCode())){
+            return BaseOutput.failure("用户已被锁定，请联系管理员").setCode(ResultCode.NOT_AUTH_ERROR);
+        }
         //判断密码不正确，三次后锁定用户、锁定后的用户12小时后自动解锁
         if (user == null || !StringUtils.equalsIgnoreCase(user.getPassword(), this.encryptPwd(loginDto.getPassword()))) {
             lockUser(user);

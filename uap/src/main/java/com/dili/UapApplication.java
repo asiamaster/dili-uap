@@ -32,7 +32,7 @@ import tk.mybatis.spring.annotation.MapperScan;
 
 // =====================  Other  =====================
 @RestfulScan({"com.dili.uap.rpc", "com.dili.uap.sdk.rpc"})
-@MapperScan(basePackages = {"com.dili.uap.dao", "com.dili.ss.dao"})
+@MapperScan(basePackages = {"com.dili.uap.dao", "com.dili.ss.dao", "com.dili.ss.quartz.dao"})
 // @EnableScheduling
 /**
  * 除了内嵌容器的部署模式，Spring Boot也支持将应用部署至已有的Tomcat容器, 或JBoss, WebLogic等传统Java EE应用服务器。

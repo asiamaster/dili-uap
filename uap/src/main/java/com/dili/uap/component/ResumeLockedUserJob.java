@@ -9,13 +9,13 @@ import com.dili.uap.domain.SystemConfig;
 import com.dili.uap.domain.User;
 import com.dili.uap.glossary.UserState;
 import com.dili.uap.glossary.Yn;
-import com.dili.uap.service.SystemConfigService;
 import com.dili.uap.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
@@ -23,13 +23,10 @@ import java.util.List;
  * 恢复锁定用户调度器
  * Created by asiamaster on 2018/5/24
  */
-//@Component
+@Component
 public class ResumeLockedUserJob implements ApplicationListener<ContextRefreshedEvent> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ResumeLockedUserJob.class);
-
-	@Autowired
-	private ScheduleJobService scheduleJobService;
 
 	@Autowired
 	private UserService userService;
@@ -39,6 +36,7 @@ public class ResumeLockedUserJob implements ApplicationListener<ContextRefreshed
 
 	@Override
 	public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
+		//系统启动时扫描一次锁定用户
         resumeLockedUser();
 	}
 
@@ -68,7 +66,7 @@ public class ResumeLockedUserJob implements ApplicationListener<ContextRefreshed
 		systemConfigCondition.setCode(UapConstants.RESUME_DURATION);
         systemConfigCondition.setSystemCode(UapConstants.SYSTEM_CODE);
 		SystemConfig systemConfig = systemConfigMapper.selectOne(systemConfigCondition);
-        Long resumeDuration = Long.parseLong(systemConfig.getValue());
+        Long resumeDuration = Long.parseLong(systemConfig.getValue()) * 1000;
 		lockedUsers.forEach( lockedUser -> {
 		    //超过锁定时长就解锁
 			if((now - lockedUser.getModified().getTime()) >= resumeDuration){
