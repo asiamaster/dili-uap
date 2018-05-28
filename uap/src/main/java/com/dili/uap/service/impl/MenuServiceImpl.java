@@ -75,4 +75,9 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, Long> implements Menu
     public Map<String, Object> getMenuDetailByUrl(String url) {
         return getActualDao().getMenuDetailByUrl(url);
     }
+
+    @Override
+    public List<Menu> listSystemMenu(){
+        return getActualDao().listSystemMenu();
+    }
 }

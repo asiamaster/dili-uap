@@ -1,7 +1,9 @@
 package com.dili.uap.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.uap.domain.Menu;
+import com.dili.uap.glossary.MenuType;
 import com.dili.uap.sdk.session.SessionConstants;
 import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.service.MenuService;
@@ -35,14 +37,10 @@ public class MenuController {
         return "menu/index";
     }
 
-    @ApiOperation(value="分页查询Menu", notes = "分页查询Menu，返回easyui分页信息")
-    @ApiImplicitParams({
-		@ApiImplicitParam(name="Menu", paramType="form", value = "Menu的form信息", required = false, dataType = "string")
-	})
-    @RequestMapping(value="/listPage.action", method = {RequestMethod.GET, RequestMethod.POST})
-    public @ResponseBody String listPage(Menu menu) throws Exception {
-//        SessionContext.getSessionContext().dataAuth(SessionConstants.DATA_AUTH_TYPE_)
-        return menuService.listEasyuiPageByExample(menu, true).toString();
+    @RequestMapping(value = "/listSystemMenu.action", method = { RequestMethod.GET, RequestMethod.POST })
+    @ResponseBody
+    public List<Menu> listSystemMenu() {
+        return this.menuService.listSystemMenu();
     }
 
     @ApiOperation("新增Menu")

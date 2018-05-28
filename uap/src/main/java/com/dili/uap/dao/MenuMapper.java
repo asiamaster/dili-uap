@@ -36,4 +36,10 @@ public interface MenuMapper extends MyMapper<Menu> {
      * @return
      */
     Map<String, Object> getMenuDetailByUrl(String url);
+
+    /**
+     * 列出所有系统和菜单
+     * @return
+     */
+    List<Menu> listSystemMenu();
 }

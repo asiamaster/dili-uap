@@ -81,6 +81,7 @@
     select getParentMenus(#{id})
   </select>
 
+  <!-- 查询菜单详情，包含系统信息 -->
   <select id="getMenuDetailByUrl" parameterType="java.lang.String" resultType="map">
     select m.id
       ,m.parent_id
@@ -101,4 +102,18 @@
       and m.url=#{url}
   </select>
 
+  <!-- 列出所有系统和菜单 -->
+  <select id="listSystemMenu" parameterType="java.lang.String" resultType="map">
+    (select concat('menu_',m.id) as id
+        , case when m.parent_id is null then concat('sys_',m.system_id) else concat('menu_',m.parent_id) end as parent_id
+        ,m.`name`
+        ,m.`type`
+        from menu m order by m.order_number)
+    union all
+        select concat('sys_',s.id) as id
+            , null as parent_id
+         ,s.name
+         ,3 as 'type'
+          from `system` s
+  </select>
 </mapper>
