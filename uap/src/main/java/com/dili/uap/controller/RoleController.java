@@ -18,10 +18,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.Date;
@@ -55,9 +52,6 @@ public class RoleController {
         modelMap.put("firms", firmService.list(query));
         modelMap.put("isGroup", isGroup);
         modelMap.put("firmCode",firmCode);
-        if(true){
-            throw new RuntimeException("test");
-        }
         return "role/index";
     }
 
@@ -127,5 +121,11 @@ public class RoleController {
     @RequestMapping(value = "/saveRoleMenuAndResource.action", method = { RequestMethod.GET, RequestMethod.POST })
     public @ResponseBody BaseOutput saveRoleMenuAndResource(Long roleId,String resourceIds[]) {
         return roleService.saveRoleMenuAndResource(roleId,resourceIds);
+    }
+
+    @ApiOperation("解绑Role和User")
+    @RequestMapping(value = "/unbindRoleUser.action", method = { RequestMethod.GET, RequestMethod.POST })
+    public @ResponseBody BaseOutput unbindRoleUser(Long roleId,Long userId) {
+        return roleService.unbindRoleUser(roleId,userId);
     }
 }

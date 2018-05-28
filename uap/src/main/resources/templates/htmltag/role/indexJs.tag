@@ -287,6 +287,13 @@
                     }
                 },
                 {
+                    iconCls:'icon-user',
+                    text:'角色用户',
+                    handler:function(){
+                        onUserList();
+                    }
+                },
+                {
                     iconCls:'icon-add',
                     text:'新增',
                     handler:function(){
@@ -336,6 +343,8 @@
         roleGrid.datagrid('getPanel').removeClass('lines-both lines-no lines-right lines-bottom').addClass("lines-bottom");
         queryGrid();
         setOptBtnDisplay(false);
+        //初始化用户列表的grid
+        initUserListGrid();
     });
 
     //表格查询
@@ -399,6 +408,81 @@
             },
             error: function () {
                 $.messager.alert('错误', '远程访问失败');
+            }
+        });
+    }
+
+    /**
+     * 角色用户列表
+     */
+    function onUserList() {
+        var selected = roleGrid.datagrid("getSelected");
+        if (null == selected) {
+            $.messager.alert('警告', '请选中一条数据');
+            return;
+        }
+        var opts = $('#userListGrid').datagrid("options");
+        if (null == opts.url || "" == opts.url) {
+            opts.url = "${contextPath!}/user/findUserByRole.action";
+        }
+        $("#userListGrid").datagrid("load", {roleId:selected.id});
+        $('#userListDlg').dialog('open');
+        $('#userListDlg').dialog('center');
+    }
+
+    /**
+     * 用户列表grid初始化
+     */
+    function initUserListGrid() {
+        $('#userListGrid').datagrid({
+            toolbar: [
+                 {
+                    iconCls:'icon-remove',
+                    text:'解除绑定',
+                    handler:function(){
+                        unbindRoleUser();
+                    }
+                 }
+            ]
+        });
+
+
+
+    }
+    
+    /**
+     * 解除角色绑定
+     */
+    function unbindRoleUser() {
+
+        //获取选择的角色信息
+        var selectedRole = roleGrid.datagrid("getSelected");
+        //选择的用户
+        var selectedUser = $("#userListGrid").datagrid("getSelected");
+        if (null == selectedUser) {
+            $.messager.alert('警告', '请选中一条数据');
+            return;
+        }
+        $.messager.confirm('确认', '您确认想要解绑该用户吗？', function (r) {
+            if (r) {
+                var index = $('#userListGrid').datagrid("getRowIndex", selectedUser);
+                $.ajax({
+                    type: "POST",
+                    url: "${contextPath!}/role/unbindRoleUser.action",
+                    data: {roleId: selectedRole.id, userId: selectedUser.id},
+                    dataType: "json",
+                    async: true,
+                    success: function (ret) {
+                        if (ret.success) {
+                            $('#userListGrid').datagrid("deleteRow", index);
+                        } else {
+                            $.messager.alert('错误', ret.result);
+                        }
+                    },
+                    error: function () {
+                        $.messager.alert('错误', '远程访问失败');
+                    }
+                });
             }
         });
     }

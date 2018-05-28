@@ -4,23 +4,16 @@ import com.dili.ss.base.BaseServiceImpl;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.constants.UapConstants;
-import com.dili.uap.dao.RoleMapper;
-import com.dili.uap.dao.RoleMenuMapper;
-import com.dili.uap.dao.RoleResourceMapper;
-import com.dili.uap.dao.SystemMapper;
-import com.dili.uap.domain.Role;
-import com.dili.uap.domain.RoleMenu;
-import com.dili.uap.domain.RoleResource;
+import com.dili.uap.dao.*;
+import com.dili.uap.domain.*;
 import com.dili.uap.domain.System;
 import com.dili.uap.domain.dto.SystemResourceDto;
 import com.dili.uap.glossary.MenuType;
 import com.dili.uap.glossary.Yn;
 import com.dili.uap.service.RoleService;
-import com.dili.uap.service.SystemService;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,6 +39,8 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements Role
     RoleMenuMapper roleMenuMapper;
     @Autowired
     RoleResourceMapper roleResourceMapper;
+    @Autowired
+    UserRoleMapper userRoleMapper;
 
 
     @Override
@@ -213,5 +208,17 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements Role
             roleResourceMapper.insertList(roleResources);
         }
         return BaseOutput.success("操作成功");
+    }
+
+    @Override
+    public BaseOutput unbindRoleUser(Long roleId, Long userId) {
+        if (null == roleId || null == userId ){
+            return BaseOutput.failure("参数错误");
+        }
+        UserRole ur = DTOUtils.newDTO(UserRole.class);
+        ur.setRoleId(roleId);
+        ur.setUserId(userId);
+        userRoleMapper.delete(ur);
+        return BaseOutput.success("解绑成功");
     }
 }

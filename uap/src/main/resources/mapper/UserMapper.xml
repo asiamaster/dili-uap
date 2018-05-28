@@ -84,4 +84,14 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
+
+  <!-- 根据角色ID查询用户列表信息 -->
+  <select id="findUserByRole" parameterType="Long" resultMap="BaseResultMap">
+        <![CDATA[
+        SELECT u.*
+        FROM user u
+        LEFT JOIN user_role ur on ur.user_id = u.id
+        WHERE ur.role_id=#{id}
+		]]>
+	</select>
 </mapper>

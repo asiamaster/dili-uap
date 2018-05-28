@@ -8,6 +8,8 @@ import com.dili.uap.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * 由MyBatis Generator工具自动生成
  * This file was generated on 2018-05-18 10:46:46.
@@ -24,5 +26,10 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
     @Override
     public void logout(String sessionId) {
         this.userManager.clearSession(sessionId);
+    }
+
+    @Override
+    public List<User> findUserByRole(Long roleId) {
+        return getActualDao().findUserByRole(roleId);
     }
 }
