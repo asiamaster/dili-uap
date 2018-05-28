@@ -212,13 +212,14 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements Role
 
     @Override
     public BaseOutput unbindRoleUser(Long roleId, Long userId) {
-        if (null == roleId || null == userId ){
+        if (null == roleId || null == userId) {
             return BaseOutput.failure("参数错误");
         }
         UserRole ur = DTOUtils.newDTO(UserRole.class);
         ur.setRoleId(roleId);
         ur.setUserId(userId);
-        userRoleMapper.delete(ur);
+        List<UserRole> userRoles = userRoleMapper.select(ur);
+        userRoles.stream().forEach(userRole -> userRoleMapper.deleteByPrimaryKey(userRole.getId()));
         return BaseOutput.success("解绑成功");
     }
 }
