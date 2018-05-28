@@ -44,7 +44,7 @@
                             window.firmCode = newValue;
                             $('#grid').treegrid('reload', {firmCode:newValue});
                        }"/>
-                <#comboProvider _id="firm" _provider='firmProvider' />
+                <#comboProvider _id="firm" _provider='firmCodeProvider' />
                 <%}%>
                 <a href="#" class="easyui-linkbutton" iconCls="icon-add" onclick="openInsert()" plain="true">新增</a>
                 <a href="#" class="easyui-linkbutton" iconCls="icon-edit" onclick="openUpdate()" plain="true">修改</a>

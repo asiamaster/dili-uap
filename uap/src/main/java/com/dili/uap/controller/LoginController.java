@@ -1,11 +1,9 @@
 package com.dili.uap.controller;
 
 import com.dili.ss.domain.BaseOutput;
-import com.dili.ss.dto.DTOUtils;
+import com.dili.uap.constants.UapConstants;
 import com.dili.uap.domain.dto.LoginDto;
-import com.dili.uap.sdk.glossary.DataAuthType;
 import com.dili.uap.sdk.session.SessionConstants;
-import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.sdk.util.WebContent;
 import com.dili.uap.service.LoginService;
 import com.dili.uap.service.UserService;
@@ -22,10 +20,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -63,7 +59,9 @@ public class LoginController {
     @RequestMapping(value = "/login.action", method = { RequestMethod.GET, RequestMethod.POST })
     public String loginAction(LoginDto loginDto, ModelMap modelMap, HttpServletRequest request) {
 		loginDto.setLoginPath(WebUtil.fetchReferer(request));
-//		loginDto.setRemoteIP(WebUtil.getRemoteIP(request));
+		loginDto.setIp(WebUtil.getRemoteIP(request));
+		loginDto.setHost(request.getRemoteHost());
+		loginDto.setSystemCode(UapConstants.SYSTEM_CODE);
 		BaseOutput<Boolean> output = loginService.loginAndTag(loginDto);
 		//登录成功后跳到首页
 		if (output.isSuccess()) {

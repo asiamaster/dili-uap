@@ -7,6 +7,7 @@ import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.constants.UapConstants;
 import com.dili.uap.dao.SystemConfigMapper;
 import com.dili.uap.dao.UserMapper;
+import com.dili.uap.domain.LoginLog;
 import com.dili.uap.domain.SystemConfig;
 import com.dili.uap.domain.User;
 import com.dili.uap.domain.dto.LoginDto;
@@ -16,8 +17,10 @@ import com.dili.uap.glossary.Yn;
 import com.dili.uap.manager.*;
 import com.dili.uap.sdk.session.ManageConfig;
 import com.dili.uap.sdk.session.SessionConstants;
+import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.sdk.util.ManageRedisUtil;
 import com.dili.uap.sdk.util.WebContent;
+import com.dili.uap.service.LoginLogService;
 import com.dili.uap.service.LoginService;
 import com.dili.uap.utils.MD5Util;
 import com.dili.uap.utils.WebUtil;
@@ -29,7 +32,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.BoundListOperations;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -84,51 +86,65 @@ public class LoginServiceImpl implements LoginService {
     @Autowired
     private SystemConfigMapper systemConfigMapper;
 
+    @Autowired
+    private LoginLogService loginLogService;
+
     @Override
     public BaseOutput<LoginResult> login(LoginDto loginDto) {
-        User record = DTOUtils.newDTO(User.class);
-        record.setUserName(loginDto.getUserName());
-        User user = this.userMapper.selectOne(record);
-        //判断密码不正确，三次后锁定用户、锁定后的用户12小时后自动解锁
-        if (user == null || !StringUtils.equalsIgnoreCase(user.getPassword(), this.encryptPwd(loginDto.getPassword()))) {
-            lockUser(user);
-            return BaseOutput.failure("用户名或密码错误").setCode(ResultCode.NOT_AUTH_ERROR);
-        }
-        clearUserLock(user.getId());
-        if(user.getState().equals(UserState.LOCKED.getCode())){
-            return BaseOutput.failure("用户已被锁定，请联系管理员").setCode(ResultCode.NOT_AUTH_ERROR);
-        }
-        //用户状态为锁定和禁用不允许登录
-        if (user.getState().equals(UserState.DISABLED.getCode()) || user.getState().equals(UserState.LOCKED.getCode())) {
-            return BaseOutput.failure("用户状态"+UserState.getUserState(user.getState()).getName()+", 不能进行登录!");
-        }
+        try {
+            User record = DTOUtils.newDTO(User.class);
+            record.setUserName(loginDto.getUserName());
+            User user = this.userMapper.selectOne(record);
+            //记录用户id和市场编码，用于记录登录日志
+            loginDto.setUserId(user.getId());
+            loginDto.setFirmCode(user.getFirmCode());
+            //判断密码不正确，三次后锁定用户、锁定后的用户12小时后自动解锁
+            if (user == null || !StringUtils.equalsIgnoreCase(user.getPassword(), this.encryptPwd(loginDto.getPassword()))) {
+                lockUser(user);
+                logLogin(loginDto, false, "用户名或密码错误");
+                return BaseOutput.failure("用户名或密码错误").setCode(ResultCode.NOT_AUTH_ERROR);
+            }
+            clearUserLock(user.getId());
+            if(user.getState().equals(UserState.LOCKED.getCode())){
+                logLogin(loginDto, false, "用户已被锁定，请联系管理员");
+                return BaseOutput.failure("用户已被锁定，请联系管理员").setCode(ResultCode.NOT_AUTH_ERROR);
+            }
+            //用户状态为锁定和禁用不允许登录
+            if (user.getState().equals(UserState.DISABLED.getCode()) || user.getState().equals(UserState.LOCKED.getCode())) {
+                return BaseOutput.failure("用户状态"+UserState.getUserState(user.getState()).getName()+", 不能进行登录!");
+            }
 
-        // 加载用户url
-        this.menuManager.initUserMenuUrlsInRedis(user.getId());
-        // 加载用户resource
-        this.resourceManager.initUserResourceCodeInRedis(user.getId());
+            // 加载用户url
+            this.menuManager.initUserMenuUrlsInRedis(user.getId());
+            // 加载用户resource
+            this.resourceManager.initUserResourceCodeInRedis(user.getId());
 //        // 加载用户数据权限
-        this.dataAuthManager.initUserDataAuthesInRedis(user.getId());
+            this.dataAuthManager.initUserDataAuthesInRedis(user.getId());
 
-        //原来的代码是更新用户的最后登录IP和最后登录时间，现在暂时不需要了
+            //原来的代码是更新用户的最后登录IP和最后登录时间，现在暂时不需要了
 //        user.setLastLoginTime(new Date());
-//        user.setLastLoginIp(dto.getRemoteIP());
+//        user.setLastLoginIp(dto.getIp());
 //        if (this.userMapper.updateByPrimaryKey(user) <= 0) {
 //            LOG.error("登录过程更新用户信息失败");
 //            return BaseOutput.failure("用户已被禁用, 不能进行登录!").setCode(ResultCode.NOT_AUTH_ERROR);
 //        }
-        LOG.info(String.format("用户登录成功，用户名[%s] | 用户IP[%s]", loginDto.getUserName(), loginDto.getRemoteIP()));
-        // 用户登陆 挤掉 旧登陆用户
-        jamUser(user);
-        String sessionId = UUID.randomUUID().toString();
-        //缓存用户相关信息到Redis
-        makeRedisTag(user, sessionId);
-        //构建返回的登录信息
-        LoginResult loginResult = DTOUtils.newDTO(LoginResult.class);
-        loginResult.setUser(user);
-        loginResult.setSessionId(sessionId);
-        loginResult.setLoginPath(loginDto.getLoginPath());
-        return BaseOutput.success("登录成功").setData(loginResult);
+            LOG.info(String.format("用户登录成功，用户名[%s] | 用户IP[%s]", loginDto.getUserName(), loginDto.getIp()));
+            // 用户登陆 挤掉 旧登陆用户
+            jamUser(user);
+            String sessionId = UUID.randomUUID().toString();
+            //缓存用户相关信息到Redis
+            makeRedisTag(user, sessionId);
+            //构建返回的登录信息
+            LoginResult loginResult = DTOUtils.newDTO(LoginResult.class);
+            loginResult.setUser(user);
+            loginResult.setSessionId(sessionId);
+            loginResult.setLoginPath(loginDto.getLoginPath());
+            logLogin(loginDto, true, "登录成功");
+            return BaseOutput.success("登录成功").setData(loginResult);
+        } catch (Exception e) {
+            logLogin(loginDto, false, e.getMessage());
+            return BaseOutput.success("登录失败").setResult(e.getMessage());
+        }
     }
 
     @Override
@@ -139,6 +155,16 @@ public class LoginServiceImpl implements LoginService {
         }
         makeCookieTag(output.getData().getUser(), output.getData().getSessionId());
         return BaseOutput.success("登录成功");
+    }
+
+    /**
+     * 记录登录日志
+     */
+    private void logLogin(LoginDto loginDto, boolean isSuccess, String msg){
+        LoginLog loginLog = DTOUtils.as(loginDto, LoginLog.class);
+        loginLog.setSuccess(isSuccess ? Yn.YES.getCode() : Yn.NO.getCode());
+        loginLog.setReason(msg);
+        loginLogService.insertSelective(loginLog);
     }
 
     /**

@@ -368,8 +368,8 @@
         $('#roleMenuAndResourceDlg').dialog('center');
         var opts = $('#roleMenuAndResourceGrid').treegrid("options");
         opts.url = "${contextPath}/role/getRoleMenuAndResource.action?roleId=" + selected.id;
+        $('#roleMenuAndResourceGrid').treegrid("clearChecked");
         $('#roleMenuAndResourceGrid').treegrid("load");
-
     }
 
     /**

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dili.uap.dao.SystemExceptionLogMapper">
+  <resultMap id="BaseResultMap" type="com.dili.uap.domain.SystemExceptionLog">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="ip" jdbcType="VARCHAR" property="ip" />
+    <result column="system_code" jdbcType="VARCHAR" property="systemCode" />
+    <result column="system_name" jdbcType="VARCHAR" property="systemName" />
+    <result column="menu_id" jdbcType="BIGINT" property="menuId" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="firm_code" jdbcType="VARCHAR" property="firmCode" />
+    <result column="firm_name" jdbcType="VARCHAR" property="firmName" />
+    <result column="version" jdbcType="INTEGER" property="version" />
+    <result column="exception_time" jdbcType="TIMESTAMP" property="exceptionTime" />
+    <result column="msg" jdbcType="VARCHAR" property="msg" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    id, ip, system_code, system_name, menu_id, type, firm_code, firm_name, version, exception_time, 
+    msg
+  </sql>
+  <select id="selectBy" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    select 
+    <include refid="Base_Column_List" />
+    from system_exception_log
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <update id="updateBy" parameterType="com.dili.uap.domain.SystemExceptionLog">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    update system_exception_log
+    <set>
+      <if test="ip != null">
+        ip = #{ip,jdbcType=VARCHAR},
+      </if>
+      <if test="systemCode != null">
+        system_code = #{systemCode,jdbcType=VARCHAR},
+      </if>
+      <if test="systemName != null">
+        system_name = #{systemName,jdbcType=VARCHAR},
+      </if>
+      <if test="menuId != null">
+        menu_id = #{menuId,jdbcType=BIGINT},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="firmCode != null">
+        firm_code = #{firmCode,jdbcType=VARCHAR},
+      </if>
+      <if test="firmName != null">
+        firm_name = #{firmName,jdbcType=VARCHAR},
+      </if>
+      <if test="version != null">
+        version = #{version,jdbcType=INTEGER},
+      </if>
+      <if test="exceptionTime != null">
+        exception_time = #{exceptionTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="msg != null">
+        msg = #{msg,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

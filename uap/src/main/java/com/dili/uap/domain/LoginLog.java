@@ -14,7 +14,7 @@ import javax.persistence.Id;
 /**
  * 由MyBatis Generator工具自动生成
  * 
- * This file was generated on 2018-05-22 15:30:02.
+ * This file was generated on 2018-05-28 11:33:04.
  */
 @Table(name = "`login_log`")
 public interface LoginLog extends IBaseDomain {
@@ -28,21 +28,21 @@ public interface LoginLog extends IBaseDomain {
     void setId(Long id);
 
     @Column(name = "`user_id`")
-    @FieldDef(label="用户id", maxLength = 20)
-    @EditMode(editor = FieldEditor.Text, required = true)
-    String getUserId();
+    @FieldDef(label="用户id")
+    @EditMode(editor = FieldEditor.Number, required = true)
+    Long getUserId();
 
-    void setUserId(String userId);
+    void setUserId(Long userId);
 
     @Column(name = "`ip`")
-    @FieldDef(label="IP地址", maxLength = 20)
+    @FieldDef(label="编号", maxLength = 20)
     @EditMode(editor = FieldEditor.Text, required = false)
     String getIp();
 
     void setIp(String ip);
 
     @Column(name = "`host`")
-    @FieldDef(label="主机名", maxLength = 40)
+    @FieldDef(label="备注", maxLength = 40)
     @EditMode(editor = FieldEditor.Text, required = false)
     String getHost();
 
@@ -62,12 +62,19 @@ public interface LoginLog extends IBaseDomain {
 
     void setLogoutTime(Date logoutTime);
 
-    @Column(name = "`system_id`")
-    @FieldDef(label="登录系统")
-    @EditMode(editor = FieldEditor.Number, required = false)
-    Long getSystemId();
+    @Column(name = "`system_code`")
+    @FieldDef(label="登录系统编码", maxLength = 50)
+    @EditMode(editor = FieldEditor.Text, required = false)
+    String getSystemCode();
 
-    void setSystemId(Long systemId);
+    void setSystemCode(String systemCode);
+
+    @Column(name = "`system_name`")
+    @FieldDef(label="登录系统名称", maxLength = 50)
+    @EditMode(editor = FieldEditor.Text, required = false)
+    String getSystemName();
+
+    void setSystemName(String systemName);
 
     @Column(name = "`firm_code`")
     @FieldDef(label="市场编码", maxLength = 50)
@@ -75,6 +82,13 @@ public interface LoginLog extends IBaseDomain {
     String getFirmCode();
 
     void setFirmCode(String firmCode);
+
+    @Column(name = "`firm_name`")
+    @FieldDef(label="市场名称", maxLength = 50)
+    @EditMode(editor = FieldEditor.Text, required = false)
+    String getFirmName();
+
+    void setFirmName(String firmName);
 
     @Column(name = "`success`")
     @FieldDef(label="是否成功")
