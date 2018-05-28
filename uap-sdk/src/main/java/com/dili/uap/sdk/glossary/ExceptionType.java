@@ -1,4 +1,4 @@
-package com.dili.uap.glossary;
+package com.dili.uap.sdk.glossary;
 
 /**
  * 异常类型

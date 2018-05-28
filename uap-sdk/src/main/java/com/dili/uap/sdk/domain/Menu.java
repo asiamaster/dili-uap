@@ -24,8 +24,15 @@ public interface Menu extends IBaseDomain {
 
     void setId(Long id);
 
+    @Column(name = "`system_id`")
+    @FieldDef(label="所属系统")
+    @EditMode(editor = FieldEditor.Number, required = false)
+    Long getSystemId();
+
+    void setSystemId(Long systemId);
+
     @Column(name = "`parent_id`")
-    @FieldDef(label="父级菜单id")
+    @FieldDef(label="上级id")
     @EditMode(editor = FieldEditor.Number, required = false)
     Long getParentId();
 
@@ -33,20 +40,20 @@ public interface Menu extends IBaseDomain {
 
     @Column(name = "`order_number`")
     @FieldDef(label="排序号")
-    @EditMode(editor = FieldEditor.Number, required = false)
+    @EditMode(editor = FieldEditor.Number, required = true)
     Integer getOrderNumber();
 
     void setOrderNumber(Integer orderNumber);
 
-    @Column(name = "`menu_url`")
+    @Column(name = "`url`")
     @FieldDef(label="菜单url", maxLength = 255)
     @EditMode(editor = FieldEditor.Text, required = false)
-    String getMenuUrl();
+    String getUrl();
 
-    void setMenuUrl(String menuUrl);
+    void setUrl(String url);
 
     @Column(name = "`name`")
-    @FieldDef(label="名称", maxLength = 255)
+    @FieldDef(label="名称", maxLength = 50)
     @EditMode(editor = FieldEditor.Text, required = true)
     String getName();
 
@@ -79,13 +86,6 @@ public interface Menu extends IBaseDomain {
     Date getModified();
 
     void setModified(Date modified);
-
-    @Column(name = "`yn`")
-    @FieldDef(label="有效性")
-    @EditMode(editor = FieldEditor.Combo, required = true, params="{\"data\":[{\"text\":\"无效\",\"value\":0},{\"text\":\"有效\",\"value\":1}]}")
-    Integer getYn();
-
-    void setYn(Integer yn);
 
     @Column(name = "`type`")
     @FieldDef(label="类型")

@@ -2,13 +2,17 @@ package com.dili.uap.sdk.session;
 
 
 import com.dili.ss.domain.BaseOutput;
+import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.sdk.domain.Menu;
+import com.dili.uap.sdk.domain.SystemExceptionLog;
 import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.exception.NotAccessPermission;
 import com.dili.uap.sdk.exception.NotLoginException;
 import com.dili.uap.sdk.exception.RedirectException;
+import com.dili.uap.sdk.glossary.ExceptionType;
 import com.dili.uap.sdk.redis.UserUrlRedis;
 import com.dili.uap.sdk.rpc.MenuRpc;
+import com.dili.uap.sdk.rpc.SystemExceptionLogRpc;
 import com.dili.uap.sdk.util.WebContent;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
@@ -42,6 +46,9 @@ public class SessionFilter implements Filter {
 
     @Autowired
     private UserUrlRedis userResRedis;
+
+    @Autowired
+    private SystemExceptionLogRpc systemExceptionLogRpc;
 
     @Override
     public void destroy() {}
@@ -103,6 +110,7 @@ public class SessionFilter implements Filter {
             pc.sendRedirect(e.getPath());
         } catch (NotLoginException e) {
             pc.noAccess();
+            systemExceptionLog(pc, e);
         } catch (NotAccessPermission e) {
             if (log.isInfoEnabled()) {
                 log.info("用户{Session:" + pc.getSessionId() + ", userId:" + pc.getUserId() + "}没有访问" + pc.getUrl() + "权限！");
@@ -112,6 +120,30 @@ public class SessionFilter implements Filter {
             log.error(e.getMessage(), e);
         } finally {
             SessionContext.remove();
+        }
+    }
+
+    /**
+     * 记录系统异常
+     * @param pc
+     * @param e
+     */
+    private void systemExceptionLog(PermissionContext pc, Exception e){
+        BaseOutput<Map<String, Object>> output = menuRpc.getMenuDetailByUrl(pc.getUrl());
+        if(output.isSuccess()){
+            Map<String, Object> menu1 = output.getData();
+            if(menu1.isEmpty()) {
+                return;
+            }
+            SystemExceptionLog systemExceptionLog = DTOUtils.newDTO(SystemExceptionLog.class);
+            systemExceptionLog.setMenuId(Long.parseLong(menu1.get("id").toString()));
+            systemExceptionLog.setMsg(e.getMessage());
+            systemExceptionLog.setSystemCode(menu1.get("system_code").toString());
+            systemExceptionLog.setSystemName(menu1.get("system_name").toString());
+            systemExceptionLog.setType(ExceptionType.NOT_AUTH_ERROR.getCode());
+            systemExceptionLog.setExceptionTime(new Date());
+            systemExceptionLog.setIp(pc.getReq().getRemoteAddr());
+            systemExceptionLogRpc.insert(systemExceptionLog);
         }
     }
 

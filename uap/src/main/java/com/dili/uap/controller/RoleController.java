@@ -55,6 +55,9 @@ public class RoleController {
         modelMap.put("firms", firmService.list(query));
         modelMap.put("isGroup", isGroup);
         modelMap.put("firmCode",firmCode);
+        if(true){
+            throw new RuntimeException("test");
+        }
         return "role/index";
     }
 

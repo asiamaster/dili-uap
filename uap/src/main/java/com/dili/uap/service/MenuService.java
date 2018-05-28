@@ -5,6 +5,7 @@ import com.dili.uap.domain.Menu;
 import com.dili.uap.sdk.exception.NotLoginException;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 由MyBatis Generator工具自动生成
@@ -32,4 +33,11 @@ public interface MenuService extends BaseService<Menu, Long> {
      * @return
      */
     List<Menu> getParentMenusByUrl(String url);
+
+    /**
+     * 根据url获取菜单详情，包含系统信息
+     * @param url
+     * @return
+     */
+    Map<String, Object> getMenuDetailByUrl(String url);
 }

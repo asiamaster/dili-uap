@@ -5,6 +5,7 @@ import com.dili.uap.domain.Menu;
 import com.dili.uap.domain.dto.MenuDto;
 
 import java.util.List;
+import java.util.Map;
 
 public interface MenuMapper extends MyMapper<Menu> {
 
@@ -28,4 +29,11 @@ public interface MenuMapper extends MyMapper<Menu> {
      * @return
      */
     String getParentMenus(String id);
+
+    /**
+     * 根据url获取菜单详情，包含系统信息
+     * @param url
+     * @return
+     */
+    Map<String, Object> getMenuDetailByUrl(String url);
 }

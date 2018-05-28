@@ -80,4 +80,25 @@
   <select id="getParentMenus" parameterType="java.lang.String" resultType="string">
     select getParentMenus(#{id})
   </select>
+
+  <select id="getMenuDetailByUrl" parameterType="java.lang.String" resultType="map">
+    select m.id
+      ,m.parent_id
+      ,m.system_id
+      ,m.order_number
+      ,m.url
+      ,m.`name`
+      ,m.description
+      ,m.target
+      ,m.created
+      ,m.modified
+      ,m.icon_cls
+      ,m.`type`
+      ,s.code system_code
+      ,s.name system_name
+      ,s.`type`
+      from menu m, `system` s where m.system_id = s.id
+      and m.url=#{url}
+  </select>
+
 </mapper>

@@ -70,4 +70,9 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, Long> implements Menu
         }
         return getParentMenus(menus.get(0).getId().toString());
     }
+
+    @Override
+    public Map<String, Object> getMenuDetailByUrl(String url) {
+        return getActualDao().getMenuDetailByUrl(url);
+    }
 }

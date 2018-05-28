@@ -8,6 +8,7 @@ import com.dili.uap.constants.UapConstants;
 import com.dili.uap.dao.SystemConfigMapper;
 import com.dili.uap.dao.UserMapper;
 import com.dili.uap.domain.LoginLog;
+import com.dili.uap.domain.System;
 import com.dili.uap.domain.SystemConfig;
 import com.dili.uap.domain.User;
 import com.dili.uap.domain.dto.LoginDto;
@@ -22,6 +23,7 @@ import com.dili.uap.sdk.util.ManageRedisUtil;
 import com.dili.uap.sdk.util.WebContent;
 import com.dili.uap.service.LoginLogService;
 import com.dili.uap.service.LoginService;
+import com.dili.uap.service.SystemService;
 import com.dili.uap.utils.MD5Util;
 import com.dili.uap.utils.WebUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -33,6 +35,7 @@ import org.springframework.data.redis.core.BoundListOperations;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -89,6 +92,9 @@ public class LoginServiceImpl implements LoginService {
     @Autowired
     private LoginLogService loginLogService;
 
+    @Autowired
+    private SystemService systemService;
+
     @Override
     public BaseOutput<LoginResult> login(LoginDto loginDto) {
         try {
@@ -104,6 +110,7 @@ public class LoginServiceImpl implements LoginService {
                 logLogin(loginDto, false, "用户名或密码错误");
                 return BaseOutput.failure("用户名或密码错误").setCode(ResultCode.NOT_AUTH_ERROR);
             }
+            //登录成功后清除锁定计时
             clearUserLock(user.getId());
             if(user.getState().equals(UserState.LOCKED.getCode())){
                 logLogin(loginDto, false, "用户已被锁定，请联系管理员");
@@ -118,7 +125,7 @@ public class LoginServiceImpl implements LoginService {
             this.menuManager.initUserMenuUrlsInRedis(user.getId());
             // 加载用户resource
             this.resourceManager.initUserResourceCodeInRedis(user.getId());
-//        // 加载用户数据权限
+            // 加载用户数据权限
             this.dataAuthManager.initUserDataAuthesInRedis(user.getId());
 
             //原来的代码是更新用户的最后登录IP和最后登录时间，现在暂时不需要了
@@ -157,14 +164,28 @@ public class LoginServiceImpl implements LoginService {
         return BaseOutput.success("登录成功");
     }
 
+    // =================================   私有方法分割线   ====================================
+
     /**
-     * 记录登录日志
+     * 异步记录登录日志
      */
     private void logLogin(LoginDto loginDto, boolean isSuccess, String msg){
-        LoginLog loginLog = DTOUtils.as(loginDto, LoginLog.class);
-        loginLog.setSuccess(isSuccess ? Yn.YES.getCode() : Yn.NO.getCode());
-        loginLog.setReason(msg);
-        loginLogService.insertSelective(loginLog);
+        new Thread(){
+            @Override
+            public void run() {
+                LoginLog loginLog = DTOUtils.as(loginDto, LoginLog.class);
+                loginLog.setSuccess(isSuccess ? Yn.YES.getCode() : Yn.NO.getCode());
+                loginLog.setReason(msg);
+                //设计系统名称
+                if(StringUtils.isNotBlank(loginLog.getSystemCode())) {
+                    System system = DTOUtils.newDTO(System.class);
+                    system.setCode(loginDto.getSystemCode());
+                    List<System> systemList = systemService.listByExample(system);
+                    loginLog.setSystemName(systemList.isEmpty() ? loginDto.getSystemCode() : systemList.get(0).getName());
+                }
+                loginLogService.insertSelective(loginLog);
+            }
+        }.start();
     }
 
     /**
@@ -251,13 +272,13 @@ public class LoginServiceImpl implements LoginService {
             if (t == 0) {
                 break;
             }
-            Long nt = System.currentTimeMillis() - t;
+            Long nt = java.lang.System.currentTimeMillis() - t;
             if (nt < pwdErrorRange) {
                 break;
             }
             ops.rightPop();
         }
-        ops.leftPush(String.valueOf(System.currentTimeMillis()));
+        ops.leftPush(String.valueOf(java.lang.System.currentTimeMillis()));
         //查询系统配置的密码错误锁定次数
         SystemConfig systemConfigCondition = DTOUtils.newDTO(SystemConfig.class);
         systemConfigCondition.setYn(Yn.YES.getCode());
