@@ -69,10 +69,10 @@
         </div>
     </div>
      <!-- 隐藏的权限编辑框 -->
-     <div id="roleMenuAndResourceDlg" class="easyui-dialog" resizable="false" constrain="true" shadow="true" draggable="false" title="权限分配" style="padding:10px;width: 80%" modal="true" border="thin" closed="true"
+     <div id="roleMenuAndResourceDlg" class="easyui-dialog" resizable="false" constrain="true" shadow="true" draggable="false" title="权限分配" style="width: 60%" modal="true" border="thin" closed="true"
           data-options="
                     iconCls: 'icon-save',
-                    height: 350,
+                    height: 550,
                     buttons: [{
                         text:'确认',
                         iconCls:'icon-ok',
@@ -83,8 +83,9 @@
                     data-options="pagination:false, checkbox: true,rownumbers: false,idField:'treeId',treeField:'name',_parentIdField:'parentId',loadFilter:treegridLoadFilter">
                  <thead>
                  <tr>
-                     <th width="20%" data-options="field:'name', resizable:'true'">名称</th>
-                     <th width="40%"data-options="field:'description',resizable:'true'">描述</th>
+                     <th width="30%" data-options="field:'name',resizable:'true'">名称</th>
+                     <th width="20%"data-options="field:'type',resizable:'true'">权限类型</th>
+                     <th width="50%"data-options="field:'description',resizable:'true'">描述</th>
                  </tr>
                  </thead>
              </table>

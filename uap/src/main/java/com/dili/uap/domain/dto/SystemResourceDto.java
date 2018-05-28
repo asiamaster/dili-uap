@@ -1,7 +1,6 @@
 package com.dili.uap.domain.dto;
 
 import com.dili.ss.dto.IBaseDomain;
-import com.dili.ss.dto.IDTO;
 
 /**
  * <B>Description</B>
@@ -64,10 +63,17 @@ public interface SystemResourceDto extends IBaseDomain {
     void setState(String state);
 
     /**
-     * 
+     * 节点是否选中
      * @return
      */
     Boolean getChecked();
     void setChecked(Boolean checked);
+
+    /**
+     * 权限类型(目录，链接，内链和资源)
+     * @return
+     */
+    String getType();
+    void setType(String type);
     
 }

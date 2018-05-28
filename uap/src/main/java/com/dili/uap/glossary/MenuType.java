@@ -7,7 +7,9 @@ package com.dili.uap.glossary;
 public enum MenuType {
     DIRECTORY(0,"目录"),
     LINKS(1,"链接"),
-    INTERNAL_LINKS(2, "内部链接");
+    INTERNAL_LINKS(2, "内部链接"),
+    RESOURCE(3, "资源"),
+    ;
 
     private String name;
     private Integer code ;

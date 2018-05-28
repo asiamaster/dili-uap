@@ -13,6 +13,7 @@ import com.dili.uap.domain.RoleMenu;
 import com.dili.uap.domain.RoleResource;
 import com.dili.uap.domain.System;
 import com.dili.uap.domain.dto.SystemResourceDto;
+import com.dili.uap.glossary.MenuType;
 import com.dili.uap.glossary.Yn;
 import com.dili.uap.service.RoleService;
 import com.dili.uap.service.SystemService;
@@ -132,9 +133,13 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements Role
         target.stream().forEach(s -> {
             //如果是菜单，则ID加上对应前缀
             if (s.getMenu().intValue() == Yn.YES.getCode().intValue()) {
+                //设置节点为关闭
+                s.setState("closed");
                 s.setTreeId(UapConstants.MENU_PREFIX + s.getTreeId());
             } else {
                 s.setTreeId(UapConstants.RESOURCE_PREFIX + s.getTreeId());
+                //设置节点为开启
+                s.setState("open");
             }
             //只有在菜单中，才会存在父ID为空的情况
             if (StringUtils.isBlank(s.getParentId())) {
@@ -144,20 +149,25 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements Role
                 //如果父ID不为空，因为资源本身不存在父ID，所以统一更改父ID为菜单的前缀
                 s.setParentId(UapConstants.MENU_PREFIX + s.getParentId());
             }
-            //设置节点为关闭
-            s.setState("closed");
             //如果角色-资源信息已存在关联
             if (checkedRole.contains(s.getTreeId())) {
                 s.setChecked(true);
+            } else {
+                s.setChecked(false);
             }
+            s.setType(MenuType.getMenuType(Integer.parseInt(s.getType())).getName());
         });
 
+        /**
+         * 遍历系统信息，存入到需要显示的树集中
+         */
         systemList.stream().forEach(s -> {
             SystemResourceDto dto = DTOUtils.newDTO(SystemResourceDto.class);
             dto.setTreeId(UapConstants.SYSTEM_PREFIX + s.getId());
             dto.setName(s.getName());
             dto.setDescription(s.getDescription());
             dto.setState("closed");
+            dto.setType("系统");
             target.add(dto);
         });
 
