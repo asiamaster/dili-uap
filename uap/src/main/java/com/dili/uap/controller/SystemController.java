@@ -46,7 +46,7 @@ public class SystemController {
     @ApiImplicitParams({
 		@ApiImplicitParam(name="System", paramType="form", value = "System的form信息", required = false, dataType = "string")
 	})
-    @RequestMapping(value="/listPage", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value="/listPage.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody String listPage(SystemDto system) throws Exception {
         return systemService.listEasyuiPageByExample(system, true).toString();
     }
@@ -55,7 +55,7 @@ public class SystemController {
     @ApiImplicitParams({
 		@ApiImplicitParam(name="System", paramType="form", value = "System的form信息", required = true, dataType = "string")
 	})
-    @RequestMapping(value="/insert", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value="/insert.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody BaseOutput insert(System system) {
        return systemService.insertAfterCheck(system);
     }
@@ -64,7 +64,7 @@ public class SystemController {
     @ApiImplicitParams({
 		@ApiImplicitParam(name="System", paramType="form", value = "System的form信息", required = true, dataType = "string")
 	})
-    @RequestMapping(value="/update", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value="/update.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody BaseOutput update(System system) {
     	return systemService.updateAfterCheck(system);
     }
@@ -73,7 +73,7 @@ public class SystemController {
     @ApiImplicitParams({
 		@ApiImplicitParam(name="id", paramType="form", value = "System的主键", required = true, dataType = "long")
 	})
-    @RequestMapping(value="/delete", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value="/delete.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody BaseOutput delete(Long id) {
         systemService.delete(id);
         return BaseOutput.success("删除成功");

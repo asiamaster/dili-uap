@@ -45,7 +45,7 @@ public class SystemExceptionLogController{
     @ApiImplicitParams({
 		@ApiImplicitParam(name="SystemExceptionLog", paramType="form", value = "SystemExceptionLog的form信息", required = false, dataType = "string")
 	})
-    @RequestMapping(value="/listPage", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value="/listPage.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody String listPage(SystemExceptionLog systemExceptionLog) throws Exception {
         return systemExceptionLogService.listEasyuiPageByExample(systemExceptionLog, true).toString();
     }
@@ -54,7 +54,7 @@ public class SystemExceptionLogController{
     @ApiImplicitParams({
 		@ApiImplicitParam(name="SystemExceptionLog", paramType="form", value = "SystemExceptionLog的form信息", required = true, dataType = "string")
 	})
-    @RequestMapping(value="/insert", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value="/insert.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody BaseOutput insert(SystemExceptionLog systemExceptionLog) {
         systemExceptionLogService.insertSelective(systemExceptionLog);
         return BaseOutput.success("新增成功");
@@ -64,7 +64,7 @@ public class SystemExceptionLogController{
     @ApiImplicitParams({
 		@ApiImplicitParam(name="SystemExceptionLog", paramType="form", value = "SystemExceptionLog的form信息", required = true, dataType = "string")
 	})
-    @RequestMapping(value="/update", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value="/update.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody BaseOutput update(SystemExceptionLog systemExceptionLog) {
         systemExceptionLogService.updateSelective(systemExceptionLog);
         return BaseOutput.success("修改成功");
@@ -74,7 +74,7 @@ public class SystemExceptionLogController{
     @ApiImplicitParams({
 		@ApiImplicitParam(name="id", paramType="form", value = "SystemExceptionLog的主键", required = true, dataType = "long")
 	})
-    @RequestMapping(value="/delete", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value="/delete.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody BaseOutput delete(Long id) {
         systemExceptionLogService.delete(id);
         return BaseOutput.success("删除成功");

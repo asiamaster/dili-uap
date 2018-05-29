@@ -4,6 +4,7 @@ import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.domain.EasyuiPageOutput;
 import com.dili.uap.domain.Role;
 import com.dili.uap.domain.User;
+import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -95,5 +96,12 @@ public class UserController {
     public @ResponseBody String findUserByRole(Long roleId) {
         List<User> retList = userService.findUserByRole(roleId);
         return new EasyuiPageOutput(retList.size(), retList).toString();
+    }
+    
+    @ApiOperation(value = "根据角色id查询User", notes = "根据角色id查询User，返回列表信息")
+    @RequestMapping(value = "/changePwd.action", method = {RequestMethod.GET, RequestMethod.POST})
+    public @ResponseBody BaseOutput changePwd(User user) {
+    	SessionContext.getSessionContext().getUserTicket().getId();
+       return userService.changePwd(user);
     }
 }

@@ -1,6 +1,7 @@
 package com.dili.uap.service;
 
 import com.dili.ss.base.BaseService;
+import com.dili.ss.domain.BaseOutput;
 import com.dili.uap.domain.User;
 
 import java.util.List;
@@ -23,5 +24,12 @@ public interface UserService extends BaseService<User, Long> {
      * @return  用户列表
      */
     List<User> findUserByRole(Long roleId);
+    
+    /**
+     * 修改密码
+     * @param User  用户信息
+     * @return  结果
+     */
+    BaseOutput<Object>changePwd(User user);
 
 }

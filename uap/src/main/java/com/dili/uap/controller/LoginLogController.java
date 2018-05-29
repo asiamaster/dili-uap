@@ -54,7 +54,7 @@ public class LoginLogController {
     @ApiImplicitParams({
 		@ApiImplicitParam(name="LoginLog", paramType="form", value = "LoginLog的form信息", required = false, dataType = "string")
 	})
-    @RequestMapping(value="/listPage", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value="/listPage.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody String listPage(LoginLogDto loginLog) throws Exception {
     	EasyuiPageOutput output=loginLogService.listEasyuiPageByExample(loginLog, true);
         return output.toString();
@@ -64,7 +64,7 @@ public class LoginLogController {
     @ApiImplicitParams({
 		@ApiImplicitParam(name="LoginLog", paramType="form", value = "LoginLog的form信息", required = true, dataType = "string")
 	})
-    @RequestMapping(value="/insert", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value="/insert.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody BaseOutput insert(LoginLog loginLog) {
         loginLogService.insertSelective(loginLog);
         return BaseOutput.success("新增成功");
@@ -74,7 +74,7 @@ public class LoginLogController {
     @ApiImplicitParams({
 		@ApiImplicitParam(name="LoginLog", paramType="form", value = "LoginLog的form信息", required = true, dataType = "string")
 	})
-    @RequestMapping(value="/update", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value="/update.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody BaseOutput update(LoginLog loginLog) {
         loginLogService.updateSelective(loginLog);
         return BaseOutput.success("修改成功");
@@ -84,7 +84,7 @@ public class LoginLogController {
     @ApiImplicitParams({
 		@ApiImplicitParam(name="id", paramType="form", value = "LoginLog的主键", required = true, dataType = "long")
 	})
-    @RequestMapping(value="/delete", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value="/delete.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody BaseOutput delete(Long id) {
         loginLogService.delete(id);
         return BaseOutput.success("删除成功");

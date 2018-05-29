@@ -62,9 +62,7 @@
                         <th data-options="field:'ip', width:'12%',  sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             服务器ip
                         </th>
-                        <th data-options="field:'systemId',width:'12%'
-                        , _provider:'simpleBatchDisplayTextProvider',_escapeFileds:{'systemId':'name'},_fkField:'systemId',_relationTable:'system',_relationTablePkField:'id', _queryParams:{}
-                        ,   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th data-options="field:'systemName',width:'12%',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             系统
                         </th>
                         <th data-options="field:'menuId',width:'12%'
@@ -199,9 +197,9 @@
             var _url = null;
             //没有id就新增
             if(_formData.id == null || _formData.id==""){
-                _url = "${contextPath}/systemExceptionLog/insert";
+                _url = "${contextPath}/systemExceptionLog/insert.action";
             }else{//有id就修改
-                _url = "${contextPath}/systemExceptionLog/update";
+                _url = "${contextPath}/systemExceptionLog/update.action";
             }
             $.ajax({
                 type: "POST",
@@ -235,7 +233,7 @@
                 if (r){
                     $.ajax({
                         type: "POST",
-                        url: "${contextPath}/systemExceptionLog/delete",
+                        url: "${contextPath}/systemExceptionLog/delete.action",
                         data: {id:selected.id},
                         processData:true,
                         dataType: "json",
@@ -260,7 +258,7 @@
         function queryGrid() {
             var opts = $("#grid").datagrid("options");
             if (null == opts.url || "" == opts.url) {
-                opts.url = "${contextPath}/systemExceptionLog/listPage";
+                opts.url = "${contextPath}/systemExceptionLog/listPage.action";
             }
             if(!$('#form').form("validate")){
                 return;

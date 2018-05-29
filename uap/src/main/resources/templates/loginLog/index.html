@@ -82,9 +82,7 @@
                         <th data-options="field:'logoutTime',width:'10%',  _provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             登出时间
                         </th>
-                        <th data-options="field:'systemId',width:'10%'
-                        , _provider:'simpleBatchDisplayTextProvider',_escapeFileds:{'systemId':'name'},_fkField:'systemId',_relationTable:'system',_relationTablePkField:'id', _queryParams:{}
-                        ,  sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th data-options="field:'systemName',width:'10%',  sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             登录系统
                         </th>
                         <th data-options="field:'firmCode',width:'10%'
@@ -210,9 +208,9 @@
             var _url = null;
             //没有id就新增
             if(_formData.id == null || _formData.id==""){
-                _url = "${contextPath}/loginLog/insert";
+                _url = "${contextPath}/loginLog/insert.action";
             }else{//有id就修改
-                _url = "${contextPath}/loginLog/update";
+                _url = "${contextPath}/loginLog/update.action";
             }
             $.ajax({
                 type: "POST",
@@ -246,7 +244,7 @@
                 if (r){
                     $.ajax({
                         type: "POST",
-                        url: "${contextPath}/loginLog/delete",
+                        url: "${contextPath}/loginLog/delete.action",
                         data: {id:selected.id},
                         processData:true,
                         dataType: "json",
@@ -271,7 +269,7 @@
         function queryGrid() {
             var opts = $("#grid").datagrid("options");
             if (null == opts.url || "" == opts.url) {
-                opts.url = "${contextPath}/loginLog/listPage";
+                opts.url = "${contextPath}/loginLog/listPage.action";
             }
             if(!$('#form').form("validate")){
                 return;

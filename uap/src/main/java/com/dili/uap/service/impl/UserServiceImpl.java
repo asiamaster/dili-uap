@@ -1,6 +1,7 @@
 package com.dili.uap.service.impl;
 
 import com.dili.ss.base.BaseServiceImpl;
+import com.dili.ss.domain.BaseOutput;
 import com.dili.uap.dao.UserMapper;
 import com.dili.uap.domain.User;
 import com.dili.uap.manager.UserManager;
@@ -32,4 +33,10 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
     public List<User> findUserByRole(Long roleId) {
         return getActualDao().findUserByRole(roleId);
     }
+
+	@Override
+	public BaseOutput<Object> changePwd(User user) {
+		// TODO Auto-generated method stub
+		return  BaseOutput.failure("修改密码失败");
+	}
 }
