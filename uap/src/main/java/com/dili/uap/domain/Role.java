@@ -1,5 +1,6 @@
 package com.dili.uap.domain;
 
+import com.dili.ss.domain.annotation.Like;
 import com.dili.ss.dto.IBaseDomain;
 import com.dili.ss.metadata.FieldEditor;
 import com.dili.ss.metadata.annotation.EditMode;
@@ -30,6 +31,7 @@ public interface Role extends IBaseDomain {
     @Column(name = "`role_name`")
     @FieldDef(label="角色名", maxLength = 255)
     @EditMode(editor = FieldEditor.Text, required = true)
+    @Like
     String getRoleName();
 
     void setRoleName(String roleName);

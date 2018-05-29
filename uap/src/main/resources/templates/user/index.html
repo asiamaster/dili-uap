@@ -3,73 +3,48 @@
         <!-- ====================================================================================================================== -->
         <!-- 上方布局 -->
         <!-- ====================================================================================================================== -->
-        <div region="north" height="auto" align="center">
+        <div region="north" height="auto" align="center"  border="false">
+            <div id="nav" style="padding-left:15px;padding-top:10px;" align="left">
+                <#nav/>
+            </div>
             <!-- =========================================================表单========================================================= -->
-            <div class="easyui-panel" style="width:100%;" align="left">
+            <div class="easyui-panel" style="width:100%;" align="left" border="false">
                 <form id="form" class="easyui-form" method="post" fit="true">
                     <table style="padding:10px;">
                         <tr>
+                            <%if(isGroup){%>
+                                <td style="padding:5px;">
+                                    <input class="easyui-combobox" name="firmCode" id="firmCode" style="width:100%" data-options="label:'所属市场:',editable:false,labelAlign:'right',valueField:'code',textField:'name',
+                                        onLoadSuccess:function(){
+                                           $('#firmCode').combobox('select',firmCode);
+                                           loadDepartments(firmCode,'departmentId');
+                                           loadRoles(firmCode);
+                                       },onChange:function(newValue,oldValue){
+                                           loadDepartments(newValue,'departmentId');
+                                           loadRoles(newValue);
+                                       }" panelHeight="auto" />
+                                </td>
+                            <%}else{%>
+                                <td>
+                                    <input type="hidden"  name="firmCode" id="firmCode" value="${firmCode}" style="width:100%"/>
+                                </td>
+                            <%}%>
                             <td style="padding:5px;">
-                                <input class="easyui-textbox" name="userName" id="userName" style="width:100%" data-options="label:'用户名:', validType:'length[0,50]'" />
-
+                                <input class="easyui-combobox" name="departmentId" id="departmentId" panelHeight="auto" style="width:100%" data-options="label:'归属部门:',labelAlign:'right',editable:false,valueField:'id',textField:'name'" />
                             </td>
                             <td style="padding:5px;">
-                                <input class="easyui-textbox" name="password" id="password" style="width:100%" data-options="label:'密码:', validType:'length[0,128]'" />
-
+                                <input class="easyui-combobox" name="roleId" id="roleId" panelHeight="auto" style="width:100%" data-options="label:'角色类型:',labelAlign:'right',editable:false,valueField:'id',textField:'roleName'" />
                             </td>
                             <td style="padding:5px;">
-                                <input class="easyui-textbox" name="firmCode" id="firmCode" style="width:100%" data-options="label:'归属市场编码:', validType:'length[0,50]'" />
-
+                                <input class="easyui-numberbox" name="state" id="state" style="width:100%" data-options="label:'状态:',labelAlign:'right'" />
                             </td>
                             <td style="padding:5px;">
-                                <input class="easyui-numberbox" name="departmentId" id="departmentId" style="width:100%" data-options="label:'归属部门:', validType:'length[0,19]'" />
+                                <input class="easyui-textbox" name="cellphone" id="cellphone" style="width:100%" data-options="label:'手机号码:',labelAlign:'right'" />
 
                             </td>
-                            <td style="padding:5px;">
-                                <input class="easyui-textbox" name="position" id="position" style="width:100%" data-options="label:'职位:', validType:'length[0,20]'" />
-
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="padding:5px;">
-                                <input class="easyui-textbox" name="cardNumber" id="cardNumber" style="width:100%" data-options="label:'卡号:', validType:'length[0,20]'" />
-
-                            </td>
-                            <td style="padding:5px;">
-                                <input class="easyui-datetimebox" name="created" id="created" style="width:100%" data-options="label:'创建时间:'" />
-
-                            </td>
-                            <td style="padding:5px;">
-                                <input class="easyui-datetimebox" name="modified" id="modified" style="width:100%" data-options="label:'修改时间:'" />
-
-                            </td>
-                            <td style="padding:5px;">
-                                <input class="easyui-numberbox" name="state" id="state" style="width:100%" data-options="label:'状态:', validType:'length[0,10]'" />
-
-                            </td>
-                            <td style="padding:5px;">
-                                <input class="easyui-textbox" name="realName" id="realName" style="width:100%" data-options="label:'真实姓名:', validType:'length[0,64]'" />
-
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="padding:5px;">
-                                <input class="easyui-textbox" name="serialNumber" id="serialNumber" style="width:100%" data-options="label:'用户编号:', validType:'length[0,128]'" />
-
-                            </td>
-                            <td style="padding:5px;">
-                                <input class="easyui-textbox" name="cellphone" id="cellphone" style="width:100%" data-options="label:'手机号码:', validType:'length[0,24]'" />
-
-                            </td>
-                            <td style="padding:5px;">
-                                <input class="easyui-textbox" name="email" id="email" style="width:100%" data-options="label:'邮箱:', validType:'length[0,64]'" />
-
-                            </td>
-                        </tr>
-                        <tr>
                             <td>
                                 <a href="#" class="easyui-linkbutton" iconCls="icon-search" id="queryBtn"
-                                   onclick="queryGrid()">查询</a>
+                                   onclick="queryGrid()">查询</a> &nbsp;&nbsp;
                                 <a href="javascript:void(0)" class="easyui-linkbutton" onclick="clearForm()">清除</a>
                             </td>
                         </tr>
@@ -81,162 +56,113 @@
         <!-- 中央布局 -->
         <!-- ====================================================================================================================== -->
         <!-- 表格 -->
-        <div region="center" style="width:100%;" height="auto">
+        <div region="center" style="width:100%;" height="auto"  border="false">
             <!-- =========================================================表格========================================================= -->
-            <table class="easyui-datagrid" title="User列表" id="grid" fitColumns="true"
-                   pagination="true" pageSize="30" pageNumber="1" pagePosition="both" rownumbers="true" remoteSort="false"
+            <table class="easyui-datagrid" title="用户列表" id="userGrid" fitColumns="true" noheader="true"
+                   pagination="true" pageSize="30" pageNumber="1" pagePosition="top" remoteSort="false"
                    loadMsg="数据加载中..." singleSelect="true" method="post" multiSort="false" sortName="userName"
-                   align="center" fit="true" striped="true" toolbar="#toolbar" idField="id" data-options="onDblClickRow:openUpdate, onHeaderContextMenu:headerContextMenu">
+                   align="center" fit="true" striped="true" idField="id" data-options="onDblClickRow:openUpdate, onHeaderContextMenu:headerContextMenu">
                 <thead>
                     <tr>
-                        <th data-options="field:'userName',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            用户名
+                        <th width="10%" data-options="field:'userName',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            用户账号
                         </th>
-                        <th data-options="field:'password',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            密码
-                        </th>
-                        <th data-options="field:'firmCode',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            归属市场编码
-                        </th>
-                        <th data-options="field:'departmentId',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            归属部门
-                        </th>
-                        <th data-options="field:'position',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            职位
-                        </th>
-                        <th data-options="field:'cardNumber',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            卡号
-                        </th>
-                        <th data-options="field:'created',  _provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            创建时间
-                        </th>
-                        <th data-options="field:'modified',  _provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            修改时间
-                        </th>
-                        <th data-options="field:'state',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            状态
-                        </th>
-                        <th data-options="field:'realName',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th width="10%" data-options="field:'realName',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             真实姓名
                         </th>
-                        <th data-options="field:'serialNumber',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            用户编号
-                        </th>
-                        <th data-options="field:'cellphone',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th width="15%" data-options="field:'cellphone',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             手机号码
                         </th>
-                        <th data-options="field:'email',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            邮箱
+                        <th width="20%" data-options="field:'cardNumber',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            角色类型
+                        </th>
+                        <th width="10%" data-options="field:'firmCode',_provider:'firmCodeProvider',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            归属市场
+                        </th>
+                        <th width="10%" data-options="field:'departmentId',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            归属部门
+                        </th>
+                        <th width="10%" data-options="field:'state',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            状态
+                        </th>
+                        <th width="16%" data-options="field:'created',  _provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            创建时间
                         </th>
                     </tr>
                 </thead>
             </table>
-            <!-- datagrid工具栏 -->
-            <div id="toolbar" style="padding:2px 5px;">
-                <a href="#" class="easyui-linkbutton" iconCls="icon-add" onclick="openInsert()" plain="true"></a>
-                <a href="#" class="easyui-linkbutton" iconCls="icon-edit" onclick="openUpdate()" plain="true"></a>
-                <a href="#" class="easyui-linkbutton" iconCls="icon-remove" onclick="del()" plain="true"></a>
-                <a href="#" class="easyui-linkbutton" iconCls="icon-export" onclick="doExport('grid')" plain="true"></a>
-                <div style="float:right">
-                边框显示:<select onchange="changeBorder('grid',this.value)">
-                    <option value="lines-both">全边框</option>
-                    <option value="lines-no">无边框</option>
-                    <option value="lines-right">右边框</option>
-                    <option value="lines-bottom">下边框</option>
-                </select>
-                行条纹:<input type="checkbox" checked="checked" onclick="$('#grid').datagrid({striped:$(this).is(':checked')})">
-                </div>
-            </div>
         </div>
     </div>
     <!-- 隐藏编辑框 -->
-    <div id="dlg" class="easyui-dialog" resizable="false" constrain="true" shadow="true" draggable="false" title="User信息" style="padding:20px" modal="true" border="thin" closed="true"
+    <div id="dlg" class="easyui-dialog" resizable="false" constrain="true" shadow="true" draggable="false" title="用户信息" style="padding:10px;width: 35%;" modal="true" border="thin" closed="true"
          data-options="
-				iconCls: 'icon-save',
-				height: 480,
+				height: 540,
 				buttons: [{
 					text:'确认',
 					iconCls:'icon-ok',
 					handler:saveOrUpdate
-				},{
-					text:'取消',
-					handler:function(){
-						$('#dlg').dialog('close');
-					}
 				}]
 			">
     <form id="_form" class="easyui-form" method="post" fit="true">
         <input name="_id" id="_id" type="hidden">
-        <table width="360px">
+        <table width="100%">
             <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-textbox" name="_userName" id="_userName" style="width:100%" data-options="label:'用户名:', validType:'length[0,50]'" 
+                    <input class="easyui-textbox" name="_userName" id="_userName"  style="width:85%;height:28px;"data-options="labelAlign:'right',label:'&lowast;用户账号:', validType:'length[0,50]'"
                         required="true" />
                 </td>
             </tr>
             <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-textbox" name="_password" id="_password" style="width:100%" data-options="label:'密码:', validType:'length[0,128]'" 
-                        required="true" />
+                    <input class="easyui-passwordbox" editable="false" readonly="true" name="_password" id="_password" style="width:85%;height:28px;"  data-options="labelAlign:'right',label:'&lowast;密码:', validType:'length[0,128]',showEye:false" required/>
+                    <a href="#" class="easyui-linkbutton" id="resetPass" onclick="resetPass()">重置</a>
                 </td>
             </tr>
             <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-textbox" name="_firmCode" id="_firmCode" style="width:100%" data-options="label:'归属市场编码:', validType:'length[0,50]'" />
+                    <input class="easyui-textbox" name="_realName" id="_realName" style="width:85%;height:28px;" data-options="labelAlign:'right',label:'&lowast;真实姓名:', validType:'length[0,64]',events:{blur:getEmailByName}"
+                           required="true" />
                 </td>
             </tr>
             <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-numberbox" name="_departmentId" id="_departmentId" style="width:100%" data-options="label:'归属部门:'" />
+                    <input class="easyui-textbox" name="_cellphone" id="_cellphone" style="width:85%;height:28px;" data-options="labelAlign:'right',label:'&lowast;手机号码:', validType:['phoneNum','length[0,24]']" required="true" />
                 </td>
             </tr>
             <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-textbox" name="_position" id="_position" style="width:100%" data-options="label:'职位:', validType:'length[0,20]'" />
+                    <input class="easyui-textbox" name="_email" id="_email" style="width:85%;height:28px;" data-options="labelAlign:'right',label:'&lowast;邮箱:', validType:['email','length[0,64]']" required="true"/>
                 </td>
             </tr>
             <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-textbox" name="_cardNumber" id="_cardNumber" style="width:100%" data-options="label:'卡号:', validType:'length[0,20]'" />
+                    <input class="easyui-textbox" name="_position" id="_position" style="width:85%;height:28px;" data-options="labelAlign:'right',label:'职位:', validType:'length[0,20]'" />
                 </td>
             </tr>
             <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-datetimebox" name="_created" id="_created" style="width:100%" data-options="label:'创建时间:'" 
-                        required="true" />
+                    <input class="easyui-textbox" name="_cardNumber" id="_cardNumber" style="width:85%;height:28px;" data-options="labelAlign:'right',label:'卡号:', validType:'length[0,20]'" />
                 </td>
             </tr>
             <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-datetimebox" name="_modified" id="_modified" style="width:100%" data-options="label:'修改时间:'" 
-                        required="true" />
+                    <input class="easyui-combobox" name="_firmCode" id="_firmCode" panelWidth="auto" panelHeight="auto" required editable="false"  style="width:85%;height:28px;" data-options="labelAlign:'right',label:'&lowast;归属市场:',valueField:'code',textField:'name',
+                                        onLoadSuccess:function(){
+                                           $('#_firmCode').combobox('select',firmCode);
+                                           loadDepartments(firmCode,'_departmentId');
+                                       },onChange:function(newValue,oldValue){
+                                            loadDepartments(newValue,'_departmentId');
+                                       }">
                 </td>
             </tr>
             <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-numberbox" name="_state" id="_state" style="width:100%" data-options="label:'状态:'" 
-                        required="true" />
+                    <input class="easyui-combobox" name="_departmentId" panelWidth="auto" panelHeight="auto"  editable="false" id="_departmentId" style="width:85%;height:28px;" data-options="labelAlign:'right',label:'归属部门:',valueField:'id',textField:'name'">
                 </td>
             </tr>
             <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-textbox" name="_realName" id="_realName" style="width:100%" data-options="label:'真实姓名:', validType:'length[0,64]'" 
-                        required="true" />
-                </td>
-            </tr>
-            <tr>
-                <td style="padding:5px;">
-                    <input class="easyui-textbox" name="_serialNumber" id="_serialNumber" style="width:100%" data-options="label:'用户编号:', validType:'length[0,128]'" />
-                </td>
-            </tr>
-            <tr>
-                <td style="padding:5px;">
-                    <input class="easyui-textbox" name="_cellphone" id="_cellphone" style="width:100%" data-options="label:'手机号码:', validType:'length[0,24]'" />
-                </td>
-            </tr>
-            <tr>
-                <td style="padding:5px;">
-                    <input class="easyui-textbox" name="_email" id="_email" style="width:100%" data-options="label:'邮箱:', validType:'length[0,64]'" />
+                    <input class="easyui-textbox" name="_description"  id="_description" style="width:85%;height:70px;" data-options="labelAlign:'right',label:'备注:',multiline:true,validType:'length[0,255]'">
                 </td>
             </tr>
         </table>
@@ -246,14 +172,9 @@
     <!-- ====================================================================================================================== -->
     <!-- style & script 分隔线 -->
     <!-- ====================================================================================================================== -->
+    <#user_indexJs />
     <script type="text/javascript">
-        //打开新增窗口
-        function openInsert(){
-            $('#dlg').dialog('open');
-            $('#dlg').dialog('center');
-            $('#_form').form('clear');
-            formFocus("_form", "_userName");
-        }
+
 
         //打开修改窗口
         function openUpdate(){
@@ -270,101 +191,6 @@
             $('#_form').form('load', formData);
         }
 
-        function saveOrUpdate(){
-            if(!$('#_form').form("validate")){
-                return;
-            }
-            var _formData = removeKeyStartWith($("#_form").serializeObject(),"_");
-            var _url = null;
-            //没有id就新增
-            if(_formData.id == null || _formData.id==""){
-                _url = "${contextPath}/user/insert";
-            }else{//有id就修改
-                _url = "${contextPath}/user/update";
-            }
-            $.ajax({
-                type: "POST",
-                url: _url,
-                data: _formData,
-                processData:true,
-                dataType: "json",
-                async : true,
-                success: function (data) {
-                    if(data.code=="200"){
-                        $("#grid").datagrid("reload");
-                        $('#dlg').dialog('close');
-                    }else{
-                        $.messager.alert('错误',data.result);
-                    }
-                },
-                error: function(){
-                    $.messager.alert('错误','远程访问失败');
-                }
-            });
-        }
-
-        //根据主键删除
-        function del() {
-            var selected = $("#grid").datagrid("getSelected");
-            if (null == selected) {
-                $.messager.alert('警告','请选中一条数据');
-                return;
-            }
-            $.messager.confirm('确认','您确认想要删除记录吗？',function(r){
-                if (r){
-                    $.ajax({
-                        type: "POST",
-                        url: "${contextPath}/user/delete",
-                        data: {id:selected.id},
-                        processData:true,
-                        dataType: "json",
-                        async : true,
-                        success: function (data) {
-                            if(data.code=="200"){
-                                $("#grid").datagrid("reload");
-                                $('#dlg').dialog('close');
-                            }else{
-                                $.messager.alert('错误',data.result);
-                            }
-                        },
-                        error: function(){
-                            $.messager.alert('错误','远程访问失败');
-                        }
-                    });
-                }
-            });
-
-        }
-        //表格查询
-        function queryGrid() {
-            var opts = $("#grid").datagrid("options");
-            if (null == opts.url || "" == opts.url) {
-                opts.url = "${contextPath}/user/listPage";
-            }
-            if(!$('#form').form("validate")){
-                return;
-            }
-            $("#grid").datagrid("load", bindGridMeta2Form("grid", "form"));
-        }
-
-
-        //清空表单
-        function clearForm() {
-            $('#form').form('clear');
-        }
-
-        //表格表头右键菜单
-        function headerContextMenu(e, field){
-            e.preventDefault();
-            if (!cmenu){
-                createColumnMenu("grid");
-            }
-            cmenu.menu('show', {
-                left:e.pageX,
-                top:e.pageY
-            });
-        }
-
         $.messager.progress({
             title:"提示",
             msg:"加载中,请稍候...",
@@ -375,37 +201,6 @@
         $.parser.onComplete = function(){
             $.messager.progress("close");
         }
-        //全局按键事件
-        function getKey(e){
-            e = e || window.event;
-            var keycode = e.which ? e.which : e.keyCode;
-            if(keycode == 46){ //如果按下删除键
-                var selected = $("#grid").datagrid("getSelected");
-                if(selected && selected!= null){
-                    del();
-                }
-            }
-        }
 
-        /**
-         * 绑定页面回车事件，以及初始化页面时的光标定位
-         * @formId
-         *          表单ID
-         * @elementName
-         *          光标定位在指点表单元素的name属性的值
-         * @submitFun
-         *          表单提交需执行的任务
-         */
-        $(function () {
-            bindFormEvent("form", "userName", queryGrid);
-            bindFormEvent("_form", "_userName", saveOrUpdate, function (){$('#dlg').dialog('close');});
-            if (document.addEventListener) {
-                document.addEventListener("keyup",getKey,false);
-            } else if (document.attachEvent) {
-                document.attachEvent("onkeyup",getKey);
-            } else {
-                document.onkeyup = getKey;
-            }
-        })
     </script>
 </#body>

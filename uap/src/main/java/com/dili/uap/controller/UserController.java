@@ -2,25 +2,29 @@ package com.dili.uap.controller;
 
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.domain.EasyuiPageOutput;
-import com.dili.uap.domain.Role;
+import com.dili.ss.dto.DTOUtils;
+import com.dili.uap.constants.UapConstants;
+import com.dili.uap.domain.Firm;
 import com.dili.uap.domain.User;
 import com.dili.uap.domain.dto.UserDto;
 import com.dili.uap.sdk.session.SessionContext;
+import com.dili.uap.service.FirmService;
 import com.dili.uap.service.UserService;
+import com.dili.uap.utils.PinYinUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-
-import java.util.List;
-
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * 由MyBatis Generator工具自动生成
@@ -32,10 +36,27 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class UserController {
     @Autowired
     UserService userService;
+    @Resource
+    FirmService firmService;
+
+    private static final String defaultPass = "123456";
 
     @ApiOperation("跳转到User页面")
     @RequestMapping(value = "/index.html", method = RequestMethod.GET)
     public String index(ModelMap modelMap) {
+        String firmCode = SessionContext.getSessionContext().getUserTicket().getFirmCode();
+        //用户是否属于集团
+        Boolean isGroup = false;
+        Firm query = DTOUtils.newDTO(Firm.class);
+        if (UapConstants.GROUP_CODE.equals(firmCode)) {
+            isGroup = true;
+        } else {
+            query.setCode(firmCode);
+        }
+        modelMap.put("firms", firmService.list(query));
+        modelMap.put("isGroup", isGroup);
+        modelMap.put("firmCode",firmCode);
+        modelMap.put("defaultPass",defaultPass);
         return "user/index";
     }
 
@@ -44,8 +65,8 @@ public class UserController {
             @ApiImplicitParam(name = "User", paramType = "form", value = "User的form信息", required = false, dataType = "string")
     })
     @RequestMapping(value = "/list", method = {RequestMethod.GET, RequestMethod.POST})
-    public @ResponseBody
-    List<User> list(User user) {
+    @ResponseBody
+    public List<User> list(User user) {
         return userService.list(user);
     }
 
@@ -53,30 +74,23 @@ public class UserController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "User", paramType = "form", value = "User的form信息", required = false, dataType = "string")
     })
-    @RequestMapping(value = "/listPage", method = {RequestMethod.GET, RequestMethod.POST})
-    public @ResponseBody
-    String listPage(User user) throws Exception {
+    @RequestMapping(value = "/listPage.action", method = {RequestMethod.GET, RequestMethod.POST})
+    @ResponseBody
+    public String listPage(User user) throws Exception {
         return userService.listEasyuiPageByExample(user, true).toString();
     }
 
     @ApiOperation("新增User")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "User", paramType = "form", value = "User的form信息", required = true, dataType = "string")
-    })
-    @RequestMapping(value = "/insert", method = {RequestMethod.GET, RequestMethod.POST})
-    public @ResponseBody
-    BaseOutput insert(User user) {
-        userService.insertSelective(user);
-        return BaseOutput.success("新增成功");
+    @RequestMapping(value = "/insert.action", method = {RequestMethod.GET, RequestMethod.POST})
+    @ResponseBody
+    public BaseOutput insert(User user) {
+        return userService.save(user);
     }
 
     @ApiOperation("修改User")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "User", paramType = "form", value = "User的form信息", required = true, dataType = "string")
-    })
-    @RequestMapping(value = "/update", method = {RequestMethod.GET, RequestMethod.POST})
-    public @ResponseBody
-    BaseOutput update(User user) {
+    @RequestMapping(value = "/update.action", method = {RequestMethod.GET, RequestMethod.POST})
+    @ResponseBody
+    public BaseOutput update(User user) {
         userService.updateSelective(user);
         return BaseOutput.success("修改成功");
     }
@@ -86,23 +100,31 @@ public class UserController {
             @ApiImplicitParam(name = "id", paramType = "form", value = "User的主键", required = true, dataType = "long")
     })
     @RequestMapping(value = "/delete", method = {RequestMethod.GET, RequestMethod.POST})
-    public @ResponseBody
-    BaseOutput delete(Long id) {
+    @ResponseBody
+    public BaseOutput delete(Long id) {
         userService.delete(id);
         return BaseOutput.success("删除成功");
     }
 
     @ApiOperation(value = "根据角色id查询User", notes = "根据角色id查询User，返回列表信息")
     @RequestMapping(value = "/findUserByRole.action", method = {RequestMethod.GET, RequestMethod.POST})
-    public @ResponseBody String findUserByRole(Long roleId) {
+    @ResponseBody
+    public String findUserByRole(Long roleId) {
         List<User> retList = userService.findUserByRole(roleId);
         return new EasyuiPageOutput(retList.size(), retList).toString();
     }
-    
-    @ApiOperation(value = "根据角色id查询User", notes = "根据角色id查询User，返回列表信息")
+
+    @ApiOperation(value = "修改密码", notes = "修改密码")
     @RequestMapping(value = "/changePwd.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody BaseOutput changePwd(UserDto user) {
     	Long userId = SessionContext.getSessionContext().getUserTicket().getId();
        return userService.changePwd(userId,user);
+    }
+
+    @ApiOperation(value = "修改密码", notes = "修改密码")
+    @RequestMapping(value = "/getEmailByName.action", method = {RequestMethod.GET, RequestMethod.POST})
+    @ResponseBody
+    public BaseOutput getEmailByName(String name) {
+        return BaseOutput.success().setData(PinYinUtil.getFullPinYin(name.replace(" ","")) + UapConstants.EMAIL_POSTFIX);
     }
 }

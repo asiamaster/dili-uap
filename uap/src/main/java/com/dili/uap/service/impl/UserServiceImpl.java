@@ -2,14 +2,18 @@ package com.dili.uap.service.impl;
 
 import com.dili.ss.base.BaseServiceImpl;
 import com.dili.ss.domain.BaseOutput;
+import com.dili.ss.domain.BaseOutput;
+import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.dao.UserMapper;
 import com.dili.uap.domain.User;
 import com.dili.uap.domain.dto.UserDto;
+import com.dili.uap.glossary.UserState;
 import com.dili.uap.manager.UserManager;
 import com.dili.uap.service.UserService;
 import com.dili.uap.utils.MD5Util;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -83,4 +87,25 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 	private String encryptPwd(String passwd) {
 		return md5Util.getMD5ofStr(passwd).substring(6, 24);
 	}
+
+    @Override
+	@Transactional(rollbackFor = Exception.class)
+    public BaseOutput save(User user) {
+        //用户新增
+        if (null == user.getId()) {
+            User query = DTOUtils.newDTO(User.class);
+            query.setUserName(user.getUserName());
+            List<User> userList = getActualDao().select(query);
+            if (CollectionUtils.isNotEmpty(userList)) {
+                return BaseOutput.failure("用户账号已存在");
+            } else {
+                user.setState(UserState.INACTIVE.getCode());
+            }
+            user.setPassword(encryptPwd(user.getPassword()));
+            this.insertExactSimple(user);
+        } else {
+            this.updateExactSimple(user);
+        }
+        return BaseOutput.success("操作成功");
+    }
 }

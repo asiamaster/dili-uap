@@ -30,5 +30,10 @@ public class UapConstants {
     // 集团编码
     public static final String GROUP_CODE = "group";
 
+    /**
+     * 默认的邮箱后缀
+     */
+    public static final String EMAIL_POSTFIX = "@diligrp.com";
+
 
 }

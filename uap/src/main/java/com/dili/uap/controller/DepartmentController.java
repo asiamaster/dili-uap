@@ -135,4 +135,11 @@ public class DepartmentController {
         departmentService.delete(id);
         return BaseOutput.success("删除成功");
     }
+
+    @ApiOperation(value = "根据市场code查询Department", notes = "查询Department，返回列表信息")
+    @RequestMapping(value = "/listByCondition.action", method = {RequestMethod.GET, RequestMethod.POST})
+    @ResponseBody
+    public List<Department> listByCondition(Department department) {
+        return departmentService.list(department);
+    }
 }

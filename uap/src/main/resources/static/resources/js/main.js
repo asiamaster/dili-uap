@@ -10,3 +10,19 @@ var UAP_TOOLS = {
         return year + "-" + month + "-" + date + " " + hour + ":" + minute + ":" + second;
     }
 };
+
+$(function () {
+    /**
+     * 扩展验证框架
+     */
+    $.extend($.fn.validatebox.defaults.rules, {
+        //验证手机号
+        phoneNum: {
+            validator: function(value, param){
+                return /^1[3-8]+\d{9}$/.test(value);
+            },
+            message: '请输入正确的手机号码。'
+        }
+    });
+})
+

@@ -34,8 +34,8 @@ import java.util.List;
 public class RoleController {
     @Autowired
     RoleService roleService;
-
-    private @Resource FirmService firmService;
+    @Resource
+    private FirmService firmService;
 
     @ApiOperation("跳转到Role页面")
     @RequestMapping(value="/index.html", method = RequestMethod.GET)
@@ -59,8 +59,8 @@ public class RoleController {
     @ApiImplicitParams({
 		@ApiImplicitParam(name="Role", paramType="form", value = "Role的form信息", required = false, dataType = "string")
 	})
-    @RequestMapping(value="/list", method = {RequestMethod.GET, RequestMethod.POST})
-    public @ResponseBody List<Role> list(@ModelAttribute Role role) {
+    @RequestMapping(value="/list.action", method = {RequestMethod.GET, RequestMethod.POST})
+    public @ResponseBody List<Role> list(Role role) {
         return roleService.list(role);
     }
 

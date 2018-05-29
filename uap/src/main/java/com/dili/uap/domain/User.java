@@ -1,6 +1,7 @@
 package com.dili.uap.domain;
 
 import com.dili.ss.dto.IBaseDomain;
+import com.dili.ss.dto.IMybatisForceParams;
 import com.dili.ss.metadata.FieldEditor;
 import com.dili.ss.metadata.annotation.EditMode;
 import com.dili.ss.metadata.annotation.FieldDef;
@@ -17,7 +18,7 @@ import javax.persistence.Id;
  * This file was generated on 2018-05-23 16:17:38.
  */
 @Table(name = "`user`")
-public interface User extends IBaseDomain {
+public interface User extends IBaseDomain,IMybatisForceParams {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "`id`")
@@ -117,4 +118,11 @@ public interface User extends IBaseDomain {
     String getEmail();
 
     void setEmail(String email);
+
+    @Column(name = "`description`")
+    @FieldDef(label="备注", maxLength = 255)
+    @EditMode(editor = FieldEditor.Text, required = false)
+    String getDescription();
+
+    void setDescription(String description);
 }

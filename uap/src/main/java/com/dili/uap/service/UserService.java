@@ -33,4 +33,11 @@ public interface UserService extends BaseService<User, Long> {
      */
     BaseOutput<Object>changePwd(Long userId,UserDto user);
 
+    /**
+     * 保存用户信息
+     * @param user 用户信息对象
+     * @return
+     */
+    BaseOutput save(User user);
+
 }
