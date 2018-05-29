@@ -9,6 +9,7 @@ public enum MenuType {
     LINKS(1,"链接"),
     INTERNAL_LINKS(2, "内部链接"),
     RESOURCE(3, "资源"),
+    SYSTEM(4, "系统"),
     ;
 
     private String name;

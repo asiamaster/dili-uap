@@ -2,7 +2,6 @@ package com.dili.uap.dao;
 
 import com.dili.ss.base.MyMapper;
 import com.dili.uap.domain.Menu;
-import com.dili.uap.domain.dto.MenuDto;
 
 import java.util.List;
 import java.util.Map;
@@ -41,5 +40,5 @@ public interface MenuMapper extends MyMapper<Menu> {
      * 列出所有系统和菜单
      * @return
      */
-    List<Menu> listSystemMenu();
+    List<Map> listSystemMenu();
 }

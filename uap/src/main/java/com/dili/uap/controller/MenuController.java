@@ -1,24 +1,23 @@
 package com.dili.uap.controller;
 
-import com.alibaba.fastjson.JSONArray;
 import com.dili.ss.domain.BaseOutput;
+import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.domain.Menu;
-import com.dili.uap.glossary.MenuType;
-import com.dili.uap.sdk.session.SessionConstants;
-import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.service.MenuService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * 由MyBatis Generator工具自动生成
@@ -39,8 +38,26 @@ public class MenuController {
 
     @RequestMapping(value = "/listSystemMenu.action", method = { RequestMethod.GET, RequestMethod.POST })
     @ResponseBody
-    public List<Menu> listSystemMenu() {
+    public List<Map> listSystemMenu() {
         return this.menuService.listSystemMenu();
+    }
+
+    @ApiOperation(value = "查询Menu", notes = "查询Menu，返回列表信息")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "parentId", paramType = "Long", value = "menu parent_id", required = false, dataType = "Long") })
+    @RequestMapping(value = "/list.action", method = { RequestMethod.GET, RequestMethod.POST })
+    public @ResponseBody List<Menu> list(@RequestParam String parentId) {
+        Long parentIdLong = null;
+        if(parentId.startsWith("menu_")){
+            parentIdLong = Long.parseLong(parentId.substring(5));
+        }else if(parentId.startsWith("sys_")){
+            parentIdLong = Long.parseLong(parentId.substring(4));
+        }else{
+            parentIdLong = Long.parseLong(parentId);
+        }
+        Menu query = DTOUtils.newDTO(Menu.class);
+        query.setParentId(parentIdLong);
+        return this.menuService.list(query);
     }
 
     @ApiOperation("新增Menu")

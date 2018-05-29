@@ -2,7 +2,7 @@ package com.dili.uap.service;
 
 import com.dili.ss.base.BaseService;
 import com.dili.uap.domain.Menu;
-import com.dili.uap.sdk.exception.NotLoginException;
+import com.dili.uap.domain.dto.MenuTree;
 
 import java.util.List;
 import java.util.Map;
@@ -45,5 +45,5 @@ public interface MenuService extends BaseService<Menu, Long> {
      * 列出所有系统和菜单
      * @return
      */
-    List<Menu> listSystemMenu();
+    List<Map> listSystemMenu();
 }

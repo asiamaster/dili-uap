@@ -77,7 +77,13 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, Long> implements Menu
     }
 
     @Override
-    public List<Menu> listSystemMenu(){
-        return getActualDao().listSystemMenu();
+    public List<Map> listSystemMenu(){
+        List<Map> menuTrees = getActualDao().listSystemMenu();
+        menuTrees.forEach( menuTree -> {
+            Map<String, String> attr = new HashMap<>(1);
+            attr.put("type", menuTree.get("type").toString());
+            menuTree.put("attributes", attr);
+        });
+        return menuTrees;
     }
 }

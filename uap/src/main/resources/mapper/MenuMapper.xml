@@ -113,7 +113,7 @@
         select concat('sys_',s.id) as id
             , null as parent_id
          ,s.name
-         ,3 as 'type'
+         ,4 as 'type'
           from `system` s
   </select>
 </mapper>
