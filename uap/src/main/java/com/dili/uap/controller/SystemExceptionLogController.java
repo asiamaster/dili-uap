@@ -2,6 +2,7 @@ package com.dili.uap.controller;
 
 import com.dili.ss.domain.BaseOutput;
 import com.dili.uap.domain.SystemExceptionLog;
+import com.dili.uap.domain.dto.SystemExceptionLogDto;
 import com.dili.uap.service.SystemExceptionLogService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -46,7 +47,7 @@ public class SystemExceptionLogController{
 		@ApiImplicitParam(name="SystemExceptionLog", paramType="form", value = "SystemExceptionLog的form信息", required = false, dataType = "string")
 	})
     @RequestMapping(value="/listPage.action", method = {RequestMethod.GET, RequestMethod.POST})
-    public @ResponseBody String listPage(SystemExceptionLog systemExceptionLog) throws Exception {
+    public @ResponseBody String listPage(SystemExceptionLogDto systemExceptionLog) throws Exception {
         return systemExceptionLogService.listEasyuiPageByExample(systemExceptionLog, true).toString();
     }
 
