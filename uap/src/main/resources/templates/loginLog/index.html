@@ -30,12 +30,20 @@
                                 <input name="firmCode" id="firmCode" style="width:100%;" panelWidth="auto" data-options="editable:false, labelAlign:'right'" panelHeight="auto" label="市场名称:"/>
                                 <#comboProvider _id="firmCode" _provider='firmProvider' _queryParams='{}'/>
                             </td>
+             
                             <td style="padding:5px;">
+                            <input class="easyui-datetimebox" name="startLoginTime" editable="false" id="startExceptionTime"
+                                   labelAlign="right" data-options="label:' 登录时间:'" style="width: 250px;"/>
+                            - <input class="easyui-datetimebox" editable="false" name="endLoginTime" id="endExceptionTime"
+                                     labelAlign="right" style="width: 150px;"/>
+
+                        	</td>
+                        </tr>
+                        <tr>
+                                          <td style="padding:5px;">
                                  <input name="success" id="success" style="width:100%;" editable="false" panelWidth="auto" panelHeight="auto" label="是否成功:" />
                                 <#comboProvider _id="success" _provider='ynProvider' _queryParams='{}'/>
                             </td>
-                        </tr>
-                        <tr>
                             <td>
                                 <a href="#" class="easyui-linkbutton" data-options="width:80"  iconCls="icon-search" id="queryBtn"
                                    onclick="queryGrid()">查询</a>
@@ -76,25 +84,18 @@
                         <th data-options="field:'host', width:'10%',  sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             主机名
                         </th>
-                        <th data-options="field:'loginTime',width:'10%',  _provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th data-options="field:'loginTime',width:'15%',  _provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             登录时间
-                        </th>
-                        <th data-options="field:'logoutTime',width:'10%',  _provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            登出时间
                         </th>
                         <th data-options="field:'systemName',width:'10%',  sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             登录系统
                         </th>
-                        <th data-options="field:'firmCode',width:'10%'
-                        , _provider:'simpleBatchDisplayTextProvider',_escapeFileds:{'firmCode':'name'},_fkField:'firmCode',_relationTable:'firm',_relationTablePkField:'code', _queryParams:{}
-                        ,  sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            市场
-                        </th>
+                      
                         <th data-options="field:'success',width:'10%',_provider:'ynProvider', _queryParams:{},sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             是否成功
                         </th>
-                        <th data-options="field:'reason',width:'20%',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            失败原因
+                        <th data-options="field:'reason',width:'25%',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            登录信息
                         </th>
                     </tr>
                 </thead>
