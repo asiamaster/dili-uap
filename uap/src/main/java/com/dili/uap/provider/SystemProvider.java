@@ -1,13 +1,11 @@
-package com.dili.uap.provier;
+package com.dili.uap.provider;
 
 import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.metadata.FieldMeta;
 import com.dili.ss.metadata.ValuePair;
 import com.dili.ss.metadata.ValuePairImpl;
 import com.dili.ss.metadata.ValueProvider;
-import com.dili.uap.domain.Firm;
 import com.dili.uap.domain.System;
-import com.dili.uap.service.FirmService;
 import com.dili.uap.service.SystemService;
 
 import org.apache.commons.lang3.math.NumberUtils;

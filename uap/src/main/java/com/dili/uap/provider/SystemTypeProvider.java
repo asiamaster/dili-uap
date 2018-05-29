@@ -1,10 +1,11 @@
-package com.dili.uap.provier;
+package com.dili.uap.provider;
 
 import com.dili.ss.metadata.FieldMeta;
 import com.dili.ss.metadata.ValuePair;
 import com.dili.ss.metadata.ValuePairImpl;
 import com.dili.ss.metadata.ValueProvider;
-import com.dili.uap.sdk.glossary.ExceptionType;
+import com.dili.uap.glossary.SystemType;
+
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -16,14 +17,14 @@ import java.util.stream.Stream;
  * Created by asiamaster on 2017/5/31 0031.
  */
 @Component
-public class ExceptionTypeProvider implements ValueProvider {
+public class SystemTypeProvider implements ValueProvider {
 
     private static final List<ValuePair<?>> BUFFER;
 
     static {
-    	BUFFER= Stream.of(ExceptionType.values())
+    	BUFFER= Stream.of(SystemType.values())
     			//enum 转换为ValuePair
-    			.map(e->new ValuePairImpl<String>(e.getName(), e.getCode()))
+    			.map(e->new ValuePairImpl<String>(e.getName(), e.getCode().toString()))
     			.collect(Collectors.toList());
     }
 

@@ -1,4 +1,4 @@
-package com.dili.uap.provier;
+package com.dili.uap.provider;
 
 import com.alibaba.fastjson.JSONObject;
 import com.dili.ss.metadata.FieldMeta;
