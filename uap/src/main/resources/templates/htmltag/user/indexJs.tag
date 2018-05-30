@@ -16,8 +16,32 @@
         $('#_firmCode').combobox("loadData", firms);
         $('#_password').textbox('setValue','${defaultPass}');
         $('#_password').passwordbox('hidePassword');
+        $("#_userName").textbox("enable");
+        $("#_password").textbox("enable");
+        $("#_firmCode").textbox("enable");
         $('#resetPass').hide();
     }
+
+    //打开修改窗口
+    function openUpdate(){
+        var selected = userGrid.datagrid("getSelected");
+        if (null == selected) {
+            $.messager.alert('警告','请选中一条数据');
+            return;
+        }
+        $('#dlg').dialog('open');
+        $('#dlg').dialog('center');
+        formFocus("_form", "_userName");
+        var formData = $.extend({},selected);
+        formData = addKeyStartWith(getOriginalData(formData),"_");
+        $('#_form').form('load', formData);
+        $("#_userName").textbox("disable");
+        $("#_password").textbox("disable");
+        $("#_firmCode").textbox("disable");
+        $("#_firmCode").textbox("initValue", selected.firmCode);
+        $('#resetPass').show();
+    }
+    
     
     /**
      * 根据市场code加载部门信息，并显示到相应的部门控件中
@@ -61,13 +85,11 @@
      * 如果姓名为空，或者邮箱本身已有值，则不做更改
      */
     function getEmailByName() {
-        debugger;
         var name = $('#_realName').textbox("getValue");
         if (null == name || '' == $.trim(name)) {
             return;
         }
         var email = $('#_email').textbox("getValue");
-
         if (null == email || '' == $.trim(email)) {
             $.post('${contextPath!}/user/getEmailByName.action', {name: name}, function (ret) {
                 if (ret.success) {
