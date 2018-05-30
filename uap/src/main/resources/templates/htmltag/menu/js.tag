@@ -43,42 +43,13 @@ function queryGrid(node) {
  * 根据目录菜单查询列表
  */
 function queryGridByDir(node) {
-
+    //渲染上方列表
     $("#grid1").datagrid({
         title : "菜单列表",
-        fitColumns : true,
-        loadMsg : "数据加载中...",
-        singleSelect : true,
-        method : "post",
         sortName : "orderNumber",
-        sortOrder : 'asc',
-        align : "left",
         height : '100%',
-        striped : true,
-        idField : "id",
         url : '${contextPath!}/menu/list.action',
-        toolbar : [{
-            iconCls : 'icon-add',
-            plain : true,
-            text:'新增',
-            handler : function() {
-                openInsert('grid1');
-            }
-        }, {
-            iconCls : 'icon-edit',
-            plain : true,
-            text:'修改',
-            handler : function() {
-                openUpdate('grid1');
-            }
-        }, {
-            iconCls : 'icon-remove',
-            plain : true,
-            text:'删除',
-            handler : function() {
-                del('grid1');
-            }
-        }],
+        toolbar : '#menuToolbar',
         queryParams : {
             parentId : node.id
         },
@@ -86,7 +57,7 @@ function queryGridByDir(node) {
             field : 'id',
             title : 'id',
             hidden : true
-        }, {
+        },{
             field : 'name',
             title : '菜单名称',
             width : '10%',
@@ -109,7 +80,7 @@ function queryGridByDir(node) {
                 } else if (value == 1) {
                     return '链接';
                 } else if (value == 2) {
-                    return '内联';
+                    return '内链';
                 }
             },
             editor : {
@@ -129,7 +100,6 @@ function queryGridByDir(node) {
                     }]
                 }
             }
-
         }, {
             field : 'url',
             title : '菜单链接地址',
@@ -144,13 +114,40 @@ function queryGridByDir(node) {
             editor : 'text'
         }, {
             field : 'orderNumber',
-            title : '排序',
+            title : '排序号',
             width : '5%',
             editor : {
                 type : 'numberbox'
             }
         }]]
+        //columns 属性结束
     });
+    //生成可编辑表格
+    $("#grid1").dataGridEditor({
+        insertUrl: "${contextPath!}/menu/insert.action",
+        updateUrl: "${contextPath!}/menu/update.action",
+        deleteUrl: '${contextPath!}/menu/delete.action',
+        onBeforeEdit: function () {
+            $("#btnSave").show();
+            $("#btnCancel").show();
+        },
+        onAfterEdit: function () {
+            $("#btnSave").hide();
+            $("#btnCancel").hide();
+        },
+        extendParams: function (row) {
+            return {
+                systemId: $("#grid1").data('systemId'),
+                parentId: $("#grid1").data('parentId')
+            }
+        },
+        canEdit: function (row) {
+            return row.id !== -1;
+        }
+    });
+    //设置当前菜单节点选中的全局变量：systemId和parentId， 用于新增和修改
+    $("#grid1").data('systemId', node.attributes.systemId);
+    $("#grid1").data('parentId', node.id);
 }
 
 /**
@@ -158,6 +155,27 @@ function queryGridByDir(node) {
  */
 function queryGridByLinks(node) {
 
+}
+
+//可编辑表格的操作
+function openInsert(gridId) {
+    $("#"+gridId).dataGridEditor().insert();
+}
+
+function openUpdate(gridId) {
+    $("#"+gridId).dataGridEditor().update();
+}
+
+function del(gridId) {
+    $("#"+gridId).dataGridEditor().delete();
+}
+
+function endEditing(gridId) {
+    $("#"+gridId).dataGridEditor().save();
+}
+
+function cancelEdit(gridId) {
+    $("#"+gridId).dataGridEditor().cancel();
 }
 
 </script>

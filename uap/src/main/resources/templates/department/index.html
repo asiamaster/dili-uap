@@ -18,7 +18,7 @@
                    multiSort="true"
                    sortName="id" align="center" fit="true" striped="true" toolbar="#toolbar" idField="id"
                    treeField="name" url="${contextPath!}/department/list.action"
-                   data-options="loadFilter:loadFilter">
+                   data-options="loadFilter:treegridLoadFilter, _parentIdField:'parentId'">
                 <thead>
                 <tr>
                     <th data-options="field:'id',hidden:true">id</th>
@@ -48,7 +48,7 @@
                 <%}%>
                 <a href="#" class="easyui-linkbutton" iconCls="icon-add" onclick="openInsert()" plain="true">新增</a>
                 <a href="#" class="easyui-linkbutton" iconCls="icon-edit" onclick="openUpdate()" plain="true">修改</a>
-                <a href="#" class="easyui-linkbutton" iconCls="icon-remove" onclick="del()" plain="true">删除</a>
+                <!--<a href="#" class="easyui-linkbutton" iconCls="icon-remove" onclick="del()" plain="true">删除</a>-->
                 <a href="#" class="easyui-linkbutton" iconCls="icon-ok" id="btnSave" style="display: none" onclick="endEditing()" plain="true">确定</a>
                 <a href="#" id="btnCancel" class="easyui-linkbutton" iconCls="icon-clear" onclick="cancelEdit()" style="display: none" plain="true">取消</a>
             </div>

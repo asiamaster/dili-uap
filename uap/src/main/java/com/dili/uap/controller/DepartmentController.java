@@ -1,6 +1,7 @@
 package com.dili.uap.controller;
 
 import com.dili.ss.domain.BaseOutput;
+import com.dili.ss.domain.EasyuiPageOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.constants.UapConstants;
 import com.dili.uap.domain.Department;
@@ -53,7 +54,7 @@ public class DepartmentController {
     })
     @RequestMapping(value = "/list.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody
-    List<Department> list(Department department) {
+    String list(Department department) {
 
         Department root = DTOUtils.newDTO(Department.class);
 
@@ -92,7 +93,7 @@ public class DepartmentController {
 
         list.add(root);
 
-        return list;
+        return new EasyuiPageOutput(list.size(), list).toString();
     }
 
     @ApiOperation(value = "分页查询Department", notes = "分页查询Department，返回easyui分页信息")

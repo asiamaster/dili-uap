@@ -1,36 +1,5 @@
 <script type="text/javascript">
 
-
-    var loadFilter = function (data, parentId) {
-        if (parentId != undefined) {
-            return data;
-        }
-        var getChildren = function (parent) {
-            var children = new Array();
-            $(data).each(function (i, el) {
-                if (parent.id == el.parentId) {
-                    var obj = new Object();
-                    $.extend(true, obj, el);
-                    obj.children = getChildren(obj);
-                    children.push(obj);
-                }
-            });
-            return children;
-        };
-        var target = new Array();
-        $(data).each(function (i, el) {
-            if (el.id == -1) {
-                var obj = new Object();
-                $.extend(true, obj, el);
-                obj.children = getChildren(obj);
-                target.push(obj);
-                return false;
-            }
-        });
-        return target;
-    };
-
-
     function openInsert() {
         $("#grid").dataGridEditor().insert();
     }

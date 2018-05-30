@@ -108,12 +108,14 @@
         , case when m.parent_id is null then concat('sys_',m.system_id) else concat('menu_',m.parent_id) end as parent_id
         ,m.`name`
         ,m.`type`
+        ,m.`system_id`
         from menu m order by m.order_number)
     union all
         select concat('sys_',s.id) as id
             , null as parent_id
          ,s.name
          ,4 as 'type'
+         ,s.id as system_id
           from `system` s
   </select>
 </mapper>

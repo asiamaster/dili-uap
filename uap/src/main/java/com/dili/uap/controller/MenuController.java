@@ -2,6 +2,7 @@ package com.dili.uap.controller;
 
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
+import com.dili.ss.dto.IDTO;
 import com.dili.uap.domain.Menu;
 import com.dili.uap.service.MenuService;
 import io.swagger.annotations.Api;
@@ -47,17 +48,14 @@ public class MenuController {
             @ApiImplicitParam(name = "parentId", paramType = "Long", value = "menu parent_id", required = false, dataType = "Long") })
     @RequestMapping(value = "/list.action", method = { RequestMethod.GET, RequestMethod.POST })
     public @ResponseBody List<Menu> list(@RequestParam String parentId) {
-        Long parentIdLong = null;
-        if(parentId.startsWith("menu_")){
-            parentIdLong = Long.parseLong(parentId.substring(5));
-        }else if(parentId.startsWith("sys_")){
-            parentIdLong = Long.parseLong(parentId.substring(4));
-        }else{
-            parentIdLong = Long.parseLong(parentId);
-        }
         Menu query = DTOUtils.newDTO(Menu.class);
-        query.setParentId(parentIdLong);
-        return this.menuService.list(query);
+        if(parentId.startsWith("menu_")){
+            query.setParentId(Long.parseLong(parentId.substring(5)));
+        }else if(parentId.startsWith("sys_")){
+            query.setSystemId(Long.parseLong(parentId.substring(4)));
+            query.mset(IDTO.NULL_VALUE_FIELD, "parent_id");
+        }
+        return this.menuService.listByExample(query);
     }
 
     @ApiOperation("新增Menu")
@@ -66,6 +64,14 @@ public class MenuController {
 	})
     @RequestMapping(value="/insert.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody BaseOutput insert(Menu menu) {
+        String parentId = menu.aget("parentId").toString();
+        if(parentId.startsWith("menu_")){
+            //如果菜单树上点的节点是菜单， 需要设置当前节点的父节点
+            menu.setParentId(Long.parseLong(parentId.substring(5)));
+        }else if(parentId.startsWith("sys_")){
+            //如果菜单树上点的节点是系统，需要把parent_id清空
+            menu.mset(IDTO.NULL_VALUE_FIELD, "parent_id");
+        }
         menuService.insertSelective(menu);
         return BaseOutput.success("新增成功");
     }
@@ -76,6 +82,11 @@ public class MenuController {
 	})
     @RequestMapping(value="/update.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody BaseOutput update(Menu menu) {
+        String parentId = menu.aget("parentId").toString();
+        if(parentId.startsWith("menu_")){
+            //如果菜单树上点的节点是菜单， 需要设置当前节点的父节点
+            menu.setParentId(Long.parseLong(parentId.substring(5)));
+        }
         menuService.updateSelective(menu);
         return BaseOutput.success("修改成功");
     }

@@ -5,7 +5,7 @@
 		<div id="nav" style="padding-left:15px;padding-top:10px;" align="left">
 			<#nav/>
 		</div>
-	</div>grid1
+	</div>
 	<div style="width: 210px;" height="100%" align="left" data-options="region:'west',title:'菜单管理',split:true">
 			<ul id="menuTree" class="easyui-tree" lines="false" url="${contextPath}/menu/listSystemMenu.action"
 				data-options="onSelect:onSelectTree, loadFilter:treeLoadFilter, _idField:'id', _textField:'name', _parentIdField:'parent_id',onLoadSuccess:onTreeLoadSuccess" />
@@ -19,6 +19,14 @@
 				<table id="grid1" fitColumns="true" pagination="false" sortName="id" sortOrder="asc"
 					   loadMsg="数据加载中..." singleSelect="true" method="post" align="left"
 					   fit="true" striped="true"  idField="id" data-options=""></table>
+				<!-- 菜单列表的工具栏 -->
+				<div id="menuToolbar" style="padding: 2px 5px;">
+					<a href="#" class="easyui-linkbutton" iconCls="icon-add" onclick="openInsert('grid1')" plain="true">新增</a>
+					<a href="#" class="easyui-linkbutton" iconCls="icon-edit" onclick="openUpdate('grid1')" plain="true">修改</a>
+					<a href="#" class="easyui-linkbutton" iconCls="icon-remove" onclick="del('grid1')" plain="true">删除</a>
+					<a href="#" class="easyui-linkbutton" iconCls="icon-ok" id="btnSave" style="display: none" onclick="endEditing('grid1')" plain="true">确定</a>
+					<a href="#" id="btnCancel" class="easyui-linkbutton" iconCls="icon-clear" onclick="cancelEdit('grid1')" style="display: none" plain="true">取消</a>
+				</div>
 			</div>
 			<div id="panel2" region="center" class="easyui-panel" border="true" style="width:100%;height:49%;">
 				<!-- =========================================================右下表格========================================================= -->
@@ -28,7 +36,8 @@
 			</div>
 		</div>
 	</div>
-			
+
+
 
 
 </div>
