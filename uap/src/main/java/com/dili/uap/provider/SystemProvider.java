@@ -34,6 +34,7 @@ public class SystemProvider implements ValueProvider {
 		list.forEach(s -> {
 			buffer.add(new ValuePairImpl<>(s.getName(), s.getCode()));
 		});
+		buffer.add(0, new ValuePairImpl<String>(ValueProvider.EMPTY_ITEM_TEXT, ""));
 		return buffer;
 	}
 

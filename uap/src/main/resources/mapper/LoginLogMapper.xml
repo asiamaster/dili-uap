@@ -20,7 +20,7 @@
     <!--
       WARNING - @mbg.generated
     -->
-    id, user_id, ip, host, login_time, logout_time, system_id,firm_code,success,reason
+    id, user_id, ip, host, login_time, logout_time, system_code,system_name,firm_code,success,reason
   </sql>
 
   <!--根据用户输入查询所有登录日志 -->
@@ -39,14 +39,28 @@
     <if test="ip !=null and ip !=''">
     AND ip =#{ip}
     </if>
-    <if test="systemId !=null">
-    AND system_id =#{systemId}
+    <if test="systemCode !=null">
+    AND system_code =#{systemCode}
     </if>
-    <if test="firmCode !=null and firmCode !=''">
-    AND firm_code =#{firmCode}
-    </if>
+   
     <if test="success !=null">
     AND success =#{success}
     </if>
+    
+    <if test="startLoginTime !=null">
+    AND login_time >=#{startLoginTime}
+    </if>
+    
+    <if test="endLoginTime !=null">
+    AND #{endLoginTime}>=login_time
+    </if>
+    
+     <if test="sort !=null">
+    ORDER BY #{sort}
+	  <if test="order !=null">
+	   ${order}
+	  </if>
+    </if>
+    
   </select>
 </mapper>

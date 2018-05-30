@@ -11,7 +11,7 @@ import com.dili.uap.domain.LoginLog;
 import com.dili.uap.domain.User;
 
 
-public interface LoginLogDto extends LoginLog,User {
+public interface LoginLogDto extends LoginLog {
 
 
 	@Transient

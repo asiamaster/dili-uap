@@ -4,6 +4,7 @@ import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.metadata.FieldMeta;
 import com.dili.ss.metadata.ValuePair;
 import com.dili.ss.metadata.ValuePairImpl;
+import com.dili.ss.metadata.ValueProvider;
 import com.dili.ss.metadata.provider.BatchDisplayTextProviderAdaptor;
 import com.dili.uap.domain.Firm;
 import com.dili.uap.domain.dto.FirmQueryDto;
@@ -34,6 +35,7 @@ public class FirmCodeProvider extends BatchDisplayTextProviderAdaptor {
 		list.forEach(firm -> {
 			buffer.add(new ValuePairImpl<>(firm.getName(), firm.getCode()));
 		});
+		buffer.add(0, new ValuePairImpl<String>(ValueProvider.EMPTY_ITEM_TEXT, ""));
 		return buffer;
 	}
 

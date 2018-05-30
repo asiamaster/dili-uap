@@ -56,7 +56,7 @@ public class LoginLogController {
 	})
     @RequestMapping(value="/listPage.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody String listPage(LoginLogDto loginLog) throws Exception {
-    	EasyuiPageOutput output=loginLogService.listEasyuiPageByExample(loginLog, true);
+    	EasyuiPageOutput output=loginLogService.findByLoginLogDto(loginLog, true);
         return output.toString();
     }
 

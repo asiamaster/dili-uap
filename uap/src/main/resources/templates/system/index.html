@@ -42,7 +42,7 @@
         <div region="center" style="width:100%;" height="auto" align="center" border="false">
             <div style="width: 100%;height: 100%;" align="center">
                 <!-- =========================================================表格========================================================= -->
-                <table class="easyui-datagrid" title="System列表" id="grid" fitColumns="true" noheader="true"  border="false"
+                <table class="easyui-datagrid" title="系统信息列表"" id="grid" fitColumns="true" noheader="true"  border="false"
                    pagination="true" pageSize="30" pageNumber="1" pagePosition="top" remoteSort="true"
                    loadMsg="数据加载中..." singleSelect="true" method="post" multiSort="false" sortName="created" sortOrder="desc"
                    align="center" fit="true" striped="true"
@@ -99,11 +99,6 @@
 					text:'确认',
 					iconCls:'icon-ok',
 					handler:saveOrUpdate
-				},{
-					text:'取消',
-					handler:function(){
-						$('#dlg').dialog('close');
-					}
 				}]
 			">
     <form id="_form" class="easyui-form" method="post" fit="true">
@@ -142,7 +137,7 @@
             <tr>
                 <td style="padding:5px;">
                       <input name="_type" id="_type" style="width:100%;" editable="false" panelWidth="auto" panelHeight="auto" label="类型:"  required="true" />
-                      <#comboProvider _id="_type" _data='[{"text":"内部系统","value":"1"},{"text":"外部系统","value":"2"}]'/>
+                      <#comboProvider _id="_type"  _provider='systemTypeProvider' _queryParams='{}'/>
                 </td>
             </tr>
         </table>
@@ -157,8 +152,11 @@
         function openInsert(){
             $('#dlg').dialog('open');
             $('#dlg').dialog('center');
+            $('#dlg').dialog('setTitle','新增系统信息');
             $('#_form').form('clear');
             formFocus("_form", "_name");
+            $('#_type').combobox("setValue","1");
+            
         }
 
         //打开修改窗口
@@ -170,6 +168,7 @@
             }
             $('#dlg').dialog('open');
             $('#dlg').dialog('center');
+            $('#dlg').dialog('setTitle','修改系统信息');
             formFocus("_form", "_name");
             var formData = $.extend({},selected);
             formData = addKeyStartWith(getOriginalData(formData),"_");
@@ -318,13 +317,6 @@
                 <#controls_paginationOpts/>
                 ,buttons:[
                     {
-                        iconCls:'icon-detail',
-                        text:'详情',
-                            handler:function(){
-                            openDetail();
-                        }
-                    },
-                    {
                         iconCls:'icon-add',
                         text:'新增',
                         handler:function(){
@@ -349,7 +341,7 @@
                          iconCls:'icon-export',
                          text:'导出',
                          handler:function(){
-                             doExport('grid', true);
+                             doExport('grid');
                          }
                      }
                 ]

@@ -22,15 +22,10 @@
                             </td>
                      
                             <td style="padding:5px;">
-                                 <input name="systemId" id="systemId" style="width:100%;" panelWidth="auto" data-options="editable:false, labelAlign:'right'" panelHeight="auto" label="登录系统:"/>
-                                 <#comboProvider _id="systemId" _provider='systemProvider' _queryParams='{}'/>
+                                 <input name="systemCode" id="systemCode" style="width:100%;" panelWidth="auto" data-options="editable:false, labelAlign:'right'" panelHeight="auto" label="登录系统:"/>
+                                 <#comboProvider _id="systemCode" _provider='systemProvider' _queryParams='{}'/>
 
                             </td>
- 							<td style="padding:10px;">
-                                <input name="firmCode" id="firmCode" style="width:100%;" panelWidth="auto" data-options="editable:false, labelAlign:'right'" panelHeight="auto" label="市场名称:"/>
-                                <#comboProvider _id="firmCode" _provider='firmProvider' _queryParams='{}'/>
-                            </td>
-             
                             <td style="padding:5px;">
                             <input class="easyui-datetimebox" name="startLoginTime" editable="false" id="startExceptionTime"
                                    labelAlign="right" data-options="label:' 登录时间:'" style="width: 250px;"/>
@@ -61,8 +56,8 @@
         <div region="center" style="width:100%;" height="auto" align="center" border="false">
             <div style="width: 100%;height: 100%;" align="center">
                 <!-- =========================================================表格========================================================= -->
-                 <table class="easyui-datagrid"   id="grid"  fitColumns="true"  title="LoginLog列表" noheader="true"
-                   pagination="true" pageSize="30" pageNumber="1" pagePosition="top" remoteSort="true"
+                 <table class="easyui-datagrid"   id="grid"  fitColumns="true"  title="登录日志列表" noheader="true"
+                   pagination="true" pageSize="50" pageList="[50,100,200]" pageNumber="1" pagePosition="top" remoteSort="true"
                    loadMsg="数据加载中..." singleSelect="true" method="post" multiSort="false" sortName="login_time" sortOrder="desc"
                    align="center" fit="true" striped="true"
                     toolbar="#toolbar" idField="id">
@@ -346,7 +341,7 @@
                          iconCls:'icon-export',
                          text:'导出',
                          handler:function(){
-                             doExport('grid', true);
+                             doExport('grid');
                          }
                      }
                 ]
