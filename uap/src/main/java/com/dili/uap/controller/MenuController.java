@@ -43,18 +43,20 @@ public class MenuController {
         return this.menuService.listSystemMenu();
     }
 
-    @ApiOperation(value = "查询Menu", notes = "查询Menu，返回列表信息")
+    @ApiOperation(value = "查询菜单列表", notes = "查询Menu，返回列表信息")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "parentId", paramType = "Long", value = "menu parent_id", required = false, dataType = "Long") })
+            @ApiImplicitParam(name = "menuId", paramType = "Long", value = "menuId", required = false, dataType = "Long") })
     @RequestMapping(value = "/list.action", method = { RequestMethod.GET, RequestMethod.POST })
-    public @ResponseBody List<Menu> list(@RequestParam String parentId) {
+    public @ResponseBody List<Menu> list(@RequestParam String menuId) {
         Menu query = DTOUtils.newDTO(Menu.class);
-        if(parentId.startsWith("menu_")){
-            query.setParentId(Long.parseLong(parentId.substring(5)));
-        }else if(parentId.startsWith("sys_")){
-            query.setSystemId(Long.parseLong(parentId.substring(4)));
+        if(menuId.startsWith("menu_")){
+            query.setParentId(Long.parseLong(menuId.substring(5)));
+        }else if(menuId.startsWith("sys_")){
+            query.setSystemId(Long.parseLong(menuId.substring(4)));
             query.mset(IDTO.NULL_VALUE_FIELD, "parent_id");
         }
+        query.setSort("order_number");
+        query.setOrder("asc");
         return this.menuService.listByExample(query);
     }
 
@@ -64,11 +66,11 @@ public class MenuController {
 	})
     @RequestMapping(value="/insert.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody BaseOutput insert(Menu menu) {
-        String parentId = menu.aget("parentId").toString();
-        if(parentId.startsWith("menu_")){
+        String menuId = menu.aget("menuId").toString();
+        if(menuId.startsWith("menu_")){
             //如果菜单树上点的节点是菜单， 需要设置当前节点的父节点
-            menu.setParentId(Long.parseLong(parentId.substring(5)));
-        }else if(parentId.startsWith("sys_")){
+            menu.setParentId(Long.parseLong(menuId.substring(5)));
+        }else if(menuId.startsWith("sys_")){
             //如果菜单树上点的节点是系统，需要把parent_id清空
             menu.mset(IDTO.NULL_VALUE_FIELD, "parent_id");
         }
@@ -82,10 +84,10 @@ public class MenuController {
 	})
     @RequestMapping(value="/update.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody BaseOutput update(Menu menu) {
-        String parentId = menu.aget("parentId").toString();
-        if(parentId.startsWith("menu_")){
+        String menuId = menu.aget("menuId").toString();
+        if(menuId.startsWith("menu_")){
             //如果菜单树上点的节点是菜单， 需要设置当前节点的父节点
-            menu.setParentId(Long.parseLong(parentId.substring(5)));
+            menu.setParentId(Long.parseLong(menuId.substring(5)));
         }
         menuService.updateSelective(menu);
         return BaseOutput.success("修改成功");

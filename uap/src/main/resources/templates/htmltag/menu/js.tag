@@ -43,15 +43,58 @@ function queryGrid(node) {
  * 根据目录菜单查询列表
  */
 function queryGridByDir(node) {
+    renderMenuGrid(node, "grid1");
+    bindEditMenuGrid(node);
+}
+
+/**
+ * 根据链接菜单查询列表
+ */
+function queryGridByLinks(node) {
+    renderResourceGrid(node, "grid1");
+    bindEditResourceGrid(node, "grid1");
+}
+
+//可编辑表格的操作
+function openInsert(gridId) {
+    $("#"+gridId).dataGridEditor().insert();
+}
+
+function openUpdate(gridId) {
+    $("#"+gridId).dataGridEditor().update();
+}
+
+function del(gridId) {
+    $("#"+gridId).dataGridEditor().delete();
+}
+
+function endEditing(gridId) {
+    $("#"+gridId).dataGridEditor().save();
+}
+
+function cancelEdit(gridId) {
+    $("#"+gridId).dataGridEditor().cancel();
+}
+
+
+
+
+// ======================  私有方法分割线  ======================
+
+/**
+ * 渲染菜单列表
+ * @param node
+ * @param gridId
+ */
+function renderMenuGrid(node, gridId) {
     //渲染上方列表
-    $("#grid1").datagrid({
+    $("#"+gridId).datagrid({
         title : "菜单列表",
-        sortName : "orderNumber",
         height : '100%',
         url : '${contextPath!}/menu/list.action',
         toolbar : '#menuToolbar',
         queryParams : {
-            parentId : node.id
+            menuId : node.id
         },
         columns : [[{
             field : 'id',
@@ -122,7 +165,64 @@ function queryGridByDir(node) {
         }]]
         //columns 属性结束
     });
-    //生成可编辑表格
+}
+
+/**
+ * 渲染资源列表
+ * @param node
+ * @param gridId
+ */
+function renderResourceGrid(node, gridId) {
+    //渲染权限列表
+    $("#"+gridId).datagrid({
+        title : "权限列表",
+        url : '${contextPath!}/resource/list.action',
+        height : '100%',
+        toolbar : '#menuToolbar',
+        queryParams : {
+            menuId : node.id
+        },
+        columns : [[{
+            field : 'id',
+            title : 'id',
+            hidden : true
+        }, {
+            field : 'name',
+            title : '权限名称',
+            width : '20%',
+            editor : {
+                type : 'textbox',
+                options : {
+                    required : true,
+                    missingMessage : '请输入权限名称'
+                }
+            }
+        }, {
+            field : 'code',
+            title : '权限代码',
+            width : '20%',
+            editor : {
+                type : 'textbox',
+                options : {
+                    required : true,
+                    missingMessage : '请输入权限代码'
+                }
+            }
+        }, {
+            field : 'description',
+            title : '描述',
+            width : '60%',
+            editor : 'textbox'
+        }
+        ]]
+    });
+}
+
+/**
+ * 绑定可编辑菜单表格
+ * @param node
+ */
+function bindEditMenuGrid(node) {
     $("#grid1").dataGridEditor({
         insertUrl: "${contextPath!}/menu/insert.action",
         updateUrl: "${contextPath!}/menu/update.action",
@@ -138,44 +238,46 @@ function queryGridByDir(node) {
         extendParams: function (row) {
             return {
                 systemId: $("#grid1").data('systemId'),
-                parentId: $("#grid1").data('parentId')
+                menuId: $("#grid1").data('menuId')
             }
         },
         canEdit: function (row) {
             return row.id !== -1;
         }
     });
-    //设置当前菜单节点选中的全局变量：systemId和parentId， 用于新增和修改
+    //设置当前菜单节点选中的全局变量：systemId和menuId， 用于新增和修改
     $("#grid1").data('systemId', node.attributes.systemId);
-    $("#grid1").data('parentId', node.id);
+    $("#grid1").data('menuId', node.id);
 }
 
 /**
- * 根据链接菜单查询列表
+ * 绑定可编辑资源表格
+ * @param node
  */
-function queryGridByLinks(node) {
-
-}
-
-//可编辑表格的操作
-function openInsert(gridId) {
-    $("#"+gridId).dataGridEditor().insert();
-}
-
-function openUpdate(gridId) {
-    $("#"+gridId).dataGridEditor().update();
-}
-
-function del(gridId) {
-    $("#"+gridId).dataGridEditor().delete();
-}
-
-function endEditing(gridId) {
-    $("#"+gridId).dataGridEditor().save();
-}
-
-function cancelEdit(gridId) {
-    $("#"+gridId).dataGridEditor().cancel();
+function bindEditResourceGrid(node) {
+    $("#grid1").dataGridEditor({
+        insertUrl: "${contextPath!}/resource/insert.action",
+        updateUrl: "${contextPath!}/resource/update.action",
+        deleteUrl: '${contextPath!}/resource/delete.action',
+        onBeforeEdit: function () {
+            $("#btnSave").show();
+            $("#btnCancel").show();
+        },
+        onAfterEdit: function () {
+            $("#btnSave").hide();
+            $("#btnCancel").hide();
+        },
+        extendParams: function (row) {
+            return {
+                menuId: $("#grid1").data('menuId')
+            }
+        },
+        canEdit: function (row) {
+            return row.id !== -1;
+        }
+    });
+    //设置当前菜单节点选中的全局变量：menuId， 用于新增和修改
+    $("#grid1").data('menuId', node.id);
 }
 
 </script>

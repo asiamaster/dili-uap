@@ -10,6 +10,7 @@
         insertUrl: '', // 新增数据 url
         updateUrl: '', // 修改数据 url
         deleteUrl: '', // 删除数据 url
+        id:'grid',
         extendParams: undefined, // 默认新增和修改会把 row 的数据发送给服务端,如果需新增参数,需提供此方法并返回要扩展参数的 json 对象.方法入参为当前操作的 row 对象
         onBeforeEdit: undefined, // 开启编辑模式前回调方法
         onAfterEdit: undefined, // 关闭编辑模式后回调方法
@@ -313,26 +314,25 @@
 
 
     $.fn.dataGridEditor = function (options) {
-
-        if (!this.data('plugin_dataGridEditor')) {
-            this.data("plugin_dataGridEditor", new DataGridEditor(this, options));
+        if (options) {
+            this.data("plugin"+this.attr('id')+"_dataGridEditor", new DataGridEditor(this, options));
         }
         var that = this;
         this.extend({
             insert: function () {
-                that.data('plugin_dataGridEditor').openInsert();
+                that.data('plugin'+that.attr('id')+'_dataGridEditor').openInsert();
             },
             update: function () {
-                that.data('plugin_dataGridEditor').openUpdate();
+                that.data('plugin'+that.attr('id')+'_dataGridEditor').openUpdate();
             },
             cancel: function () {
-                that.data('plugin_dataGridEditor').cancelEdit();
+                that.data('plugin'+that.attr('id')+'_dataGridEditor').cancelEdit();
             },
             delete: function () {
-                that.data('plugin_dataGridEditor').delete();
+                that.data('plugin'+that.attr('id')+'_dataGridEditor').delete();
             },
             save: function () {
-                that.data('plugin_dataGridEditor').endEditing();
+                that.data('plugin'+that.attr('id')+'_dataGridEditor').endEditing();
             }
         });
 
