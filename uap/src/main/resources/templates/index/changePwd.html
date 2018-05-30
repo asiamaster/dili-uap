@@ -15,6 +15,9 @@
 					validType="pwdEquals['#newPwd']" required="true" validateOnCreate="false" /></td>
 			</tr>
 			<tr>
+				<td style="padding: 5px;height: 20px" align="center"><label><span id="errorTxt" style="color: red;"></span></label></td>
+			</tr>
+			<tr>
 				<td align="center"><a href="javascript:void(0)" class="easyui-linkbutton" data-options="width:80" iconCls="icon-ok" onclick="changePwd()">确认</a></td>
 			</tr>
 		</table>
@@ -23,10 +26,13 @@
 </form>
 
 <script type="text/javascript">
+
 	function changePwd() {
 		if (!$('#changePwdForm').form("validate")) {
 			return false;
 		}
+		
+		
 
 		var formData = $("#changePwdForm").serializeObject();
 
@@ -39,11 +45,10 @@
 			async : true,
 			success : function(data) {
 				if (data.code == "200") {
-//					parent.closeTab("修改密码");
-                    $.messager.alert('提示','修改密码成功', 'info');
 					$('#changePwdForm').form("clear");
+					window.location.href="http://www.baidu.com";
                 } else {
-					$.messager.alert('错误', data.result);
+                	$('#errorTxt').html(data.result)
 				}
 			},
 			error : function() {
@@ -51,4 +56,19 @@
 			}
 		});
 	}
+	
+	  $(function () {
+		  //输入框值有变化时清空错误提示
+		    $('#currentPwd').passwordbox('textbox').bind('keydown', function(e){
+				$('#errorTxt').html('');
+			});
+			$('#newPwd').passwordbox('textbox').bind('keydown', function(e){
+				$('#errorTxt').html('');
+			});
+			$('#reNewPwd').passwordbox('textbox').bind('keydown', function(e){
+				$('#errorTxt').html('');
+			});
+		  
+	  })
+	
 </script> </#body>

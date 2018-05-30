@@ -56,7 +56,7 @@
     </if>
     
      <if test="sort !=null">
-    ORDER BY #{sort}
+    ORDER BY `${sort}`
 	  <if test="order !=null">
 	   ${order}
 	  </if>

@@ -57,11 +57,18 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 		if (StringUtils.isBlank(user.getNewPassword())) {
 			return BaseOutput.failure("新密码不能为空");
 		}
+		if (user.getNewPassword().trim().length()<6) {
+			return BaseOutput.failure("新密码长度限定为6-20");
+		}
+		if (user.getNewPassword().trim().length()>20) {
+			return BaseOutput.failure("新密码长度限定为6-20");
+		}
+		
 		if (user.getNewPassword().equals(user.getOldPassword())) {
 			return BaseOutput.failure("当前密码与新密码不能相同");
 		}
 		if (!user.getNewPassword().equals(user.getConfirmPassword())) {
-			return BaseOutput.failure("两次密码不一致");
+			return BaseOutput.failure("两次密码输入不一致,请重新输入");
 		}
 
 		User userInDB = this.get(userId);
@@ -70,14 +77,14 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 		}
 		// 进行原密码比较
 		if (!StringUtils.equalsIgnoreCase(userInDB.getPassword(), this.encryptPwd(user.getOldPassword()))) {
-			return BaseOutput.failure("当前密码错误");
+			return BaseOutput.failure("当前密码有误,请重新输入");
 		}
 
 		userInDB.setModified(new Date());
 		// 加密并更新密码
 
 		userInDB.setPassword(this.encryptPwd(user.getNewPassword()));
-		this.getActualDao().updateByPrimaryKeyExact(userInDB);
+		this.updateExactSimple(userInDB);
 
 		return BaseOutput.success("修改密码成功");
 	}
