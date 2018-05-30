@@ -94,7 +94,7 @@ public class RoleController {
         updateRole.setId(role.getId());
         updateRole.setDescription(role.getDescription());
         updateRole.setRoleName(role.getRoleName());
-        return roleService.save(role).setData(role);
+        return roleService.save(updateRole).setData(updateRole);
     }
 
     @ApiOperation("删除Role")

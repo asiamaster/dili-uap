@@ -3,6 +3,7 @@ package com.dili.uap.controller;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.domain.EasyuiPageOutput;
 import com.dili.ss.dto.DTOUtils;
+import com.dili.ss.dto.IDTO;
 import com.dili.uap.constants.UapConstants;
 import com.dili.uap.domain.Firm;
 import com.dili.uap.domain.User;
@@ -76,7 +77,10 @@ public class UserController {
     })
     @RequestMapping(value = "/listPage.action", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
-    public String listPage(User user) throws Exception {
+    public String listPage(UserDto user) throws Exception {
+        if (StringUtils.isNotBlank(user.getKeywords())) {
+            user.mset(IDTO.AND_CONDITION_EXPR, " (user_name =" + user.getKeywords().trim() + " or cellphone=" + user.getKeywords().trim() + ")");
+        }
         return userService.listEasyuiPageByExample(user, true).toString();
     }
 
@@ -91,8 +95,7 @@ public class UserController {
     @RequestMapping(value = "/update.action", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
     public BaseOutput update(User user) {
-        userService.updateSelective(user);
-        return BaseOutput.success("修改成功");
+        return userService.save(user);
     }
 
     @ApiOperation("删除User")

@@ -287,8 +287,8 @@
                     }
                 },
                 {
-                    iconCls:'icon-user',
-                    text:'角色用户',
+                    iconCls:'icon-man',
+                    text:'所属用户',
                     handler:function(){
                         onUserList();
                     }

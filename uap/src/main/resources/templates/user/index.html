@@ -60,7 +60,7 @@
             <!-- =========================================================表格========================================================= -->
             <table class="easyui-datagrid" title="用户列表" id="userGrid" fitColumns="true" noheader="true"
                    pagination="true" pageSize="30" pageNumber="1" pagePosition="top" remoteSort="false"
-                   loadMsg="数据加载中..." singleSelect="true" method="post" multiSort="false" sortName="userName"
+                   loadMsg="数据加载中..." singleSelect="true" method="post" multiSort="false" sortName="userName" sortOrder="desc"
                    align="center" fit="true" striped="true" idField="id" data-options="onDblClickRow:openUpdate, onHeaderContextMenu:headerContextMenu">
                 <thead>
                     <tr>
@@ -79,10 +79,10 @@
                         <th width="10%" data-options="field:'firmCode',_provider:'firmCodeProvider',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             归属市场
                         </th>
-                        <th width="10%" data-options="field:'departmentId',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th width="10%" data-options="field:'departmentId',_provider:'departmentProvider',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             归属部门
                         </th>
-                        <th width="10%" data-options="field:'state',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th width="10%" data-options="field:'state',_provider:'userStateProvider',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             状态
                         </th>
                         <th width="16%" data-options="field:'created',  _provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
@@ -120,7 +120,7 @@
             </tr>
             <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-textbox" name="_realName" id="_realName" style="width:85%;height:28px;" data-options="labelAlign:'right',label:'&lowast;真实姓名:', validType:'length[0,64]',events:{blur:getEmailByName}"
+                    <input class="easyui-textbox" name="_realName" id="_realName" style="width:85%;height:28px;" data-options="labelAlign:'right',label:'&lowast;真实姓名:', validType:'length[2,20]',events:{blur:getEmailByName}"
                            required="true" />
                 </td>
             </tr>
@@ -173,34 +173,4 @@
     <!-- style & script 分隔线 -->
     <!-- ====================================================================================================================== -->
     <#user_indexJs />
-    <script type="text/javascript">
-
-
-        //打开修改窗口
-        function openUpdate(){
-            var selected = $("#grid").datagrid("getSelected");
-            if (null == selected) {
-                $.messager.alert('警告','请选中一条数据');
-                return;
-            }
-            $('#dlg').dialog('open');
-            $('#dlg').dialog('center');
-            formFocus("_form", "_userName");
-            var formData = $.extend({},selected);
-            formData = addKeyStartWith(getOriginalData(formData),"_");
-            $('#_form').form('load', formData);
-        }
-
-        $.messager.progress({
-            title:"提示",
-            msg:"加载中,请稍候...",
-            value : '10',
-            text: '{value}%',
-            interval:200
-        });
-        $.parser.onComplete = function(){
-            $.messager.progress("close");
-        }
-
-    </script>
 </#body>
