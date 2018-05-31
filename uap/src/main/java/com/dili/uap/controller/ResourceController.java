@@ -2,7 +2,6 @@ package com.dili.uap.controller;
 
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
-import com.dili.ss.dto.IDTO;
 import com.dili.uap.domain.Resource;
 import com.dili.uap.service.ResourceService;
 import io.swagger.annotations.Api;
@@ -12,7 +11,10 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
@@ -60,7 +62,7 @@ public class ResourceController {
             resource.setMenuId(Long.parseLong(menuId.substring(5)));
         }
         resourceService.insertSelective(resource);
-        return BaseOutput.success("新增成功");
+        return BaseOutput.success("新增成功").setData(resource.getId());
     }
 
     @ApiOperation("修改Resource")
@@ -69,6 +71,11 @@ public class ResourceController {
 	})
     @RequestMapping(value="/update.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody BaseOutput update(Resource resource) {
+        String menuId = resource.aget("menuId").toString();
+        if(menuId.startsWith("menu_")){
+            //如果菜单树上点的节点是菜单， 需要设置当前节点的父节点
+            resource.setMenuId(Long.parseLong(menuId.substring(5)));
+        }
         resourceService.updateSelective(resource);
         return BaseOutput.success("修改成功");
     }

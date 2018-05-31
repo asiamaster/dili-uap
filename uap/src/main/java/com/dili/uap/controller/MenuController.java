@@ -4,6 +4,7 @@ import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.dto.IDTO;
 import com.dili.uap.domain.Menu;
+import com.dili.uap.glossary.MenuType;
 import com.dili.uap.service.MenuService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -60,6 +61,24 @@ public class MenuController {
         return this.menuService.listByExample(query);
     }
 
+    @ApiOperation(value = "查询内部链接列表", notes = "查询内部链接，返回列表信息")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "menuId", paramType = "String", value = "menuId", required = false, dataType = "String")})
+    @RequestMapping(value = "/listInternalLinks.action", method = { RequestMethod.GET, RequestMethod.POST })
+    public @ResponseBody List<Menu> listInternalLinks(@RequestParam String menuId) {
+        Menu query = DTOUtils.newDTO(Menu.class);
+        if(menuId.startsWith("menu_")){
+            query.setParentId(Long.parseLong(menuId.substring(5)));
+        }else if(menuId.startsWith("sys_")){
+            query.setSystemId(Long.parseLong(menuId.substring(4)));
+            query.mset(IDTO.NULL_VALUE_FIELD, "parent_id");
+        }
+        query.setType(MenuType.INTERNAL_LINKS.getCode());
+        query.setSort("order_number");
+        query.setOrder("asc");
+        return this.menuService.listByExample(query);
+    }
+
     @ApiOperation("新增Menu")
     @ApiImplicitParams({
 		@ApiImplicitParam(name="Menu", paramType="form", value = "Menu的form信息", required = true, dataType = "string")
@@ -75,7 +94,7 @@ public class MenuController {
             menu.mset(IDTO.NULL_VALUE_FIELD, "parent_id");
         }
         menuService.insertSelective(menu);
-        return BaseOutput.success("新增成功");
+        return BaseOutput.success("新增成功").setData(menu.getId());
     }
 
     @ApiOperation("修改Menu")

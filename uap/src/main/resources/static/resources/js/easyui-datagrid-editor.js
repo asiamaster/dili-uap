@@ -16,6 +16,7 @@
         onBeginEdit:undefined,   // 在一行进入编辑模式的时候触发
         onAfterEdit: undefined, // 关闭编辑模式后回调方法
         onSaveSuccess: undefined, //新增或修改成功后回调方法,方法入参为修改后的数据
+        onDeleteSuccess: undefined, //删除成功后回调方法
         canEdit: undefined // 控制 row 是否可以编辑,返回 false 取消编辑动作,方法入参为被编辑的 row 对象
     };
 
@@ -257,7 +258,7 @@
                     }
                 }
                 if (that.options.onSaveSuccess) {
-                    that.options.onSaveSuccess(row,data.data);
+                    that.options.onSaveSuccess(index,row,data.data);
                 }
             }, 'json');
         },
@@ -285,6 +286,9 @@
                                     that.element[that.options.target]('remove', selected.id);
                                 } else {
                                     that.element[that.options.target]('deleteRow', that.element[that.options.target]('getRowIndex', selected));
+                                }
+                                if (that.options.onDeleteSuccess) {
+                                    that.options.onDeleteSuccess(selected,data.data);
                                 }
                             } else {
                                 $.messager.alert('错误', data.result);
