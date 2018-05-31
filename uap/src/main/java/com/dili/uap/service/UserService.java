@@ -25,13 +25,14 @@ public interface UserService extends BaseService<User, Long> {
      * @return  用户列表
      */
     List<User> findUserByRole(Long roleId);
-    
+
     /**
      * 修改密码
-     * @param User  用户信息
-     * @return  结果
+     * @param userId 用户ID
+     * @param user 用户信息
+     * @return 结果
      */
-    BaseOutput<Object>changePwd(Long userId,UserDto user);
+    BaseOutput<Object> changePwd(Long userId, UserDto user);
 
     /**
      * 保存用户信息
@@ -39,5 +40,20 @@ public interface UserService extends BaseService<User, Long> {
      * @return
      */
     BaseOutput save(User user);
+
+    /**
+     * 根据用户ID重置密码
+     * @param userId 用户ID
+     * @return
+     */
+    BaseOutput resetPass(Long userId);
+
+    /**
+     * 根据用户ID，操作启禁用 用户
+     * @param userId 用户ID
+     * @param enable 是否启用(true-启用，false-禁用)
+     * @return
+     */
+    BaseOutput upateEnable(Long userId,Boolean enable);
 
 }

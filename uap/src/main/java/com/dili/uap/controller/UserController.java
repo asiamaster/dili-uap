@@ -3,7 +3,6 @@ package com.dili.uap.controller;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.domain.EasyuiPageOutput;
 import com.dili.ss.dto.DTOUtils;
-import com.dili.ss.dto.IDTO;
 import com.dili.uap.constants.UapConstants;
 import com.dili.uap.domain.Firm;
 import com.dili.uap.domain.User;
@@ -16,7 +15,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -40,8 +38,6 @@ public class UserController {
     @Resource
     FirmService firmService;
 
-    private static final String defaultPass = "123456";
-
     @ApiOperation("跳转到User页面")
     @RequestMapping(value = "/index.html", method = RequestMethod.GET)
     public String index(ModelMap modelMap) {
@@ -57,7 +53,7 @@ public class UserController {
         modelMap.put("firms", firmService.list(query));
         modelMap.put("isGroup", isGroup);
         modelMap.put("firmCode",firmCode);
-        modelMap.put("defaultPass",defaultPass);
+        modelMap.put("defaultPass",UapConstants.DEFAULT_PASS);
         return "user/index";
     }
 
@@ -78,10 +74,7 @@ public class UserController {
     @RequestMapping(value = "/listPage.action", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
     public String listPage(UserDto user) throws Exception {
-        if (StringUtils.isNotBlank(user.getKeywords())) {
-            user.mset(IDTO.AND_CONDITION_EXPR, " (user_name =" + user.getKeywords().trim() + " or cellphone=" + user.getKeywords().trim() + ")");
-        }
-        return userService.listEasyuiPageByExample(user, true).toString();
+        return userService.listEasyuiPage(user, true).toString();
     }
 
     @ApiOperation("新增User")
@@ -124,10 +117,28 @@ public class UserController {
        return userService.changePwd(userId,user);
     }
 
-    @ApiOperation(value = "修改密码", notes = "修改密码")
+    @ApiOperation(value = "根据姓名转换邮箱信息", notes = "根据姓名转换邮箱信息")
     @RequestMapping(value = "/getEmailByName.action", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
     public BaseOutput getEmailByName(String name) {
         return BaseOutput.success().setData(PinYinUtil.getFullPinYin(name.replace(" ","")) + UapConstants.EMAIL_POSTFIX);
+    }
+
+    @ApiOperation(value = "重置密码", notes = "重置密码")
+    @RequestMapping(value = "/resetPass.action", method = {RequestMethod.GET, RequestMethod.POST})
+    @ResponseBody
+    public BaseOutput resetPass(Long id) {
+        return userService.resetPass(id);
+    }
+
+    @ApiOperation(value = "用户的禁启用", notes = "重置密码")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", paramType = "path", value = "用户ID",dataType = "long"),
+            @ApiImplicitParam(name = "enable", paramType = "path", value = "是否启用(true-启用)",dataType = "boolean")
+    })
+    @RequestMapping(value = "/doEnable.action", method = {RequestMethod.GET, RequestMethod.POST})
+    @ResponseBody
+    public BaseOutput doEnable(Long id,Boolean enable){
+         return userService.upateEnable(id,enable);
     }
 }

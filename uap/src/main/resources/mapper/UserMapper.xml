@@ -94,4 +94,39 @@
         WHERE ur.role_id=#{id}
 		]]>
 	</select>
+
+  <!--- 联合查询分页信息 -->
+  <select id="selectForPage" parameterType="com.dili.uap.domain.User" resultType="com.dili.uap.domain.dto.UserDto">
+      select u.*,
+            CASE
+              WHEN group_concat(r.role_name) IS NOT NULL THEN group_concat(r.role_name)
+              ELSE '--'
+            END AS user_roles
+      FROM user u LEFT JOIN user_role ur ON u.id=ur.user_id LEFT JOIN role r ON ur.role_id=r.id
+      <include refid="QUERY_WHERE_CLAUSE" />
+      GROUP BY  u.id
+  </select>
+
+  <!-- 全部条件(更多功能可以通过queryData扩展实现)  -->
+  <sql id="QUERY_WHERE_CLAUSE">
+    <where>
+      1 = 1
+      <if test="firmCode != null">
+         and u.firm_code = #{firmCode}
+      </if>
+      <if test="departmentId != null">
+        and u.department_id = #{departmentId}
+      </if>
+      <if test="state != null">
+        and u.state = #{state}
+      </if>
+      <if test="roleId != null">
+        and ur.role_id = #{roleId}
+      </if>
+      <if test="keywords != null and keywords != ''">
+        and (u.user_name = #{keywords} or u.cellphone = #{keywords})
+      </if>
+    </where>
+  </sql>
+
 </mapper>

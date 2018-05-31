@@ -30,6 +30,7 @@ public class UserStateProvider implements ValueProvider {
         BUFFER = Stream.of(UserState.values())
                 .map(e -> new ValuePairImpl<String>(e.getName(), e.getCode().toString()))
                 .collect(Collectors.toList());
+        BUFFER.add(0,new ValuePairImpl(EMPTY_ITEM_TEXT, null));
     }
 
     @Override

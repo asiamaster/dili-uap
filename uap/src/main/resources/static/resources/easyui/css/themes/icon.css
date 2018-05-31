@@ -180,7 +180,23 @@
 .icon-detail{
 	background:url('icons/detail.png') no-repeat;
 }
-
+.l-btn:hover .icon-detail{
+	background:url('icons/detail-on.png') no-repeat;
+}
 .l-btn:hover .icon-man{
 	background:url('icons/man-on.png') no-repeat center center;
+}
+
+.icon-play{
+	background:url('icons/icon-play.png') no-repeat center center;
+}
+.l-btn:hover .icon-play{
+	background-image:url('icons/icon-play-on.png');
+}
+
+.icon-stop{
+	background:url('icons/stop.png') no-repeat center center;
+}
+.l-btn:hover .icon-stop{
+	background-image:url('icons/stop-on.png');
 }

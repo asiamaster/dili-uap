@@ -12,11 +12,16 @@ var UAP_TOOLS = {
 };
 
 $(function () {
+    //去掉输入框中的前后空格
+    $(document).on('change', 'input[type=text], textarea', function() {
+        $(this).val($.trim($(this).val()));
+    });
+
     /**
-     * 扩展验证框架
+     * 扩展easyui的验证框架，可加入一些自定义的验证
      */
     $.extend($.fn.validatebox.defaults.rules, {
-        //验证手机号
+        //验证手机号规则
         phoneNum: {
             validator: function(value, param){
                 return /^1[3-8]+\d{9}$/.test(value);
@@ -25,4 +30,7 @@ $(function () {
         }
     });
 })
+
+
+
 
