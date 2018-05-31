@@ -13,6 +13,7 @@
         id:'grid',
         extendParams: undefined, // 默认新增和修改会把 row 的数据发送给服务端,如果需新增参数,需提供此方法并返回要扩展参数的 json 对象.方法入参为当前操作的 row 对象
         onBeforeEdit: undefined, // 开启编辑模式前回调方法
+        onBeginEdit:undefined,   // 在一行进入编辑模式的时候触发
         onAfterEdit: undefined, // 关闭编辑模式后回调方法
         onSaveSuccess: undefined, //新增或修改成功后回调方法,方法入参为修改后的数据
         canEdit: undefined // 控制 row 是否可以编辑,返回 false 取消编辑动作,方法入参为被编辑的 row 对象
@@ -45,6 +46,9 @@
                 },
                 onBeforeEdit: function (index, row) {
                     that._onBeforeEdit(index, row);
+                },
+                onBeginEdit: function (index, row) {
+                    that._onBeginEdit(index, row);
                 },
                 onCancelEdit: function (index, row) {
                     if (!row) {
@@ -133,18 +137,29 @@
             this.oldRecord = undefined;
         },
         _onBeforeEdit: function (index, row) {
-            var rowData = null;
-            if (this.options.target == 'datagrid') {
-                rowData = row;
-            }else{//treegrid的情况，只有一个参数
-                rowData = index;
+            //treegrid的情况，只有一个参数
+            if (this.options.target != 'datagrid') {
+                row = index;
             }
-            if (rowData.id != 'temp') {
+            if (row.id != 'temp') {
                 this.oldRecord = new Object();
-                $.extend(true, this.oldRecord, rowData);
+                $.extend(true, this.oldRecord, row);
             }
             if (this.options.onBeforeEdit) {
                 this.options.onBeforeEdit(index, row);
+            }
+        },
+        _onBeginEdit: function (index, row) {
+            //treegrid的情况，只有一个参数
+            if (this.options.target != 'datagrid') {
+                row = index;
+            }
+            if (row.id != 'temp') {
+                this.oldRecord = new Object();
+                $.extend(true, this.oldRecord, row);
+            }
+            if (this.options.onBeginEdit) {
+                this.options.onBeginEdit(index, row);
             }
         },
         _onCancelEdit: function (index, row) {
