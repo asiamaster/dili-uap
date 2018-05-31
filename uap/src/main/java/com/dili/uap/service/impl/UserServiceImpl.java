@@ -147,6 +147,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 		User user = DTOUtils.newDTO(User.class);
 		user.setId(userId);
 		user.setPassword(encryptPwd(UapConstants.DEFAULT_PASS));
+		user.setState(UserState.INACTIVE.getCode());
 		this.updateSelective(user);
 		return BaseOutput.success("重置成功");
 	}
