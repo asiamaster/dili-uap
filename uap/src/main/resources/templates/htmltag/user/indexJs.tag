@@ -74,16 +74,16 @@
     function openDetail() {
         var selected = userGrid.datagrid("getSelected");
         if (null == selected) {
-            $.messager.alert('警告','请选中一条数据');
+            $.messager.alert('警告', '请选中一条数据');
             return;
         }
         $('#viewDlg').dialog('open');
         $('#viewDlg').dialog('center');
-        var formData = $.extend({},selected);
-        formData = addKeyStartWith(formData,"_view_");
+        var formData = $.extend({}, selected);
+        formData = addKeyStartWith(formData, "_view_");
         $('#_view_form').form('load', formData);
-        $('#viewDlg input[class^=easyui-]').textbox("readonly",true);
-        $('#viewDlg input[class^=easyui-]').textbox("editable",false);
+        $('#viewDlg input[class^=easyui-]').textbox("readonly", true);
+        $('#viewDlg input[class^=easyui-]').textbox("editable", false);
 
     }
     
@@ -94,7 +94,7 @@
         $('#_form').form('clear');
         formFocus("_form", "_userName");
         $('#_firmCode').combobox("loadData", firms);
-        $('#_password').textbox('setValue','${defaultPass}');
+        $('#_password').textbox('setValue', '${defaultPass}');
         $('#_password').passwordbox('hidePassword');
         $("#_userName").textbox("enable");
         $("#_password").textbox("enable");
@@ -105,14 +105,14 @@
     function openUpdate(){
         var selected = userGrid.datagrid("getSelected");
         if (null == selected) {
-            $.messager.alert('警告','请选中一条数据');
+            $.messager.alert('警告', '请选中一条数据');
             return;
         }
         $('#editDlg').dialog('open');
         $('#editDlg').dialog('center');
         formFocus("_form", "_userName");
-        var formData = $.extend({},selected);
-        formData = addKeyStartWith(getOriginalData(formData),"_");
+        var formData = $.extend({}, selected);
+        formData = addKeyStartWith(getOriginalData(formData), "_");
         $('#_form').form('load', formData);
         $("#_userName").textbox("disable");
         $("#_password").textbox("disable");
@@ -126,12 +126,12 @@
      * @param firmCode 市场code
      */
     function loadDepartments(firmCode,controlId) {
-        $.post('${contextPath!}/department/listByCondition.action', {firmCode:firmCode}, function(ret) {
+        $.post('${contextPath!}/department/listByCondition.action', {firmCode: firmCode}, function (ret) {
             if (ret) {
-                var obj={id:'',name:'-- 请选择 --'};
+                var obj = {id: '', name: '-- 请选择 --'};
                 //动态添加'请选择'
                 ret.unshift(obj);
-                $('#'+controlId).combobox("loadData", ret);
+                $('#' + controlId).combobox("loadData", ret);
             }
         }, 'json');
     }
@@ -141,9 +141,9 @@
      * @param firmCode 市场code
      */
     function loadRoles(firmCode) {
-        $.post('${contextPath!}/role/list.action', {firmCode:firmCode}, function(ret) {
+        $.post('${contextPath!}/role/list.action', {firmCode: firmCode}, function (ret) {
             if (ret) {
-                var obj={id:'',roleName:'-- 请选择 --'};
+                var obj = {id: '', roleName: '-- 请选择 --'};
                 //动态添加'请选择'
                 ret.unshift(obj);
                 $('#roleId').combobox("loadData", ret);
@@ -160,22 +160,28 @@
             $.messager.alert('警告','请选中一条数据');
             return;
         }
-        $.messager.confirm('确认','您确认想要为['+selected.userName+']重置密码？',function(r){
-            if (r){
+        var msg = '账号密码重置后将无法再通过旧密码登陆系统，请确认是否为用户[' + selected.userName + ']重置？';
+        $.messager.confirm('确认', msg, function (r) {
+            if (r) {
                 $.ajax({
                     type: "POST",
                     url: "${contextPath}/user/resetPass.action",
-                    data: {id:selected.id},
-                    processData:true,
+                    data: {id: selected.id},
+                    processData: true,
                     dataType: "json",
-                    async : true,
+                    async: true,
                     success: function (ret) {
-                        if(!ret.success){
-                            $.messager.alert('错误',ret.result);
+                        if (ret.success) {
+                            userGrid.datagrid("reload");
+                            userGrid.datagrid("clearSelections");
+                            $('#stop_btn').linkbutton('disable');
+                            $('#play_btn').linkbutton('disable');
+                        } else {
+                            $.messager.alert('错误', ret.result);
                         }
                     },
-                    error: function(){
-                        $.messager.alert('错误','远程访问失败');
+                    error: function () {
+                        $.messager.alert('错误', '远程访问失败');
                     }
                 });
             }

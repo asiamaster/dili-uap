@@ -44,7 +44,7 @@
                 <table class="easyui-datagrid" title="角色信息" id="roleGrid" fitColumns="true"  noheader="true"
                        pagination="true" pageSize="30" pageNumber="1" pagePosition="top" remoteSort="true"
                        loadMsg="数据加载中..." singleSelect="true" method="post" sortName="id" sortOrder="desc"
-                       align="center" fit="true" striped="true"  idField="id" data-options="onHeaderContextMenu:headerContextMenu,onClickRow:onClickGridRow,onDblClickRow:openUpdate,onBeginEdit:onBeginEdit,onAfterEdit:onAfterEdit,onCancelEdit:onCancelEdit">
+                       align="center" fit="true" striped="true"  idField="id" data-options="onHeaderContextMenu:headerContextMenu">
                     <thead>
                         <tr>
                             <th data-options="field:'id',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false',hidden:true">
@@ -56,7 +56,7 @@
                             <th width="40%" data-options="field:'description',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false',editor:{type:'textbox',options:{required:true,validType:'length[0,255]'}}">
                                 角色描述
                             </th>
-                            <th width="10%" data-options="field:'firmCode', _provider:'firmCodeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false',editor:{type:'combobox',options:{required:true,editable:false,valueField:'code',textField:'name',panelHeight:'auto',onLoadSuccess:firmLoadSuccess}}">
+                            <th width="10%" data-options="field:'firmCode', _provider:'firmCodeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false',editor:{type:'combobox',options:{required:true,editable:false,valueField:'code',textField:'name',panelHeight:'auto'}}">
                                 归属市场
                             </th>
                             <th width="15%" data-options="field:'created',_provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">

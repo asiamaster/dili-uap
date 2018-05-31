@@ -4,143 +4,14 @@
     <%if (has(firms)){%>
         firms = ${firms};
     <%}%>
-    //编辑表格的索引
-    var editIndex = undefined;
-    // 结束行编辑
-    function endEditing() {
-        if (editIndex == undefined) {
-            return true
-        }
-        if (roleGrid.datagrid('validateRow', editIndex)) {
-            roleGrid.datagrid('endEdit', editIndex);
-            editIndex = undefined;
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * 判断是否真正编辑
-     */
-    function isEditing() {
-        return undefined != editIndex;
-    }
-
-    /**
-     * 取消行编辑
-     */
-    function cancelEdit() {
-        roleGrid.datagrid('cancelEdit', editIndex);
-        editIndex = undefined;
-    };
-
-    /**
-     * 打开新增信息
-     */
-    function openInsert() {
-        if (isEditing()){
-            $.messager.alert('警告', '有数据正在进行编辑');
-            roleGrid.datagrid('selectRow', editIndex);
-            return;
-        }
-        if (endEditing()) {
-            editIndex = roleGrid.datagrid('getRows').length;
-            roleGrid.datagrid('appendRow', {id:''});
-            roleGrid.datagrid('selectRow', editIndex);
-            roleGrid.datagrid('beginEdit', editIndex);
-        }
-    }
-
-    /**
-     * 开启选中行的编辑模式
-     */
-    function openUpdate() {
-        if (!endEditing()) {
-            $.messager.alert('警告', '有数据正在进行编辑');
-            roleGrid.datagrid('selectRow', editIndex);
-            return;
-        }
-        var selected = roleGrid.datagrid("getSelected");
-        if (!selected) {
-            $.messager.alert('警告', '请选中一条数据');
-            return;
-        }
-        var index = roleGrid.datagrid('getRowIndex', selected);
-        if (endEditing()) {
-            roleGrid.datagrid('selectRow', index).datagrid('beginEdit', index);
-            editIndex = index;
-        }
-    }
-
-    /**
-     * 开始编辑行的回调函数
-     * @param index 行索引
-     * @param row 行数据
-     */
-    function onBeginEdit(index, row) {
-        var editors = roleGrid.datagrid('getEditors', index);
-        editors[0].target.trigger('focus');
-        setOptBtnDisplay(true);
-        //获取市场字段的编辑框
-        var ed = roleGrid.datagrid('getEditor', {index:index,field:'firmCode'});
-        //存在ID，数据编辑情况下
-        if (row.id){
-            $(ed.target).datebox('readonly');
-            $(ed.target).datebox('disable');
-        }else{
-            //新增数据时，加载市场信息
-            $(ed.target).combobox("loadData", firms);
-        }
-    }
 
     /**
      * 市场加载成功后，默认选中第一个
      */
-    function firmLoadSuccess() {
-        var ed = roleGrid.datagrid('getEditor', {index:editIndex,field:'firmCode'});
+    function firmLoadSuccess(index) {
+        var ed = $('#roleGrid').datagrid('getEditor', {index:index,field:'firmCode'});
         var data = $(ed.target).combobox('getData');
         $(ed.target).combobox('select',data[0].code);
-    }
-
-    /**
-     * 单击含回调方法，逻辑是结束之前的行编辑模式
-     *
-     * @param index
-     * @param row
-     */
-    function onClickGridRow(index, row) {
-        if (!roleGrid.datagrid('validateRow', editIndex)) {
-            return;
-        }
-        if (editIndex != index) {
-            roleGrid.datagrid('endEdit', editIndex);
-            editIndex = undefined;
-        }
-    }
-
-    /**
-     * 结束编辑回调函数
-     *
-     * @param index 行索引
-     * @param 行数据
-     * @param  changes 当前行被修改的数据
-     */
-    function onAfterEdit(index, row, changes) {
-        insertOrUpdate(index, row, changes);
-        setOptBtnDisplay(false);
-    }
-
-    /**
-     * 取消行编辑回调方法
-     * @param  index
-     * @param  row
-     */
-    function onCancelEdit(index, row) {
-        setOptBtnDisplay(false);
-        if (!row.id) {
-            roleGrid.datagrid('deleteRow', index);
-        }
     }
 
     /**
@@ -149,8 +20,8 @@
      */
     function setOptBtnDisplay(flag) {
         if (flag || 'true'==flag){
-           $('#save_btn').show();
-           $('#cancel_btn').show();
+            $('#save_btn').show();
+            $('#cancel_btn').show();
         }else{
             $('#save_btn').hide();
             $('#cancel_btn').hide();
@@ -216,36 +87,7 @@
             }
         }
     };
-    //根据主键删除
-    function del() {
-        var selected = roleGrid.datagrid("getSelected");
-        if (null == selected) {
-            $.messager.alert('警告','请选中一条数据');
-            return;
-        }
-        $.messager.confirm('确认','您确认想要删除记录吗？',function(r){
-            if (r){
-                $.ajax({
-                    type: "POST",
-                    url: "${contextPath}/role/delete.action",
-                    data: {id:selected.id},
-                    processData:true,
-                    dataType: "json",
-                    async : true,
-                    success: function (ret) {
-                        if(ret.code=="200"){
-                            roleGrid.datagrid('deleteRow',roleGrid.datagrid('getRowIndex',selected));
-                        }else{
-                            $.messager.alert('错误',ret.result);
-                        }
-                    },
-                    error: function(){
-                        $.messager.alert('错误','远程访问失败');
-                    }
-                });
-            }
-        });
-    }
+
     /**
      * 绑定页面回车事件，以及初始化页面时的光标定位
      * @formId
@@ -274,71 +116,7 @@
         } else {
             document.onkeyup = getKey;
         }
-
-        var pager = roleGrid.datagrid('getPager');
-        pager.pagination({
-            <#controls_paginationOpts/>,
-            buttons:[
-                {
-                    iconCls:'icon-permission',
-                    text:'权限',
-                    handler:function(){
-                        editRoleMenuAndResource();
-                    }
-                },
-                {
-                    iconCls:'icon-man',
-                    text:'所属用户',
-                    handler:function(){
-                        onUserList();
-                    }
-                },
-                {
-                    iconCls:'icon-add',
-                    text:'新增',
-                    handler:function(){
-                        openInsert();
-                    }
-                },
-                {
-                    iconCls:'icon-edit',
-                    text:'修改',
-                    handler:function(){
-                        openUpdate();
-                    }
-                },
-                {
-                    iconCls:'icon-remove',
-                    text:'删除',
-                    handler:function(){
-                        del();
-                    }
-                },
-                {
-                    iconCls:'icon-export',
-                    text:'导出',
-                    handler:function(){
-                        doExport('roleGrid');
-                    }
-                },
-                {
-                    id:'save_btn',
-                    iconCls:'icon-ok',
-                    text:'保存',
-                    handler:function(){
-                        endEditing();
-                    }
-                },
-                {
-                    id:'cancel_btn',
-                    iconCls:'icon-clear',
-                    text:'取消',
-                    handler:function(){
-                        cancelEdit();
-                    }
-                }
-            ]
-        });
+        initRoleGrid();
         //表格仅显示下边框
         roleGrid.datagrid('getPanel').removeClass('lines-both lines-no lines-right lines-bottom').addClass("lines-bottom");
         queryGrid();
@@ -346,6 +124,106 @@
         //初始化用户列表的grid
         initUserListGrid();
     });
+
+    /**
+     * 初始化角色列表的grid
+     */
+    function initRoleGrid() {
+        //设置grid的可编辑信息
+        $("#roleGrid").dataGridEditor({
+            insertUrl: "${contextPath!}/role/insert.action",
+            updateUrl: "${contextPath!}/role/update.action",
+            deleteUrl: '${contextPath!}/role/delete.action',
+            onBeginEdit: function (index,row) {
+                var editors = $("#roleGrid").datagrid('getEditors', index);
+                editors[0].target.trigger('focus');
+                //获取市场字段的编辑框
+                var ed = $("#roleGrid").datagrid('getEditor', {index:index,field:'firmCode'});
+                //存在ID，数据编辑情况下
+                if (row.id != 'temp'){
+                    $(ed.target).datebox('readonly');
+                    $(ed.target).datebox('disable');
+                }else{
+                    //新增数据时，加载市场信息
+                    $(ed.target).combobox("loadData", firms);
+                    firmLoadSuccess(index);
+                }
+                setOptBtnDisplay(true);
+            },
+            onAfterEdit: function () {
+                setOptBtnDisplay(false);
+            },
+            onSaveSuccess: function (row, data) {
+                roleGrid.datagrid("load");
+            }
+        });
+
+        //设置pagination信息
+        var pager = roleGrid.datagrid('getPager');
+        pager.pagination({
+            <#controls_paginationOpts/>,
+            buttons:[
+            {
+                iconCls:'icon-permission',
+                text:'权限',
+                handler:function(){
+                    editRoleMenuAndResource();
+                }
+            },
+            {
+                iconCls:'icon-man',
+                text:'所属用户',
+                handler:function(){
+                    onUserList();
+                }
+            },
+            {
+                iconCls:'icon-add',
+                text:'新增',
+                handler:function(){
+                    $("#roleGrid").dataGridEditor().insert();
+                }
+            },
+            {
+                iconCls:'icon-edit',
+                text:'修改',
+                handler:function(){
+                    $("#roleGrid").dataGridEditor().update();
+                }
+            },
+            {
+                iconCls:'icon-remove',
+                text:'删除',
+                handler:function(){
+                    $("#roleGrid").dataGridEditor().delete();
+                }
+            },
+            {
+                iconCls:'icon-export',
+                text:'导出',
+                handler:function(){
+                    doExport('roleGrid');
+                }
+            },
+            {
+                id:'save_btn',
+                iconCls:'icon-ok',
+                text:'保存',
+                handler:function(){
+                    $("#roleGrid").dataGridEditor().save();
+                }
+            },
+            {
+                id:'cancel_btn',
+                iconCls:'icon-clear',
+                text:'取消',
+                handler:function(){
+                    $("#roleGrid").dataGridEditor().cancel();
+                }
+            }
+        ]
+    });
+    }
 
     //表格查询
     function queryGrid() {
@@ -436,20 +314,17 @@
     function initUserListGrid() {
         $('#userListGrid').datagrid({
             toolbar: [
-                 {
+                {
                     iconCls:'icon-remove',
                     text:'解除绑定',
                     handler:function(){
                         unbindRoleUser();
                     }
-                 }
+                }
             ]
         });
-
-
-
     }
-    
+
     /**
      * 解除角色绑定
      */
