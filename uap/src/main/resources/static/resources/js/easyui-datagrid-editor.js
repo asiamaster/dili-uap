@@ -43,8 +43,8 @@
                     }
                     that._onAfterEdit(index, row);
                 },
-                onBeforeEdit: function (row) {
-                    that._onBeforeEdit(row);
+                onBeforeEdit: function (index, row) {
+                    that._onBeforeEdit(index, row);
                 },
                 onCancelEdit: function (index, row) {
                     if (!row) {
@@ -132,13 +132,19 @@
             this.insertOrUpdate(index, row);
             this.oldRecord = undefined;
         },
-        _onBeforeEdit: function (row) {
-            if (row.id != 'temp') {
+        _onBeforeEdit: function (index, row) {
+            var rowData = null;
+            if (this.options.target != 'datagrid') {
+                rowData = row;
+            }else{//treegrid的情况，只有一个参数
+                rowData = index;
+            }
+            if (rowData.id != 'temp') {
                 this.oldRecord = new Object();
-                $.extend(true, this.oldRecord, row);
+                $.extend(true, this.oldRecord, rowData);
             }
             if (this.options.onBeforeEdit) {
-                this.options.onBeforeEdit();
+                this.options.onBeforeEdit(index, row);
             }
         },
         _onCancelEdit: function (index, row) {
