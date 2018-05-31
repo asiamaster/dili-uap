@@ -2,7 +2,10 @@ package com.dili.uap.service.impl;
 
 import com.dili.ss.base.BaseServiceImpl;
 import com.dili.ss.domain.BaseOutput;
+import com.dili.ss.domain.EasyuiPageOutput;
 import com.dili.ss.dto.DTOUtils;
+import com.dili.ss.metadata.ValueProviderUtils;
+import com.dili.uap.constants.UapConstants;
 import com.dili.uap.dao.UserMapper;
 import com.dili.uap.domain.User;
 import com.dili.uap.domain.dto.UserDto;
@@ -10,6 +13,8 @@ import com.dili.uap.glossary.UserState;
 import com.dili.uap.manager.UserManager;
 import com.dili.uap.service.UserService;
 import com.dili.uap.utils.MD5Util;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,7 +101,6 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
     @Override
 	@Transactional(rollbackFor = Exception.class)
     public BaseOutput save(User user) {
-
 		//验证邮箱是否重复
 		User query = DTOUtils.newDTO(User.class);
 		query.setEmail(user.getEmail());
@@ -136,4 +140,38 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
         }
         return BaseOutput.success("操作成功");
     }
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public BaseOutput resetPass(Long userId) {
+		User user = DTOUtils.newDTO(User.class);
+		user.setId(userId);
+		user.setPassword(encryptPwd(UapConstants.DEFAULT_PASS));
+		this.updateSelective(user);
+		return BaseOutput.success("重置成功");
+	}
+
+	@Override
+	public BaseOutput upateEnable(Long userId, Boolean enable) {
+		User user = DTOUtils.newDTO(User.class);
+		user.setId(userId);
+		if (enable) {
+			user.setState(UserState.NORMAL.getCode());
+		} else {
+			user.setState(UserState.DISABLED.getCode());
+		}
+		this.updateSelective(user);
+		return BaseOutput.success("操作成功");
+	}
+
+	@Override
+	public EasyuiPageOutput listEasyuiPage(User domain, boolean useProvider) throws Exception {
+		if (domain.getRows() != null && domain.getRows() >= 1) {
+			PageHelper.startPage(domain.getPage(), domain.getRows());
+		}
+		List<UserDto> users = getActualDao().selectForPage(domain);
+		long total = users instanceof Page ? ((Page)users).getTotal() : (long)users.size();
+		List results = useProvider ? ValueProviderUtils.buildDataByProvider(domain, users) : users;
+		return new EasyuiPageOutput((int)total, results);
+	}
 }

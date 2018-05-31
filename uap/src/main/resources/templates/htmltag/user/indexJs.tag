@@ -4,13 +4,93 @@
     <%if (has(firms)){%>
         firms = ${firms};
     <%}%>
-
+    //用户当前的所属市场
     var firmCode = '${firmCode!}'
 
+    /**
+     * datagrid行点击事件
+     * 目前用于来判断 启禁用是否可点
+     */
+    function onClickRow(index,row) {
+        var state = row.$_state;
+        if (state == ${@com.dili.uap.glossary.UserState.DISABLED.getCode()}
+            || state == ${@com.dili.uap.glossary.UserState.LOCKED.getCode()}){
+            //当用户状态为 禁用、锁定时，可操作 启用
+            $('#play_btn').linkbutton('enable');
+            $('#stop_btn').linkbutton('disable');
+        }else if(state == ${@com.dili.uap.glossary.UserState.NORMAL.getCode()}){
+            //当用户状态为正常时，则只能操作 禁用
+            $('#stop_btn').linkbutton('enable');
+            $('#play_btn').linkbutton('disable');
+        }else{
+            //其它情况，按钮不可用
+            $('#stop_btn').linkbutton('disable');
+            $('#play_btn').linkbutton('disable');
+        }
+    }
+
+    /**
+     * 禁启用操作
+     * @param enable 是否启用:true-启用
+     */
+    function doEnable(enable) {
+        var selected = userGrid.datagrid("getSelected");
+        if (null == selected) {
+            $.messager.alert('警告', '请选中一条数据');
+            return;
+        }
+        var msg = (enable || 'true' == enable) ? '启用' : '禁用';
+        msg = msg + '[' + selected.userName + ']';
+        $.messager.confirm('确认', '您确认要' + msg + '吗？', function (r) {
+            if (r) {
+                $.ajax({
+                    type: "POST",
+                    url: "${contextPath}/user/doEnable.action",
+                    data: {id: selected.id, enable: enable},
+                    processData: true,
+                    dataType: "json",
+                    async: true,
+                    success: function (ret) {
+                        if (ret.success) {
+                            userGrid.datagrid("reload");
+                            userGrid.datagrid("clearSelections");
+                            $('#stop_btn').linkbutton('disable');
+                            $('#play_btn').linkbutton('disable');
+                        } else {
+                            $.messager.alert('错误', ret.result);
+                        }
+                    },
+                    error: function () {
+                        $.messager.alert('错误', '远程访问失败');
+                    }
+                });
+            }
+        });
+    }
+
+    /**
+     * 查看用户信息
+     */
+    function openDetail() {
+        var selected = userGrid.datagrid("getSelected");
+        if (null == selected) {
+            $.messager.alert('警告','请选中一条数据');
+            return;
+        }
+        $('#viewDlg').dialog('open');
+        $('#viewDlg').dialog('center');
+        var formData = $.extend({},selected);
+        formData = addKeyStartWith(formData,"_view_");
+        $('#_view_form').form('load', formData);
+        $('#viewDlg input[class^=easyui-]').textbox("readonly",true);
+        $('#viewDlg input[class^=easyui-]').textbox("editable",false);
+
+    }
+    
     //打开新增用户的窗口
     function openInsert(){
-        $('#dlg').dialog('open');
-        $('#dlg').dialog('center');
+        $('#editDlg').dialog('open');
+        $('#editDlg').dialog('center');
         $('#_form').form('clear');
         formFocus("_form", "_userName");
         $('#_firmCode').combobox("loadData", firms);
@@ -19,7 +99,6 @@
         $("#_userName").textbox("enable");
         $("#_password").textbox("enable");
         $("#_firmCode").textbox("enable");
-        $('#resetPass').hide();
     }
 
     //打开修改窗口
@@ -29,8 +108,8 @@
             $.messager.alert('警告','请选中一条数据');
             return;
         }
-        $('#dlg').dialog('open');
-        $('#dlg').dialog('center');
+        $('#editDlg').dialog('open');
+        $('#editDlg').dialog('center');
         formFocus("_form", "_userName");
         var formData = $.extend({},selected);
         formData = addKeyStartWith(getOriginalData(formData),"_");
@@ -39,7 +118,6 @@
         $("#_password").textbox("disable");
         $("#_firmCode").textbox("disable");
         $("#_firmCode").textbox("initValue", selected.firmCode);
-        $('#resetPass').show();
     }
     
     
@@ -77,7 +155,31 @@
      * 重置密码
      */
     function resetPass() {
-
+        var selected = userGrid.datagrid("getSelected");
+        if (null == selected) {
+            $.messager.alert('警告','请选中一条数据');
+            return;
+        }
+        $.messager.confirm('确认','您确认想要为['+selected.userName+']重置密码？',function(r){
+            if (r){
+                $.ajax({
+                    type: "POST",
+                    url: "${contextPath}/user/resetPass.action",
+                    data: {id:selected.id},
+                    processData:true,
+                    dataType: "json",
+                    async : true,
+                    success: function (ret) {
+                        if(!ret.success){
+                            $.messager.alert('错误',ret.result);
+                        }
+                    },
+                    error: function(){
+                        $.messager.alert('错误','远程访问失败');
+                    }
+                });
+            }
+        });
     }
 
     /**
@@ -124,7 +226,7 @@
             success: function (ret) {
                 if(ret.success){
                     userGrid.datagrid("reload");
-                    $('#dlg').dialog('close');
+                    $('#editDlg').dialog('close');
                 }else{
                     $.messager.alert('错误',ret.result);
                 }
@@ -175,6 +277,13 @@
             <#controls_paginationOpts/>,
             buttons:[
                 {
+                    iconCls:'icon-detail',
+                    text:'详情',
+                    handler:function(){
+                        openDetail();
+                    }
+                },
+                {
                     iconCls:'icon-add',
                     text:'新增',
                     handler:function(){
@@ -196,6 +305,31 @@
                     }
                 },
                 {
+                    iconCls:'icon-edit',
+                    text:'密码重置',
+                    handler:function(){
+                        resetPass();
+                    }
+                },
+                {
+                    iconCls:'icon-play',
+                    text:'启用',
+                    id:'play_btn',
+                    disabled:true,
+                    handler:function(){
+                        doEnable(true);
+                    }
+                },
+                {
+                    iconCls:'icon-stop',
+                    text:'禁用',
+                    id:'stop_btn',
+                    disabled:true,
+                    handler:function(){
+                        doEnable(false);
+                    }
+                },
+                {
                     iconCls:'icon-export',
                     text:'导出',
                     handler:function(){
@@ -207,8 +341,6 @@
         //表格仅显示下边框
         userGrid.datagrid('getPanel').removeClass('lines-both lines-no lines-right lines-bottom').addClass("lines-bottom");
     }
-
-
     //全局按键事件
     function getKey(e){
         e = e || window.event;
@@ -232,7 +364,6 @@
      */
     $(function () {
         window.userGrid = $('#userGrid');
-
         /**
          * 加载部门信息
          */
@@ -248,7 +379,7 @@
         <%}%>
         
         bindFormEvent("form", "userName", queryGrid);
-        bindFormEvent("_form", "_userName", saveOrUpdate, function (){$('#dlg').dialog('close');});
+        bindFormEvent("_form", "_userName", saveOrUpdate, function (){$('#editDlg').dialog('close');});
         if (document.addEventListener) {
             document.addEventListener("keyup",getKey,false);
         } else if (document.attachEvent) {

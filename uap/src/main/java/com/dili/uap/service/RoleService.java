@@ -50,4 +50,11 @@ public interface RoleService extends BaseService<Role, Long> {
      * @return
      */
     BaseOutput unbindRoleUser(Long roleId,Long userId);
+
+    /**
+     * 获取用户拥有的所有角色信息
+     * @param userId 用户ID
+     * @return  角色信息
+     */
+    List<Role> listByUserId(Long userId);
 }

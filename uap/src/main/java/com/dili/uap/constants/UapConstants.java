@@ -35,5 +35,10 @@ public class UapConstants {
      */
     public static final String EMAIL_POSTFIX = "@diligrp.com";
 
+    /**
+     * 用户的默认密码
+     */
+    public static final String DEFAULT_PASS = "123456";
+
 
 }

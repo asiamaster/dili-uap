@@ -222,4 +222,9 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements Role
         userRoles.stream().forEach(userRole -> userRoleMapper.deleteByPrimaryKey(userRole.getId()));
         return BaseOutput.success("解绑成功");
     }
+
+    @Override
+    public List<Role> listByUserId(Long userId) {
+        return getActualDao().listByUserId(userId);
+    }
 }
