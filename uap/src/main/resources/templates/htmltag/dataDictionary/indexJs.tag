@@ -180,13 +180,13 @@ $(function() {
         },
         onAfterEdit: function () {
             setOptBtnDisplay(false);
-        },
+        }/*,
         onSaveSuccess: function (row, data) {
             row.created = UAP_TOOLS.getNowStr();
             row.modified = UAP_TOOLS.getNowStr();
             $("#grid").datagrid('updateRow', $("#grid").datagrid('getRowIndex', row), row);
             $("#grid").datagrid('refreshRow', $("#grid").datagrid('getRowIndex', row));
-        }
+        }*/
     });
 
 			var pager = $('#grid').datagrid('getPager');    // get the pager of treegrid
