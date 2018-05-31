@@ -134,7 +134,7 @@
         },
         _onBeforeEdit: function (index, row) {
             var rowData = null;
-            if (this.options.target != 'datagrid') {
+            if (this.options.target == 'datagrid') {
                 rowData = row;
             }else{//treegrid的情况，只有一个参数
                 rowData = index;
