@@ -216,7 +216,7 @@ $(function() {
 					},
 					{
 						id:'save_btn',
-                        text:'确定',
+                        text:'保存',
 						iconCls:'icon-ok',
 						handler:function(){  $("#grid").dataGridEditor().save();}
 					},

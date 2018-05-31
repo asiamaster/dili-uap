@@ -17,7 +17,7 @@
                                                              style="width: 100%"
                                                              data-options="labelWidth:100,labelAlign:'right',label:'系统编码:', validType:'length[0,50]'"/>
                             </td>
-                            <td style="padding: 5px;"><input class="easyui-textbox" name="name" id="name"
+                            <td style="padding: 5px;"><input class="easyui-textbox" name="likeName" id="likeName"
                                                              style="width: 100%"
                                                              data-options="labelWidth:50,labelAlign:'right',label:'名称:', validType:'length[0,50]'"/>
                             </td>
@@ -45,7 +45,7 @@
     <div region="center" style="width: 100%;" height="auto" align="center" border="false">
         <!-- =========================================================表格========================================================= -->
         <div style="width: 100%;height: 100%;" align="center">
-            <table class="easyui-datagrid" title="" noheader="true" id="grid" fitColumns="true" pagination="true"
+            <table class="easyui-datagrid"  noheader="true" title="系统配置列表"  id="grid" fitColumns="true" pagination="true"
                    pageSize="30" pageNumber="1" pagePosition="top" rownumbers="false" remoteSort="false"
                    loadMsg="数据加载中..."
                    singleSelect="true" method="post" multiSort="true" sortName="code" align="center" fit="true"
@@ -223,6 +223,13 @@
                     iconCls: 'icon-clear',
                     handler: function () {
                         $("#grid").dataGridEditor().cancel();
+                    }
+                },
+           	   {
+                    iconCls:'icon-export',
+                    text:'导出',
+                    handler:function(){
+                        doExport('grid');
                     }
                 }
             ]

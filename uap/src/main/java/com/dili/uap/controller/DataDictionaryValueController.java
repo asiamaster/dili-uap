@@ -57,8 +57,7 @@ public class DataDictionaryValueController {
     @RequestMapping(value = "/insert.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody
     BaseOutput insert(DataDictionaryValue dataDictionaryValue) {
-        dataDictionaryValueService.insertSelective(dataDictionaryValue);
-        return BaseOutput.success("新增成功").setData(dataDictionaryValue);
+    	return dataDictionaryValueService.insertAfterCheck(dataDictionaryValue);
     }
 
     @ApiOperation("修改DataDictionaryValue")
@@ -68,8 +67,7 @@ public class DataDictionaryValueController {
     @RequestMapping(value = "/update.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody
     BaseOutput update(DataDictionaryValue dataDictionaryValue) {
-        dataDictionaryValueService.updateSelective(dataDictionaryValue);
-        return BaseOutput.success("修改成功").setData(dataDictionaryValue);
+        return dataDictionaryValueService.updateAfterCheck(dataDictionaryValue);
     }
 
     @ApiOperation("删除DataDictionaryValue")

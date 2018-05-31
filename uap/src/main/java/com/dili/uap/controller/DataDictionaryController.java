@@ -2,6 +2,8 @@ package com.dili.uap.controller;
 
 import com.dili.ss.domain.BaseOutput;
 import com.dili.uap.domain.DataDictionary;
+import com.dili.uap.domain.dto.DataDictionaryDto;
+import com.dili.uap.provider.SystemProvider;
 import com.dili.uap.service.DataDictionaryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -26,6 +29,8 @@ import java.util.List;
 public class DataDictionaryController {
     @Autowired
     DataDictionaryService dataDictionaryService;
+    @Autowired
+    SystemProvider systemProvider;
 
     @ApiOperation("跳转到DataDictionary页面")
     @RequestMapping(value = "/index.html", method = RequestMethod.GET)
@@ -49,7 +54,7 @@ public class DataDictionaryController {
     })
     @RequestMapping(value = "/listPage.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody
-    String listPage(DataDictionary dataDictionary) {
+    String listPage(DataDictionaryDto dataDictionary) {
         try {
             return dataDictionaryService.listEasyuiPageByExample(dataDictionary, true).toString();
         } catch (Exception e) {
@@ -65,8 +70,7 @@ public class DataDictionaryController {
     @RequestMapping(value = "/insert.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody
     BaseOutput insert(DataDictionary dataDictionary) {
-        dataDictionaryService.insertSelective(dataDictionary);
-        return BaseOutput.success("新增成功").setData(dataDictionary);
+    	 return  dataDictionaryService.insertAfterCheck(dataDictionary);
     }
 
     @ApiOperation("修改DataDictionary")
@@ -76,8 +80,7 @@ public class DataDictionaryController {
     @RequestMapping(value = "/update.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody
     BaseOutput update(DataDictionary dataDictionary) {
-        dataDictionaryService.updateSelective(dataDictionary);
-        return BaseOutput.success("修改成功").setData(dataDictionary);
+       return dataDictionaryService.updateAfterCheck(dataDictionary);
     }
 
     @ApiOperation("删除DataDictionary")
@@ -89,5 +92,10 @@ public class DataDictionaryController {
     BaseOutput delete(Long id) {
         dataDictionaryService.delete(id);
         return BaseOutput.success("删除成功");
+    }
+    @RequestMapping(value = "/systemList.action", method = {RequestMethod.GET, RequestMethod.POST})
+    public @ResponseBody
+    Object systemList() {
+    	 return  systemProvider.getLookupList(null, Collections.emptyMap(), null);
     }
 }

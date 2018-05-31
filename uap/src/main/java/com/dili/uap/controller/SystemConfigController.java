@@ -2,6 +2,7 @@ package com.dili.uap.controller;
 
 import com.dili.ss.domain.BaseOutput;
 import com.dili.uap.domain.SystemConfig;
+import com.dili.uap.domain.dto.SystemConfigDto;
 import com.dili.uap.service.SystemConfigService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -47,7 +48,7 @@ public class SystemConfigController {
 		@ApiImplicitParam(name="SystemConfig", paramType="form", value = "SystemConfig的form信息", required = false, dataType = "string")
 	})
     @RequestMapping(value="/listPage.action", method = {RequestMethod.GET, RequestMethod.POST})
-    public @ResponseBody String listPage(SystemConfig systemConfig) throws Exception {
+    public @ResponseBody String listPage(SystemConfigDto systemConfig) throws Exception {
         return systemConfigService.listEasyuiPageByExample(systemConfig, true).toString();
     }
 

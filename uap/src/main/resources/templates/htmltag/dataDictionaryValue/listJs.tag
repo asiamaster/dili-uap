@@ -226,7 +226,7 @@ $(function() {
             {
                 id:'save_btn_ddValue',
                 iconCls:'icon-ok',
-                text:'确定',
+                text:'保存',
                 handler:function(){endDdValueGridEditing();}
             },
             {

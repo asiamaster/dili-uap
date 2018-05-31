@@ -14,8 +14,11 @@
                 <div style="padding: 5px;">
                     <table>
                         <tr>
-                            <td style="padding: 5px;"><input class="easyui-textbox" name="systemCode" id="systemCode" style="width: 100%" data-options="labelWidth:100,labelAlign:'right',label:'系统编码:', validType:'length[0,50]'" /></td>
-                            <td style="padding: 5px;"><input class="easyui-textbox" name="name" id="name" style="width: 100%" data-options="labelWidth:50,labelAlign:'right',label:'名称:', validType:'length[0,50]'" /></td>
+                            <td style="padding: 5px;">
+                            <input class="easyui-textbox" name="systemCode" id="systemCode" panelWidth="auto"  panelHeight="auto" style="width: 100%" data-options="labelWidth:100,labelAlign:'right',label:'系统:', validType:'length[0,50]'" /></td>
+                             <#comboProvider _id="systemCode" _provider='systemProvider' _queryParams='{}'/>
+                            
+                            <td style="padding: 5px;"><input class="easyui-textbox" name="likeName" id="likeName" style="width: 100%" data-options="labelWidth:50,labelAlign:'right',label:'名称:', validType:'length[0,50]'" /></td>
                             <td style="padding: 5px;"><input class="easyui-textbox" name="code" id="code" style="width: 100%" data-options="labelWidth:50,labelAlign:'right',label:'编码:', validType:'length[0,50]'" /></td>
                             <td>
                                 <a href="#" class="easyui-linkbutton" iconCls="icon-search" id="queryBtn" onclick="queryDdGrid();">查询</a>&nbsp;&nbsp;<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-clear" onclick="clearForm()">清除</a>
@@ -39,12 +42,13 @@
                 <thead>
                 <tr>
                     <th data-options="field:'id',width:'6%',sortable:'true', order:'asc', align:'center', hidden:true,resizable:'true', fixed:'false'">ID</th>
-                    <th data-options="field:'systemCode',width:'6%',sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false',editor : {type : 'textbox',options : {required : true}}">系统编码</th>
-                    <th
-                            data-options="field:'name',width:'17%',sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false', formatter:formatName,
+                    <th data-options="field:'systemCode'
+                    , _provider:'simpleBatchDisplayTextProvider',_escapeFileds:{'systemCode':'name'},_fkField:'systemCode',_relationTable:'system',_relationTablePkField:'code', _queryParams:{}
+                    ,width:'20%',sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false',editor : {type : 'combobox',options : {panelWidth:'auto'  ,panelHeight:'auto', url:'/dataDictionary/systemList.action',textField:'text',editable:false,valueField:'value',required : true}}">系统</th>
+                    <th data-options="field:'name',width:'14%',sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false', formatter:formatName,
 						editor : {type : 'textbox',options : {required : true}}">名称</th>
                     <th data-options="field:'code',width:'17%',sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false',editor : {type : 'textbox',options : {required : true}}">编码</th>
-                    <th data-options="field:'description',width:'30%',sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false',
+                    <th data-options="field:'description',width:'20%',sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false',
 						editor : {type : 'textbox',options : {required : true}}">备注</th>
                     <th data-options="field:'created',width:'15%',  _provider:'datetimeProvider', sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false'">创建时间</th>
                     <th data-options="field:'modified',width:'15%',  _provider:'datetimeProvider', sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false'">更新时间</th>
