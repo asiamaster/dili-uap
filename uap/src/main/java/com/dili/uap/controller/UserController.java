@@ -155,6 +155,17 @@ public class UserController {
         return JSONArray.toJSONString(list);
     }
 
+
+    @ApiOperation(value = "获取用户的角色信息", notes = "获取用户角色信息(tree结构)")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "userId", paramType = "path", value = "用户ID",dataType = "long"),
+            @ApiImplicitParam(name = "roleIds", paramType = "path", value = "角色ID(包括市场ID)",dataType = "String"),
+    })
+    @RequestMapping(value = "/saveUserRoles.action", method = {RequestMethod.GET, RequestMethod.POST})
+    @ResponseBody
+    public BaseOutput saveUserRoles(Long userId,String roleIds[]){
+        return userService.saveUserRoles(userId,roleIds);
+    }
     @RequestMapping(value = "/fetchLoginUserInfo.action", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
     public BaseOutput fetchLoginUserInfo(){

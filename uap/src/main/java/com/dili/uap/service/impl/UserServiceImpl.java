@@ -217,7 +217,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 			roleList.stream().forEach(role -> {
 				UserRoleDto dto = DTOUtils.newDTO(UserRoleDto.class);
 				dto.setName(role.getRoleName());
-				dto.setParentId(role.getFirmCode());
+				dto.setParentId(UapConstants.FIRM_PREFIX + role.getFirmCode());
 				dto.setTreeId(String.valueOf(role.getId()));
 				if (userRoleIds.contains(role.getId())){
 					dto.setChecked(true);
@@ -229,9 +229,8 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 			firmList.stream().forEach(firm -> {
 				UserRoleDto dto = DTOUtils.newDTO(UserRoleDto.class);
 				dto.setName(firm.getName());
-				dto.setTreeId(firm.getCode());
+				dto.setTreeId(UapConstants.FIRM_PREFIX + firm.getCode());
 				dto.setParentId("");
-				dto.setChecked(false);
 				userRoleDtos.add(dto);
 			});
 			return userRoleDtos;
@@ -239,7 +238,33 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 		return null;
 	}
 
-	@Override
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public BaseOutput saveUserRoles(Long userId, String[] roleIds) {
+	    if (null == userId){
+	        return BaseOutput.failure("用户数据丢失");
+        }
+	    UserRole userRole = DTOUtils.newDTO(UserRole.class);
+	    userRole.setUserId(userId);
+	    userRoleMapper.delete(userRole);
+	    //需要保存的用户角色信息
+	    List<UserRole> saveDatas = Lists.newArrayList();
+        for (String id : roleIds) {
+            if (!id.startsWith(UapConstants.FIRM_PREFIX)){
+                UserRole ur = DTOUtils.newDTO(UserRole.class);
+                ur.setUserId(userId);
+                ur.setRoleId(Long.valueOf(id));
+                saveDatas.add(ur);
+            }
+        }
+        //如果存在需要保存的用户角色数据，则保存数据
+        if (CollectionUtils.isNotEmpty(saveDatas)) {
+            userRoleMapper.insertList(saveDatas);
+        }
+        return BaseOutput.success("操作成功");
+    }
+
+    @Override
 	public EasyuiPageOutput listEasyuiPage(User domain, boolean useProvider) throws Exception {
 		if (domain.getRows() != null && domain.getRows() >= 1) {
 			PageHelper.startPage(domain.getPage(), domain.getRows());

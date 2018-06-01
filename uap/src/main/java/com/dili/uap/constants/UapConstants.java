@@ -40,5 +40,10 @@ public class UapConstants {
      */
     public static final String DEFAULT_PASS = "123456";
 
+    /**
+     * 树结构，市场code前缀
+     */
+    public static final String FIRM_PREFIX = "firm_";
+
 
 }
