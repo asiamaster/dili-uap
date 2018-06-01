@@ -62,27 +62,21 @@ public class LoginController {
 		loginDto.setLoginPath(WebUtil.fetchReferer(request));
 		loginDto.setIp(WebUtil.getRemoteIP(request));
 		loginDto.setHost(request.getRemoteHost());
-		//设置系统编码，用于平台和系统的首页加载菜单
-//		modelMap.put("systemCode", loginDto.getSystemCode());
 		//如果有登录用户名和密码，并且登录系统是UAP，则跳到平台首页，并加载登录数据
 		//如果没有登录用户名和密码，并且登录系统是UAP，则跳到平台首页，不加载登录数据
 		//如果没有登录用户名和密码，并且登录系统不是UAP，则跳到系统首页，不加载登录数据
-		if(loginDto.getSystemCode().equals(UapConstants.SYSTEM_CODE)) {
-			//如果用户名和密码不为空，则需要加载登录数据
-			if (StringUtils.isNotBlank(loginDto.getUserName()) && StringUtils.isNotBlank(loginDto.getPassword())) {
-				BaseOutput<Boolean> output = loginService.loginAndTag(loginDto);
-				//登录失败后跳到登录页
-				if (!output.isSuccess()) {
-					//登录失败放入登录结果信息
-					modelMap.put("msg", output.getResult());
-					return INDEX_PATH;
-				}
+		//如果用户名和密码不为空，则需要加载登录数据
+		if (StringUtils.isNotBlank(loginDto.getUserName()) && StringUtils.isNotBlank(loginDto.getPassword())) {
+			BaseOutput<Boolean> output = loginService.loginAndTag(loginDto);
+			//登录失败后跳到登录页
+			if (!output.isSuccess()) {
+				//登录失败放入登录结果信息
+				modelMap.put("msg", output.getResult());
+				return INDEX_PATH;
 			}
-			//跳转到平台首页，参数带上系统编码
-			return IndexController.REDIRECT_INDEX_PAGE+"?systemCode="+loginDto.getSystemCode();
-		}else{//登录系统首页，则不需要用户名和密码，直接跳转，参数带上系统编码
-			return IndexController.REDIRECT_INDEX_PAGE+"?systemCode="+loginDto.getSystemCode();
 		}
+		//跳转到平台首页，参数带上系统编码
+		return IndexController.REDIRECT_INDEX_PAGE;
     }
 
     @ApiOperation("执行logout请求，跳转login页面或者弹出错误")
