@@ -35,6 +35,21 @@ public class IndexController {
 		}
 	}
 
+
+	@ApiOperation("跳转到平台首面")
+	@RequestMapping(value = "/platform.html", method = RequestMethod.GET)
+	public String platform(ModelMap modelMap) {
+		UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
+		if (userTicket != null) {
+			modelMap.put("userid", userTicket.getId());
+			modelMap.put("username", userTicket.getRealName());
+			return "index/platform";
+		} else {
+			return LoginController.REDIRECT_INDEX_PAGE;
+		}
+	}
+
+
 	@ApiOperation("跳转到个人信息页面")
 	@RequestMapping(value = "/userDetail.html", method = RequestMethod.GET)
 	public String userDetail(ModelMap modelMap) {
