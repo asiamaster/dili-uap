@@ -130,7 +130,7 @@ public class SessionFilter implements Filter {
         BaseOutput<Map<String, Object>> output = menuRpc.getMenuDetailByUrl(pc.getUrl());
         if(output.isSuccess()){
             Map<String, Object> menu1 = output.getData();
-            if(menu1.isEmpty()) {
+            if(menu1 == null || menu1.isEmpty()) {
                 return;
             }
             SystemExceptionLog systemExceptionLog = DTOUtils.newDTO(SystemExceptionLog.class);
