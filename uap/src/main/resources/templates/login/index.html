@@ -17,39 +17,44 @@
 </head>
 
 <body>
-<div class="login">
-    <div>
-        <h2>地利统一登录平台</h2></div>
-    <div id="errMsg">
+<div class="loginwrap">
+    <div class="login">
+        <h2 class="login-title"><img src="${contextPath}/resources/images/login-title.png" alt="地利统一登录平台"></h2>
+
+        <form id="loginForm" class="login-form" method="post" action="${contextPath}/login/login.action">
+            <table class="userinfo">
+                <tbody>
+                <tr>
+                    <td width="40" class="login-icon login-user-icon"></td>
+                    <td>
+                        <input id="userName" name="userName" value="" type="text" placeholder="请输入账号" />
+                    </td>
+                </tr>
+                <tr>
+                    <td width="40" class="login-icon login-password-icon"></td>
+                    <td>
+                        <input id="password" name="password" value="" type="password" placeholder="请输入密码" />
+                    </td>
+                </tr>
+                <!--<tr>
+                    <td colspan="2"><label id="msg"></label></td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <input type="button" class="submit" value="登录" onclick="doLogin()">
+                    </td>
+                </tr>-->
+                </tbody>
+            </table>
+            <div id="msg" class="login-msg"></div>
+            <div class="">
+                <input type="button" class="submit" value="登录" onclick="doLogin()">
+            </div>
+        </form>
+        <div id="errMsg"></div>
     </div>
-    <form id="loginForm" method="post" action="${contextPath}/login/login.action">
-        <table class="userinfo">
-            <tbody>
-            <tr>
-                <td colspan="2"><label id="msg"></label></td>
-            </tr>
-            <tr>
-                <td width="40" class="login-icon login-user-icon">帐号</td>
-                <td>
-                    <input id="userName" name="userName" value="" type="text" placeholder="请输入用户名" />
-                </td>
-            </tr>
-            <tr>
-                <td width="40" class="login-icon login-password-icon">密码</td>
-                <td>
-                    <input id="password" name="password" value="" type="password" placeholder="请输入密码" />
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <input type="hidden" name="systemCode" value="${@com.dili.uap.constants.UapConstants.SYSTEM_CODE}"/>
-                    <input type="button" class="submit" value="登   录" onclick="doLogin()">
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </form>
 </div>
+
 <script type="text/javascript">
     function doLogin() {
         var username = document.getElementById("userName").value;
