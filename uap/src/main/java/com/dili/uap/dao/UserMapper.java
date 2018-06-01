@@ -2,9 +2,11 @@ package com.dili.uap.dao;
 
 import com.dili.ss.base.MyMapper;
 import com.dili.uap.domain.User;
+import com.dili.uap.domain.dto.UserDataDto;
 import com.dili.uap.domain.dto.UserDto;
 
 import java.util.List;
+import java.util.Map;
 
 public interface UserMapper extends MyMapper<User> {
 
@@ -21,4 +23,11 @@ public interface UserMapper extends MyMapper<User> {
      * @return
      */
     List<UserDto> selectForPage(User user);
+
+    /**
+     * 根据用户ID查询用户所拥有的数据权限
+     * @param params 查询参数(key:userId(用户ID)、firmCode(市场code))
+     * @return
+     */
+    List<UserDataDto> selectUserDatas(Map<String,Object> params);
 }

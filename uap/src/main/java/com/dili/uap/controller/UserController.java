@@ -5,27 +5,34 @@ import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.domain.EasyuiPageOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.constants.UapConstants;
+import com.dili.uap.domain.DataAuth;
 import com.dili.uap.domain.Firm;
 import com.dili.uap.domain.User;
+import com.dili.uap.domain.UserDataAuth;
 import com.dili.uap.domain.dto.UserDto;
-import com.dili.uap.domain.dto.UserRoleDto;
 import com.dili.uap.sdk.session.SessionContext;
+import com.dili.uap.service.DataAuthService;
 import com.dili.uap.service.FirmService;
+import com.dili.uap.service.UserDataAuthService;
 import com.dili.uap.service.UserService;
 import com.dili.uap.utils.PinYinUtil;
+import com.google.common.collect.Maps;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import tk.mybatis.spring.annotation.MapperScan;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 由MyBatis Generator工具自动生成
@@ -39,6 +46,10 @@ public class UserController {
     UserService userService;
     @Resource
     FirmService firmService;
+    @Resource
+    DataAuthService dataAuthService;
+    @Resource
+    UserDataAuthService userDataAuthService;
 
     @ApiOperation("跳转到User页面")
     @RequestMapping(value = "/index.html", method = RequestMethod.GET)
@@ -156,7 +167,7 @@ public class UserController {
     }
 
 
-    @ApiOperation(value = "获取用户的角色信息", notes = "获取用户角色信息(tree结构)")
+    @ApiOperation(value = "保存用户的角色信息", notes = "保存用户角色信息")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "userId", paramType = "path", value = "用户ID",dataType = "long"),
             @ApiImplicitParam(name = "roleIds", paramType = "path", value = "角色ID(包括市场ID)",dataType = "String"),
@@ -176,5 +187,40 @@ public class UserController {
     	Long userId = SessionContext.getSessionContext().getUserTicket().getId();
          return userService.fetchLoginUserInfo(userId);
     }
-    
+
+    @ApiOperation(value = "获取数据权限", notes = "获取用户数据权限")
+    @RequestMapping(value = "/getUserData.action", method = {RequestMethod.GET, RequestMethod.POST})
+    @ResponseBody
+    public BaseOutput<Map<String,Object>> getUserData(Long id){
+        BaseOutput<Map<String, Object>> output = BaseOutput.success();
+        Map map = Maps.newHashMap();
+        //获取数据权限的可选范围
+        DataAuth da = DTOUtils.newDTO(DataAuth.class);
+        da.setType("dataRange");
+        map.put("dataRange", dataAuthService.list(da));
+        //获取用户的数据权限
+        map.put("userDatas", userService.getUserDataAuthForTree(id));
+        //查询当前用户所属的权限范围
+        UserDataAuth userDataAuth = DTOUtils.newDTO(UserDataAuth.class);
+        userDataAuth.setUserId(id);
+        List<UserDataAuth> userDataAuths = userDataAuthService.list(userDataAuth);
+        if (CollectionUtils.isNotEmpty(userDataAuths)) {
+            map.put("currDataAuth", userDataAuths.get(0).getDataAuthId());
+        }
+        output.setData(map);
+        return output;
+    }
+
+    @ApiOperation(value = "保存用户的数据权限信息", notes = "保存用户的数据权限")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "userId", paramType = "path", value = "用户ID",dataType = "long"),
+            @ApiImplicitParam(name = "dataIds", paramType = "path", value = "数据ID(包括市场ID)",dataType = "String"),
+            @ApiImplicitParam(name = "dataRange", paramType = "path", value = "数据权限范围ID",dataType = "long"),
+    })
+    @RequestMapping(value = "/saveUserDatas.action", method = {RequestMethod.GET, RequestMethod.POST})
+    @ResponseBody
+    public BaseOutput saveUserDatas(Long userId,String dataIds[],Long dataRange){
+        return userService.saveUserDatas(userId,dataIds,dataRange);
+    }
+
 }

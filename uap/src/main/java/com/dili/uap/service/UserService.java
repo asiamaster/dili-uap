@@ -2,9 +2,10 @@ package com.dili.uap.service;
 
 import com.dili.ss.base.BaseService;
 import com.dili.ss.domain.BaseOutput;
+import com.dili.uap.domain.DataAuth;
 import com.dili.uap.domain.User;
 import com.dili.uap.domain.dto.UserDto;
-import com.dili.uap.domain.dto.UserRoleDto;
+import com.dili.uap.domain.dto.UserDataDto;
 
 import java.util.List;
 
@@ -62,19 +63,38 @@ public interface UserService extends BaseService<User, Long> {
      * @param userId 用户ID
      * @return
      */
-    List<UserRoleDto> getUserRolesForTree(Long userId);
+    List<UserDataDto> getUserRolesForTree(Long userId);
+
     /**
      * 保存用户的角色信息
      * @param userId  用户ID
-     * @param roleIds 角色ID
+     * @param roleIds 角色ID集
      * @return
      */
     BaseOutput saveUserRoles(Long userId,String[] roleIds);
 
     /**
      * 根据id查询用户信息
+     *
      * @param userId 用户id
      * @return
      */
-    BaseOutput<Object>fetchLoginUserInfo(Long userId);
+    BaseOutput<Object> fetchLoginUserInfo(Long userId);
+
+    /**
+     * 获取用户的数据权限
+     * @param userId  用户ID
+     * @return
+     */
+    List<UserDataDto> getUserDataAuthForTree(Long userId);
+
+    /**
+     * 保存用户的角色信息
+     * @param userId  用户ID
+     * @param dataIds 数据ID(包含所属集合)
+     * @param dataRange 数据权限范围
+     * @return  操作结果
+     */
+    BaseOutput saveUserDatas(Long userId,String[] dataIds,Long dataRange);
+
 }

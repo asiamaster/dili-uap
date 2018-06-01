@@ -290,6 +290,13 @@
                     }
                 },
                 {
+                    iconCls:'icon-data',
+                    text:'数据权限',
+                    handler:function(){
+                        editUserDataAuth();
+                    }
+                },
+                {
                     iconCls:'icon-detail',
                     text:'详情',
                     handler:function(){
@@ -318,7 +325,7 @@
                     }
                 },
                 {
-                    iconCls:'icon-edit',
+                    iconCls:'icon-reset',
                     text:'密码重置',
                     handler:function(){
                         resetPass();
@@ -473,6 +480,69 @@
                 if (ret.success) {
                     $('#userRoleDlg').dialog('close');
                     userGrid.datagrid("load");
+                } else {
+                    $.messager.alert('错误', ret.result);
+                }
+            },
+            error: function () {
+                $.messager.alert('错误', '远程访问失败');
+            }
+        });
+    }
+
+    /**
+     * 编辑用户的数据权限
+     */
+    function editUserDataAuth() {
+        var selected = userGrid.datagrid("getSelected");
+        if (null == selected) {
+            $.messager.alert('警告', '请选中一条数据');
+            return;
+        }
+        $('#userDataDlg').dialog('open');
+        $('#userDataDlg').dialog('center');
+        $('#data_userName').textbox("setValue",selected.userName);
+        /**
+         * 获取用户的数据权限
+         * 获取用户的数据范围选择项
+         */
+        $.post('${contextPath!}/user/getUserData.action', {id: selected.id}, function (ret) {
+            if (ret && ret.success) {
+                //data 中存有 数据权限范围选项，数据权限本身，当前所属的数据权限
+                var data = ret.data;
+                $('#dataRange').combobox("loadData", data.dataRange);
+                $('#dataTree').tree("loadData", data.userDatas);
+                if (data.currDataAuth) {
+                    $('#dataRange').combobox('select', data.currDataAuth);
+                } else {
+                    $('#dataRange').combobox('select', data.dataRange[0].id);
+                }
+            }
+        }, 'json');
+    }
+
+    /**
+     * 保存用户的角色信息
+     */
+    function saveUserDatas() {
+        var nodes = $('#dataTree').tree('getChecked');
+        //节点选中的ID，包括 市场，角色
+        var ids = [];
+        for (var i = 0; i < nodes.length; i++) {
+            ids.push(nodes[i].id);
+        }
+        var dataRange = $('#dataRange').combobox("getValue");
+        var selected = userGrid.datagrid("getSelected");
+        $.ajax({
+            type: "POST",
+            url: "${contextPath}/user/saveUserDatas.action",
+            data: {userId: selected.id, dataIds: ids,dataRange:dataRange},
+            dataType: "json",
+            traditional: true,
+            async: true,
+            success: function (ret) {
+                if (ret.success) {
+                    $('#userDataDlg').dialog('close');
                 } else {
                     $.messager.alert('错误', ret.result);
                 }

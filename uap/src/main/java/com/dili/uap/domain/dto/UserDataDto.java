@@ -1,5 +1,6 @@
 package com.dili.uap.domain.dto;
 
+import com.dili.ss.dto.IBaseDomain;
 import com.dili.uap.domain.UserRole;
 
 /**
@@ -11,7 +12,7 @@ import com.dili.uap.domain.UserRole;
  * @author yuehongbo
  * @createTime 2018/5/31 18:23
  */
-public interface UserRoleDto extends UserRole {
+public interface UserDataDto extends IBaseDomain {
 
     /**
      * 数据ID

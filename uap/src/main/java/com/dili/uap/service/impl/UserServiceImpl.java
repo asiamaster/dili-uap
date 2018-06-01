@@ -6,16 +6,10 @@ import com.dili.ss.domain.EasyuiPageOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.metadata.ValueProviderUtils;
 import com.dili.uap.constants.UapConstants;
-import com.dili.uap.dao.FirmMapper;
-import com.dili.uap.dao.RoleMapper;
-import com.dili.uap.dao.UserMapper;
-import com.dili.uap.dao.UserRoleMapper;
-import com.dili.uap.domain.Firm;
-import com.dili.uap.domain.Role;
-import com.dili.uap.domain.User;
-import com.dili.uap.domain.UserRole;
+import com.dili.uap.dao.*;
+import com.dili.uap.domain.*;
+import com.dili.uap.domain.dto.UserDataDto;
 import com.dili.uap.domain.dto.UserDto;
-import com.dili.uap.domain.dto.UserRoleDto;
 import com.dili.uap.glossary.UserState;
 import com.dili.uap.manager.UserManager;
 import com.dili.uap.service.UserService;
@@ -23,7 +17,8 @@ import com.dili.uap.utils.MD5Util;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
-import org.apache.commons.collections.CollectionUtils;
+import com.google.common.collect.Maps;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -54,6 +50,12 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 	UserRoleMapper userRoleMapper;
 	@Autowired
 	FirmMapper firmMapper;
+	@Autowired
+    DepartmentMapper departmentMapper;
+	@Autowired
+	UserDepartmentMapper userDepartmentMapper;
+	@Autowired
+	UserDataAuthMapper userDataAuthMapper;
 
 	@Override
 	public void logout(String sessionId) {
@@ -181,7 +183,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 	}
 
 	@Override
-	public List<UserRoleDto> getUserRolesForTree(Long userId) {
+	public List<UserDataDto> getUserRolesForTree(Long userId) {
 		//获取需要分配角色的用户信息
 		User user = this.get(userId);
 		//预分配角色的用户，是否属于集团用户
@@ -189,7 +191,9 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 		if (UapConstants.GROUP_CODE.equalsIgnoreCase(user.getFirmCode())) {
 			isGroup = true;
 		}
+		//用户所拥有的市场信息
 		List<Firm> firmList = null;
+		//用户所拥有的角色信息
 		List<Role> roleList = null;
 		if (isGroup) {
 			roleList = roleMapper.selectAll();
@@ -206,16 +210,14 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 		}
 		//用户对应的市场，存在角色信息，则需进一步检索用户已有的角色
 		if (CollectionUtils.isNotEmpty(roleList)) {
-			UserRole userRoleQuery = DTOUtils.newDTO(UserRole.class);
-			userRoleQuery.setUserId(userId);
 			Set<Long> userRoleIds = userRoleMapper.getRoleIdsByUserId(user.getId());
-			List<UserRoleDto> userRoleDtos = Lists.newArrayList();
+			List<UserDataDto> userRoleDtos = Lists.newArrayList();
 			/**
 			 * 遍历角色信息，设置是否选中
 			 * 末级节点，设置为open状态
 			 */
 			roleList.stream().forEach(role -> {
-				UserRoleDto dto = DTOUtils.newDTO(UserRoleDto.class);
+				UserDataDto dto = DTOUtils.newDTO(UserDataDto.class);
 				dto.setName(role.getRoleName());
 				dto.setParentId(UapConstants.FIRM_PREFIX + role.getFirmCode());
 				dto.setTreeId(String.valueOf(role.getId()));
@@ -227,7 +229,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 				userRoleDtos.add(dto);
 			});
 			firmList.stream().forEach(firm -> {
-				UserRoleDto dto = DTOUtils.newDTO(UserRoleDto.class);
+				UserDataDto dto = DTOUtils.newDTO(UserDataDto.class);
 				dto.setName(firm.getName());
 				dto.setTreeId(UapConstants.FIRM_PREFIX + firm.getCode());
 				dto.setParentId("");
@@ -274,15 +276,88 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 		List results = useProvider ? ValueProviderUtils.buildDataByProvider(domain, users) : users;
 		return new EasyuiPageOutput((int)total, results);
 	}
+
+    @Override
+    public BaseOutput<Object> fetchLoginUserInfo(Long userId) {
+        User user = this.get(userId);
+        if (user == null) {
+            return BaseOutput.success("操作失败");
+        }
+
+        user.setPassword("");
+        return BaseOutput.success("操作成功").setData(user);
+
+    }
+
+    @Override
+    public List<UserDataDto> getUserDataAuthForTree(Long userId) {
+        //获取需要分配数据权限的用户信息
+        User user = this.get(userId);
+        if (null == user) {
+            return null;
+        }
+        Map<String, Object> params = Maps.newHashMap();
+        params.put("userId", user.getId());
+        //预分配角色的用户，是否属于集团用户
+        if (!UapConstants.GROUP_CODE.equalsIgnoreCase(user.getFirmCode())) {
+            //不为集团用户的情况下，则需要根据集团过滤
+            params.put("firmCode", user.getFirmCode());
+        }
+        return getActualDao().selectUserDatas(params);
+    }
+
 	@Override
-	public BaseOutput<Object>fetchLoginUserInfo(Long userId){
-		User user=this.get(userId);
-		if(user== null) {
-			return BaseOutput.success("操作失败");
+	@Transactional(rollbackFor = Exception.class)
+	public BaseOutput saveUserDatas(Long userId, String[] dataIds,Long dataRange) {
+		if (null == userId || null == dataRange) {
+			return BaseOutput.failure("用户数据丢失");
 		}
-		
-		user.setPassword("");
-		return BaseOutput.success("操作成功").setData(user);
-		
+		//先根据用户删除现有的部门权限信息
+		UserDepartment delete = DTOUtils.newDTO(UserDepartment.class);
+		delete.setUserId(userId);
+		userDepartmentMapper.delete(delete);
+		//需要保存的用户角色信息
+		List<UserDepartment> saveDatas = Lists.newArrayList();
+		for (String id : dataIds) {
+			if (!id.startsWith(UapConstants.FIRM_PREFIX)) {
+				UserDepartment ud = DTOUtils.newDTO(UserDepartment.class);
+				ud.setUserId(userId);
+				ud.setDepartmentId(Long.valueOf(id));
+				saveDatas.add(ud);
+			}
+		}
+		//如果存在需要保存的用户角色数据，则保存数据
+		if (CollectionUtils.isNotEmpty(saveDatas)) {
+			userDepartmentMapper.insertList(saveDatas);
+		}
+		//查询当前用户所属的权限范围
+		UserDataAuth userDataAuth = DTOUtils.newDTO(UserDataAuth.class);
+		userDataAuth.setUserId(userId);
+		List<UserDataAuth> userDataAuths = userDataAuthMapper.select(userDataAuth);
+		/**
+		 * 判断是否存在权限信息
+		 * 正常情况下，目前要么没有，要么应该只有一种type范围对应的一条，所以，前期不需要关联查询，否则需要关联dataAuth进行type区分
+		 */
+		if (CollectionUtils.isNotEmpty(userDataAuths)) {
+			//如果存在多条，则先直接根据用户删除所有，再重新新增
+			if (userDataAuths.size() > 1) {
+				userDataAuthMapper.delete(userDataAuth);
+				userDataAuth.setDataAuthId(dataRange);
+				userDataAuthMapper.insert(userDataAuth);
+			} else {
+				//否则，比较是否相同，不同则执行更改
+				UserDataAuth temp = userDataAuths.get(0);
+				if (!temp.getDataAuthId().equals(dataRange)) {
+					temp.setDataAuthId(dataRange);
+					userDataAuthMapper.updateByPrimaryKeySelective(temp);
+				}
+
+			}
+		} else {
+			//数据库里不存的话，则直接新增数据
+			userDataAuth.setDataAuthId(dataRange);
+			userDataAuthMapper.insert(userDataAuth);
+		}
+		return BaseOutput.success("操作成功");
 	}
 }
