@@ -1,6 +1,7 @@
 package com.dili.uap.domain;
 
 import com.dili.ss.dto.IBaseDomain;
+import com.dili.ss.dto.IMybatisForceParams;
 import com.dili.ss.metadata.FieldEditor;
 import com.dili.ss.metadata.annotation.EditMode;
 import com.dili.ss.metadata.annotation.FieldDef;
@@ -17,7 +18,7 @@ import javax.persistence.Id;
  * This file was generated on 2018-05-22 11:24:40.
  */
 @Table(name = "`menu`")
-public interface Menu extends IBaseDomain {
+public interface Menu extends IBaseDomain, IMybatisForceParams {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "`id`")

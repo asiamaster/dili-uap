@@ -108,7 +108,7 @@ public class MenuController {
             //如果菜单树上点的节点是菜单， 需要设置当前节点的父节点
             menu.setParentId(Long.parseLong(menuId.substring(5)));
         }
-        menuService.updateSelective(menu);
+        menuService.updateExactSimple(menu);
         return BaseOutput.success("修改成功");
     }
 

@@ -38,7 +38,7 @@ public class SessionFilter implements Filter {
     //配置信息
     @Autowired
     private ManageConfig config;
-
+    //过滤器配置，留待使用
     private FilterConfig filterConfig;
 
     @Autowired
@@ -56,8 +56,6 @@ public class SessionFilter implements Filter {
     @Override
     public void init(FilterConfig conf) throws ServletException {
         filterConfig = conf;
-//        userResRedis = SpringUtil.getBean(UserResRedis.class);
-//        config = SpringUtil.getBean(ManageConfig.class);
     }
 
     @Override
