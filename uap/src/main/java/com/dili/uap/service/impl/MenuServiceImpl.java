@@ -1,5 +1,6 @@
 package com.dili.uap.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.dili.ss.base.BaseServiceImpl;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.dao.MenuMapper;
@@ -27,11 +28,8 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, Long> implements Menu
     }
 
     @Override
-    public List<Menu> listDirAndLinksByUserId(String userId){
-        if (StringUtils.isBlank(userId)) {
-            throw new RuntimeException("用户id为空");
-        }
-        return this.menuMapper.listDirAndLinksByUserId(Long.valueOf(userId));
+    public List<Menu> listDirAndLinksByUserIdAndSystemCode(String jsonParam){
+        return this.menuMapper.listDirAndLinksByUserId(JSONObject.parseObject(jsonParam));
     }
 
     @Override

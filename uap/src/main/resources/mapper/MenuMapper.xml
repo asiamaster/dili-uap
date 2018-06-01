@@ -65,13 +65,15 @@
   </select>
 
   <!--根据用户id查询目录和链接菜单 -->
-  <select id="listDirAndLinksByUserId" parameterType="Long" resultMap="BaseResultMap">
+  <select id="listDirAndLinksByUserId" parameterType="map" resultMap="BaseResultMap">
     SELECT DISTINCT
     <include refid="column_List" />
-    from menu m, role_menu rm, user_role ur
+    from menu m, role_menu rm, user_role ur, `system` s
     where m.id = rm.menu_id
     and rm.role_id = ur.role_id
+    and m.system_id = s.id
     and ur.user_id = #{userId}
+    and s.code=#{systemCode}
     and (m.`type` = 0 or m.`type` = 1)
     order by m.order_number
   </select>

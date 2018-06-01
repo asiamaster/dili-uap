@@ -13,11 +13,11 @@ import java.util.Map;
 public interface MenuService extends BaseService<Menu, Long> {
 
     /**
-     * 根据用户id查询目录和链接菜单权限
-     * @param userId
+     * 根据用户id和系统编码查询目录和链接菜单权限
+     * @param jsonParam : userId和systemCode
      * @return
      */
-    List<Menu> listDirAndLinksByUserId(String userId);
+    List<Menu> listDirAndLinksByUserIdAndSystemCode(String jsonParam);
 
     /**
      * 根据id获取上级菜单
