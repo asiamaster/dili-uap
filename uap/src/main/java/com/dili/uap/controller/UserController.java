@@ -166,9 +166,13 @@ public class UserController {
     public BaseOutput saveUserRoles(Long userId,String roleIds[]){
         return userService.saveUserRoles(userId,roleIds);
     }
+    
+
+    @ApiOperation(value = "获取当前登录用户的信息", notes = "获取用户信息")
+    @ApiImplicitParams({})
     @RequestMapping(value = "/fetchLoginUserInfo.action", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
-    public BaseOutput fetchLoginUserInfo(){
+    public BaseOutput<Object> fetchLoginUserInfo(){
     	Long userId = SessionContext.getSessionContext().getUserTicket().getId();
          return userService.fetchLoginUserInfo(userId);
     }
