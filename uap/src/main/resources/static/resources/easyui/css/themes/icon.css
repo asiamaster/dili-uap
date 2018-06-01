@@ -200,3 +200,24 @@
 .l-btn:hover .icon-stop{
 	background-image:url('icons/stop-on.png');
 }
+
+.icon-role{
+	background:url('icons/role.png') no-repeat center center;
+}
+.l-btn:hover .icon-role{
+	background-image:url('icons/role-on.png') no-repeat center center;;
+}
+
+.icon-reset{
+	background:url('icons/reset.png') no-repeat center center;
+}
+.l-btn:hover .icon-reset{
+	background-image:url('icons/reset-on.png') no-repeat center center;;
+}
+
+.icon-data{
+	background:url('icons/data.png') no-repeat center center;
+}
+.l-btn:hover .icon-data{
+	background-image:url('icons/data-on.png') no-repeat center center;;
+}
