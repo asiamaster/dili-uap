@@ -1,5 +1,6 @@
 package com.dili.uap.controller;
 
+import com.dili.uap.constants.UapConstants;
 import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.session.SessionContext;
 import io.swagger.annotations.Api;
@@ -31,7 +32,8 @@ public class IndexController {
 		if (userTicket != null) {
 			modelMap.put("userid", userTicket.getId());
 			modelMap.put("username", userTicket.getRealName());
-			modelMap.put("systemCode", request.getParameter("systemCode"));
+			String systemCode = request.getParameter("systemCode") == null ? UapConstants.SYSTEM_CODE : request.getParameter("systemCode");
+			modelMap.put("systemCode", systemCode);
 			return INDEX_PATH;
 		} else {
 			return LoginController.REDIRECT_INDEX_PAGE;
