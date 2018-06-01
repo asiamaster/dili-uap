@@ -24,14 +24,6 @@
 				data-options="label:'邮箱:', cls:'noborder', editable:false, readonly:true, labelAlign:'right', labelWidth:100" /></td>
 		</tr>
 		<tr>
-			<td style="padding: 5px;" id="_lastLoginIpTd"><input class="easyui-textbox" name="lastLoginIp" id="lastLoginIp" style="width: 100%"
-				data-options="label:'最后登录ip:', cls:'noborder', editable:false, readonly:true, labelAlign:'right', labelWidth:100" /></td>
-		</tr>
-		<tr>
-			<td style="padding: 5px;" id="_lastLoginTimeTd"><input class="easyui-textbox" id="lastLoginTime" style="width: 100%"
-				data-options="label:'最后登录时间:', cls:'noborder', editable:false, readonly:true, labelAlign:'right', labelWidth:100" /></td>
-		</tr>
-		<tr>
 			<td style="padding: 5px;" id="_createdTd"><input class="easyui-textbox" id="created" style="width: 100%" data-options="label:'创建时间:', cls:'noborder', editable:false, readonly:true, labelAlign:'right', labelWidth:100" /></td>
 		</tr>
 		<tr>
@@ -79,7 +71,7 @@
 	$(function() {
 		$.ajax({
 			type : "POST",
-			url : "${contextPath}/user/fetchLoginUserInfo",
+			url : "${contextPath}/user/fetchLoginUserInfo.action",
 			data : {},
 			processData : true,
 			dataType : "json",

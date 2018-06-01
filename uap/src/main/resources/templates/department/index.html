@@ -30,19 +30,31 @@
 									}">部门名称
                     </th>
                     <th data-options="field:'code',width:'20%'">编码</th>
-                    <th width="60%" data-options="field:'description',width:'60%',editor : 'textbox'">描述</th>
+                    <th data-options="field:'created',formatter:dateToStringFormatter,width:'20%'">创建时间</th>
+                    <th data-options="field:'modified',formatter:dateToStringFormatter,width:'20%'">修改时间</th>
+                    <th data-options="field:'description',width:'20%',editor : 'textbox'">描述</th>
                 </tr>
                 </thead>
             </table>
             <div id="toolbar" style="padding: 2px 5px;">
                 <%if(isGroup){%>
                 <span>市场：</span>
-                <input class="easyui-combobox" name="firm" panelWidth="auto" panelHeight="auto" editable="false" id="firm" style="width:8%;"
+                <input class="easyui-combobox" name="firm"  id="firm"  panelWidth="auto" panelHeight="auto" editable="false"style="width:8%;"
                        labelAlign="right" data-options="onLoadSuccess:function(){
-                           $('#firm').combobox('select',$('#firm').combobox('getData')[0].value);
+                            var datas=$('#firm').combobox('getData');
+                       		if(datas.length>=2){
+                       		   var defaultValue=datas[1].value;
+                       		   if(defaultValue!=$('#firm').combobox('getValue')){
+                       		   	$('#firm').combobox('select',defaultValue);
+                       		   }
+                       		}
                        },onChange:function(newValue,oldValue){
                             window.firmCode = newValue;
-                            $('#grid').treegrid('reload', {firmCode:newValue});
+                            try{
+                               $('#grid').treegrid('reload', {firmCode:newValue});
+                            }catch(e){
+                            }
+                           
                        }"/>
                 <#comboProvider _id="firm" _provider='firmCodeProvider' />
                 <%}%>
@@ -62,7 +74,20 @@
         deleteDept: true
     };
     window.firmCode = '${firmCode!}';
-
+    
+    //将日期格式化(后端不能使用provider)
+	function dateToStringFormatter(value,row,index){
+		if(typeof(value)=='undefined'){
+			return ""
+		}else{
+			try{
+				var dateValue=new Date(value);
+				return UAP_TOOLS.formatDateToString(dateValue);
+			}catch(error){
+				return value;
+			}
+		}
+	}
 </script>
 <#department_indexJs/>
 </#body>

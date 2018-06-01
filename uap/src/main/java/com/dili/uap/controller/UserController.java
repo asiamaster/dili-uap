@@ -155,4 +155,11 @@ public class UserController {
         return JSONArray.toJSONString(list);
     }
 
+    @RequestMapping(value = "/fetchLoginUserInfo.action", method = {RequestMethod.GET, RequestMethod.POST})
+    @ResponseBody
+    public BaseOutput fetchLoginUserInfo(){
+    	Long userId = SessionContext.getSessionContext().getUserTicket().getId();
+         return userService.fetchLoginUserInfo(userId);
+    }
+    
 }

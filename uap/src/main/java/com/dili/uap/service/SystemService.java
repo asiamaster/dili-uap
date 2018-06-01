@@ -10,15 +10,22 @@ import com.dili.uap.domain.System;
  */
 public interface SystemService extends BaseService<System, Long> {
     /**
-     * 新增系统检查
+     * 检查并新增系统
      * @param system
      * @return
      */
     BaseOutput<Object>  insertAfterCheck(System system);
     /**
-     * 修改系统检查
+     * 检查并修改系统
      * @param system
      * @return
      */
     BaseOutput<Object>  updateAfterCheck(System system);
+    
+    /**
+     * 检查并删除系统信息
+     * @param id主键
+     * @return
+     */
+   BaseOutput<Object> deleteAfterCheck(Long id);
 }

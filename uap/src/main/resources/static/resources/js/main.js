@@ -1,13 +1,25 @@
 var UAP_TOOLS = {
     getNowStr: function () {
         var now = new Date();
-        var year = now.getFullYear();
-        var month = now.getMonth() > 9 ? now.getMonth() + 1 : '0' + (now.getMonth() + 1);
-        var date = now.getDate();
-        var hour = now.getHours() > 10 ? now.getHours() : '0' + now.getHours();
-        var minute = now.getMinutes() > 10 ? now.getMinutes() : '0' + now.getMinutes();
-        var second = now.getSeconds() > 10 ? now.getSeconds() : '0' + now.getSeconds();
-        return year + "-" + month + "-" + date + " " + hour + ":" + minute + ":" + second;
+        return UAP_TOOLS.formatDateToString(now);
+    },
+    formatDateToString: function (dateObj) {
+        var year = dateObj.getFullYear();
+        var month = dateObj.getMonth()+1 ;
+        var date = dateObj.getDate();
+        
+        var hour= dateObj.getHours();
+        var minute = dateObj.getMinutes();
+        var second = dateObj.getSeconds();
+        
+        var yearStr=year;
+        var monthStr=month>= 10? month : '0' +month;
+        var dateStr = date >= 10 ? date : '0' + date;
+        
+        var hourStr =hour >= 10 ? hour : '0' + hour;
+        var minuteStr = minute >= 10 ? minute : '0' + minute;
+        var secondStr = second >= 10 ? second : '0' +second;
+        return yearStr + "-" + monthStr + "-" + dateStr + " " + hourStr + ":" + minuteStr + ":" + secondStr;
     }
 };
 

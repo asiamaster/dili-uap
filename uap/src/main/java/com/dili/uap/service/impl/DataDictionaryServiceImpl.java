@@ -26,17 +26,21 @@ public class DataDictionaryServiceImpl extends BaseServiceImpl<DataDictionary, L
     }
     @Transactional
     @Override
-    public int delete(Long id) {
+    public BaseOutput<Object> deleteAfterCheck(Long id) {
     	DataDictionary dataDictionary=this.get(id);
     	
     	//根据code删除数据字典的值
     	if(dataDictionary!=null&&dataDictionary.getCode()!=null) {
     		DataDictionaryValue condition=DTOUtils.newDTO(DataDictionaryValue.class);
     		condition.setDdCode(dataDictionary.getCode());
-    		this.dataDictionaryValueMapper.delete(condition);
+    		int count=this.dataDictionaryValueMapper.selectCount(condition);
+    		if(count>0) {
+    			return BaseOutput.failure("当前数据字典不为空，不允许删除");	
+    		}
     	}
+    	super.delete(id);
     	
-    	return super.delete(id);
+    	return BaseOutput.success("删除成功");
     }
 	@Override
 	public BaseOutput<Object> insertAfterCheck(DataDictionary t) {

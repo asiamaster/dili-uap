@@ -249,4 +249,15 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 		List results = useProvider ? ValueProviderUtils.buildDataByProvider(domain, users) : users;
 		return new EasyuiPageOutput((int)total, results);
 	}
+	@Override
+	public BaseOutput<Object>fetchLoginUserInfo(Long userId){
+		User user=this.get(userId);
+		if(user== null) {
+			return BaseOutput.success("操作失败");
+		}
+		
+		user.setPassword("");
+		return BaseOutput.success("操作成功").setData(user);
+		
+	}
 }
