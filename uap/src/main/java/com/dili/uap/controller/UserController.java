@@ -1,5 +1,6 @@
 package com.dili.uap.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.domain.EasyuiPageOutput;
 import com.dili.ss.dto.DTOUtils;
@@ -7,6 +8,7 @@ import com.dili.uap.constants.UapConstants;
 import com.dili.uap.domain.Firm;
 import com.dili.uap.domain.User;
 import com.dili.uap.domain.dto.UserDto;
+import com.dili.uap.domain.dto.UserRoleDto;
 import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.service.FirmService;
 import com.dili.uap.service.UserService;
@@ -131,7 +133,7 @@ public class UserController {
         return userService.resetPass(id);
     }
 
-    @ApiOperation(value = "用户的禁启用", notes = "重置密码")
+    @ApiOperation(value = "用户的禁启用", notes = "用户的禁启用")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", paramType = "path", value = "用户ID",dataType = "long"),
             @ApiImplicitParam(name = "enable", paramType = "path", value = "是否启用(true-启用)",dataType = "boolean")
@@ -141,4 +143,16 @@ public class UserController {
     public BaseOutput doEnable(Long id,Boolean enable){
          return userService.upateEnable(id,enable);
     }
+
+    @ApiOperation(value = "获取用户的角色信息", notes = "获取用户角色信息(tree结构)")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", paramType = "path", value = "用户ID",dataType = "long"),
+    })
+    @RequestMapping(value = "/getUserRolesForTree.action", method = {RequestMethod.GET, RequestMethod.POST})
+    @ResponseBody
+    public  String getUserRolesForTree(Long id){
+        List list = userService.getUserRolesForTree(id);
+        return JSONArray.toJSONString(list);
+    }
+
 }

@@ -94,7 +94,7 @@
         </div>
     </div>
     <!-- 隐藏编辑框 -->
-    <div id="editDlg" class="easyui-dialog" resizable="false" constrain="true" shadow="true" draggable="false" title="用户信息" style="padding:10px;width: 35%;" modal="true" border="thin" closed="true"
+    <div id="editDlg" class="easyui-dialog" resizable="false" constrain="true" shadow="true" draggable="false" title="用户信息" style="padding:10px;width: 450px;" modal="true" border="thin" closed="true"
          data-options="
 				height: 540,
 				buttons: [{
@@ -168,66 +168,90 @@
         </table>
     </form>
     </div>
- <!-- 隐藏查看框 -->
- <div id="viewDlg" class="easyui-dialog" resizable="false" constrain="true" shadow="true" draggable="false" title="用户信息" style="padding:10px;width: 35%;" modal="true" border="thin" closed="true"
-      data-options="
-				height: 520
-			">
-     <form id="_view_form" class="easyui-form" method="post" fit="true" align="center">
-         <table width="100%">
-             <tr>
-                 <td style="padding:5px;">
-                     <input class="easyui-textbox" name="_view_userName" id="_view_userName"  style="width:90%;height:28px;"data-options="labelAlign:'right',label:'用户账号:',cls:'noborder'"/>
-                 </td>
-             </tr>
-             <tr>
-                 <td style="padding:5px;">
-                     <input class="easyui-textbox" name="_view_realName" id="_view_realName" style="width:90%;height:28px;" data-options="labelAlign:'right',label:'真实姓名:',cls:'noborder'"/>
-                 </td>
-             </tr>
-             <tr>
-                 <td style="padding:5px;">
-                     <input class="easyui-textbox" name="_view_cellphone" id="_view_cellphone" style="width:90%;height:28px;" data-options="labelAlign:'right',label:'手机号码:',cls:'noborder'" />
-                 </td>
-             </tr>
-             <tr>
-                 <td style="padding:5px;">
-                     <input class="easyui-textbox" name="_view_email" id="_view_email" style="width:90%;height:28px;" data-options="labelAlign:'right',label:'邮箱:',cls:'noborder'" />
-                 </td>
-             </tr>
-             <tr>
-                 <td style="padding:5px;">
-                     <input class="easyui-textbox" name="_view_position" id="_view_position" style="width:90%;height:28px;" data-options="labelAlign:'right',label:'职位:',cls:'noborder'" />
-                 </td>
-             </tr>
-             <tr>
-                 <td style="padding:5px;">
-                     <input class="easyui-textbox" name="_view_cardNumber" id="_view_cardNumber" style="width:90%;height:28px;" data-options="labelAlign:'right',label:'卡号:',cls:'noborder'" />
-                 </td>
-             </tr>
-             <tr>
-                 <td style="padding:5px;">
-                     <input class="easyui-textbox" name="_view_firmCode" id="_view_firmCode" editable="false"  style="width:90%;height:28px;" data-options="labelAlign:'right',label:'归属市场:',cls:'noborder'" />
-                 </td>
-             </tr>
-             <tr>
-                 <td style="padding:5px;">
-                     <input class="easyui-textbox" name="_view_departmentId"  editable="false" id="_view_departmentId" style="width:90%;height:28px;" data-options="labelAlign:'right',label:'归属部门:',cls:'noborder'" />
-                 </td>
-             </tr>
-             <tr>
-                 <td style="padding:5px;">
-                     <input class="easyui-textbox" name="_view_state"  editable="false" id="_view_state" style="width:90%;height:28px;" data-options="labelAlign:'right',label:'状态',cls:'noborder'" />
-                 </td>
-             </tr>
-             <tr>
-                 <td style="padding:5px;">
-                     <input class="easyui-textbox" name="_view_description"  id="_view_description" style="width:90%;height:60px;" data-options="labelAlign:'right',label:'备注:',multiline:true,cls:'noborder'" />
-                 </td>
-             </tr>
-         </table>
-     </form>
- </div>
+     <!-- 隐藏查看框 -->
+     <div id="viewDlg" class="easyui-dialog" resizable="false" constrain="true" shadow="true" draggable="false" title="用户信息" style="padding:10px;width: 420px;" modal="true" border="thin" closed="true"
+          data-options="
+                    height: 520
+                ">
+         <form id="_view_form" class="easyui-form" method="post" fit="true" align="center">
+             <table width="100%">
+                 <tr>
+                     <td style="padding:5px;">
+                         <input class="easyui-textbox" name="_view_userName" id="_view_userName"  style="width:90%;height:28px;"data-options="labelAlign:'right',label:'用户账号:',cls:'noborder'"/>
+                     </td>
+                 </tr>
+                 <tr>
+                     <td style="padding:5px;">
+                         <input class="easyui-textbox" name="_view_realName" id="_view_realName" style="width:90%;height:28px;" data-options="labelAlign:'right',label:'真实姓名:',cls:'noborder'"/>
+                     </td>
+                 </tr>
+                 <tr>
+                     <td style="padding:5px;">
+                         <input class="easyui-textbox" name="_view_cellphone" id="_view_cellphone" style="width:90%;height:28px;" data-options="labelAlign:'right',label:'手机号码:',cls:'noborder'" />
+                     </td>
+                 </tr>
+                 <tr>
+                     <td style="padding:5px;">
+                         <input class="easyui-textbox" name="_view_email" id="_view_email" style="width:90%;height:28px;" data-options="labelAlign:'right',label:'邮箱:',cls:'noborder'" />
+                     </td>
+                 </tr>
+                 <tr>
+                     <td style="padding:5px;">
+                         <input class="easyui-textbox" name="_view_position" id="_view_position" style="width:90%;height:28px;" data-options="labelAlign:'right',label:'职位:',cls:'noborder'" />
+                     </td>
+                 </tr>
+                 <tr>
+                     <td style="padding:5px;">
+                         <input class="easyui-textbox" name="_view_cardNumber" id="_view_cardNumber" style="width:90%;height:28px;" data-options="labelAlign:'right',label:'卡号:',cls:'noborder'" />
+                     </td>
+                 </tr>
+                 <tr>
+                     <td style="padding:5px;">
+                         <input class="easyui-textbox" name="_view_firmCode" id="_view_firmCode" editable="false"  style="width:90%;height:28px;" data-options="labelAlign:'right',label:'归属市场:',cls:'noborder'" />
+                     </td>
+                 </tr>
+                 <tr>
+                     <td style="padding:5px;">
+                         <input class="easyui-textbox" name="_view_departmentId"  editable="false" id="_view_departmentId" style="width:90%;height:28px;" data-options="labelAlign:'right',label:'归属部门:',cls:'noborder'" />
+                     </td>
+                 </tr>
+                 <tr>
+                     <td style="padding:5px;">
+                         <input class="easyui-textbox" name="_view_state"  editable="false" id="_view_state" style="width:90%;height:28px;" data-options="labelAlign:'right',label:'状态',cls:'noborder'" />
+                     </td>
+                 </tr>
+                 <tr>
+                     <td style="padding:5px;">
+                         <input class="easyui-textbox" name="_view_description"  id="_view_description" style="width:90%;height:60px;" data-options="labelAlign:'right',label:'备注:',multiline:true,cls:'noborder'" />
+                     </td>
+                 </tr>
+             </table>
+         </form>
+     </div>
+
+     <!-- 用户角色编辑框 -->
+     <div id="userRoleDlg" class="easyui-dialog" resizable="false" constrain="true" shadow="true" draggable="false" title="角色分配" style="width: 420px;" modal="true" border="thin" closed="true"
+          data-options="
+                        height: 550,
+                        buttons: [{
+                            text:'确认',
+                            iconCls:'icon-ok',
+                            handler:saveUserRoles
+                        }]
+                    ">
+         <div style="margin:10px 0">
+             <input class="easyui-textbox"  editable="false" readonly id="role_userName" style="width:400px;height:28px;" data-options="labelAlign:'right',label:'用户账号:',cls:'noborder'" />
+         </div>
+         <div style="margin-left:20px;">
+             <ui>请选择角色类型</ui>
+         </div>
+         <div class="easyui-panel" style="margin-left:20px;padding:10px;width: 95%;height: 400px;">
+             <ui id="roleTree" class="easyui-tree" style="width: 90%;" data-options="checkbox:true,_idField:'treeId',_textField:'name',_parentIdField:'parentId',loadFilter:treeLoadFilter"></ui>
+         </div>
+
+
+
+     </div>
     <!-- ====================================================================================================================== -->
     <!-- style & script 分隔线 -->
     <!-- ====================================================================================================================== -->

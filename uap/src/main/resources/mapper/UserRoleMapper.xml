@@ -39,4 +39,9 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
+
+  <!-- 根据用户ID查询该用户拥有的角色ID -->
+  <select id="getRoleIdsByUserId" parameterType="long" resultType="long">
+      select role_id from user_role ur where ur.user_id = #{value}
+  </select>
 </mapper>

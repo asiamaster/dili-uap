@@ -6,15 +6,23 @@ import com.dili.ss.domain.EasyuiPageOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.metadata.ValueProviderUtils;
 import com.dili.uap.constants.UapConstants;
+import com.dili.uap.dao.FirmMapper;
+import com.dili.uap.dao.RoleMapper;
 import com.dili.uap.dao.UserMapper;
+import com.dili.uap.dao.UserRoleMapper;
+import com.dili.uap.domain.Firm;
+import com.dili.uap.domain.Role;
 import com.dili.uap.domain.User;
+import com.dili.uap.domain.UserRole;
 import com.dili.uap.domain.dto.UserDto;
+import com.dili.uap.domain.dto.UserRoleDto;
 import com.dili.uap.glossary.UserState;
 import com.dili.uap.manager.UserManager;
 import com.dili.uap.service.UserService;
 import com.dili.uap.utils.MD5Util;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 由MyBatis Generator工具自动生成 This file was generated on 2018-05-18 10:46:46.
@@ -39,6 +48,12 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 	public UserMapper getActualDao() {
 		return (UserMapper) getDao();
 	}
+	@Autowired
+	RoleMapper roleMapper;
+	@Autowired
+	UserRoleMapper userRoleMapper;
+	@Autowired
+	FirmMapper firmMapper;
 
 	@Override
 	public void logout(String sessionId) {
@@ -163,6 +178,65 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 		}
 		this.updateSelective(user);
 		return BaseOutput.success("操作成功");
+	}
+
+	@Override
+	public List<UserRoleDto> getUserRolesForTree(Long userId) {
+		//获取需要分配角色的用户信息
+		User user = this.get(userId);
+		//预分配角色的用户，是否属于集团用户
+		Boolean isGroup = false;
+		if (UapConstants.GROUP_CODE.equalsIgnoreCase(user.getFirmCode())) {
+			isGroup = true;
+		}
+		List<Firm> firmList = null;
+		List<Role> roleList = null;
+		if (isGroup) {
+			roleList = roleMapper.selectAll();
+			firmList = firmMapper.selectAll();
+		} else {
+			//根据用户查询该用户对应的市场的角色信息
+			Role roleQuery = DTOUtils.newDTO(Role.class);
+			roleQuery.setFirmCode(user.getFirmCode());
+			roleList = roleMapper.select(roleQuery);
+			//查询对应的市场信息
+			Firm firmQuery = DTOUtils.newDTO(Firm.class);
+			firmQuery.setCode(user.getFirmCode());
+			firmList = firmMapper.select(firmQuery);
+		}
+		//用户对应的市场，存在角色信息，则需进一步检索用户已有的角色
+		if (CollectionUtils.isNotEmpty(roleList)) {
+			UserRole userRoleQuery = DTOUtils.newDTO(UserRole.class);
+			userRoleQuery.setUserId(userId);
+			Set<Long> userRoleIds = userRoleMapper.getRoleIdsByUserId(user.getId());
+			List<UserRoleDto> userRoleDtos = Lists.newArrayList();
+			/**
+			 * 遍历角色信息，设置是否选中
+			 * 末级节点，设置为open状态
+			 */
+			roleList.stream().forEach(role -> {
+				UserRoleDto dto = DTOUtils.newDTO(UserRoleDto.class);
+				dto.setName(role.getRoleName());
+				dto.setParentId(role.getFirmCode());
+				dto.setTreeId(String.valueOf(role.getId()));
+				if (userRoleIds.contains(role.getId())){
+					dto.setChecked(true);
+				}else{
+					dto.setChecked(false);
+				}
+				userRoleDtos.add(dto);
+			});
+			firmList.stream().forEach(firm -> {
+				UserRoleDto dto = DTOUtils.newDTO(UserRoleDto.class);
+				dto.setName(firm.getName());
+				dto.setTreeId(firm.getCode());
+				dto.setParentId("");
+				dto.setChecked(false);
+				userRoleDtos.add(dto);
+			});
+			return userRoleDtos;
+		}
+		return null;
 	}
 
 	@Override

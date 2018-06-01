@@ -284,6 +284,13 @@
             buttons:[
                 {
                     iconCls:'icon-detail',
+                    text:'分配角色',
+                    handler:function(){
+                        editUserRole();
+                    }
+                },
+                {
+                    iconCls:'icon-detail',
                     text:'详情',
                     handler:function(){
                         openDetail();
@@ -424,6 +431,29 @@
     //清空表单
     function clearForm() {
         $('#form').form('clear');
+    }
+
+    /**
+     * 编辑用户的角色信息
+     */
+    function editUserRole() {
+        var selected = userGrid.datagrid("getSelected");
+        if (null == selected) {
+            $.messager.alert('警告', '请选中一条数据');
+            return;
+        }
+        $('#userRoleDlg').dialog('open');
+        $('#userRoleDlg').dialog('center');
+        $('#role_userName').textbox("setValue",selected.userName);
+        var opts = $('#roleTree').tree("options");
+        opts.url = "${contextPath}/user/getUserRolesForTree.action?id=" + selected.id;
+        $('#roleTree').tree("reload");
+        
+    }
+    
+    function saveUserRoles() {
+        debugger;
+        var nodes = $('#roleTree').tree('getChecked');
     }
     
 </script>

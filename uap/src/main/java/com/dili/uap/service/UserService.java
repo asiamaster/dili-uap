@@ -4,6 +4,7 @@ import com.dili.ss.base.BaseService;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.uap.domain.User;
 import com.dili.uap.domain.dto.UserDto;
+import com.dili.uap.domain.dto.UserRoleDto;
 
 import java.util.List;
 
@@ -55,5 +56,12 @@ public interface UserService extends BaseService<User, Long> {
      * @return
      */
     BaseOutput upateEnable(Long userId,Boolean enable);
+
+    /**
+     * 根据用户ID获取用户所拥有的角色权限
+     * @param userId 用户ID
+     * @return
+     */
+    List<UserRoleDto> getUserRolesForTree(Long userId);
 
 }
