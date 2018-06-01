@@ -21,4 +21,11 @@ public interface DataDictionaryService extends BaseService<DataDictionary, Long>
 	 * @return
 	 */
 	public BaseOutput<Object> updateAfterCheck(DataDictionary t) ;
+	
+	
+	/** 删除数据字典
+	 * @param id 字典数据ID
+	 * @return
+	 */
+	public BaseOutput<Object> deleteAfterCheck(Long id) ;
 }

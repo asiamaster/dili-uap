@@ -164,7 +164,7 @@
             <#controls_paginationOpts/>,
             buttons:[
             {
-                iconCls:'icon-permission',
+                iconCls:'icon-role',
                 text:'权限',
                 handler:function(){
                     editRoleMenuAndResource();

@@ -4,8 +4,13 @@ import com.dili.ss.base.BaseServiceImpl;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.dao.DepartmentMapper;
+import com.dili.uap.dao.FirmMapper;
 import com.dili.uap.domain.Department;
+import com.dili.uap.domain.Firm;
 import com.dili.uap.service.DepartmentService;
+import com.dili.uap.service.FirmService;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,10 +23,33 @@ import java.util.Date;
 @Service
 public class DepartmentServiceImpl extends BaseServiceImpl<Department, Long> implements DepartmentService {
 
+	 @Autowired FirmMapper firmMapper;
     public DepartmentMapper getActualDao() {
         return (DepartmentMapper)getDao();
     }
+    
+    /**
+     * 部门相同时，返回一个错误信息字符串
+     * @param department
+     * @return 相同市场存在相同部门的错误信息
+     */
+    private String buildErrorMessage(Department department) {
+		String firmName = "";
+		Firm condition = DTOUtils.newDTO(Firm.class);
+		condition.setCode(department.getFirmCode());
+		
+		Firm firm = firmMapper.selectOne(condition);
+		if (firm != null) {
+			firmName = firm.getName();
+		}
 
+		StringBuilder sb = new StringBuilder()
+				.append("[").append(firmName).append("]")
+				.append("市场下存在相同的部门")
+				.append("[").append(department.getName()).append("]");
+		return sb.toString();
+    	
+    }
     @Override
     @Transactional
     public BaseOutput<Object> insertAfterCheck(Department department) {
@@ -30,7 +58,7 @@ public class DepartmentServiceImpl extends BaseServiceImpl<Department, Long> imp
         record.setFirmCode(department.getFirmCode());
         int count = this.getActualDao().selectCount(record);
         if (count > 0) {
-            return BaseOutput.failure("存在相同名称的部门");
+            return BaseOutput.failure(this.buildErrorMessage(department));
         }
         int result = this.getActualDao().insertSelective(department);
         department.setCode(department.getFirmCode() + "-" + department.getId());
@@ -49,7 +77,7 @@ public class DepartmentServiceImpl extends BaseServiceImpl<Department, Long> imp
         record.setFirmCode(department.getFirmCode());
         Department oldDept = this.getActualDao().selectOne(record);
         if (oldDept != null && !oldDept.getId().equals(department.getId())) {
-            return BaseOutput.failure("存在相同名称的部门");
+        	 return BaseOutput.failure(this.buildErrorMessage(department));
         }
         department.setModified(new Date());
         int result = this.getActualDao().updateByPrimaryKey(department);

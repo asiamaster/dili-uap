@@ -13,9 +13,9 @@
                 <div style="padding: 5px;">
                     <table>
                         <tr>
-                            <td style="padding: 5px;"><input class="easyui-textbox" name="systemCode" id="systemCode"
-                                                             style="width: 100%"
-                                                             data-options="labelWidth:100,labelAlign:'right',label:'系统编码:', validType:'length[0,50]'"/>
+                            <td style="padding: 5px;">
+                            <input name="systemCode" id="systemCode" style="width: 100%" panelWidth="auto"  panelHeight="auto" data-options="labelWidth:100,labelAlign:'right',label:'系统:', validType:'length[0,50]'"/></td>
+                             <#comboProvider _id="systemCode" _provider='systemProvider' _queryParams='{}'/>
                             </td>
                             <td style="padding: 5px;"><input class="easyui-textbox" name="likeName" id="likeName"
                                                              style="width: 100%"
@@ -56,8 +56,8 @@
                     <th data-options="field:'id',width:'6%',sortable:'true', order:'asc', align:'center', hidden:true,resizable:'true', fixed:'false'">
                         ID
                     </th>
-                    <th data-options="editor : {type : 'textbox',options : {required : true}},field:'systemCode',width:'8%',sortable:'true', order:'asc', align:'center', hidden:false,resizable:'true', fixed:'false'">
-                        系统编码
+                    <th data-options="formatter :systemCodeFormatter ,editor : {type : 'combobox',options : {panelWidth:'auto'  ,panelHeight:'auto', url:'/dataDictionary/systemList.action',textField:'text',editable:false,valueField:'value',required : true}},field:'systemCode',width:'8%',sortable:'true', order:'asc', align:'center', hidden:false,resizable:'true', fixed:'false'">
+                        系统
                     </th>
                     <th data-options="editor : {type : 'textbox',options : {required : true}},field:'name',   width:'12%',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                         名称
@@ -91,7 +91,32 @@
 <!-- style & script 分隔线 -->
 <!-- ====================================================================================================================== -->
 <script type="text/javascript">
-
+	//保存grid里面combobox的数据
+	var systemList=[];
+	$.ajax({
+	    type: "POST",
+	    url: "/dataDictionary/systemList.action",
+	    data: {},
+	    processData:true,
+	    dataType: "json",
+	    async : false,
+	    success: function (data) {
+	    	systemList=data;
+	    },
+	    error: function(){
+	       $.messager.alert('错误','远程访问失败');
+	    }
+	});
+	//根据systemcode返回system name
+	function systemCodeFormatter (value, row, index){
+		for(var i=0;i<systemList.length;i++){
+			var system=systemList[i];
+			if(system['value']==value){
+				return system['text'];
+			}
+		}
+		return value;
+	}
     // 是否显示编辑框的确定取消按钮
     function setOptBtnDisplay(show) {
         var $btnSave = $("#save_btn");
@@ -234,6 +259,9 @@
                 }
             ]
         });
+        
+
+        
         //表格仅显示下边框
         $('#grid').datagrid('getPanel').removeClass('lines-both lines-no lines-right lines-bottom').addClass("lines-bottom");
         queryGrid();

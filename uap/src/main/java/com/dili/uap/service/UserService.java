@@ -63,5 +63,18 @@ public interface UserService extends BaseService<User, Long> {
      * @return
      */
     List<UserRoleDto> getUserRolesForTree(Long userId);
+    /**
+     * 保存用户的角色信息
+     * @param userId  用户ID
+     * @param roleIds 角色ID
+     * @return
+     */
+    BaseOutput saveUserRoles(Long userId,String[] roleIds);
 
+    /**
+     * 根据id查询用户信息
+     * @param userId 用户id
+     * @return
+     */
+    BaseOutput<Object>fetchLoginUserInfo(Long userId);
 }

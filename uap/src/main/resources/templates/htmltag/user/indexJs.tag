@@ -283,7 +283,7 @@
             <#controls_paginationOpts/>,
             buttons:[
                 {
-                    iconCls:'icon-detail',
+                    iconCls:'icon-role',
                     text:'分配角色',
                     handler:function(){
                         editUserRole();
@@ -450,10 +450,37 @@
         $('#roleTree').tree("reload");
         
     }
-    
+
+    /**
+     * 保存用户的角色信息
+     */
     function saveUserRoles() {
-        debugger;
         var nodes = $('#roleTree').tree('getChecked');
+        //节点选中的ID，包括 市场，角色
+        var ids = [];
+        for (var i = 0; i < nodes.length; i++) {
+            ids.push(nodes[i].id);
+        }
+        var selected = userGrid.datagrid("getSelected");
+        $.ajax({
+            type: "POST",
+            url: "${contextPath}/user/saveUserRoles.action",
+            data: {userId: selected.id, roleIds: ids},
+            dataType: "json",
+            traditional: true,
+            async: true,
+            success: function (ret) {
+                if (ret.success) {
+                    $('#userRoleDlg').dialog('close');
+                    userGrid.datagrid("load");
+                } else {
+                    $.messager.alert('错误', ret.result);
+                }
+            },
+            error: function () {
+                $.messager.alert('错误', '远程访问失败');
+            }
+        });
     }
     
 </script>

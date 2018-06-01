@@ -75,7 +75,7 @@ public class SystemController {
 	})
     @RequestMapping(value="/delete.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody BaseOutput delete(Long id) {
-        systemService.delete(id);
-        return BaseOutput.success("删除成功");
+       return systemService.deleteAfterCheck(id);
+        
     }
 }
