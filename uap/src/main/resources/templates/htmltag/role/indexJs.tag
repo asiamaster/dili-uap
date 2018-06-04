@@ -125,6 +125,10 @@
         initUserListGrid();
     });
 
+    function onBeforeLoad() {
+        setOptBtnDisplay(false);
+    }
+
     /**
      * 初始化角色列表的grid
      */

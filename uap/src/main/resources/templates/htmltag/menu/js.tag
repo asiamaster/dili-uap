@@ -292,6 +292,10 @@ function bindEditMenuGrid(node) {
             $("#btnSave1").hide();
             $("#btnCancel1").hide();
         },
+        onBeforeLoad : function () {
+            $("#btnSave1").hide();
+            $("#btnCancel1").hide();
+        },
         onSaveSuccess: function (index, row, data) {
             //data就是新增后返回的id，没有返回id就是修改
             if(data) {

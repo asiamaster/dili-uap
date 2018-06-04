@@ -44,7 +44,7 @@
                 <table class="easyui-datagrid" title="角色信息" id="roleGrid" fitColumns="true"  noheader="true"
                        pagination="true" pageSize="30" pageNumber="1" pagePosition="top" remoteSort="true"
                        loadMsg="数据加载中..." singleSelect="true" method="post" sortName="id" sortOrder="desc"
-                       align="center" fit="true" striped="true"  idField="id" data-options="onHeaderContextMenu:headerContextMenu">
+                       align="center" fit="true" striped="true"  idField="id" data-options="onHeaderContextMenu:headerContextMenu, onBeforeLoad:onBeforeLoad">
                     <thead>
                         <tr>
                             <th data-options="field:'id',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false',hidden:true">

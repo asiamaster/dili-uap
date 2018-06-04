@@ -151,7 +151,6 @@ function openDdValueWindow(obj) {
 // 清空表单
 function clearForm() {
 	$('#form').form('clear');
-    queryDdGrid();
 }
 
 /**
