@@ -68,7 +68,7 @@
                     <th data-options="editor : {type : 'textbox',options : {required : true}},field:'value',   width:'12%',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                         值
                     </th>
-                    <th data-options="editor : {type : 'textbox',options : {required : true}},field:'description',  width:'28%', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                    <th data-options="editor : {type : 'textbox',options : {}},field:'description',  width:'28%', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                         描述
                     </th>
                     <th data-options="field:'created', width:'14%', _provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
@@ -204,6 +204,16 @@
             onAfterEdit: function () {
                 setOptBtnDisplay(false);
             },
+            onDblClickRow: function () {
+                that.openUpdate();
+            },canEdit: function (row) {
+             	 <#resource code="updateSystemConfig">
+             	  if(1==1){
+             		 return true;
+             	  }
+             	 </#resource>
+             	 return false;  
+           }
             /*onSaveSuccess: function (row, data) {
                 row.created = UAP_TOOLS.getNowStr();
                 row.modified = UAP_TOOLS.getNowStr();
@@ -215,6 +225,7 @@
         var pager = $('#grid').datagrid('getPager');    // get the pager of treegrid
         pager.pagination({
             buttons: [
+                 <#resource code="insertSystemConfig">
                 {
                     iconCls: 'icon-add',
                     text: '新增',
@@ -222,6 +233,8 @@
                         $("#grid").dataGridEditor().insert();
                     }
                 },
+                </#resource>
+                <#resource code="updateSystemConfig">
                 {
                     iconCls: 'icon-edit',
                     text: '修改',
@@ -229,6 +242,8 @@
                         $("#grid").dataGridEditor().update();
                     }
                 },
+                </#resource>
+                <#resource code="deleteSystemConfig">
                 {
                     iconCls: 'icon-remove',
                     text: '删除',
@@ -236,6 +251,7 @@
                         $("#grid").dataGridEditor().delete();
                     }
                 },
+                </#resource>
                 {
                     id: 'save_btn',
                     text: '保存',
@@ -252,6 +268,7 @@
                         $("#grid").dataGridEditor().cancel();
                     }
                 },
+                <#resource code="exportSystemConfig">
            	   {
                     iconCls:'icon-export',
                     text:'导出',
@@ -259,6 +276,7 @@
                         doExport('grid');
                     }
                 }
+           	</#resource>
             ]
         });
         

@@ -1,15 +1,21 @@
 <script type="text/javascript">
 
     function openInsert() {
+    	 <#resource code="insertDepartment">
         $("#grid").dataGridEditor().insert();
+        </#resource>
     }
 
     function openUpdate() {
+    	 <#resource code="updateDepartment">
         $("#grid").dataGridEditor().update();
+        </#resource>
     }
 
     function del() {
-        $("#grid").dataGridEditor().delete();
+    	<#resource code="deleteDepartment">
+        	$("#grid").dataGridEditor().delete();
+        </#resource>
     }
 
     function endEditing() {
@@ -49,7 +55,12 @@
                 }
             },
             canEdit: function (row) {
-                return row.id !== -1;
+              	 <#resource code="updateDepartment">
+              	  if(1==1){
+              		 return row.id !== -1;
+              	  }
+              	 </#resource>
+              	 return false;  
             }
         });
     });

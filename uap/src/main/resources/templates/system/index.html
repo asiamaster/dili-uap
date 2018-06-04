@@ -316,6 +316,8 @@
             pager.pagination({
                 <#controls_paginationOpts/>
                 ,buttons:[
+                	
+                     <#resource code="insertSystem">
                     {
                         iconCls:'icon-add',
                         text:'新增',
@@ -323,6 +325,8 @@
                             openInsert();
                         }
                     },
+                    </#resource>
+                    <#resource code="updateSystem">
                     {
                         iconCls:'icon-edit',
                         text:'修改',
@@ -330,6 +334,8 @@
                             openUpdate();
                         }
                     },
+                    </#resource>
+                    <#resource code="deleteSystem">
                     {
                         iconCls:'icon-remove',
                         text:'删除',
@@ -337,6 +343,8 @@
                             del();
                         }
                     },
+                    </#resource>
+                    <#resource code="exportSystem">
                 	 {
                          iconCls:'icon-export',
                          text:'导出',
@@ -344,6 +352,7 @@
                              doExport('grid');
                          }
                      }
+                	 </#resource>
                 ]
             });
             //表格仅显示下边框

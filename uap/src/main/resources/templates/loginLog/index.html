@@ -337,6 +337,7 @@
             pager.pagination({
                 <#controls_paginationOpts/>
                 ,buttons:[
+                	 <#resource code="exportLoginLog">
                 	 {
                          iconCls:'icon-export',
                          text:'导出',
@@ -344,6 +345,7 @@
                              doExport('grid');
                          }
                      }
+                	 </#resource>
                 ]
             });
             //表格仅显示下边框

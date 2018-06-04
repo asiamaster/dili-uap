@@ -182,6 +182,13 @@ $(function() {
         },
         onAfterEdit: function () {
             setOptBtnDisplay(false);
+        },canEdit:function(){
+        	 <#resource code="updateDataDictionary">
+        	  if(1==1){
+        		  return true;  
+        	  }
+        	 </#resource>
+        	 return false;
         }/*,
         onSaveSuccess: function (row, data) {
             row.created = UAP_TOOLS.getNowStr();
@@ -195,6 +202,7 @@ $(function() {
 			pager.pagination({
 				<#controls_paginationOpts/>,
 				buttons:[
+					 <#resource code="insertDataDictionary">
 					{
 						iconCls:'icon-add',
 						text:'新增',
@@ -202,6 +210,8 @@ $(function() {
                             $("#grid").dataGridEditor().insert();
 						}
 					},
+					  </#resource>
+	                <#resource code="updateDataDictionary">
 					{
 						iconCls:'icon-edit',
 						text:'修改',
@@ -209,6 +219,8 @@ $(function() {
                             $("#grid").dataGridEditor().update();
 						}
 					},
+					  </#resource>
+	                <#resource code="deleteDataDictionary">
 					{
 						iconCls:'icon-remove',
 						text:'删除',
@@ -216,6 +228,7 @@ $(function() {
                             $("#grid").dataGridEditor().delete();
 						}
 					},
+					</#resource>
 					{
 						id:'save_btn',
                         text:'保存',
