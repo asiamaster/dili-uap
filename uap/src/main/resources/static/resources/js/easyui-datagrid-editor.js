@@ -98,7 +98,6 @@
         },
         // 开启选中行的编辑模式
         openUpdate: function () {
-
             var selected = this.element[this.options.target]("getSelected");
             if (!selected) {
                 $.messager.alert('警告', '请选中一条数据');
@@ -110,8 +109,7 @@
                     return;
                 }
             }
-
-            if (this.endEditing()) {
+            if (!this.isEditing()) {
                 if (this.options.target == 'datagrid') {
                     var index = this.element.datagrid('getRowIndex', selected);
                     this.editIndex = index;

@@ -28,42 +28,6 @@
         }
     };
 
-    /**
-     * 插入或者修改信息
-
-     * @param index 行索引
-     * @param row 行数据
-     * @param changes 被修改的数据
-     */
-    function insertOrUpdate(index, row, changes) {
-        var oldRecord;
-        var url = '${contextPath!}/role/';
-        if (!row.id) {
-            url += 'insert.action';
-        } else {
-            oldRecord = new Object();
-            $.extend(true, oldRecord, row);
-            url += 'update.action'
-        }
-        $.post(url, row, function(ret) {
-            if (ret.code != 200) {
-                if (oldRecord) {
-                    roleGrid.datagrid('updateRow', {
-                        index : index,
-                        row : oldRecord
-                    });
-                } else {
-                    roleGrid.datagrid('deleteRow', index);
-                }
-                $.messager.alert('提示', ret.result);
-                return;
-            }
-            roleGrid.datagrid('load');
-            roleGrid.datagrid('unselectAll');
-            setOptBtnDisplay(false);
-        }, 'json');
-    };
-
     //表格表头右键菜单
     function headerContextMenu(e, field){
         e.preventDefault();
@@ -74,7 +38,7 @@
             left:e.pageX,
             top:e.pageY
         });
-    }
+    };
 
     //全局按键事件
     function getKey(e){
@@ -159,6 +123,13 @@
             },
             onSaveSuccess: function (row, data) {
                 roleGrid.datagrid("load");
+            },
+            canEdit:function () {
+                <%if(hasResource("updateRole")) {%>
+                    return true;
+                <%}else{ %>
+                    return false;
+                <%}%>
             }
         });
 
@@ -167,66 +138,78 @@
         pager.pagination({
             <#controls_paginationOpts/>,
             buttons:[
-            {
-                iconCls:'icon-role',
-                text:'权限',
-                handler:function(){
-                    editRoleMenuAndResource();
+                <#resource code="rolePermission">
+                {
+                    iconCls:'icon-role',
+                    text:'权限',
+                    handler:function(){
+                        editRoleMenuAndResource();
+                    }
+                },
+                </#resource>
+                <#resource code="roleUsers">
+                {
+                    iconCls:'icon-man',
+                    text:'所属用户',
+                    handler:function(){
+                        onUserList();
+                    }
+                },
+                </#resource>
+                <#resource code="insertRole">
+                {
+                    iconCls:'icon-add',
+                    text:'新增',
+                    handler:function(){
+                        $("#roleGrid").dataGridEditor().insert();
+                    }
+                },
+                </#resource>
+                <#resource code="updatetRole">
+                {
+                    iconCls:'icon-edit',
+                    text:'修改',
+                    handler:function(){
+                        $("#roleGrid").dataGridEditor().update();
+                    }
+                },
+                </#resource>
+                <#resource code="deleteRole">
+                {
+                    iconCls:'icon-remove',
+                    text:'删除',
+                    handler:function(){
+                        $("#roleGrid").dataGridEditor().delete();
+                    }
+                },
+                </#resource>
+                <#resource code="exportRole">
+                {
+                    iconCls:'icon-export',
+                    text:'导出',
+                    handler:function(){
+                        doExport('roleGrid');
+                    }
+                },
+                </#resource>
+                {
+                    id:'save_btn',
+                    iconCls:'icon-ok',
+                    text:'保存',
+                    handler:function(){
+                        $("#roleGrid").dataGridEditor().save();
+                    }
+                },
+                {
+                    id:'cancel_btn',
+                    iconCls:'icon-clear',
+                    text:'取消',
+                    handler:function(){
+                        $("#roleGrid").dataGridEditor().cancel();
+                    }
                 }
-            },
-            {
-                iconCls:'icon-man',
-                text:'所属用户',
-                handler:function(){
-                    onUserList();
-                }
-            },
-            {
-                iconCls:'icon-add',
-                text:'新增',
-                handler:function(){
-                    $("#roleGrid").dataGridEditor().insert();
-                }
-            },
-            {
-                iconCls:'icon-edit',
-                text:'修改',
-                handler:function(){
-                    $("#roleGrid").dataGridEditor().update();
-                }
-            },
-            {
-                iconCls:'icon-remove',
-                text:'删除',
-                handler:function(){
-                    $("#roleGrid").dataGridEditor().delete();
-                }
-            },
-            {
-                iconCls:'icon-export',
-                text:'导出',
-                handler:function(){
-                    doExport('roleGrid');
-                }
-            },
-            {
-                id:'save_btn',
-                iconCls:'icon-ok',
-                text:'保存',
-                handler:function(){
-                    $("#roleGrid").dataGridEditor().save();
-                }
-            },
-            {
-                id:'cancel_btn',
-                iconCls:'icon-clear',
-                text:'取消',
-                handler:function(){
-                    $("#roleGrid").dataGridEditor().cancel();
-                }
-            }
-        ]
-    });
+            ]
+        });
     }
 
     //表格查询
@@ -263,15 +246,28 @@
         $('#roleMenuAndResourceGrid').treegrid("load");
     }
 
+
     /**
      * 保存角色-菜单-资源新
      */
     function saveRoleMenuAndResource() {
+        //获取被选中的节点 此方法不会获取"半选"状态值
         var nodes = $('#roleMenuAndResourceGrid').treegrid('getCheckedNodes');
         //节点选中的ID，包括系统、菜单、资源
         var ids = [];
         for (var i = 0; i < nodes.length; i++) {
             ids.push(nodes[i].treeId);
+        }
+        /**
+         * node中，有checkState状态，选中：'true',半选：'indeterminate',可是。目前版本中没有像tree那样通过状态获取值的方法
+         * 通过css获取半选状态节点
+         * tree-checkbox2 有子节点被选中的css
+         * tree-checkbox1 节点被选中的css
+         * tree-checkbox0 节点未选中的css
+         */
+        var childCheckNodes = $('#roleMenuAndResourceGrid').treegrid("getPanel").find(".tree-checkbox2");
+        for (var i = 0; i< childCheckNodes.length;i++){
+            ids.push($($(childCheckNodes[i]).closest('tr')[0]).attr("node-id"));
         }
         var selected = roleGrid.datagrid("getSelected");
         $.ajax({
@@ -327,6 +323,7 @@
                 }
             ]
         });
+        $('#userListGrid').datagrid('getPanel').removeClass('lines-both lines-no lines-right lines-bottom').addClass("lines-bottom");
     }
 
     /**

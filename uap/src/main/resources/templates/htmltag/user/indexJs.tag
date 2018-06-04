@@ -103,6 +103,11 @@
 
     //打开修改窗口
     function openUpdate(){
+
+        <%if(!hasResource("updateUser")) {%>
+            return;
+        <%}%>
+
         var selected = userGrid.datagrid("getSelected");
         if (null == selected) {
             $.messager.alert('警告', '请选中一条数据');
@@ -282,6 +287,7 @@
         pager.pagination({
             <#controls_paginationOpts/>,
             buttons:[
+                <#resource code="editUserRole">
                 {
                     iconCls:'icon-role',
                     text:'分配角色',
@@ -289,6 +295,8 @@
                         editUserRole();
                     }
                 },
+                </#resource>
+                <#resource code="editUserData">
                 {
                     iconCls:'icon-data',
                     text:'数据权限',
@@ -296,6 +304,8 @@
                         editUserDataAuth();
                     }
                 },
+                </#resource>
+                <#resource code="viewUser">
                 {
                     iconCls:'icon-detail',
                     text:'详情',
@@ -303,6 +313,8 @@
                         openDetail();
                     }
                 },
+                </#resource>
+                <#resource code="insertUser">
                 {
                     iconCls:'icon-add',
                     text:'新增',
@@ -310,6 +322,8 @@
                         openInsert();
                     }
                 },
+                </#resource>
+                <#resource code="updateUser">
                 {
                     iconCls:'icon-edit',
                     text:'修改',
@@ -317,6 +331,8 @@
                         openUpdate();
                     }
                 },
+                </#resource>
+                <#resource code="deleteUser">
                 {
                     iconCls:'icon-remove',
                     text:'删除',
@@ -324,6 +340,8 @@
                         del();
                     }
                 },
+                </#resource>
+                <#resource code="resetPass">
                 {
                     iconCls:'icon-reset',
                     text:'密码重置',
@@ -331,6 +349,8 @@
                         resetPass();
                     }
                 },
+                </#resource>
+                <#resource code="enabledUser">
                 {
                     iconCls:'icon-play',
                     text:'启用',
@@ -340,6 +360,8 @@
                         doEnable(true);
                     }
                 },
+                </#resource>
+                <#resource code="disabledUser">
                 {
                     iconCls:'icon-stop',
                     text:'禁用',
@@ -349,6 +371,8 @@
                         doEnable(false);
                     }
                 },
+                </#resource>
+                <#resource code="exportUser">
                 {
                     iconCls:'icon-export',
                     text:'导出',
@@ -356,6 +380,7 @@
                         doExport('roleGrid');
                     }
                 }
+                </#resource>
             ]
         });
         //表格仅显示下边框

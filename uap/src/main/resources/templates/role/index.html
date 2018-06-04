@@ -98,14 +98,15 @@
      <!-- 隐藏用户列表 -->
      <div id="userListDlg" class="easyui-dialog" resizable="false" constrain="true" shadow="true" draggable="false" title="角色的用户列表" style="width: 60%" modal="true"
           border="thin" closed="true" data-options="height:400">
-         <table class="easyui-datagrid" id="userListGrid" rownumbers="false" remoteSort="false" loadMsg="数据加载中..." singleSelect="true" method="post" multiSort="true" sortName="serialNumber" align="center"
+         <table class="easyui-datagrid" id="userListGrid" rownumbers="false" remoteSort="false" loadMsg="数据加载中..." singleSelect="true" method="post" multiSort="false" align="center"
                 fit="true" striped="true" idField="id" width="100%">
              <thead>
              <tr>
-                 <th width="20%" data-options="field:'serialNumber',   sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false'">用户编号</th>
-                 <th width="30%" data-options="field:'userName',   sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false'">用户名</th>
+                 <th width="20%" data-options="field:'userName',   sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false'">用户名</th>
                  <th width="20%" data-options="field:'realName',   sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false'">真实姓名</th>
-                 <th width="31%" data-options="field:'email',   sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false'">邮箱</th>
+                 <th width="10%" data-options="field:'departmentId',_provider:'departmentProvider',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">归属部门</th>
+                 <th width="30%" data-options="field:'position',   sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false'">职位</th>
+                 <th width="21%" data-options="field:'email',   sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false'">邮箱</th>
              </tr>
              </thead>
          </table>
