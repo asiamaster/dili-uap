@@ -1,8 +1,9 @@
 package com.dili.uap.manager.impl;
 
-import com.dili.uap.dao.MenuMapper;
+import com.dili.uap.dao.SystemMapper;
 import com.dili.uap.domain.Menu;
-import com.dili.uap.manager.MenuManager;
+import com.dili.uap.domain.System;
+import com.dili.uap.manager.SystemManager;
 import com.dili.uap.sdk.session.SessionConstants;
 import com.dili.uap.sdk.util.ManageRedisUtil;
 import org.apache.commons.collections.CollectionUtils;
@@ -18,8 +19,8 @@ import java.util.List;
 
 
 @Component
-public class MenuManagerImpl implements MenuManager {
-	private final static Logger LOG = LoggerFactory.getLogger(MenuManagerImpl.class);
+public class SystemManagerImpl implements SystemManager {
+	private final static Logger LOG = LoggerFactory.getLogger(SystemManagerImpl.class);
 
 	/**
 	 * 缓存菜单KEY
@@ -27,27 +28,23 @@ public class MenuManagerImpl implements MenuManager {
 	private static final String REDIS_MENU_TREE_KEY = "manage:menu:";
 
 	@Autowired
-	private MenuMapper menuMapper;
+	private SystemMapper systemMapper;
 
 	@Autowired
 	private ManageRedisUtil redisUtils;
 
 	@Override
-	public void initUserMenuUrlsInRedis(Long userId) {
-		List<String> urls = new ArrayList<>();
-		List<Menu> menus = this.menuMapper.listByUserId(userId);
-		if (CollectionUtils.isEmpty(menus)) {
+	public void initUserSystemInRedis(Long userId) {
+		List<System> systems = this.systemMapper.listByUserId(userId);
+		if (CollectionUtils.isEmpty(systems)) {
 			return;
 		}
-		for (Menu menu : menus) {
-			if (menu != null && StringUtils.isNotBlank(menu.getUrl())) {
-				urls.add(menu.getUrl().trim().replace("http://", "").replace("https://", ""));
-			}
-		}
-        String key = SessionConstants.USER_MENU_URL_KEY + userId;
+        String key = SessionConstants.USER_SYSTEM_KEY + userId;
         this.redisUtils.remove(key);
         BoundSetOperations<String, Object> ops = this.redisUtils.getRedisTemplate().boundSetOps(key);
-        ops.add(urls.toArray());
+        for(System system : systems){
+			ops.add(system);
+		}
     }
 
 }

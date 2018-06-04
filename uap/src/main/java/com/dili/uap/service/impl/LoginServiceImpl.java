@@ -75,6 +75,9 @@ public class LoginServiceImpl implements LoginService {
     private ResourceManager resourceManager;
 
     @Autowired
+    private SystemManager systemManager;
+
+    @Autowired
     private ManageConfig manageConfig;
 
     @Autowired
@@ -121,6 +124,8 @@ public class LoginServiceImpl implements LoginService {
                 return BaseOutput.failure("用户状态"+UserState.getUserState(user.getState()).getName()+", 不能进行登录!");
             }
 
+            //加载用户系统
+            this.systemManager.initUserSystemInRedis(user.getId());
             // 加载用户url
             this.menuManager.initUserMenuUrlsInRedis(user.getId());
             // 加载用户resource

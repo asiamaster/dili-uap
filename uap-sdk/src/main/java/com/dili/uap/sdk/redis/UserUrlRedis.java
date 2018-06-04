@@ -1,6 +1,6 @@
 package com.dili.uap.sdk.redis;
 
-import com.dili.uap.sdk.exception.NotLoginException;
+import com.dili.uap.sdk.exception.ParameterException;
 import com.dili.uap.sdk.session.SessionConstants;
 import com.dili.uap.sdk.util.ManageRedisUtil;
 import org.slf4j.Logger;
@@ -27,8 +27,7 @@ public class UserUrlRedis {
      */
     public boolean checkUserMenuUrlRight(Long userId, String url) {
         if (userId == null) {
-            log.debug("失败加载用户信息!");
-            throw new NotLoginException();
+            throw new ParameterException("用户id或菜单url不能为空");
         }
         // 去掉http和https前缀, 判断用户权限
         return checkRedisUserMenuUrl(userId, url.trim().replace("http://", "").replace("https://", ""));

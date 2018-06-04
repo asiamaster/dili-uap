@@ -1,6 +1,6 @@
 package com.dili.uap.sdk.redis;
 
-import com.dili.uap.sdk.exception.NotLoginException;
+import com.dili.uap.sdk.exception.ParameterException;
 import com.dili.uap.sdk.session.SessionConstants;
 import com.dili.uap.sdk.util.ManageRedisUtil;
 import org.slf4j.Logger;
@@ -27,8 +27,8 @@ public class UserResourceRedis {
      */
     public boolean checkUserResourceRight(Long userId, String resourceCode) {
         if (userId == null) {
-            log.debug("失败加载用户信息!");
-            throw new NotLoginException();
+            log.debug("用户id或资源编码不能为空!");
+            throw new ParameterException();
         }
         return checkRedisUserResource(userId, resourceCode);
 
