@@ -285,7 +285,13 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
         }
 
         user.setPassword("");
-        return BaseOutput.success("操作成功").setData(user);
+        Map<String,Object>map= DTOUtils.go(user);
+        Department department= departmentMapper.selectByPrimaryKey(user.getDepartmentId());
+        if(department!=null) {
+        	map.put("departmentId", department.getName());
+        }
+       
+        return BaseOutput.success("操作成功").setData(map);
 
     }
 

@@ -2,6 +2,9 @@
 // 编辑行索引
 var ddValueGrid = undefined;
 
+function onBeforeLoad(){
+	 setOptBtnDisplay(false);
+}
 
 // 表格查询
 function queryDdGrid() {

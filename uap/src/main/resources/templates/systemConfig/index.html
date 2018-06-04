@@ -50,7 +50,7 @@
                    loadMsg="数据加载中..."
                    singleSelect="true" method="post" multiSort="true" sortName="code" align="center" fit="true"
                    striped="true" idField="id"
-                   data-options="">
+                   data-options="onBeforeLoad:onBeforeLoad">
                 <thead>
                 <tr>
                     <th data-options="field:'id',width:'6%',sortable:'true', order:'asc', align:'center', hidden:true,resizable:'true', fixed:'false'">
@@ -116,6 +116,9 @@
 			}
 		}
 		return value;
+	}
+	function onBeforeLoad(){
+		setOptBtnDisplay(false);
 	}
     // 是否显示编辑框的确定取消按钮
     function setOptBtnDisplay(show) {
@@ -183,7 +186,7 @@
      *          表单提交需执行的任务
      */
     $(function () {
-        bindFormEvent("form", "name", queryGrid);
+        //bindFormEvent("form", "name", queryGrid);
         if (document.addEventListener) {
             document.addEventListener("keyup", getKey, false);
         } else if (document.attachEvent) {
