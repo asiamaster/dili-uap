@@ -45,4 +45,11 @@ public interface MenuService extends BaseService<Menu, Long> {
      * @return
      */
     List<Map> listSystemMenu();
+
+    /**
+     * 删除菜单节点，判断下面是否有子菜单和资源，成功返回null，失败返回错误信息
+     * @param id
+     * @return
+     */
+    String deleteMenu(Long id);
 }

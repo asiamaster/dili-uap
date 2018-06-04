@@ -4,7 +4,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.dili.ss.base.BaseServiceImpl;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.dao.MenuMapper;
+import com.dili.uap.dao.ResourceMapper;
 import com.dili.uap.domain.Menu;
+import com.dili.uap.domain.Resource;
 import com.dili.uap.domain.dto.MenuCondition;
 import com.dili.uap.service.MenuService;
 import org.apache.commons.lang3.StringUtils;
@@ -22,6 +24,9 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, Long> implements Menu
 
     @Autowired
     private MenuMapper menuMapper;
+
+    @Autowired
+    private ResourceMapper resourceMapper;
 
     public MenuMapper getActualDao() {
         return (MenuMapper)getDao();
@@ -84,5 +89,23 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, Long> implements Menu
             menuTree.put("attributes", attr);
         });
         return menuTrees;
+    }
+
+    @Override
+    public String deleteMenu(Long id) {
+        Menu menu = DTOUtils.newDTO(Menu.class);
+        menu.setParentId(id);
+        List children = getActualDao().select(menu);
+        if(!children.isEmpty()){
+            return "菜单下有子菜单，无法删除";
+        }
+        Resource resource = DTOUtils.newDTO(Resource.class);
+        resource.setMenuId(id);
+        List resources = resourceMapper.select(resource);
+        if(!resources.isEmpty()){
+            return "菜单下有资源，无法删除";
+        }
+        delete(id);
+        return null;
     }
 }
