@@ -26,10 +26,12 @@ function cancelEditDdValue() {
 
 
 function onBeginEditDdValue(index, row) {
+	 <#resource code="updateDataDictionaryValue">
+		var editors = ddValueGrid.datagrid('getEditors', index);
+		editors[0].target.trigger('focus');
+	    setOptValueBtnDisplay(true);
+	</#resource>
 
-	var editors = ddValueGrid.datagrid('getEditors', index);
-	editors[0].target.trigger('focus');
-    setOptValueBtnDisplay(true);
 }
 
 function onAfterEditDdValue(index, row, changes) {
@@ -202,6 +204,7 @@ $(function() {
 	pager.pagination({
 		<#controls_paginationOpts/>
 		,buttons:[
+              <#resource code="insertDataDictionaryValue">
 			{
 				iconCls:'icon-add',
 				text:'新增',
@@ -209,6 +212,8 @@ $(function() {
 					openInsertDdValue();
 				}
 			},
+			  </#resource>
+            <#resource code="updateDataDictionaryValue">
 			{
 				iconCls:'icon-edit',
 				text:'修改',
@@ -216,6 +221,8 @@ $(function() {
 					openUpdateDdValue();
 				}
 			},
+			  </#resource>
+            <#resource code="deleteDataDictionaryValue">
 			{
 				iconCls:'icon-remove',
 				text:'删除',
@@ -223,6 +230,7 @@ $(function() {
 					delDdValue();
 				}
 			},
+			</#resource>
             {
                 id:'save_btn_ddValue',
                 iconCls:'icon-ok',
