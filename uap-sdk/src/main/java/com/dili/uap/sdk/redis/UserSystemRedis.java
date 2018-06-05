@@ -4,12 +4,18 @@ import com.dili.uap.sdk.domain.System;
 import com.dili.uap.sdk.exception.ParameterException;
 import com.dili.uap.sdk.session.SessionConstants;
 import com.dili.uap.sdk.util.ManageRedisUtil;
+import com.dili.uap.sdk.util.SerializeUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import sun.misc.BASE64Decoder;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -42,8 +48,18 @@ public class UserSystemRedis {
      * @param userId
      * @return
      */
-    public Set<System> getRedisUserSystems(Long userId){
-        return redisUtil.getRedisTemplate().boundSetOps(SessionConstants.USER_SYSTEM_KEY + userId.toString()).members();
+    public List<System> getRedisUserSystems(Long userId){
+        String mes = (String)this.redisUtil.get(SessionConstants.USER_SYSTEM_KEY + userId.toString());
+        BASE64Decoder dec = new BASE64Decoder();
+        byte[] after = null;
+        try {
+            //使用BASE64解码
+            after =dec.decodeBuffer(mes);
+            return (List<System>) SerializeUtil.unserialize(after);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     /**
@@ -54,7 +70,7 @@ public class UserSystemRedis {
      * @return
      */
     private boolean checkRedisUserSystemByCode(Long userId, String systemCode) {
-        Set<System> systems = getRedisUserSystems(userId);
+        List<System> systems = getRedisUserSystems(userId);
         for(System system : systems){
             if(system.getCode().equals(systemCode)){
                 return true;

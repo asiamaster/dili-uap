@@ -101,4 +101,11 @@ public interface System extends IBaseDomain,IMybatisForceParams {
     Integer getType();
 
     void setType(Integer type);
+
+    @Column(name = "`order_number`")
+    @FieldDef(label="排序号")
+    @EditMode(editor = FieldEditor.Number, required = true)
+    Integer getOrderNumber();
+
+    void setOrderNumber(Integer orderNumber);
 }

@@ -6,6 +6,7 @@ import com.dili.uap.domain.System;
 import com.dili.uap.manager.SystemManager;
 import com.dili.uap.sdk.session.SessionConstants;
 import com.dili.uap.sdk.util.ManageRedisUtil;
+import com.dili.uap.sdk.util.SerializeUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -13,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundSetOperations;
 import org.springframework.stereotype.Component;
+import sun.misc.BASE64Encoder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,10 +43,9 @@ public class SystemManagerImpl implements SystemManager {
 		}
         String key = SessionConstants.USER_SYSTEM_KEY + userId;
         this.redisUtils.remove(key);
-        BoundSetOperations<String, Object> ops = this.redisUtils.getRedisTemplate().boundSetOps(key);
-        for(System system : systems){
-			ops.add(system);
-		}
+		BASE64Encoder enc=new BASE64Encoder();
+		//使用BASE64编码
+		this.redisUtils.set(key, enc.encodeBuffer(SerializeUtil.serialize(systems)));
     }
 
 }
