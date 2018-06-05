@@ -21,9 +21,15 @@
 					   fit="true" striped="true"  idField="id" data-options=""></table>
 				<!-- 表格1的工具栏 -->
 				<div id="grid1Toolbar" style="padding: 2px 5px;">
-					<a href="#" class="easyui-linkbutton" iconCls="icon-add" onclick="openInsert('grid1')" plain="true">新增</a>
-					<a href="#" class="easyui-linkbutton" iconCls="icon-edit" onclick="openUpdate('grid1')" plain="true">修改</a>
-					<a href="#" class="easyui-linkbutton" iconCls="icon-remove" onclick="del('grid1')" plain="true">删除</a>
+					<#resource code="addMenu">
+						<a href="#" class="easyui-linkbutton" iconCls="icon-add" onclick="openInsert('grid1')" plain="true">新增</a>
+					</#resource>
+					<#resource code="updateMenu">
+						<a href="#" class="easyui-linkbutton" iconCls="icon-edit" onclick="openUpdate('grid1')" plain="true">修改</a>
+					</#resource>
+					<#resource code="deleteMenu">
+						<a href="#" class="easyui-linkbutton" iconCls="icon-remove" onclick="del('grid1')" plain="true">删除</a>
+					</#resource>
 					<a href="#" class="easyui-linkbutton" iconCls="icon-ok" id="btnSave1" style="display: none" onclick="endEditing('grid1')" plain="true">保存</a>
 					<a href="#" id="btnCancel1" class="easyui-linkbutton" iconCls="icon-clear" onclick="cancelEdit('grid1')" style="display: none" plain="true">取消</a>
 				</div>
@@ -35,9 +41,15 @@
 					   fit="true" striped="true"  idField="id" data-options=""></table>
 				<!-- 表格2的工具栏 -->
 				<div id="grid2Toolbar" style="padding: 2px 5px;">
-					<a href="#" class="easyui-linkbutton" iconCls="icon-add" onclick="openInsert('grid2')" plain="true">新增</a>
-					<a href="#" class="easyui-linkbutton" iconCls="icon-edit" onclick="openUpdate('grid2')" plain="true">修改</a>
-					<a href="#" class="easyui-linkbutton" iconCls="icon-remove" onclick="del('grid2')" plain="true">删除</a>
+					<#resource code="addMenu">
+						<a href="#" class="easyui-linkbutton" iconCls="icon-add" onclick="openInsert('grid2')" plain="true">新增</a>
+					</#resource>
+					<#resource code="updateMenu">
+						<a href="#" class="easyui-linkbutton" iconCls="icon-edit" onclick="openUpdate('grid2')" plain="true">修改</a>
+					</#resource>
+					<#resource code="deleteMenu">
+						<a href="#" class="easyui-linkbutton" iconCls="icon-remove" onclick="del('grid2')" plain="true">删除</a>
+					</#resource>
 					<a href="#" class="easyui-linkbutton" iconCls="icon-ok" id="btnSave2" style="display: none" onclick="endEditing('grid2')" plain="true">保存</a>
 					<a href="#" id="btnCancel2" class="easyui-linkbutton" iconCls="icon-clear" onclick="cancelEdit('grid2')" style="display: none" plain="true">取消</a>
 				</div>

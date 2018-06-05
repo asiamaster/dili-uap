@@ -321,7 +321,11 @@ function bindEditMenuGrid(node) {
             }
         },
         canEdit: function (row) {
-            return row.id !== -1;
+            <%if(hasResource("updateMenu")) {%>
+            return true;
+            <%}else{%>
+            return false;
+            <%}%>
         }
     });
     //设置当前菜单节点选中的全局变量：systemId和menuId， 用于新增和修改
@@ -362,7 +366,11 @@ function bindEditResourceGrid(node) {
             }
         },
         canEdit: function (row) {
-            return row.id !== -1;
+            <%if(hasResource("updateMenu")) {%>
+            return true;
+            <%}else{%>
+            return false;
+            <%}%>
         }
     });
     //设置当前菜单节点选中的全局变量：menuId， 用于新增和修改
@@ -413,7 +421,11 @@ function bindInternalLinksGrid(node) {
             }
         },
         canEdit: function (row) {
-            return row.id !== -1;
+            <%if(hasResource("updateMenu")) {%>
+            return true;
+            <%}else{%>
+            return false;
+            <%}%>
         }
     });
     //设置当前菜单节点选中的全局变量：systemId和menuId， 用于新增和修改
