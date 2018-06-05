@@ -537,11 +537,19 @@
                 var data = ret.data;
                 $('#dataRange').combobox("loadData", data.dataRange);
                 $('#dataTree').tree("loadData", data.userDatas);
-                if (data.currDataAuth) {
-                    $('#dataRange').combobox('select', data.currDataAuth);
-                } else {
-                    $('#dataRange').combobox('select', data.dataRange[0].id);
+                var output = [];
+                var checkedId = 1;
+                if (typeof(data.currDataAuth) != "undefined" && '' != data.currDataAuth) {
+                    checkedId = data.currDataAuth;
                 }
+                $.each(data.dataRange, function (i, item) {
+                    if (parseInt(checkedId) == parseInt(item["id"])) {
+                        output.push('<input type="radio" name="dataRange" checked value="' + item["id"] + '">' + item["name"] + '&nbsp;&nbsp;');
+                    } else {
+                        output.push('<input type="radio" name="dataRange" value="' + item["id"] + '">' + item["name"] + '&nbsp;&nbsp;');
+                    }
+                });
+                $('#dataRangeDiv').html(output.join(''));
             }
         }, 'json');
     }
@@ -556,7 +564,7 @@
         for (var i = 0; i < nodes.length; i++) {
             ids.push(nodes[i].id);
         }
-        var dataRange = $('#dataRange').combobox("getValue");
+        var dataRange=$('input:radio[name="dataRange"]:checked').val();
         var selected = userGrid.datagrid("getSelected");
         $.ajax({
             type: "POST",

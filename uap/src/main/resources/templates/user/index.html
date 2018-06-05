@@ -266,11 +266,11 @@
          <div style="margin-left:20px;">
              <ui>请选择数据权限</ui>
          </div>
-         <div style="margin:5px 20px;">
-             <input class="easyui-combobox" id="dataRange" name="dataRange" required panelWidth="auto" panelHeight="auto"  editable="false" style="width:30%;height:28px;" data-options="labelAlign:'right',lable:'权限范围',valueField:'id',textField:'name'">
+         <div id="dataRangeDiv" style="margin:5px 20px;">
+
          </div>
          <div class="easyui-panel" style="margin-left:20px;padding:10px;width: 95%;height: 350px;">
-             <ui id="dataTree" class="easyui-tree" style="width: 90%;" data-options="checkbox:true,_idField:'treeId',_textField:'name',_parentIdField:'parentId',loadFilter:treeLoadFilter"></ui>
+             <ui id="dataTree" class="easyui-tree" style="width: 90%;" data-options="checkbox:true,_idField:'treeId',_textField:'name',_parentIdField:'parentId',loadFilter:treeLoadFilter,cascadeCheck:false"></ui>
          </div>
      </div>
     <!-- ====================================================================================================================== -->

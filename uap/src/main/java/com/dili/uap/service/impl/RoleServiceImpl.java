@@ -109,7 +109,10 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements Role
         List<SystemResourceDto> target = getActualDao().getRoleMenuAndResource();
         //根据角色ID加载对应的菜单-资源信息
         List<SystemResourceDto> checkedRoleList = getActualDao().getRoleMenuAndResourceByRoleId(roleId);
+        //选中的角色信息
         Set<String> checkedRole = Sets.newHashSet();
+        //选中的系统
+        Set<String> checkedSystem = Sets.newHashSet();
         /**
          * 遍历已选择的资源信息，根据是否是菜单，添加不同的前缀
          */
@@ -147,6 +150,8 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements Role
             //如果角色-资源信息已存在关联
             if (checkedRole.contains(s.getTreeId())) {
                 s.setChecked(true);
+                //用 ParentId ，以防因为当前的数据是资源，会出现空指针问题
+                checkedSystem.add(s.getParentId());
             } else {
                 s.setChecked(false);
             }
@@ -163,6 +168,9 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements Role
             dto.setDescription(s.getDescription());
             dto.setState("closed");
             dto.setType("系统");
+            if (checkedSystem.contains(dto.getTreeId())){
+                dto.setChecked(true);
+            }
             target.add(dto);
         });
 
