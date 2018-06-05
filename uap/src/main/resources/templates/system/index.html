@@ -56,6 +56,9 @@
                         <th data-options="field:'code',  width:'8%', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             系统编码
                         </th>
+                         <th data-options="field:'orderNumber',  width:'8%', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            排序号
+                        </th>
                         <th data-options="field:'description', width:'9%',  sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             系统描述
                         </th>
@@ -69,13 +72,13 @@
                         <th data-options="field:'logoUrl', width:'15%',  sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             LOGO URL
                         </th>
-                        <th data-options="field:'created', width:'10%', _provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th data-options="field:'created', width:'7%', _provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             创建时间
                         </th>
-                        <th data-options="field:'modified',width:'10%',  _provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th data-options="field:'modified',width:'7%',  _provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             修改时间
                         </th>
-                        <th data-options="field:'type',width:'10%',  _provider:'systemTypeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th data-options="field:'type',width:'8%',  _provider:'systemTypeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             类型
                         </th>
                     </tr>
@@ -94,7 +97,7 @@
     <div id="dlg" class="easyui-dialog" resizable="false" constrain="true" shadow="true" draggable="false" title="System信息" style="padding:20px" modal="true" border="thin" closed="true"
          data-options="
 				iconCls: 'icon-save',
-				height: 370,
+				height: 390,
 				buttons: [{
 					text:'确认',
 					iconCls:'icon-ok',
@@ -112,6 +115,11 @@
             <tr>
                 <td style="padding:5px;">
                     <input class="easyui-textbox" name="_code" id="_code" style="width:100%" data-options="label:'系统编码:', validType:'length[0,50]'" required="true" />
+                </td>
+            </tr>
+            <tr>
+                <td style="padding:5px;">
+                    <input class="easyui-numberbox" name="_orderNumber" id="_orderNumber" style="width:100%" data-options="label:'排序号:', min:0,precision:0" required="true" />
                 </td>
             </tr>
             <tr>
@@ -169,7 +177,9 @@
             $('#dlg').dialog('open');
             $('#dlg').dialog('center');
             $('#dlg').dialog('setTitle','修改系统信息');
+            $('#_form').form('clear');
             formFocus("_form", "_name");
+            //console.info(selected)
             var formData = $.extend({},selected);
             formData = addKeyStartWith(getOriginalData(formData),"_");
             $('#_form').form('load', formData);
