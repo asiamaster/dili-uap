@@ -62,6 +62,13 @@ public interface System extends IBaseDomain,IMybatisForceParams {
     String getUrl();
 
     void setUrl(String url);
+    
+    @Column(name = "`index_url`")
+    @FieldDef(label="系统首页url", maxLength = 255)
+    @EditMode(editor = FieldEditor.Text, required = false)
+    String getIndexUrl();
+
+    void setIndexUrl(String indexUrl);
 
     @Column(name = "`icon_url`")
     @FieldDef(label="图标URL", maxLength = 255)
