@@ -57,7 +57,11 @@
 <body>
 
 <ul class="syswrap">
-    <% for(system in systems){%>
+    <% for(system in systems){
+        if(system.code == "UAP"){
+            continue;
+        }
+    %>
     <li class="sys-item">
         <a href="#" onclick="toUrl('${system.url}')">
             <p class="sys-pics"><img class="sys-pic" src="${system.iconUrl}" alt="${system.description}"></p>

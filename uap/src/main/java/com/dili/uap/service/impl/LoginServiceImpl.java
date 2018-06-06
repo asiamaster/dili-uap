@@ -18,7 +18,6 @@ import com.dili.uap.glossary.Yn;
 import com.dili.uap.manager.*;
 import com.dili.uap.sdk.session.ManageConfig;
 import com.dili.uap.sdk.session.SessionConstants;
-import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.sdk.util.ManageRedisUtil;
 import com.dili.uap.sdk.util.WebContent;
 import com.dili.uap.service.LoginLogService;
@@ -288,7 +287,7 @@ public class LoginServiceImpl implements LoginService {
         SystemConfig systemConfigCondition = DTOUtils.newDTO(SystemConfig.class);
         systemConfigCondition.setYn(Yn.YES.getCode());
         systemConfigCondition.setCode(UapConstants.LOGIN_FAILED_TIMES);
-        systemConfigCondition.setSystemCode(UapConstants.SYSTEM_CODE);
+        systemConfigCondition.setSystemCode(UapConstants.UAP_SYSTEM_CODE);
         SystemConfig systemConfig = systemConfigMapper.selectOne(systemConfigCondition);
         //以系统变量配置为主，没有则使用配置文件中的配置
         if(StringUtils.isNotBlank(systemConfig.getValue())){

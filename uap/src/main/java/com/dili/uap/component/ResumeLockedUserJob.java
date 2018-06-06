@@ -63,7 +63,7 @@ public class ResumeLockedUserJob implements ApplicationListener<ContextRefreshed
 		SystemConfig systemConfigCondition = DTOUtils.newDTO(SystemConfig.class);
 		systemConfigCondition.setYn(Yn.YES.getCode());
 		systemConfigCondition.setCode(UapConstants.RESUME_DURATION);
-        systemConfigCondition.setSystemCode(UapConstants.SYSTEM_CODE);
+        systemConfigCondition.setSystemCode(UapConstants.UAP_SYSTEM_CODE);
 		SystemConfig systemConfig = systemConfigMapper.selectOne(systemConfigCondition);
         Long resumeDuration = Long.parseLong(systemConfig.getValue()) * 1000;
 		lockedUsers.forEach( lockedUser -> {

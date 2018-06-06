@@ -41,7 +41,7 @@ public class IndexController {
 		if (userTicket != null) {
 			modelMap.put("userid", userTicket.getId());
 			modelMap.put("username", userTicket.getRealName());
-			String systemCode = request.getParameter("systemCode") == null ? UapConstants.SYSTEM_CODE : request.getParameter("systemCode");
+			String systemCode = request.getParameter("systemCode") == null ? UapConstants.UAP_SYSTEM_CODE : request.getParameter("systemCode");
 			modelMap.put("systemCode", systemCode);
 			return INDEX_PATH;
 		} else {
@@ -59,7 +59,7 @@ public class IndexController {
 			modelMap.put("systems", systems);
 			modelMap.put("userid", userTicket.getId());
 			modelMap.put("username", userTicket.getRealName());
-			modelMap.put("systemCode", UapConstants.SYSTEM_CODE);
+			modelMap.put("systemCode", UapConstants.UAP_SYSTEM_CODE);
 			return PLATFORM_PATH;
 		} else {
 			return LoginController.REDIRECT_INDEX_PAGE;
