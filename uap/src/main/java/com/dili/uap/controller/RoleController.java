@@ -1,5 +1,6 @@
 package com.dili.uap.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.domain.EasyuiPageOutput;
 import com.dili.ss.dto.DTOUtils;
@@ -49,7 +50,7 @@ public class RoleController {
         } else {
             query.setCode(firmCode);
         }
-        modelMap.put("firms", firmService.list(query));
+        modelMap.put("firms", JSONArray.toJSONString(firmService.list(query)));
         modelMap.put("isGroup", isGroup);
         modelMap.put("firmCode",firmCode);
         return "role/index";
