@@ -290,6 +290,17 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
         if(department!=null) {
         	map.put("departmentId", department.getName());
         }
+        
+        if(StringUtils.isNotBlank(user.getFirmCode())) {
+        	 Firm firmConditon=DTOUtils.newDTO(Firm.class);
+             firmConditon.setCode(user.getFirmCode());
+             Firm firm= this.firmMapper.selectOne(firmConditon);
+             if(firm!=null) {
+             	map.put("firmCode", firm.getName());
+             } 
+        }
+       
+        
        
         return BaseOutput.success("操作成功").setData(map);
 
