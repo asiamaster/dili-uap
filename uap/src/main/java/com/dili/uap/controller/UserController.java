@@ -62,7 +62,7 @@ public class UserController {
         } else {
             query.setCode(firmCode);
         }
-        modelMap.put("firms", firmService.list(query));
+        modelMap.put("firms", JSONArray.toJSONString(firmService.list(query)));
         modelMap.put("isGroup", isGroup);
         modelMap.put("firmCode",firmCode);
         modelMap.put("defaultPass",UapConstants.DEFAULT_PASS);
