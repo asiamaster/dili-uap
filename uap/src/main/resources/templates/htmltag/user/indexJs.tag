@@ -131,7 +131,6 @@
      * @param firmCode 市场code
      */
     function loadDepartments(firmCode,controlId) {
-        debugger;
         $.post('${contextPath!}/department/listByCondition.action', {firmCode: firmCode}, function (ret) {
             if (ret) {
                 var obj = {id: '', name: '-- 请选择 --'};
@@ -378,7 +377,7 @@
                     iconCls:'icon-export',
                     text:'导出',
                     handler:function(){
-                        doExport('roleGrid');
+                        doExport('userGrid');
                     }
                 }
                 </#resource>
