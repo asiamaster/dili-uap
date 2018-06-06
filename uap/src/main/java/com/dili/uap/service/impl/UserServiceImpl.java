@@ -103,11 +103,11 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 		}
 
 		userInDB.setModified(new Date());
+		//激活用户
+		userInDB.setState(UserState.NORMAL.getCode());
 		// 加密并更新密码
-
 		userInDB.setPassword(this.encryptPwd(user.getNewPassword()));
 		this.updateExactSimple(userInDB);
-
 		return BaseOutput.success("修改密码成功");
 	}
 

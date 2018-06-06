@@ -57,8 +57,11 @@
 <body>
 
 <ul class="syswrap">
+    <% if(systems.~size == 0){%>
+    <div align="center" style="color:red;">没有系统访问权限，请联系管理！</div>
+    <%}%>
     <% for(system in systems){
-        if(system.code == "UAP"){
+        if(system.code == @com.dili.uap.constants.UapConstants.UAP_SYSTEM_CODE){
             continue;
         }
         if(system.url == null || system.url == ""){

@@ -11,7 +11,7 @@
 					type="password" required="true" validateOnCreate="false" /></td>
 			</tr>
 			<tr>
-				<td style="padding: 5px;"><input class="easyui-textbox" id="reNewPwd" name="confirmPassword" style="width: 100%" data-options="label:'确认新密码:',labelAlign:'right'" type="password"
+				<td style="padding: 5px;"><input class="easyui-textbox" id="reNewPwd" name="confirmPassword" style="width: 100%" data-options="label:'确认密码:',labelAlign:'right'" type="password"
 					validType="pwdEquals['#newPwd']" required="true" validateOnCreate="false" /></td>
 			</tr>
 			<tr>
@@ -31,9 +31,6 @@
 		if (!$('#changePwdForm').form("validate")) {
 			return false;
 		}
-		
-		
-
 		var formData = $("#changePwdForm").serializeObject();
 
 		$.ajax({
@@ -46,7 +43,7 @@
 			success : function(data) {
 				if (data.code == "200") {
 					$('#changePwdForm').form("clear");
-					window.location.href="http://www.baidu.com";
+					window.location.href="${contextPath!}/index/platform.html";
                 } else {
                 	$('#errorTxt').html(data.result)
 				}
@@ -70,5 +67,4 @@
 			});
 		  
 	  })
-	
 </script> </#body>

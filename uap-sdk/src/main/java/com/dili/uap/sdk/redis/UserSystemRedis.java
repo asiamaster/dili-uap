@@ -52,6 +52,9 @@ public class UserSystemRedis {
      */
     public List<System> getRedisUserSystems(Long userId){
         String mes = (String)this.redisUtil.get(SessionConstants.USER_SYSTEM_KEY + userId.toString());
+        if(StringUtils.isBlank(mes)){
+            return new ArrayList<>();
+        }
         BASE64Decoder dec = new BASE64Decoder();
         byte[] after = null;
         try {

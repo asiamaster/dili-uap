@@ -49,6 +49,7 @@ public class IndexController {
 		if (userTicket != null) {
 			modelMap.put("userid", userTicket.getId());
 			modelMap.put("username", userTicket.getRealName());
+			modelMap.put("userState", userTicket.getState());
 			String systemCode = request.getParameter("systemCode") == null ? UapConstants.UAP_SYSTEM_CODE : request.getParameter("systemCode");
 			modelMap.put("systemCode", systemCode);
 			if(systemCode.equals(UapConstants.UAP_SYSTEM_CODE)){
@@ -62,10 +63,8 @@ public class IndexController {
 				return INDEX_PATH;
 			}
 			List<System> systems = userSystemRedis.getRedisUserSystems(userTicket.getId());
-
 			for(System system : systems){
 				if(systemCode.equals(system.getCode())){
-
 					modelMap.put("system", system);
 					break;
 				}
@@ -87,6 +86,16 @@ public class IndexController {
 		UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
 		if (userTicket != null) {
 			List<System> systems = userSystemRedis.getRedisUserSystems(userTicket.getId());
+//			判断是否包含统一权限平台，如果不包含则添加，保证用户一定能看到平台页面
+//			if(!containsUap(systems)) {
+//				com.dili.uap.domain.System condition = DTOUtils.newDTO(com.dili.uap.domain.System.class);
+//				condition.setCode(UapConstants.UAP_SYSTEM_CODE);
+//				List<com.dili.uap.domain.System> uap = systemService.listByExample(condition);
+//				if (CollectionUtils.isEmpty(uap)) {
+//					throw new AppException("未配置统一权限系统");
+//				}
+//				systems.add(DTOUtils.as(uap.get(0), System.class));
+//			}
 			modelMap.put("systems", systems);
 			modelMap.put("userid", userTicket.getId());
 			modelMap.put("username", userTicket.getRealName());
@@ -95,6 +104,20 @@ public class IndexController {
 		} else {
 			return LoginController.REDIRECT_INDEX_PAGE;
 		}
+	}
+
+	/**
+	 * 判断是否包含统一权限平台
+	 * @param systems
+	 * @return
+	 */
+	private boolean containsUap(List<System> systems){
+		for(System system : systems){
+			if(UapConstants.UAP_SYSTEM_CODE.equals(system.getCode())){
+				return true;
+			}
+		}
+		return false;
 	}
 
 

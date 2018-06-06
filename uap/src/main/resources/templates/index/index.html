@@ -108,12 +108,14 @@
                             <a id="menubutton_right" href="#" class="easyui-menubutton" data-options="menu:'#menu_right', plain:true, hasDownArrow:false">${username}</a>
                         </div>
                         <div id="menu_right" style="width:88px" data-options="zIndex:'110000' , align:'left', noline:true, onClick:menuClickHandler" itemHeight="40">
+                            <%if(system.code==@com.dili.uap.constants.UapConstants.UAP_SYSTEM_CODE){%>
                             <div id="menu_userDetail" data-options="url:'${contextPath}/index/userDetail.html' ">
                                 用户信息
                             </div>
                             <div id="menu_changePwd" data-options="url:'${contextPath}/index/changePwd.html'">
                                 修改密码
                             </div>
+                            <%}%>
                             <div id="menu_logout" data-options="blankKey:'' ">
                                 注销
                             </div>
@@ -130,6 +132,34 @@
 
             </div>
         </div>
+    </div>
+
+    <!-- 修改密码弹出框 -->
+    <div class="easyui-window" id="changePwdWin" closable="false" minimizable="false" maximizable="false" collapsible="false"
+         draggable="false" title="修改密码" modal="true" closed="true" style="width:320px;height:240px">
+        <form id="changePwdForm" class="easyui-form" fit="true" method="post" novalidate="novalidate">
+            <div style="width: 260px; margin: 10px auto 0">
+                <table width="100%">
+                    <tr>
+                        <td style="padding: 5px;"><input id="currentPwd" name="oldPassword" style="width: 100%" type="hidden" value="123456" /></td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 5px;"><input class="easyui-textbox" id="newPwd" name="newPassword" style="width: 100%" data-options="label:'新密码:',validType:'length[0,32]',labelAlign:'right'"
+                                                         type="password" required="true" validateOnCreate="false" /></td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 5px;"><input class="easyui-textbox" id="reNewPwd" name="confirmPassword" style="width: 100%" data-options="label:'确认密码:',labelAlign:'right'" type="password"
+                                                         validType="pwdEquals['#newPwd']" required="true" validateOnCreate="false" /></td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 5px;height: 20px" align="center"><label><span id="errorTxt" style="color: red;"></span></label></td>
+                    </tr>
+                    <tr>
+                        <td align="center"><a href="javascript:void(0)" class="easyui-linkbutton" data-options="width:80" iconCls="icon-ok" onclick="changePwd()">确认</a></td>
+                    </tr>
+                </table>
+            </div>
+        </form>
     </div>
 
     <!-- ====================================================================================================================== -->
@@ -206,7 +236,44 @@
             });
         }
 
+        function changePwd() {
+            if (!$('#changePwdForm').form("validate")) {
+                return false;
+            }
+            var formData = $("#changePwdForm").serializeObject();
+            $.ajax({
+                type : "POST",
+                url : "${contextPath!}/user/changePwd.action",
+                data : formData,
+                processData : true,
+                dataType : "json",
+                async : true,
+                success : function(data) {
+                    if (data.code == "200") {
+                        $('#changePwdForm').form("clear");
+                        $("#changePwdWin").window("close");
+                    } else {
+                        $('#errorTxt').html(data.result)
+                    }
+                },
+                error : function() {
+                    $.messager.alert('错误', '远程访问失败');
+                }
+            });
+        }
+
         $(function () {
+            <% if(userState == @com.dili.uap.glossary.UserState.INACTIVE.getCode()){%>
+            //如果用户未激活，则弹框要求用户修改密码
+                $("#changePwdWin").window("open");
+                //输入框值有变化时清空错误提示
+                $('#newPwd').passwordbox('textbox').bind('keydown', function(e){
+                    $('#errorTxt').html('');
+                });
+                $('#reNewPwd').passwordbox('textbox').bind('keydown', function(e){
+                    $('#errorTxt').html('');
+                });
+            <%}%>
             renderPage("主页", "${system.indexUrl!"about:blank"}");
         });
     </script>
