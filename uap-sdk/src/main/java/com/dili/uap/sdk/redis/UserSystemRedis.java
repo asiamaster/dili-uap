@@ -1,10 +1,12 @@
 package com.dili.uap.sdk.redis;
 
+import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.sdk.domain.System;
 import com.dili.uap.sdk.exception.ParameterException;
 import com.dili.uap.sdk.session.SessionConstants;
 import com.dili.uap.sdk.util.ManageRedisUtil;
 import com.dili.uap.sdk.util.SerializeUtil;
+import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,7 +57,13 @@ public class UserSystemRedis {
         try {
             //使用BASE64解码
             after =dec.decodeBuffer(mes);
-            return (List<System>) SerializeUtil.unserialize(after);
+            List systems = (List) SerializeUtil.unserialize(after);
+            //由于反序列化出的对象无法迭代，所以重新放到新的List对象
+            List<System> systemList = new ArrayList(systems.size());
+            for(Object system : systems){
+                systemList.add(DTOUtils.as(system, System.class));
+            }
+            return systemList;
         } catch (IOException e) {
             e.printStackTrace();
             return null;

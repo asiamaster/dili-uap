@@ -1,15 +1,20 @@
 package com.dili.uap.controller;
 
+import com.dili.ss.dto.DTOUtils;
+import com.dili.ss.exception.AppException;
 import com.dili.uap.constants.UapConstants;
 import com.dili.uap.sdk.domain.System;
 import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.redis.UserSystemRedis;
 import com.dili.uap.sdk.session.SessionContext;
+import com.dili.uap.service.SystemService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -34,6 +39,9 @@ public class IndexController {
 	@Autowired
 	private UserSystemRedis userSystemRedis;
 
+	@Autowired
+	private SystemService systemService;
+
 	@ApiOperation("跳转到权限主页面")
 	@RequestMapping(value = "/index.html", method = { RequestMethod.GET, RequestMethod.POST })
 	public String index(ModelMap modelMap, HttpServletRequest request) {
@@ -43,6 +51,29 @@ public class IndexController {
 			modelMap.put("username", userTicket.getRealName());
 			String systemCode = request.getParameter("systemCode") == null ? UapConstants.UAP_SYSTEM_CODE : request.getParameter("systemCode");
 			modelMap.put("systemCode", systemCode);
+			if(systemCode.equals(UapConstants.UAP_SYSTEM_CODE)){
+				com.dili.uap.domain.System condition = DTOUtils.newDTO(com.dili.uap.domain.System.class);
+				condition.setCode(UapConstants.UAP_SYSTEM_CODE);
+				List<com.dili.uap.domain.System> uap = systemService.listByExample(condition);
+				if(CollectionUtils.isEmpty(uap)){
+					throw new AppException("未配置统一权限系统");
+				}
+				modelMap.put("system", DTOUtils.as(uap.get(0), System.class));
+				return INDEX_PATH;
+			}
+			List<System> systems = userSystemRedis.getRedisUserSystems(userTicket.getId());
+
+			for(System system : systems){
+				if(systemCode.equals(system.getCode())){
+
+					modelMap.put("system", system);
+					break;
+				}
+			}
+			//没有系统权限，则弹回登录页
+			if(!modelMap.containsKey("system")){
+				return LoginController.REDIRECT_INDEX_PAGE;
+			}
 			return INDEX_PATH;
 		} else {
 			return LoginController.REDIRECT_INDEX_PAGE;

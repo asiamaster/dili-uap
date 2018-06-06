@@ -61,11 +61,14 @@
         if(system.code == "UAP"){
             continue;
         }
+        if(system.url == null || system.url == ""){
+            system.url = "http://uap.diligrp.com/index/index.html?systemCode="+system.code;
+        }
     %>
     <li class="sys-item">
-        <a href="#" onclick="toUrl('${system.url}')">
-            <p class="sys-pics"><img class="sys-pic" src="${system.iconUrl}" alt="${system.description}"></p>
-            <p class="sys-title" title="${system.description}"><span class="title-content">${system.name}</span></p>
+        <a href="#" onclick="toUrl('${system.url!}')">
+            <p class="sys-pics"><img class="sys-pic" src="${system.iconUrl!}" alt="${system.description!}"></p>
+            <p class="sys-title" title="${system.description!}"><span class="title-content">${system.name!}</span></p>
         </a>
     </li>
     <%}%>
