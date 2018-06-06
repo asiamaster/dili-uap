@@ -136,6 +136,7 @@
                 var obj = {id: '', name: '-- 请选择 --'};
                 //动态添加'请选择'
                 ret.unshift(obj);
+                $('#' + controlId).combobox("clear");
                 $('#' + controlId).combobox("loadData", ret);
             }
         }, 'json');
@@ -151,6 +152,7 @@
                 var obj = {id: '', roleName: '-- 请选择 --'};
                 //动态添加'请选择'
                 ret.unshift(obj);
+                $('#roleId').combobox("clear");
                 $('#roleId').combobox("loadData", ret);
             }
         }, 'json');
