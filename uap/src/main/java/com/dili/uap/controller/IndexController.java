@@ -8,6 +8,7 @@ import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.redis.UserSystemRedis;
 import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.service.SystemService;
+import com.dili.uap.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
@@ -42,14 +43,19 @@ public class IndexController {
 	@Autowired
 	private SystemService systemService;
 
+	@Autowired
+	private UserService userService;
+
 	@ApiOperation("跳转到权限主页面")
 	@RequestMapping(value = "/index.html", method = { RequestMethod.GET, RequestMethod.POST })
 	public String index(ModelMap modelMap, HttpServletRequest request) {
 		UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
 		if (userTicket != null) {
+			//设置页面使用的用户id、名称和用户状态
 			modelMap.put("userid", userTicket.getId());
 			modelMap.put("username", userTicket.getRealName());
-			modelMap.put("userState", userTicket.getState());
+			//这里必须要从数据库取，因为从cookie取的话，用户修改完密码，再回到此页面也会弹出修改密码框，因为cookie没有刷新
+			modelMap.put("userState", userService.get(userTicket.getId()).getState());
 			String systemCode = request.getParameter("systemCode") == null ? UapConstants.UAP_SYSTEM_CODE : request.getParameter("systemCode");
 			modelMap.put("systemCode", systemCode);
 			if(systemCode.equals(UapConstants.UAP_SYSTEM_CODE)){
