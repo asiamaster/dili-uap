@@ -131,6 +131,7 @@
      * @param firmCode 市场code
      */
     function loadDepartments(firmCode,controlId) {
+        debugger;
         $.post('${contextPath!}/department/listByCondition.action', {firmCode: firmCode}, function (ret) {
             if (ret) {
                 var obj = {id: '', name: '-- 请选择 --'};
@@ -259,7 +260,7 @@
             if (r){
                 $.ajax({
                     type: "POST",
-                    url: "${contextPath}/user/delete",
+                    url: "${contextPath}/user/delete.action",
                     data: {id:selected.id},
                     processData:true,
                     dataType: "json",
@@ -412,7 +413,7 @@
         /**
          * 加载部门信息
          */
-        <% if (has(firms)){ %>
+        <% if (has(isGroup) && isGroup){ %>
             var obj={code:'',name:'-- 请选择 --'};
             //为了不改变原值，所以复制一遍数组
             var firmData = firms.slice();
@@ -420,7 +421,8 @@
             firmData.unshift(obj);
             $("#firmCode").combobox("loadData", firmData);
         <%}else{%>
-           loadDepartments(firmCode,'departmentId');
+            loadDepartments(firmCode,'departmentId');
+            loadRoles(firmCode);
         <%}%>
         
         bindFormEvent("form", "userName", queryGrid);
