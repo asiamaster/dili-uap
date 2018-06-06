@@ -243,6 +243,7 @@
         $('#roleMenuAndResourceGrid').treegrid("clearChecked");
         $('#roleMenuAndResourceGrid').treegrid("clearSelections");
         var opts = $('#roleMenuAndResourceGrid').treegrid("options");
+        //设置 关闭 级联检查，不然会默认勾选子节点中的未选中的数据
         opts.cascadeCheck = false;
         if (null == opts.url || "" == opts.url) {
             opts.url = "${contextPath}/role/getRoleMenuAndResource.action";
@@ -368,35 +369,11 @@
     }
 
     /**
-     * 分配角色的权限信息列表，当选中一行节点的时候触发，返回false则取消该动作
-     * @param row
-     * @param checked
+     * 分配角色的grid，加载完成后，设置 开启 级联检查
      */
-    function onCheckNode(row,checked) {
-        //获取该节点下的所有子节点
-        var childNodes = $('#roleMenuAndResourceGrid').treegrid("getChildren",row.treeId);
-        //当选中状态未'选中'时
-        if (checked || 'true'==checked){
-            //循环子节点，并设置为选中
-            $.each(childNodes, function (i, item) {
-                $('#roleMenuAndResourceGrid').treegrid("checkNode",item.treeId);
-            });
-            //为选中时，还需要设置父节点为选中
-            var parentNode = $('#roleMenuAndResourceGrid').treegrid("getParent",row.treeId);
-            $('#roleMenuAndResourceGrid').treegrid("checkNode",parentNode.treeId);
-        }else{
-            //未选中
-            //循环子节点，并设置为未选中
-            $.each(childNodes, function (i, item) {
-                $('#roleMenuAndResourceGrid').treegrid("uncheckNode",item.treeId);
-            });
-        }
-    }
-    
     function onLoadSuccess() {
         var opts = $('#roleMenuAndResourceGrid').treegrid("options");
         opts.cascadeCheck = true;
-
     }
 
 </script>

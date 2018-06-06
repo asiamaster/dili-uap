@@ -28,7 +28,6 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import tk.mybatis.spring.annotation.MapperScan;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -108,7 +107,7 @@ public class UserController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", paramType = "form", value = "User的主键", required = true, dataType = "long")
     })
-    @RequestMapping(value = "/delete", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/delete.action", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
     public BaseOutput delete(Long id) {
         userService.delete(id);
