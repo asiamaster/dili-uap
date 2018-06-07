@@ -27,8 +27,8 @@
   </sql>
 
   <select id="listByUserId" parameterType="Long" resultMap="BaseResultMap">
-    select distinct s.id, s.code, s.name, s.url, s.icon_url, s.logo_url, s.type, s.order_number, s.index_url from
-    system s, menu m, user_role ur, role_menu rm
+    select distinct s.id, s.code, s.name, s.url, s.icon_url, s.logo_url, s.type, s.order_number, s.index_url, s.description
+    from system s, menu m, user_role ur, role_menu rm
     where m.system_id  = s.id
     and m.id = rm.menu_id
     and rm.role_id = ur.role_id
