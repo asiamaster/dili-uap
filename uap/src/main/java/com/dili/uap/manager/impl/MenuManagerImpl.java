@@ -17,14 +17,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+/**
+ * 菜单redis管理器
+ */
 @Component
 public class MenuManagerImpl implements MenuManager {
 	private final static Logger LOG = LoggerFactory.getLogger(MenuManagerImpl.class);
-
-	/**
-	 * 缓存菜单KEY
-	 */
-	private static final String REDIS_MENU_TREE_KEY = "manage:menu:";
 
 	@Autowired
 	private MenuMapper menuMapper;

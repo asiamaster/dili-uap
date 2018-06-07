@@ -18,7 +18,7 @@ import java.util.List;
 /**
  *
  * @createTime 2018-5-21
- * @author template
+ * @author wangmi
  */
 @Component
 public class ResourceManagerImpl implements ResourceManager {

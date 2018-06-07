@@ -72,4 +72,13 @@ public class UserRedis {
         return sessionData;
     }
 
+    /**
+     * 根据用户id获取sessionId
+     * @param userId
+     * @return
+     */
+    public String getSessionIdByUserId(String userId) {
+        return redisUtil.get(SessionConstants.USERID_SESSION_KEY + userId, String.class);
+    }
+
 }

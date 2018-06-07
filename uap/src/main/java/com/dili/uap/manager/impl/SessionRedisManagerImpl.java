@@ -21,10 +21,7 @@ public class SessionRedisManagerImpl implements SessionRedisManager {
 
 	@Override
 	public void setUserIdSessionDataKey(User user, String session) {
-		JSONObject map = new JSONObject();
-		map.put("sessionId", session);
-		map.put("user", JSON.toJSONString(user));
-		myRedisUtil.set(SessionConstants.USERID_SESSION_KEY + user.getId(), map.toString(),
+		myRedisUtil.set(SessionConstants.USERID_SESSION_KEY + user.getId(), session,
 				SessionConstants.SESSIONID_USERID_TIMEOUT);
 	}
 

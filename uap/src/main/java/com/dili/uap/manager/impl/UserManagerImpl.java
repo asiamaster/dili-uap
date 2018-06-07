@@ -10,6 +10,7 @@ import com.dili.uap.manager.SessionRedisManager;
 import com.dili.uap.manager.UserManager;
 import com.dili.uap.sdk.session.SessionConstants;
 import com.dili.uap.sdk.util.ManageRedisUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,13 +39,9 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public String clearUserSession(Long userId) {
-		String jsonRst = this.sessionManager.getUserIdSessionDataKey(userId.toString());
-		String oldSessionId = "";
-		if (jsonRst != null) {
-			Map<String, String> r = JSON.parseObject(jsonRst, new TypeReference<HashMap<String, String>>() {
-			});
-
-			oldSessionId = r.get("sessionId");
+		String oldSessionId = this.sessionManager.getUserIdSessionDataKey(userId.toString());
+		if(StringUtils.isBlank(oldSessionId)){
+			return oldSessionId;
 		}
 		LOG.debug("--- Clear User SessionData --- : SessionId - " + oldSessionId);
 		this.myRedisUtil.remove(SessionConstants.SESSION_KEY_PREFIX + oldSessionId);

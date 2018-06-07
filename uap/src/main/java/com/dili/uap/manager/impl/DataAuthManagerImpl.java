@@ -23,7 +23,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
+ * 数据权限redis管理器
+ * Created by asiam
  */
 @Component
 public class DataAuthManagerImpl implements DataAuthManager {

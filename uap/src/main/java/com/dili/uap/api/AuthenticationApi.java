@@ -1,15 +1,19 @@
 package com.dili.uap.api;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.dili.ss.constant.ResultCode;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
+import com.dili.uap.domain.User;
 import com.dili.uap.domain.dto.LoginDto;
-import com.dili.uap.domain.dto.LoginResult;
+import com.dili.uap.sdk.redis.UserRedis;
+import com.dili.uap.sdk.util.WebContent;
 import com.dili.uap.service.LoginService;
+import com.dili.uap.service.UserService;
 import com.dili.uap.utils.WebUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * Created by asiam on 2018/6/7 0007.
@@ -29,6 +34,12 @@ public class AuthenticationApi {
 
     @Autowired
     private LoginService loginService;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private UserRedis userRedis;
 
     @ApiOperation("统一授权登录")
     @RequestMapping(value = "/login.api", method = { RequestMethod.GET, RequestMethod.POST })
@@ -44,5 +55,36 @@ public class AuthenticationApi {
         loginDto.setIp(WebUtil.getRemoteIP(request));
         loginDto.setHost(request.getRemoteHost());
         return loginService.login(loginDto);
+    }
+
+    @ApiOperation("统一授权登出")
+    @RequestMapping(value = "/loginout.api", method = { RequestMethod.GET, RequestMethod.POST })
+    @ResponseBody
+    public BaseOutput loginout(@RequestBody String json, HttpServletRequest request){
+        JSONObject jsonObject = JSONObject.parseObject(json);
+        String sessionId = jsonObject.getString("sessionId");
+        if(StringUtils.isBlank(sessionId)){
+            return BaseOutput.failure("会话id不存在").setCode(ResultCode.PARAMS_ERROR);
+        }
+        userService.logout(sessionId);
+        return BaseOutput.success("登出成功");
+    }
+
+    /**
+     * 根据sessionId判断用户是否登录
+     * @param json
+     * @param request
+     * @return
+     */
+    @ApiOperation("鉴权")
+    @RequestMapping(value = "/authentication.api", method = { RequestMethod.GET, RequestMethod.POST })
+    @ResponseBody
+    public BaseOutput authentication(@RequestBody String json, HttpServletRequest request){
+        JSONObject jsonObject = JSONObject.parseObject(json);
+        String sessionId = jsonObject.getString("sessionId");
+        if(StringUtils.isBlank(sessionId)){
+            return BaseOutput.failure("会话id不存在").setCode(ResultCode.PARAMS_ERROR);
+        }
+        return userRedis.getSessionUserId(sessionId) == null ? BaseOutput.failure("未登录").setCode(ResultCode.NOT_AUTH_ERROR) : BaseOutput.success("已登录");
     }
 }
