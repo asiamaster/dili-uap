@@ -60,6 +60,10 @@ public class DepartmentServiceImpl extends BaseServiceImpl<Department, Long> imp
         if (count > 0) {
             return BaseOutput.failure(this.buildErrorMessage(department));
         }
+        Date now=new Date();
+        department.setCreated(now);
+        department.setModified(now);
+        
         int result = this.getActualDao().insertSelective(department);
         department.setCode(department.getFirmCode() + "-" + department.getId());
         this.getActualDao().updateByPrimaryKey(department);
