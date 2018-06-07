@@ -80,7 +80,7 @@ function openUpdateDdValue() {
 	}
 	var index = ddValueGrid.datagrid('getRowIndex', selected);
 	if (endDdValueGridEditing()) {
-        setOptBtnDisplay(true);
+        setOptValueBtnDisplay(true);
 		ddValueGrid.datagrid('selectRow', index).datagrid('beginEdit', index);
 		ddValueEditIndex = index;
 	}
