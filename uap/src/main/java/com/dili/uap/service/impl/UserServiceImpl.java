@@ -283,7 +283,6 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
         if (user == null) {
             return BaseOutput.success("操作失败");
         }
-
         user.setPassword("");
         Map<String,Object>map= DTOUtils.go(user);
         Department department= departmentMapper.selectByPrimaryKey(user.getDepartmentId());
@@ -299,11 +298,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
              	map.put("firmCode", firm.getName());
              } 
         }
-       
-        
-       
         return BaseOutput.success("操作成功").setData(map);
-
     }
 
     @Override
@@ -368,7 +363,6 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 					temp.setDataAuthId(dataRange);
 					userDataAuthMapper.updateByPrimaryKeySelective(temp);
 				}
-
 			}
 		} else {
 			//数据库里不存的话，则直接新增数据
@@ -376,5 +370,24 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 			userDataAuthMapper.insert(userDataAuth);
 		}
 		return BaseOutput.success("操作成功");
+	}
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public int delete(Long id) {
+		//删除用户数据权限关系
+		UserDataAuth userDataAuth = DTOUtils.newDTO(UserDataAuth.class);
+		userDataAuth.setUserId(id);
+		userDataAuthMapper.delete(userDataAuth);
+		//删除用户-部门数据权限
+		UserDepartment ud = DTOUtils.newDTO(UserDepartment.class);
+		ud.setUserId(id);
+		userDepartmentMapper.delete(ud);
+		//删除用户-角色关系
+		UserRole userRole = DTOUtils.newDTO(UserRole.class);
+		userRole.setUserId(id);
+		userRoleMapper.delete(userRole);
+		//删除用户本身
+		return super.delete(id);
 	}
 }
