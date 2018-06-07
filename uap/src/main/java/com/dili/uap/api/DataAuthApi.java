@@ -27,9 +27,9 @@ import java.util.List;
 /**
  * 数据权限Api
  */
-@Api("/dataAuth")
+@Api("/dataAuthApi")
 @Controller
-@RequestMapping("/dataAuth")
+@RequestMapping("/dataAuthApi")
 public class DataAuthApi {
 	@Autowired
 	private DataAuthService dataAuthService;

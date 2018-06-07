@@ -59,7 +59,9 @@ public class LoginController {
             @ApiImplicitParam(name = "loginDto", paramType = "form", value = "用户信息", required = false, dataType = "string") })
     @RequestMapping(value = "/login.action", method = { RequestMethod.GET, RequestMethod.POST })
     public String loginAction(LoginDto loginDto, ModelMap modelMap, HttpServletRequest request) {
+		//设置登录后需要返回的上一页URL,用于记录登录地址到Cookie
 		loginDto.setLoginPath(WebUtil.fetchReferer(request));
+		//设置ip和hosts,用于记录登录日志
 		loginDto.setIp(WebUtil.getRemoteIP(request));
 		loginDto.setHost(request.getRemoteHost());
 		//如果有登录用户名和密码，并且登录系统是UAP，则跳到平台首页，并加载登录数据

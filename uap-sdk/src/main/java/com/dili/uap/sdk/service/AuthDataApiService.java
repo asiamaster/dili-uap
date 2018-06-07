@@ -27,7 +27,7 @@ public class AuthDataApiService extends AbstractApiService {
             param.put("type", type);
             param.put("userId", SessionContext.getSessionContext().getUserTicket().getId().toString());
             param.put(SessionConstants.SESSION_ID, pc.getSessionId());
-            httpGet("/dataAuth/refreshAuthData.api", param);
+            httpGet("/dataAuthApi/refreshAuthData.api", param);
         } catch (IOException e) {
             log.info("刷新数据权限出现异常!", e);
         }

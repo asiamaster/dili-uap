@@ -103,6 +103,10 @@ public class LoginServiceImpl implements LoginService {
             User record = DTOUtils.newDTO(User.class);
             record.setUserName(loginDto.getUserName());
             User user = this.userMapper.selectOne(record);
+            //设置默认登录系统为UAP
+            if(StringUtils.isBlank(loginDto.getSystemCode())){
+                loginDto.setSystemCode(UapConstants.UAP_SYSTEM_CODE);
+            }
             //记录用户id和市场编码，用于记录登录日志
             loginDto.setUserId(user.getId());
             loginDto.setFirmCode(user.getFirmCode());
@@ -147,6 +151,8 @@ public class LoginServiceImpl implements LoginService {
             makeRedisTag(user, sessionId);
             //构建返回的登录信息
             LoginResult loginResult = DTOUtils.newDTO(LoginResult.class);
+            //返回用户信息需要屏蔽用户的密码
+            user.setPassword(null);
             loginResult.setUser(user);
             loginResult.setSessionId(sessionId);
             loginResult.setLoginPath(loginDto.getLoginPath());
@@ -180,7 +186,7 @@ public class LoginServiceImpl implements LoginService {
                 LoginLog loginLog = DTOUtils.as(loginDto, LoginLog.class);
                 loginLog.setSuccess(isSuccess ? Yn.YES.getCode() : Yn.NO.getCode());
                 loginLog.setReason(msg);
-                //设计系统名称
+                //设置系统名称
                 if(StringUtils.isNotBlank(loginLog.getSystemCode())) {
                     System system = DTOUtils.newDTO(System.class);
                     system.setCode(loginDto.getSystemCode());

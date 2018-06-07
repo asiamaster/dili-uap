@@ -1,6 +1,5 @@
 package com.dili.uap.domain.dto;
 
-import com.dili.ss.dto.IBaseDomain;
 import com.dili.ss.dto.IDTO;
 import com.dili.uap.domain.User;
 
