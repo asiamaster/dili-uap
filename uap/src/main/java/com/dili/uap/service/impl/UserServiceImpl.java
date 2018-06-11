@@ -403,15 +403,12 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 
     @Override
     public EasyuiPageOutput listOnlinePage(UserDto user) throws Exception {
-        Set<String> set = userManager.getOnlineUserIds();
-        if (CollectionUtils.isEmpty(set)) {
+        List<String> onlineUserIds = userManager.getOnlineUserIds();
+        if (CollectionUtils.isEmpty(onlineUserIds)) {
             return new EasyuiPageOutput(0, Lists.newArrayList());
         }
         List queryList = Lists.newArrayList();
-        set.stream().forEach(s -> {
-            queryList.add(s.replace(SessionConstants.USERID_SESSION_KEY, ""));
-        });
-        user.setIds(queryList);
+        user.setIds(onlineUserIds);
         return super.listEasyuiPageByExample(user, true);
     }
 
