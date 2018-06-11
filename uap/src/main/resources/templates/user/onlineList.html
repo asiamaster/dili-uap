@@ -1,0 +1,90 @@
+ <#body>
+    <div class="easyui-layout" fit="true">
+        <!-- ====================================================================================================================== -->
+        <!-- 上方布局 -->
+        <!-- ====================================================================================================================== -->
+        <div region="north" height="auto" align="center"  border="false">
+            <div id="nav" style="padding-left:15px;padding-top:10px;" align="left">
+                <#nav/>
+            </div>
+            <!-- =========================================================表单========================================================= -->
+            <div class="easyui-panel" style="width:100%;" align="left" border="false">
+                <form id="form" class="easyui-form" method="post" fit="true">
+                    <table style="padding:10px;">
+                        <tr>
+                            <%if(isGroup){%>
+                                <td style="padding:5px;">
+                                    <input class="easyui-combobox" name="firmCode" id="firmCode" style="width:100%" data-options="label:'所属市场:',editable:false,labelAlign:'right',valueField:'code',textField:'name',
+                                       onLoadSuccess:function(){
+                                           loadDepartments('','departmentId');
+                                           loadRoles('');
+                                       },onChange:function(newValue,oldValue){
+                                           loadDepartments(newValue,'departmentId');
+                                           loadRoles(newValue);
+                                       }" panelHeight="auto" />
+                                </td>
+                            <%}else{%>
+                                <td>
+                                    <input type="hidden"  name="firmCode" id="firmCode" value="${firmCode}" style="width:100%"/>
+                                </td>
+                            <%}%>
+                            <td style="padding:5px;">
+                                <input class="easyui-combotree" name="departmentId" id="departmentId" panelHeight="100%" panelWidth="auto" style="width:100%" data-options="label:'归属部门:',labelAlign:'right',editable:false,_idField:'id',_textField:'name',_parentIdField:'parentId',loadFilter:treeLoadFilter" />
+                            </td>
+                            <td>
+                                <input class="easyui-textbox" name="userName" id="userName" style="width:100%" data-options="label:'用户名:',labelAlign:'right'" />
+                            </td>
+                            <td>
+                                <input class="easyui-textbox" name="realName" id="realName" style="width:100%" data-options="label:'真实名:',labelAlign:'right'" />
+                            </td>
+                            <td style="padding:5px;">
+                                <a href="#" class="easyui-linkbutton" iconCls="icon-search" id="queryBtn"
+                                   onclick="queryGrid()">查询</a> &nbsp;&nbsp;
+                                <a href="javascript:void(0)" class="easyui-linkbutton"  iconCls="icon-clear" onclick="clearForm()">清除</a>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+        </div>
+        <!-- ====================================================================================================================== -->
+        <!-- 中央布局 -->
+        <!-- ====================================================================================================================== -->
+        <!-- 表格 -->
+        <div region="center" style="width:100%;" height="auto"  border="false">
+            <!-- =========================================================表格========================================================= -->
+            <table class="easyui-datagrid" title="在线用户列表" id="userGrid" fitColumns="true" noheader="true"
+                   pagination="true" pageSize="10" pageNumber="1" pagePosition="top" remoteSort="false"
+                   loadMsg="数据加载中..." singleSelect="true" method="post" multiSort="false" sortName="userName" sortOrder="desc"
+                   align="center" fit="true" striped="true" idField="id" data-options="onHeaderContextMenu:headerContextMenu">
+                <thead>
+                    <tr>
+                        <th width="15%" data-options="field:'userName',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            用户账号
+                        </th>
+                        <th width="15%" data-options="field:'realName',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            真实姓名
+                        </th>
+                        <th width="15%" data-options="field:'cellphone',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            手机号码
+                        </th>
+                        <th width="25%" data-options="field:'email',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            邮箱
+                        </th>
+                        <th width="10%" data-options="field:'firmCode',_provider:'firmCodeProvider',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            归属市场
+                        </th>
+                        <th width="21%" data-options="field:'departmentId',_provider:'departmentProvider',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            归属部门
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+    <!-- ====================================================================================================================== -->
+    <!-- style & script 分隔线 -->
+    <!-- ====================================================================================================================== -->
+     <#user_commonJs />
+     <#user_onLineJs />
+</#body>

@@ -1,9 +1,11 @@
 package com.dili.uap.domain.dto;
 
+import com.dili.ss.domain.annotation.Operator;
 import com.dili.ss.metadata.annotation.FieldDef;
 import com.dili.uap.domain.User;
 
 import javax.persistence.Column;
+import java.util.List;
 
 public interface UserDto extends User{
 
@@ -34,4 +36,9 @@ public interface UserDto extends User{
     @FieldDef(label="关联查询的角色名称")
     String getUserRoles();
     void  setUserRoles(String userRoles);
+
+    @Operator(Operator.IN)
+    @Column(name = "`id`")
+    List<String> getIds();
+    void setIds(List<String> ids);
 }

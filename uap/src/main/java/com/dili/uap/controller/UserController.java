@@ -22,6 +22,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.collections4.CollectionUtils;
+import org.omg.CORBA.UserException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -234,6 +235,41 @@ public class UserController {
     @ResponseBody
     public BaseOutput unlock(Long id){
         return userService.unlock(id);
+    }
+
+    @ApiOperation("跳转到在线用户页面")
+    @RequestMapping(value = "/onlineList.html", method = RequestMethod.GET)
+    public String onlineList(ModelMap modelMap) {
+        String firmCode = SessionContext.getSessionContext().getUserTicket().getFirmCode();
+        //用户是否属于集团
+        Boolean isGroup = false;
+        Firm query = DTOUtils.newDTO(Firm.class);
+        if (UapConstants.GROUP_CODE.equals(firmCode)) {
+            isGroup = true;
+        } else {
+            query.setCode(firmCode);
+        }
+        modelMap.put("firms", JSONArray.toJSONString(firmService.list(query)));
+        modelMap.put("isGroup", isGroup);
+        modelMap.put("firmCode",firmCode);
+        return "user/onlineList";
+    }
+
+    @ApiOperation(value = "分页查询在线用户", notes = "分页查询在线用户，返回easyui分页信息")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "user", paramType = "form", value = "User的form信息", required = false, dataType = "string")
+    })
+    @RequestMapping(value = "/listOnlinePage.action", method = {RequestMethod.GET, RequestMethod.POST})
+    @ResponseBody
+    public String listOnlinePage(UserDto user) throws Exception {
+        return userService.listOnlinePage(user).toString();
+    }
+
+    @ApiOperation("强制下线用户")
+    @ApiImplicitParams({ @ApiImplicitParam(name = "id", paramType = "form", value = "User的主键", required = true, dataType = "long") })
+    @RequestMapping(value = "/forcedOffline.action", method = { RequestMethod.GET, RequestMethod.POST })
+    public @ResponseBody BaseOutput forcedOffline(Long id) {
+        return userService.forcedOffline(id);
     }
 
 }
