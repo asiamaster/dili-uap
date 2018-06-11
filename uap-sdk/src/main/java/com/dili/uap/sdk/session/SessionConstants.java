@@ -14,11 +14,14 @@ public class SessionConstants {
     //WebContent中获取PermissionContext的key
     public static final String MANAGE_PERMISSION_CONTEXT = "manage.permission_context";
 
-    // sessionId - SessionData的Redis 过期时间
-    public  static Long SESSION_TIMEOUT = 60 * 30L;  // 30分钟
-    // sessionId - userId和UserIdSessionData的Redis 过期时间
-    public static Long SESSIONID_USERID_TIMEOUT = 60 * 60 * 24L;
-    //Cookie过期时间
+    //系统配置表中超时配置的code
+    public static final String SESSION_TIMEOUT_CONFIG_KEY = "loginTimeout";
+    // sessionId - SessionData的Redis 过期时间(秒)
+    // sessionId - userId和UserIdSessionData的Redis 过期时间(秒)
+    public static Long SESSION_TIMEOUT = 60 * 30L;  // 30分钟
+    // sessionId - userId和UserIdSessionData的Redis 过期时间(秒)
+//    public static Long SESSIONID_USERID_TIMEOUT = 60 * 60 * 24L;
+    //Cookie过期时间(秒)
     public  static Integer COOKIE_TIMEOUT = SESSION_TIMEOUT.intValue() * 48;
 
     // 新的redis关系 - kv定义表 - START

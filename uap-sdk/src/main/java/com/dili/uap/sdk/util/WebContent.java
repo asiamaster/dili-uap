@@ -134,6 +134,7 @@ public class WebContent {
             cookie.setDomain(domain);
             cookie.setMaxAge(maxAge);
             cookie.setPath("/");
+            cookie.setHttpOnly(true);
             HttpServletResponse resp = WebContent.getResponse();
              resp.addCookie(cookie);
         } catch (UnsupportedEncodingException e) {

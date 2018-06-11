@@ -1,7 +1,5 @@
 package com.dili.uap.manager.impl;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.dili.uap.domain.User;
 import com.dili.uap.manager.SessionRedisManager;
 import com.dili.uap.sdk.session.SessionConstants;
@@ -22,7 +20,7 @@ public class SessionRedisManagerImpl implements SessionRedisManager {
 	@Override
 	public void setUserIdSessionDataKey(User user, String session) {
 		myRedisUtil.set(SessionConstants.USERID_SESSION_KEY + user.getId(), session,
-				SessionConstants.SESSIONID_USERID_TIMEOUT);
+				SessionConstants.SESSION_TIMEOUT);
 	}
 
 	@Override
@@ -55,7 +53,7 @@ public class SessionRedisManagerImpl implements SessionRedisManager {
 	@Override
 	public void setSessionUserIdKey(String sessionId, String userId) {
 		myRedisUtil.set(SessionConstants.SESSION_USERID_KEY + sessionId, userId,
-				SessionConstants.SESSIONID_USERID_TIMEOUT);
+				SessionConstants.SESSION_TIMEOUT);
 	}
 
 	@Override

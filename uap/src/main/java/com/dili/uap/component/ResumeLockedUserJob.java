@@ -40,7 +40,8 @@ public class ResumeLockedUserJob implements ApplicationListener<ContextRefreshed
 	}
 
 	/**
-	 * 抽取客户数据
+	 * 调度主方法
+	 * 恢复锁定用户
 	 *
 	 * @param scheduleMessage
 	 */
