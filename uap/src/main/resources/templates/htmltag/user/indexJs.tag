@@ -13,19 +13,26 @@
      */
     function onClickRow(index,row) {
         var state = row.$_state;
-        if (state == ${@com.dili.uap.glossary.UserState.DISABLED.getCode()}
-            || state == ${@com.dili.uap.glossary.UserState.LOCKED.getCode()}){
-            //当用户状态为 禁用、锁定时，可操作 启用
+        if (state == ${@com.dili.uap.glossary.UserState.DISABLED.getCode()}){
+            //当用户状态为 禁用，可操作 启用
             $('#play_btn').linkbutton('enable');
             $('#stop_btn').linkbutton('disable');
+            $('#unlock_btn').linkbutton('disable');
         }else if(state == ${@com.dili.uap.glossary.UserState.NORMAL.getCode()}){
             //当用户状态为正常时，则只能操作 禁用
             $('#stop_btn').linkbutton('enable');
             $('#play_btn').linkbutton('disable');
-        }else{
+            $('#unlock_btn').linkbutton('disable');
+        }else if(state == ${@com.dili.uap.glossary.UserState.LOCKED.getCode()}){
+            //当用户状态为 锁定时，只能操作 解锁
+            $('#play_btn').linkbutton('disable');
+            $('#stop_btn').linkbutton('disable');
+            $('#unlock_btn').linkbutton('enable');
+        } else{
             //其它情况，按钮不可用
             $('#stop_btn').linkbutton('disable');
             $('#play_btn').linkbutton('disable');
+            $('#unlock_btn').linkbutton('disable');
         }
     }
 
@@ -39,9 +46,9 @@
             $.messager.alert('警告', '请选中一条数据');
             return;
         }
-        var msg = (enable || 'true' == enable) ? '启用' : '禁用';
-        msg = msg + '[' + selected.userName + ']';
-        $.messager.confirm('确认', '您确认要' + msg + '吗？', function (r) {
+        var msg = (enable || 'true' == enable) ? '账号被启用后，将可继续在各系统使用，请确认是否启用' : '账号被禁用后，将不可再继续在各系统使用，请确认是否禁用';
+        msg = msg + '[' + selected.userName + ']？';
+        $.messager.confirm('确认', msg, function (r) {
             if (r) {
                 $.ajax({
                     type: "POST",
@@ -56,6 +63,46 @@
                             userGrid.datagrid("clearSelections");
                             $('#stop_btn').linkbutton('disable');
                             $('#play_btn').linkbutton('disable');
+                            $('#unlock_btn').linkbutton('disable');
+                        } else {
+                            $.messager.alert('错误', ret.result);
+                        }
+                    },
+                    error: function () {
+                        $.messager.alert('错误', '远程访问失败');
+                    }
+                });
+            }
+        });
+    }
+
+    /**
+     * 解锁操作
+     */
+    function doUnlock() {
+        var selected = userGrid.datagrid("getSelected");
+        if (null == selected) {
+            $.messager.alert('警告', '请选中一条数据');
+            return;
+        }
+        var msg = '账号被解锁后，用户密码输入错误次数被清空，请确定是否解锁';
+        msg = msg + '[' + selected.userName + ']？';
+        $.messager.confirm('确认', msg, function (r) {
+            if (r) {
+                $.ajax({
+                    type: "POST",
+                    url: "${contextPath}/user/unlock.action",
+                    data: {id: selected.id},
+                    processData: true,
+                    dataType: "json",
+                    async: true,
+                    success: function (ret) {
+                        if (ret.success) {
+                            userGrid.datagrid("reload");
+                            userGrid.datagrid("clearSelections");
+                            $('#stop_btn').linkbutton('disable');
+                            $('#play_btn').linkbutton('disable');
+                            $('#unlock_btn').linkbutton('disable');
                         } else {
                             $.messager.alert('错误', ret.result);
                         }
@@ -94,10 +141,7 @@
         $('#_form').form('clear');
         formFocus("_form", "_userName");
         $('#_firmCode').combobox("loadData", firms);
-        $('#_password').textbox('setValue', '${defaultPass}');
-        $('#_password').passwordbox('hidePassword');
         $("#_userName").textbox("enable");
-        $("#_password").textbox("enable");
         $("#_firmCode").textbox("enable");
     }
 
@@ -120,7 +164,7 @@
         formData = addKeyStartWith(getOriginalData(formData), "_");
         $('#_form').form('load', formData);
         $("#_userName").textbox("disable");
-        $("#_password").textbox("disable");
+        // $("#_password").textbox("disable");
         $("#_firmCode").textbox("disable");
         $("#_firmCode").textbox("initValue", selected.firmCode);
     }
@@ -183,6 +227,7 @@
                             userGrid.datagrid("clearSelections");
                             $('#stop_btn').linkbutton('disable');
                             $('#play_btn').linkbutton('disable');
+                            $('#unlock_btn').linkbutton('disable');
                         } else {
                             $.messager.alert('错误', ret.result);
                         }
@@ -371,6 +416,17 @@
                     disabled:true,
                     handler:function(){
                         doEnable(false);
+                    }
+                },
+                </#resource>
+                <#resource code="unlockUser">
+                {
+                    iconCls:'icon-unlock',
+                    text:'解锁',
+                    id:'unlock_btn',
+                    disabled:true,
+                    handler:function(){
+                        doUnlock();
                     }
                 },
                 </#resource>

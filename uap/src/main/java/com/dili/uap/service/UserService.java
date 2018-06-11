@@ -97,4 +97,11 @@ public interface UserService extends BaseService<User, Long> {
      */
     BaseOutput saveUserDatas(Long userId,String[] dataIds,Long dataRange);
 
+    /**
+     * 根据用户ID解锁用户
+     * @param userId 用户ID
+     * @return
+     */
+    BaseOutput unlock(Long userId);
+
 }

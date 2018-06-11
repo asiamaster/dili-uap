@@ -6,7 +6,7 @@ package com.dili.uap.glossary;
  */
 public enum UserState {
     DISABLED(0,"已禁用"),
-    NORMAL(1,"正常"),
+    NORMAL(1,"已启用"),
     LOCKED(2, "已锁定"),
     INACTIVE(3, "未激活");
 
