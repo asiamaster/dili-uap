@@ -32,11 +32,11 @@ public class SessionConstants {
     public static final String USER_SYSTEM_KEY = "manage:userSystem:userId:";
     // userUrl(用户和菜单URL关系)
     public static final String USER_MENU_URL_KEY = "manage:userMenuUrl:userId:";
-    // userId - resources Set
-    public static final String USER_RESOURCE_CODE_KEY ="manage:userResourceCode:userId";
-    // sessionId - userId
-    public static final String SESSIONID_USERID_KEY = "manage:sessionUserId:sessionId";
-    // userId - sessionId
+    // key:userId - value:resources Set
+    public static final String USER_RESOURCE_CODE_KEY ="manage:userResourceCode:userId:";
+    // key:sessionId - value:userId
+    public static final String SESSIONID_USERID_KEY = "manage:sessionUserId:sessionId:";
+    // key:userId - value:sessionId
     public static final String USERID_SESSIONID_KEY = "manage:userIdSession:userId:";
 
     // 限制用户唯一登陆 - START

@@ -246,11 +246,6 @@ public class LoginServiceImpl implements LoginService {
         // redis: userID - sessionId
         this.sessionRedisManager.setUserIdSessionDataKey(user, sessionId);
         LOG.debug("UserName: " + user.getUserName() + " | SessionId:" + sessionId + " | SessionData:" + sessionData);
-        List<String> userIds = sessionRedisManager.getOnlineUserIds();
-        for(String userId : userIds) {
-            LOG.info("online UserId:"+sessionRedisManager.getUserIdSessionDataKey(userId));
-        }
-
     }
 
     /**
