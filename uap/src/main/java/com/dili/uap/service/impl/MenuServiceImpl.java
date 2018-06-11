@@ -5,8 +5,10 @@ import com.dili.ss.base.BaseServiceImpl;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.dao.MenuMapper;
 import com.dili.uap.dao.ResourceMapper;
+import com.dili.uap.dao.RoleMenuMapper;
 import com.dili.uap.domain.Menu;
 import com.dili.uap.domain.Resource;
+import com.dili.uap.domain.RoleMenu;
 import com.dili.uap.domain.dto.MenuCondition;
 import com.dili.uap.service.MenuService;
 import org.apache.commons.lang3.StringUtils;
@@ -27,6 +29,9 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, Long> implements Menu
 
     @Autowired
     private ResourceMapper resourceMapper;
+
+    @Autowired
+    private RoleMenuMapper roleMenuMapper;
 
     public MenuMapper getActualDao() {
         return (MenuMapper)getDao();
@@ -105,6 +110,12 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, Long> implements Menu
         if(!resources.isEmpty()){
             return "菜单下有资源，无法删除";
         }
+
+        //删除菜单角色关系
+        RoleMenu roleMenu = DTOUtils.newDTO(RoleMenu.class);
+        roleMenu.setMenuId(id);
+        roleMenuMapper.delete(roleMenu);
+        //删除菜单
         delete(id);
         return null;
     }
