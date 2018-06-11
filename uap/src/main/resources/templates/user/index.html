@@ -15,9 +15,9 @@
                             <%if(isGroup){%>
                                 <td style="padding:5px;">
                                     <input class="easyui-combobox" name="firmCode" id="firmCode" style="width:100%" data-options="label:'所属市场:',editable:false,labelAlign:'right',valueField:'code',textField:'name',
-                                        onLoadSuccess:function(){
-                                           loadDepartments(firmCode,'departmentId');
-                                           loadRoles(firmCode);
+                                       onLoadSuccess:function(){
+                                           loadDepartments('','departmentId');
+                                           loadRoles('');
                                        },onChange:function(newValue,oldValue){
                                            loadDepartments(newValue,'departmentId');
                                            loadRoles(newValue);
@@ -29,7 +29,7 @@
                                 </td>
                             <%}%>
                             <td style="padding:5px;">
-                                <input class="easyui-combobox" name="departmentId" id="departmentId" panelHeight="auto" style="width:100%" data-options="label:'归属部门:',labelAlign:'right',editable:false,valueField:'id',textField:'name'" />
+                                <input class="easyui-combotree" name="departmentId" id="departmentId" panelHeight="100%" panelWidth="auto" style="width:100%" data-options="label:'归属部门:',labelAlign:'right',editable:false,_idField:'id',_textField:'name',_parentIdField:'parentId',loadFilter:treeLoadFilter" />
                             </td>
                             <td style="padding:5px;">
                                 <input class="easyui-combobox" name="roleId" id="roleId" panelHeight="auto" style="width:100%" data-options="label:'角色类型:',labelAlign:'right',editable:false,valueField:'id',textField:'roleName'" />
@@ -108,7 +108,7 @@
         <table width="100%">
             <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-textbox" name="_userName" id="_userName"  style="width:85%;height:28px;"data-options="labelAlign:'right',label:'&lowast;用户账号:', validType:'length[0,50]'"
+                    <input class="easyui-textbox" name="_userName" id="_userName"  style="width:85%;height:28px;"data-options="labelAlign:'right',label:'&lowast;用户账号:', validType:'length[4,20]'"
                         required="true" />
                 </td>
             </tr>
@@ -119,13 +119,13 @@
             </tr>-->
             <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-textbox" name="_realName" id="_realName" style="width:85%;height:28px;" data-options="labelAlign:'right',label:'&lowast;真实姓名:', validType:'length[2,20]',events:{blur:getEmailByName}"
+                    <input class="easyui-textbox" name="_realName" id="_realName" style="width:85%;height:28px;" data-options="labelAlign:'right',label:'&lowast;真实姓名:', validType:['isChinese','length[2,20]'],events:{blur:getEmailByName}"
                            required="true" />
                 </td>
             </tr>
             <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-textbox" name="_cellphone" id="_cellphone" style="width:85%;height:28px;" data-options="labelAlign:'right',label:'&lowast;手机号码:', validType:['phoneNum','length[0,24]']" required="true" />
+                    <input class="easyui-textbox" name="_cellphone" id="_cellphone" style="width:85%;height:28px;" data-options="labelAlign:'right',label:'&lowast;手机号码:', validType:['phoneNum']" required="true" />
                 </td>
             </tr>
             <tr>
@@ -156,7 +156,7 @@
             </tr>
             <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-combobox" name="_departmentId" panelWidth="auto" panelHeight="auto"  editable="false" id="_departmentId" style="width:85%;height:28px;" data-options="labelAlign:'right',label:'归属部门:',valueField:'id',textField:'name'">
+                    <input class="easyui-combotree" name="_departmentId" panelWidth="auto" panelHeight="100%"  editable="false" id="_departmentId" style="width:85%;height:28px;" data-options="labelAlign:'right',label:'归属部门:',_idField:'id',_textField:'name',_parentIdField:'parentId',loadFilter:treeLoadFilter">
                 </td>
             </tr>
             <tr>
