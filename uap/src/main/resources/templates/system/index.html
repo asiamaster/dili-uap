@@ -100,7 +100,7 @@
     <div id="dlg" class="easyui-dialog" resizable="false" constrain="true" shadow="true" draggable="false" title="System信息" style="padding:20px" modal="true" border="thin" closed="true"
          data-options="
 				iconCls: 'icon-save',
-				height: 460,
+				height: 480,
 				buttons: [{
 					text:'确认',
 					iconCls:'icon-ok',
@@ -112,12 +112,12 @@
         <table width="500px">
             <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-textbox" name="_name" id="_name" style="width:100%" data-options="label:'系统名称:', validType:'length[0,50]'" required="true" />
+                    <input class="easyui-textbox" name="_name" id="_name" style="width:100%" data-options="label:'系统名称:', validType:'length[2,20]'" required="true" />
                 </td>
             </tr>
             <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-textbox" name="_code" id="_code" style="width:100%" data-options="label:'系统编码:', validType:'length[0,50]'" required="true" />
+                    <input class="easyui-textbox" name="_code" id="_code" style="width:100%" data-options="label:'系统编码:', validType:'length[2,20]'" required="true" />
                 </td>
             </tr>
             <tr>
@@ -127,12 +127,12 @@
             </tr>
             <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-textbox" name="_url" id="_url" style="width:100%" data-options="label:'系统链接url:', validType:'length[0,255]'" required="true" />
+                    <input class="easyui-textbox" name="_url" id="_url" style="width:100%" data-options="label:'系统链接url:', validType:'length[0,100]'" required="true" />
                 </td>
             </tr>
                         <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-textbox" name="_indexUrl" id="_indexUrl" style="width:100%" data-options="label:'系统首页:', validType:'length[0,255]'" required="true" />
+                    <input class="easyui-textbox" name="_indexUrl" id="_indexUrl" style="width:100%" data-options="label:'系统首页:', validType:'length[0,100]'" required="true" />
                 </td>
             </tr>
             <tr>
@@ -153,7 +153,7 @@
             </tr>
              <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-textbox" name="_description" id="_description" style="width:100%" data-options="label:'系统描述:', validType:'length[0,255]',mutiline:true,height:66" />
+                    <input class="easyui-textbox" name="_description" id="_description" style="width:100%" data-options="label:'系统描述:', validType:'length[0,50]',mutiline:true,height:66" />
                 </td>
             </tr>
         </table>
@@ -168,7 +168,7 @@
         function openInsert(){
             $('#dlg').dialog('open');
             $('#dlg').dialog('center');
-            $('#dlg').dialog('setTitle','新增系统信息');
+            $('#dlg').dialog('setTitle','系统信息');
             $('#_form').form('clear');
             formFocus("_form", "_name");
             $('#_type').combobox("setValue","1");
@@ -184,7 +184,7 @@
             }
             $('#dlg').dialog('open');
             $('#dlg').dialog('center');
-            $('#dlg').dialog('setTitle','修改系统信息');
+            $('#dlg').dialog('setTitle','系统信息');
             $('#_form').form('clear');
             formFocus("_form", "_name");
             //console.info(selected)
