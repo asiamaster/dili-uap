@@ -175,15 +175,24 @@
      * @param firmCode 市场code
      */
     function loadDepartments(firmCode,controlId) {
-        $.post('${contextPath!}/department/listByCondition.action', {firmCode: firmCode}, function (ret) {
-            if (ret) {
-                var obj = {id: '', name: '-- 请选择 --'};
-                //动态添加'请选择'
-                ret.unshift(obj);
-                $('#' + controlId).combobox("clear");
-                $('#' + controlId).combobox("loadData", ret);
-            }
-        }, 'json');
+        var obj = {id: '-1', name: '-- 请选择 --','parentId':''};
+        debugger;
+        if (firmCode){
+            $.post('${contextPath!}/department/listByCondition.action', {firmCode: firmCode}, function (ret) {
+                if (ret) {
+                    //动态添加'请选择'
+                    ret.unshift(obj);
+                    $('#' + controlId).combotree("clear");
+                    $('#' + controlId).combotree("loadData", ret);
+                    $('#' + controlId).combotree("setValue", obj);
+                }
+            }, 'json');
+        }else{
+            $('#' + controlId).combotree("clear");
+            $('#' + controlId).combotree("loadData", obj);
+            $('#' + controlId).combotree("setValue", obj);
+        }
+
     }
 
     /**

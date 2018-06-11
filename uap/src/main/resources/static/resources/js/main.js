@@ -39,6 +39,13 @@ $(function () {
                 return /^1[3-8]+\d{9}$/.test(value);
             },
             message: '请输入正确的手机号码。'
+        },
+        //验证只能是中文汉字
+        isChinese:{
+            validator:function (value,param) {
+                return this.optional(element) || /^[\u4e00-\u9fa5]+$/.test(value);
+            },
+            message:'只能输入中文汉字'
         }
     });
 })

@@ -85,6 +85,10 @@ public class UserController {
     @RequestMapping(value = "/listPage.action", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
     public String listPage(UserDto user) throws Exception {
+        //由于部门控件为combotree，部门数据之间从部门表中获取，'请选择'为根节点，且ID为-1，所以，当选择的是‘请选择’时，则认为是空值
+        if (Long.valueOf(-1L).equals(user.getDepartmentId())) {
+            user.setDepartmentId(null);
+        }
         return userService.listEasyuiPage(user, true).toString();
     }
 
