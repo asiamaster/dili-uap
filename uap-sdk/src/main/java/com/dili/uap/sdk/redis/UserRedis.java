@@ -24,7 +24,7 @@ public class UserRedis {
      * @return
      */
     public Long getSessionUserId(String sessionId) {
-        String rst = redisUtil.get(SessionConstants.SESSION_USERID_KEY + sessionId, String.class);
+        String rst = redisUtil.get(SessionConstants.SESSIONID_USERID_KEY + sessionId, String.class);
         if(rst == null){
             return null;
         }
@@ -78,7 +78,7 @@ public class UserRedis {
      * @return
      */
     public String getSessionIdByUserId(String userId) {
-        return redisUtil.get(SessionConstants.USERID_SESSION_KEY + userId, String.class);
+        return redisUtil.get(SessionConstants.USERID_SESSIONID_KEY + userId, String.class);
     }
 
 }

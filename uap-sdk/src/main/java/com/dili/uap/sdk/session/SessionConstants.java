@@ -35,9 +35,9 @@ public class SessionConstants {
     // userId - resources Set
     public static final String USER_RESOURCE_CODE_KEY ="manage:userResourceCode:userId";
     // sessionId - userId
-    public static final String SESSION_USERID_KEY = "manage:sessionUserId:sessionId";
+    public static final String SESSIONID_USERID_KEY = "manage:sessionUserId:sessionId";
     // userId - sessionId
-    public static final String USERID_SESSION_KEY = "manage:userIdSession:userId:";
+    public static final String USERID_SESSIONID_KEY = "manage:userIdSession:userId:";
 
     // 限制用户唯一登陆 - START
     public static final String KICK_OLDSESSIONID_KEY = "manage:kickOldSessionId:";
