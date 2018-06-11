@@ -292,7 +292,6 @@ public class LoginServiceImpl implements LoginService {
         ops.leftPush(String.valueOf(java.lang.System.currentTimeMillis()));
         //查询系统配置的密码错误锁定次数
         SystemConfig systemConfigCondition = DTOUtils.newDTO(SystemConfig.class);
-        systemConfigCondition.setYn(Yn.YES.getCode());
         systemConfigCondition.setCode(UapConstants.LOGIN_FAILED_TIMES);
         systemConfigCondition.setSystemCode(UapConstants.UAP_SYSTEM_CODE);
         SystemConfig systemConfig = systemConfigMapper.selectOne(systemConfigCondition);

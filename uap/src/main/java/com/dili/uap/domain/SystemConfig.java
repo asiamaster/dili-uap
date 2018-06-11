@@ -76,10 +76,4 @@ public interface SystemConfig extends IBaseDomain {
 
     void setModified(Date modified);
 
-    @Column(name = "`yn`")
-    @FieldDef(label="是否可用")
-    @EditMode(editor = FieldEditor.Combo, required = false, params="{\"provider\":\"YnProvider\"}")
-    Integer getYn();
-
-    void setYn(Integer yn);
 }

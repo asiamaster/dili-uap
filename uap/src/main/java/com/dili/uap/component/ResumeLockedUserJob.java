@@ -61,7 +61,6 @@ public class ResumeLockedUserJob implements ApplicationListener<ContextRefreshed
 		Long now = System.currentTimeMillis();
 		//查询锁定用户恢复时长
 		SystemConfig systemConfigCondition = DTOUtils.newDTO(SystemConfig.class);
-		systemConfigCondition.setYn(Yn.YES.getCode());
 		systemConfigCondition.setCode(UapConstants.RESUME_DURATION);
         systemConfigCondition.setSystemCode(UapConstants.UAP_SYSTEM_CODE);
 		SystemConfig systemConfig = systemConfigMapper.selectOne(systemConfigCondition);
