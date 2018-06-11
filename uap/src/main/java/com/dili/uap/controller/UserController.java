@@ -65,7 +65,6 @@ public class UserController {
         modelMap.put("firms", JSONArray.toJSONString(firmService.list(query)));
         modelMap.put("isGroup", isGroup);
         modelMap.put("firmCode",firmCode);
-        modelMap.put("defaultPass",UapConstants.DEFAULT_PASS);
         return "user/index";
     }
 
@@ -124,9 +123,10 @@ public class UserController {
 
     @ApiOperation(value = "修改密码", notes = "修改密码")
     @RequestMapping(value = "/changePwd.action", method = {RequestMethod.GET, RequestMethod.POST})
-    public @ResponseBody BaseOutput changePwd(UserDto user) {
-    	Long userId = SessionContext.getSessionContext().getUserTicket().getId();
-       return userService.changePwd(userId,user);
+    @ResponseBody
+    public BaseOutput changePwd(UserDto user) {
+        Long userId = SessionContext.getSessionContext().getUserTicket().getId();
+        return userService.changePwd(userId, user);
     }
 
     @ApiOperation(value = "根据姓名转换邮箱信息", notes = "根据姓名转换邮箱信息")
@@ -220,6 +220,16 @@ public class UserController {
     @ResponseBody
     public BaseOutput saveUserDatas(Long userId,String dataIds[],Long dataRange){
         return userService.saveUserDatas(userId,dataIds,dataRange);
+    }
+
+    @ApiOperation(value = "解锁用户", notes = "解锁用户")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", paramType = "path", value = "用户ID",dataType = "long"),
+    })
+    @RequestMapping(value = "/unlock.action", method = {RequestMethod.GET, RequestMethod.POST})
+    @ResponseBody
+    public BaseOutput unlock(Long id){
+        return userService.unlock(id);
     }
 
 }

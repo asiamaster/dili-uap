@@ -127,7 +127,13 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 			if (CollectionUtils.isNotEmpty(userList)) {
 				return BaseOutput.failure("邮箱已存在");
 			}
-        	query.setEmail(null);
+			query.setEmail(null);
+			query.setCellphone(user.getCellphone());
+			userList = getActualDao().select(query);
+			if (CollectionUtils.isNotEmpty(userList)) {
+				return BaseOutput.failure("手机号码已存在");
+			}
+        	query.setCellphone(null);
             query.setUserName(user.getUserName());
             userList = getActualDao().select(query);
             if (CollectionUtils.isNotEmpty(userList)) {
@@ -135,7 +141,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
             } else {
                 user.setState(UserState.INACTIVE.getCode());
             }
-            user.setPassword(encryptPwd(user.getPassword()));
+            user.setPassword(encryptPwd(UapConstants.DEFAULT_PASS));
             this.insertExactSimple(user);
         } else {
 			User update = this.get(user.getId());
@@ -144,6 +150,16 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 				boolean result = userList.stream().anyMatch(u -> !u.getId().equals(user.getId()));
 				if (result) {
 					return BaseOutput.failure("邮箱已存在");
+				}
+			}
+			query.setEmail(null);
+			query.setCellphone(user.getCellphone());
+			userList = getActualDao().select(query);
+			if (CollectionUtils.isNotEmpty(userList)) {
+				//匹配是否有用户ID不等当前修改记录的用户
+				boolean result = userList.stream().anyMatch(u -> !u.getId().equals(user.getId()));
+				if (result) {
+					return BaseOutput.failure("手机号码已存在");
 				}
 			}
 			update.setRealName(user.getRealName());
@@ -369,6 +385,17 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 			userDataAuth.setDataAuthId(dataRange);
 			userDataAuthMapper.insert(userDataAuth);
 		}
+		return BaseOutput.success("操作成功");
+	}
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public BaseOutput unlock(Long userId) {
+		//解锁-设置状态为已启用
+		User user = DTOUtils.newDTO(User.class);
+		user.setId(userId);
+		user.setState(UserState.NORMAL.getCode());
+		this.updateSelective(user);
 		return BaseOutput.success("操作成功");
 	}
 
