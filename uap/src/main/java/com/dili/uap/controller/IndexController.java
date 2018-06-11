@@ -112,6 +112,12 @@ public class IndexController {
 		}
 	}
 
+	@ApiOperation("跳转到园区管理首页")
+	@RequestMapping(value = "/parkIndex.html", method = RequestMethod.GET)
+	public String parkIndex(ModelMap modelMap) {
+		return "index/parkIndex";
+	}
+
 	/**
 	 * 判断是否包含统一权限平台
 	 * @param systems

@@ -310,6 +310,8 @@ public class LoginServiceImpl implements LoginService {
             updateUser.setId(user.getId());
             updateUser.setState(UserState.LOCKED.getCode());
             this.userMapper.updateByPrimaryKeySelective(updateUser);
+            //清空计时器
+            redisUtil.getRedisTemplate().delete(key);
         }
     }
 }
