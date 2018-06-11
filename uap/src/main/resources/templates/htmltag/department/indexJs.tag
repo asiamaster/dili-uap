@@ -25,7 +25,18 @@
     function cancelEdit() {
         $("#grid").dataGridEditor().cancel();
     }
-
+ // 是否显示编辑框的确定取消按钮
+    function setOptBtnDisplay(show){
+        var $btnSave = $("#btnSave");
+        var $btnCancel = $("#btnCancel");
+        if(show){
+            $btnSave.show();
+            $btnCancel.show();
+        }else{
+            $btnSave.hide();
+            $btnCancel.hide();
+        }
+    }
     /**
      * 绑定页面回车事件，以及初始化页面时的光标定位
      *
@@ -57,7 +68,7 @@
             canEdit: function (row) {
               	 <#resource code="updateDepartment">
               	  if(1==1){
-              		 return row.id !== -1;
+              		 return row.id.indexOf('firm_')<0;
               	  }
               	 </#resource>
               	 return false;  

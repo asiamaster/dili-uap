@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 由MyBatis Generator工具自动生成
@@ -54,46 +55,20 @@ public class DepartmentController {
     })
     @RequestMapping(value = "/list.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody
-    String list(Department department) {
-
-        Department root = DTOUtils.newDTO(Department.class);
-
+    Object list(Department department) {
         // 首次进入
         if (StringUtils.isEmpty(department.getFirmCode())) {
-            List<Firm> list;
             boolean isGroup = SessionContext.getSessionContext().getUserTicket().getFirmCode().equalsIgnoreCase(UapConstants.GROUP_CODE);
-
             // 集团用户
             if (isGroup) {
-                list = firmService.list(null);
+                department.setFirmCode("group");
             } else {
-                Firm t = DTOUtils.newDTO(Firm.class);
-                t.setCode(SessionContext.getSessionContext().getUserTicket().getFirmCode());
-                list = firmService.list(t);
+                department.setFirmCode(SessionContext.getSessionContext().getUserTicket().getFirmCode());
             }
-
-
-            Firm firm = list.get(0);
-            root.setId(-1L);
-            root.setName(firm.getName());
-            root.setFirmCode(firm.getCode());
-            department.setFirmCode(firm.getCode());
-        } else {
-            // 切换市场
-            Firm t = DTOUtils.newDTO(Firm.class);
-            t.setCode(department.getFirmCode());
-            List<Firm> list = firmService.list(t);
-            Firm firm = list.get(0);
-            root.setId(-1L);
-            root.setName(firm.getName());
-            root.setFirmCode(firm.getCode());
-        }
-
-        List<Department> list = departmentService.list(department);
-
-        list.add(root);
-
+        } 
+        List<Map> list = departmentService.listDepartments(department);
         return new EasyuiPageOutput(list.size(), list).toString();
+//        return list;
     }
 
     @ApiOperation(value = "分页查询Department", notes = "分页查询Department，返回easyui分页信息")
@@ -113,7 +88,9 @@ public class DepartmentController {
     @RequestMapping(value = "/insert.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody
     BaseOutput insert(Department department) {
-        return departmentService.insertAfterCheck(department);
+    	 Department input=this.trimIdAndParentId(department);
+         BaseOutput<Department> out=departmentService.insertAfterCheck(input);
+         return this.resetIdAndParentId(out);
     }
 
     @ApiOperation("修改Department")
@@ -123,7 +100,9 @@ public class DepartmentController {
     @RequestMapping(value = "/update.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody
     BaseOutput update(Department department) {
-        return departmentService.updateAfterCheck(department);
+    	Department input=this.trimIdAndParentId(department);
+    	BaseOutput<Department> out=departmentService.updateAfterCheck(input);
+    	return this.resetIdAndParentId(out);
     }
 
     @ApiOperation("删除Department")
@@ -142,5 +121,50 @@ public class DepartmentController {
     @ResponseBody
     public List<Department> listByCondition(Department department) {
         return departmentService.list(department);
+    }
+    /**
+     * 将id以及parentid的前辍去掉
+     * @param department
+     * @return
+     */
+    private Department trimIdAndParentId(Department department) {
+    	if(department.aget("id")!=null) {
+    		String id = department.aget("id").toString();
+            if(id.startsWith("department_")){
+            	department.setId(Long.parseLong(id.replace("department_", "")));
+            }
+    	}
+        	if(department.aget("parentId")!=null) {
+                String parentId = department.aget("parentId").toString();
+                if(parentId.startsWith("department_")){
+                	department.setParentId(Long.parseLong(parentId.replace("department_", "")));
+                }else {
+                	department.setParentId(null);
+                }
+        	}
+         
+
+        return department;
+    }
+    /**
+     * 在返回数据前加上id以及parentId的前辍
+     * @param department
+     * @return
+     */
+    private BaseOutput<?> resetIdAndParentId(BaseOutput<Department>out) {
+    	if(!out.isSuccess()) {
+    		return out;
+    	}
+    	Department department=out.getData();
+    		String id =department.getId().toString();
+        	department.aset("id", "department_"+id);
+        	
+        	if(department.getParentId()!=null) {
+                department.aset("parentId", "department_"+department.getParentId());
+        	}else {
+        		department.aset("parentId", "firm"+department.getFirmCode());
+        	}
+        	Object obj=DTOUtils.go(department);
+        	 return BaseOutput.success().setData(obj);
     }
 }
