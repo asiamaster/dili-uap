@@ -1,5 +1,6 @@
 package com.dili.uap.domain;
 
+import com.dili.ss.domain.annotation.Like;
 import com.dili.ss.dto.IBaseDomain;
 import com.dili.ss.dto.IMybatisForceParams;
 import com.dili.ss.metadata.FieldEditor;
@@ -92,8 +93,9 @@ public interface User extends IBaseDomain,IMybatisForceParams {
     void setState(Integer state);
 
     @Column(name = "`real_name`")
-    @FieldDef(label="真实姓名", maxLength = 64)
+    @FieldDef(label="真实姓名", maxLength = 20)
     @EditMode(editor = FieldEditor.Text, required = true)
+    @Like
     String getRealName();
 
     void setRealName(String realName);

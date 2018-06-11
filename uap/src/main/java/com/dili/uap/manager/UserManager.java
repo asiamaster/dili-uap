@@ -3,6 +3,8 @@ package com.dili.uap.manager;
 
 import java.util.List;
 
+import java.util.Set;
+
 /**
  *
  * 用户管理者
@@ -20,5 +22,11 @@ public interface UserManager {
 	 * @return
 	 */
 	List<String> clearUserSession(Long userId);
+
+	/**
+	 * 获取当前在线的用户ID
+	 * @return
+	 */
+	Set<String> getOnlineUserIds();
 
 }

@@ -2,6 +2,7 @@ package com.dili.uap.service;
 
 import com.dili.ss.base.BaseService;
 import com.dili.ss.domain.BaseOutput;
+import com.dili.ss.domain.EasyuiPageOutput;
 import com.dili.uap.domain.DataAuth;
 import com.dili.uap.domain.User;
 import com.dili.uap.domain.dto.UserDto;
@@ -103,5 +104,19 @@ public interface UserService extends BaseService<User, Long> {
      * @return
      */
     BaseOutput unlock(Long userId);
+
+    /**
+     * 查询在线用户列表
+     * @param user
+     * @return
+     */
+    EasyuiPageOutput listOnlinePage(UserDto user) throws Exception;
+
+    /**
+     * 根据用户ID强制下线用户
+     * @param userId 用户ID
+     * @return
+     */
+    BaseOutput forcedOffline(Long userId);
 
 }

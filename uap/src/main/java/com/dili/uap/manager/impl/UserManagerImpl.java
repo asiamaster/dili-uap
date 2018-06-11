@@ -11,6 +11,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 
 @Component
@@ -45,6 +48,9 @@ public class UserManagerImpl implements UserManager {
 		return oldSessionIds;
 	}
 
-
+	@Override
+	public Set<String> getOnlineUserIds() {
+		return myRedisUtil.getRedisTemplate().keys(SessionConstants.USERID_SESSION_KEY + "*");
+	}
 
 }
