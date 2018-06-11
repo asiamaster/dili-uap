@@ -1,5 +1,8 @@
 package com.dili.uap.service;
 
+import java.util.List;
+import java.util.Map;
+
 import com.dili.ss.base.BaseService;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.uap.domain.Department;
@@ -15,7 +18,7 @@ public interface DepartmentService extends BaseService<Department, Long> {
      * @param department
      * @return
      */
-    BaseOutput<Object> insertAfterCheck(Department department);
+    BaseOutput<Department> insertAfterCheck(Department department);
 
 
     /**
@@ -23,5 +26,13 @@ public interface DepartmentService extends BaseService<Department, Long> {
      * @param department
      * @return
      */
-    BaseOutput<Object> updateAfterCheck(Department department);
+    BaseOutput<Department> updateAfterCheck(Department department);
+    
+    
+    /**
+     * 查询部门列表
+     * @param department
+     * @return
+     */
+    List<Map> listDepartments(Department department);
 }

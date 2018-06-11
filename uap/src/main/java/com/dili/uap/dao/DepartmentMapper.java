@@ -22,4 +22,11 @@ public interface DepartmentMapper extends MyMapper<Department> {
      * @return
      */
     List<DataAuth> listDataAuthes(Map<String, Object> param);
+    
+    /**
+     * 查询部门列表(id以及parent带有前辍)
+     * @param department
+     * @return
+     */
+    List<Map> listDepartments(Department department);
 }

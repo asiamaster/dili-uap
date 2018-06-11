@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 由MyBatis Generator工具自动生成
@@ -52,7 +54,7 @@ public class DepartmentServiceImpl extends BaseServiceImpl<Department, Long> imp
     }
     @Override
     @Transactional
-    public BaseOutput<Object> insertAfterCheck(Department department) {
+    public BaseOutput<Department> insertAfterCheck(Department department) {
         Department record = DTOUtils.newDTO(Department.class);
         record.setName(department.getName());
         record.setFirmCode(department.getFirmCode());
@@ -75,7 +77,7 @@ public class DepartmentServiceImpl extends BaseServiceImpl<Department, Long> imp
 
     @Override
     @Transactional
-    public BaseOutput<Object> updateAfterCheck(Department department) {
+    public BaseOutput<Department> updateAfterCheck(Department department) {
         Department record = DTOUtils.newDTO(Department.class);
         record.setName(department.getName());
         record.setFirmCode(department.getFirmCode());
@@ -90,4 +92,10 @@ public class DepartmentServiceImpl extends BaseServiceImpl<Department, Long> imp
         }
         return BaseOutput.failure("更新失败");
     }
+   
+    
+	@Override
+	public List<Map> listDepartments(Department department) {
+		return this.getActualDao().listDepartments(department);
+	}
 }

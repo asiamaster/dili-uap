@@ -72,4 +72,35 @@
         </if>
     </select>
 
+
+ <!-- 根据firmcode查询部门 -->
+    <select id="listDepartments" parameterType="map"  resultType="map">
+    
+         SELECT
+          concat('firm_',#{firmCode}) AS id
+           ,null AS parentId
+           ,#{firmCode} AS firmCode
+           ,(select name from firm where code=#{firmCode}) AS name
+           ,null AS code
+           ,null AS description
+           ,null AS created_id
+           ,null AS created
+           ,null AS modified
+           ,null AS modified_id
+           union all
+           
+        SELECT
+         concat('department_',id) AS id
+        ,case when parent_id is null then concat('firm_',firm_code) else concat('department_',parent_id) end as parentId
+        , firm_code AS firmCode, name, code, description, created_id, created, modified,
+        modified_id
+        FROM
+        department d
+        WHERE 1=1
+        <if test="firmCode != null and firmCode != ''">
+           and d.firm_code = #{firmCode}
+        </if>
+          
+    </select>
+    
 </mapper>
