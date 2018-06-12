@@ -5,7 +5,7 @@
     <!-- 文件输出格式 -->
     <property name="PATTERN" value="[uap-dev]%-12(%d{yyyy-MM-dd HH:mm:ss.SSS}) |-%-5level [%thread] %c [%L] -| %msg%n" />
     <!--定义日志文件的存储地址 勿在 LogBack 的配置中使用相对路径-->
-    <property name="LOG_HOME" value="/home/dili/dili-crm/logs" />
+    <property name="LOG_HOME" value="/home/dili/sites/dili_uap/logs" />
 
     <!-- 本地环境 -->
     <springProfile name="local">
@@ -65,19 +65,21 @@
             </encoder>
         </appender>
         <!-- 每天产生一个文件 -->
-        <appender name="fileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
-            <!-- 文件路径 -->
-            <!--<file>D:/logs-test</file>-->
-            <!--<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">-->
-                <!--&lt;!&ndash; 文件名称 &ndash;&gt;-->
-                <!--<fileNamePattern>D:/logs-test/info.%d{yyyy-MM-dd}.log</fileNamePattern>-->
-                <!--&lt;!&ndash; 文件最大保存历史数量 &ndash;&gt;-->
-                <!--<MaxHistory>100</MaxHistory>-->
-            <!--</rollingPolicy>-->
-
-            <layout class="ch.qos.logback.classic.PatternLayout">
-                <pattern>+++%-12(%d{yyyy-MM-dd HH:mm:ss.SSS}) |-%-5level [%thread] %c [%L] -| %msg%n</pattern>
-            </layout>
+        <appender name="FILE"  class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <!--日志文件输出的文件名-->
+                <FileNamePattern>${LOG_HOME}/uap.%d{yyyy-MM-dd}.log</FileNamePattern>
+                <!--日志文件保留天数-->
+                <MaxHistory>30</MaxHistory>
+            </rollingPolicy>
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
+                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+            </encoder>
+            <!--日志文件最大的大小-->
+            <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+                <MaxFileSize>10MB</MaxFileSize>
+            </triggeringPolicy>
         </appender>
         <logger name="org.springframework.web" level="INFO"/>
         <logger name="com.dili.uap" level="INFO"/>
