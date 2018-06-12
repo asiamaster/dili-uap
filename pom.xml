@@ -213,14 +213,14 @@
 				<scope>import</scope>
 			</dependency>
 			<!-- Spring Boot 1.3.x and Spring Framework 4.2.x support -->
-			<dependency>
-				<groupId>org.springframework.cloud</groupId>
-				<artifactId>spring-cloud-dependencies</artifactId>
-				<!--<version>Brixton.RELEASE</version>-->
-				<version>Finchley.M8</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
+			<!--<dependency>-->
+				<!--<groupId>org.springframework.cloud</groupId>-->
+				<!--<artifactId>spring-cloud-dependencies</artifactId>-->
+				<!--&lt;!&ndash;<version>Brixton.RELEASE</version>&ndash;&gt;-->
+				<!--<version>Finchley.M8</version>-->
+				<!--<type>pom</type>-->
+				<!--<scope>import</scope>-->
+			<!--</dependency>-->
 		</dependencies>
 	</dependencyManagement>
 
