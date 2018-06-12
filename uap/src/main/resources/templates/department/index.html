@@ -26,13 +26,14 @@
 										type : 'textbox',
 										options : {
 											required : true
+											,validType:'length[2,20]'
 										}
 									}">部门名称
                     </th>
                     <th data-options="field:'code',width:'20%'">编码</th>
                     <th data-options="field:'created',formatter:dateToStringFormatter,width:'20%'">创建时间</th>
                     <th data-options="field:'modified',formatter:dateToStringFormatter,width:'20%'">修改时间</th>
-                    <th data-options="field:'description',width:'20%',editor : 'textbox'">描述</th>
+                    <th data-options="field:'description',width:'20%',editor:{type : 'textbox',options : {validType:'length[0,20]'}}">描述</th>
                 </tr>
                 </thead>
             </table>
