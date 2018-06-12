@@ -161,7 +161,7 @@ public class LoginServiceImpl implements LoginService {
             return BaseOutput.success("登录成功").setData(loginResult);
         } catch (Exception e) {
             logLogin(loginDto, false, e.getMessage());
-            return BaseOutput.success("登录失败").setResult(e.getMessage());
+            return BaseOutput.failure("登录失败").setResult(e.getMessage());
         }
     }
 
