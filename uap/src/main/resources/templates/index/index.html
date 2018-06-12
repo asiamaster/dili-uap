@@ -26,7 +26,7 @@
         }
         .l-btn-plain.cur,
         .l-btn-plain {
-            width: 120px;
+            width: 106px;
             /*padding-left: 20px;*/
             /*padding-right: 20px;*/
             text-align: center;
@@ -102,7 +102,7 @@
                         </#menubutton>
                     </td>
 
-                    <td class="header-user" width="130px">
+                    <td class="header-user" width="110px">
                         <!--<a href="" class="inform"><img src="${contextPath}/resources/images/icon/inform-icon.png" alt=""><span class="inform-num">99</span>-->
                         <!--</a>-->
                         <!--<a href="javascript:;" class="userhead"><img src="${contextPath}/resources/images/icon/head-default.png" alt=""></a>-->
@@ -110,16 +110,16 @@
                         <div id="userMenu" class="easyui-panel" style="padding:1px; float: left">
                             <a id="menubutton_right" href="#" class="easyui-menubutton" data-options="menu:'#menu_right', plain:true, hasDownArrow:false">${username}</a>
                         </div>
-                        <div id="menu_right" style="width:88px" data-options="zIndex:'110000' , align:'left', noline:true, onClick:menuClickHandler" itemHeight="40">
+                        <div id="menu_right" style="width:100px" data-options="zIndex:'110000' , align:'left', noline:true, onClick:menuClickHandler, minWidth:108" itemHeight="40">
                             <%if(system.code==@com.dili.uap.constants.UapConstants.UAP_SYSTEM_CODE){%>
-                            <div id="menu_userDetail" data-options="url:'${contextPath}/index/userDetail.html' ">
+                            <div id="menu_userDetail" data-options="url:'${contextPath}/index/userDetail.html', align:'left'">
                                 用户信息
                             </div>
-                            <div id="menu_changePwd" data-options="url:'${contextPath}/index/changePwd.html'">
+                            <div id="menu_changePwd" data-options="url:'${contextPath}/index/changePwd.html', align:'left'">
                                 修改密码
                             </div>
                             <%}%>
-                            <div id="menu_logout" data-options="blankKey:'' ">
+                            <div id="menu_logout" data-options="blankKey:'', align:'left'">
                                 注销
                             </div>
                         </div>
