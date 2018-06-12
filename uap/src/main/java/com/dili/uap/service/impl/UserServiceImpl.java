@@ -12,7 +12,6 @@ import com.dili.uap.domain.dto.UserDataDto;
 import com.dili.uap.domain.dto.UserDto;
 import com.dili.uap.glossary.UserState;
 import com.dili.uap.manager.UserManager;
-import com.dili.uap.sdk.session.SessionConstants;
 import com.dili.uap.service.UserService;
 import com.dili.uap.utils.MD5Util;
 import com.github.pagehelper.Page;
@@ -268,18 +267,20 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
         userRole.setUserId(userId);
         userRoleMapper.delete(userRole);
         //需要保存的用户角色信息
-        List<UserRole> saveDatas = Lists.newArrayList();
-        for (String id : roleIds) {
-            if (!id.startsWith(UapConstants.FIRM_PREFIX)) {
-                UserRole ur = DTOUtils.newDTO(UserRole.class);
-                ur.setUserId(userId);
-                ur.setRoleId(Long.valueOf(id));
-                saveDatas.add(ur);
+        if (null != roleIds && roleIds.length > 0) {
+            List<UserRole> saveDatas = Lists.newArrayList();
+            for (String id : roleIds) {
+                if (!id.startsWith(UapConstants.FIRM_PREFIX)) {
+                    UserRole ur = DTOUtils.newDTO(UserRole.class);
+                    ur.setUserId(userId);
+                    ur.setRoleId(Long.valueOf(id));
+                    saveDatas.add(ur);
+                }
             }
-        }
-        //如果存在需要保存的用户角色数据，则保存数据
-        if (CollectionUtils.isNotEmpty(saveDatas)) {
-            userRoleMapper.insertList(saveDatas);
+            //如果存在需要保存的用户角色数据，则保存数据
+            if (CollectionUtils.isNotEmpty(saveDatas)) {
+                userRoleMapper.insertList(saveDatas);
+            }
         }
         return BaseOutput.success("操作成功");
     }
@@ -347,18 +348,20 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
         delete.setUserId(userId);
         userDepartmentMapper.delete(delete);
         //需要保存的用户角色信息
-        List<UserDepartment> saveDatas = Lists.newArrayList();
-        for (String id : dataIds) {
-            if (!id.startsWith(UapConstants.FIRM_PREFIX)) {
-                UserDepartment ud = DTOUtils.newDTO(UserDepartment.class);
-                ud.setUserId(userId);
-                ud.setDepartmentId(Long.valueOf(id));
-                saveDatas.add(ud);
+        if (null != dataIds && dataIds.length > 0) {
+            List<UserDepartment> saveDatas = Lists.newArrayList();
+            for (String id : dataIds) {
+                if (!id.startsWith(UapConstants.FIRM_PREFIX)) {
+                    UserDepartment ud = DTOUtils.newDTO(UserDepartment.class);
+                    ud.setUserId(userId);
+                    ud.setDepartmentId(Long.valueOf(id));
+                    saveDatas.add(ud);
+                }
             }
-        }
-        //如果存在需要保存的用户角色数据，则保存数据
-        if (CollectionUtils.isNotEmpty(saveDatas)) {
-            userDepartmentMapper.insertList(saveDatas);
+            //如果存在需要保存的用户角色数据，则保存数据
+            if (CollectionUtils.isNotEmpty(saveDatas)) {
+                userDepartmentMapper.insertList(saveDatas);
+            }
         }
         //查询当前用户所属的权限范围
         UserDataAuth userDataAuth = DTOUtils.newDTO(UserDataAuth.class);
