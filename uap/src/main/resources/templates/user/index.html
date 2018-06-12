@@ -58,7 +58,7 @@
         <div region="center" style="width:100%;" height="auto"  border="false">
             <!-- =========================================================表格========================================================= -->
             <table class="easyui-datagrid" title="用户列表" id="userGrid" fitColumns="true" noheader="true"
-                   pagination="true" pageSize="10" pageNumber="1" pagePosition="top" remoteSort="false"
+                   pagination="true" pageSize="30" pageNumber="1" pagePosition="top" remoteSort="false"
                    loadMsg="数据加载中..." singleSelect="true" method="post" multiSort="false" sortName="userName" sortOrder="desc"
                    align="center" fit="true" striped="true" idField="id" data-options="onClickRow:onClickRow,onDblClickRow:openUpdate, onHeaderContextMenu:headerContextMenu">
                 <thead>
@@ -108,7 +108,7 @@
         <table width="100%">
             <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-textbox" name="_userName" id="_userName"  style="width:85%;height:28px;"data-options="labelAlign:'right',label:'&lowast;用户账号:', validType:'length[4,20]'"
+                    <input class="easyui-textbox" name="_userName" id="_userName"  style="width:85%;height:28px;"data-options="labelAlign:'right',label:'&lowast;用户账号:', validType:['isWord','length[4,20]']"
                         required="true" />
                 </td>
             </tr>
@@ -119,7 +119,7 @@
             </tr>-->
             <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-textbox" name="_realName" id="_realName" style="width:85%;height:28px;" data-options="labelAlign:'right',label:'&lowast;真实姓名:', validType:['isChinese','length[2,20]'],events:{blur:getEmailByName}"
+                    <input class="easyui-textbox" name="_realName" id="_realName" style="width:85%;height:28px;" data-options="labelAlign:'right',label:'&lowast;真实姓名:',validateOnBlur:true,validType:['isChinese','length[2,5]'],onValidate:realNameValidate"
                            required="true" />
                 </td>
             </tr>
@@ -140,7 +140,7 @@
             </tr>
             <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-textbox" name="_cardNumber" id="_cardNumber" style="width:85%;height:28px;" data-options="labelAlign:'right',label:'卡号:', validType:'length[0,20]'" />
+                    <input class="easyui-textbox" name="_cardNumber" id="_cardNumber" style="width:85%;height:28px;" data-options="labelAlign:'right',label:'卡号:', validType:'length[12,22]'" />
                 </td>
             </tr>
             <tr>
@@ -161,7 +161,7 @@
             </tr>
             <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-textbox" name="_description"  id="_description" style="width:85%;height:70px;" data-options="labelAlign:'right',label:'备注:',multiline:true,validType:'length[0,255]'">
+                    <input class="easyui-textbox" name="_description"  id="_description" style="width:85%;height:70px;" data-options="labelAlign:'right',label:'备注:',multiline:true,validType:'length[0,20]'">
                 </td>
             </tr>
         </table>

@@ -38,14 +38,14 @@ public interface Role extends IBaseDomain {
 
     @Column(name = "`description`")
     @FieldDef(label="角色描述", maxLength = 255)
-    @EditMode(editor = FieldEditor.Text, required = true)
+    @EditMode(editor = FieldEditor.Text)
     String getDescription();
 
     void setDescription(String description);
 
     @Column(name = "`firm_code`")
     @FieldDef(label="所属市场编码", maxLength = 50)
-    @EditMode(editor = FieldEditor.Text, required = false)
+    @EditMode(editor = FieldEditor.Text)
     String getFirmCode();
 
     void setFirmCode(String firmCode);

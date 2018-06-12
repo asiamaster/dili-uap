@@ -65,7 +65,7 @@ public interface User extends IBaseDomain,IMybatisForceParams {
     void setPosition(String position);
 
     @Column(name = "`card_number`")
-    @FieldDef(label="卡号", maxLength = 20)
+    @FieldDef(label="卡号", maxLength = 30)
     @EditMode(editor = FieldEditor.Text, required = false)
     String getCardNumber();
 

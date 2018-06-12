@@ -587,5 +587,15 @@
             }
         });
     }
+
+    /**
+     * 用户编辑，真实姓名验证时的触发事件
+     * @param v
+     */
+    function realNameValidate(v) {
+        if (v || 'true' == v){
+            getEmailByName();
+        }
+    }
     
 </script>

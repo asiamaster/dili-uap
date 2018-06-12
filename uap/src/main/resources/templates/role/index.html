@@ -50,10 +50,10 @@
                             <th data-options="field:'id',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false',hidden:true">
                                 ID
                             </th>
-                            <th width="20%" data-options="field:'roleName',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false',editor:{type:'textbox',options:{required:true,validType:'length[0,255]'}}">
+                            <th width="20%" data-options="field:'roleName',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false',editor:{type:'textbox',options:{required:true,validType:'length[2,20]'}}">
                                 角色名
                             </th>
-                            <th width="40%" data-options="field:'description',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false',editor:{type:'textbox',options:{required:true,validType:'length[0,255]'}}">
+                            <th width="40%" data-options="field:'description',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false',editor:{type:'textbox',options:{validType:'length[0,20]'}}">
                                 角色描述
                             </th>
                             <th width="10%" data-options="field:'firmCode', _provider:'firmCodeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false',editor:{type:'combobox',options:{required:true,editable:false,valueField:'code',textField:'name',panelHeight:'auto'}}">
