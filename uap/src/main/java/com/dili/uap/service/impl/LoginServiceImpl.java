@@ -108,15 +108,15 @@ public class LoginServiceImpl implements LoginService {
             if(StringUtils.isBlank(loginDto.getSystemCode())){
                 loginDto.setSystemCode(UapConstants.UAP_SYSTEM_CODE);
             }
-            //记录用户id和市场编码，用于记录登录日志
-            loginDto.setUserId(user.getId());
-            loginDto.setFirmCode(user.getFirmCode());
             //判断密码不正确，三次后锁定用户、锁定后的用户12小时后自动解锁
             if (user == null || !StringUtils.equalsIgnoreCase(user.getPassword(), this.encryptPwd(loginDto.getPassword()))) {
                 lockUser(user);
                 logLogin(loginDto, false, "用户名或密码错误");
                 return BaseOutput.failure("用户名或密码错误").setCode(ResultCode.NOT_AUTH_ERROR);
             }
+            //记录用户id和市场编码，用于记录登录日志
+            loginDto.setUserId(user.getId());
+            loginDto.setFirmCode(user.getFirmCode());
             //登录成功后清除锁定计时
             clearUserLock(user.getId());
             if(user.getState().equals(UserState.LOCKED.getCode())){
