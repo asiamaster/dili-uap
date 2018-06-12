@@ -2,11 +2,15 @@ package com.dili.uap.sdk.redis;
 
 import com.alibaba.fastjson.JSONObject;
 import com.dili.uap.sdk.domain.UserTicket;
+import com.dili.uap.sdk.manager.SessionRedisManager;
 import com.dili.uap.sdk.session.SessionConstants;
 import com.dili.uap.sdk.util.ManageRedisUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 用户redis操作
@@ -17,6 +21,9 @@ public class UserRedis {
 
     @Autowired
     private ManageRedisUtil redisUtil;
+
+    @Autowired
+    private SessionRedisManager sessionRedisManager;
 
     /**
      * 根据sessionId获取userId
@@ -55,6 +62,9 @@ public class UserRedis {
         if (StringUtils.isBlank(sessionData)) {
             return null;
         }
+        //推后SESSIONID_USERID_KEY+sessionId和SessionConstants.USERID_SESSIONID_KEY+userId
+        redisUtil.expire(SessionConstants.SESSIONID_USERID_KEY + sessionId, SessionConstants.SESSION_TIMEOUT, TimeUnit.SECONDS);
+        redisUtil.expire(SessionConstants.USERID_SESSIONID_KEY + getUserIdBySessionId(sessionId), SessionConstants.SESSION_TIMEOUT, TimeUnit.SECONDS);
         return JSONObject.parseObject(String.valueOf(JSONObject.parseObject(sessionData).get(SessionConstants.LOGGED_USER)), clazz);
     }
     
@@ -67,18 +77,27 @@ public class UserRedis {
     private String getSession(String sessionId){
         String sessionData = redisUtil.get(SessionConstants.SESSION_KEY_PREFIX + sessionId, String.class);
         if (sessionData != null) {
-            redisUtil.set(SessionConstants.SESSION_KEY_PREFIX + sessionId, sessionData, SessionConstants.SESSION_TIMEOUT);
+            redisUtil.expire(SessionConstants.SESSION_KEY_PREFIX + sessionId, SessionConstants.SESSION_TIMEOUT, TimeUnit.SECONDS);
         }
         return sessionData;
     }
 
     /**
-     * 根据用户id获取sessionId
+     * 根据用户id获取sessionId列表
      * @param userId
      * @return
      */
-    public String getSessionIdByUserId(String userId) {
-        return redisUtil.get(SessionConstants.USERID_SESSIONID_KEY + userId, String.class);
+    public List<String> getSessionIdsByUserId(String userId) {
+        return sessionRedisManager.getSessionIdsByUserId(userId);
+    }
+
+    /**
+     * 根据sessionId取用户id
+     * @param sessionId
+     * @return
+     */
+    public String getUserIdBySessionId(String sessionId){
+        return sessionRedisManager.getUserIdBySessionId(sessionId);
     }
 
 }

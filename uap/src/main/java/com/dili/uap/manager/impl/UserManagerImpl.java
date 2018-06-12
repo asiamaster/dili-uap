@@ -1,7 +1,7 @@
 package com.dili.uap.manager.impl;
 
-import com.dili.uap.manager.SessionRedisManager;
 import com.dili.uap.manager.UserManager;
+import com.dili.uap.sdk.manager.SessionRedisManager;
 import com.dili.uap.sdk.session.SessionConstants;
 import com.dili.uap.sdk.util.ManageRedisUtil;
 import org.slf4j.Logger;
@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
-import java.util.Set;
 
 
 @Component
@@ -33,7 +32,7 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public List<String> clearUserSession(Long userId) {
-		List<String> oldSessionIds = this.sessionRedisManager.getUserIdSessionDataKey(userId.toString());
+		List<String> oldSessionIds = this.sessionRedisManager.getSessionIdsByUserId(userId.toString());
 		if(CollectionUtils.isEmpty(oldSessionIds)){
 			return null;
 		}

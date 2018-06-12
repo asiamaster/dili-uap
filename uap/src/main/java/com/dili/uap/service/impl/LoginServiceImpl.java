@@ -16,6 +16,7 @@ import com.dili.uap.domain.dto.LoginResult;
 import com.dili.uap.glossary.UserState;
 import com.dili.uap.glossary.Yn;
 import com.dili.uap.manager.*;
+import com.dili.uap.sdk.manager.SessionRedisManager;
 import com.dili.uap.sdk.session.ManageConfig;
 import com.dili.uap.sdk.session.SessionConstants;
 import com.dili.uap.sdk.util.ManageRedisUtil;
@@ -204,7 +205,7 @@ public class LoginServiceImpl implements LoginService {
      * @param user
      */
     private void jamUser(User user) {
-        if (this.manageConfig.getUserLimitOne() && this.sessionRedisManager.existUserIdSessionDataKey(user.getId().toString())) {
+        if (this.manageConfig.getUserLimitOne() && this.sessionRedisManager.existUserIdSessionIdKey(user.getId().toString())) {
             List<String> oldSessionIds = this.userManager.clearUserSession(user.getId());
             if(oldSessionIds == null) {
                 return;
@@ -244,7 +245,7 @@ public class LoginServiceImpl implements LoginService {
         // redis: sessionId - userID
         this.sessionRedisManager.setSessionUserIdKey(sessionId, user.getId().toString());
         // redis: userID - sessionId
-        this.sessionRedisManager.setUserIdSessionDataKey(user, sessionId);
+        this.sessionRedisManager.setUserIdSessionIdKey(user.getId().toString(), sessionId);
         LOG.debug("UserName: " + user.getUserName() + " | SessionId:" + sessionId + " | SessionData:" + sessionData);
     }
 

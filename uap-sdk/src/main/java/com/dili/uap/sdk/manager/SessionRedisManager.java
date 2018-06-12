@@ -1,7 +1,6 @@
-package com.dili.uap.manager;
+package com.dili.uap.sdk.manager;
 
 
-import com.dili.uap.domain.User;
 
 import java.util.List;
 
@@ -41,28 +40,28 @@ public interface SessionRedisManager {
      * @param sessionId
      * @return
      */
-    String getSessionUserIdKey(String sessionId);
+    String getUserIdBySessionId(String sessionId);
 
     /**
      * 缓存 用户id:sessionId和用户信息的Map, key为sessionId和user
-     * @param user
+     * @param userId
      * @param sessionId
      */
-    void setUserIdSessionDataKey(User user, String sessionId);
+    void setUserIdSessionIdKey(String userId, String sessionId);
 
     /**
      * 获取指定id用户sessionId集合
      * @param userId
      * @return
      */
-    List<String> getUserIdSessionDataKey(String userId);
+    List<String> getSessionIdsByUserId(String userId);
 
     /**
      * 判断key为SessionConstants.USERID_SESSIONID_KEY + userId，值为用户信息的Map, key为sessionId和user 的缓存是否存在
      * @param s
      * @return
      */
-    Boolean existUserIdSessionDataKey(String s);
+    Boolean existUserIdSessionIdKey(String s);
 
     /**
      * 添加key为SessionConstants.KICK_OLDSESSIONID_KEY + oldSessionId，值为空串的缓存

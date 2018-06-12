@@ -1,7 +1,6 @@
-package com.dili.uap.manager.impl;
+package com.dili.uap.sdk.manager.impl;
 
-import com.dili.uap.domain.User;
-import com.dili.uap.manager.SessionRedisManager;
+import com.dili.uap.sdk.manager.SessionRedisManager;
 import com.dili.uap.sdk.session.SessionConstants;
 import com.dili.uap.sdk.util.ManageRedisUtil;
 import com.google.common.collect.Lists;
@@ -24,8 +23,8 @@ public class SessionRedisManagerImpl implements SessionRedisManager {
 	private ManageRedisUtil myRedisUtil;
 
 	@Override
-	public void setUserIdSessionDataKey(User user, String sessionId) {
-		BoundSetOperations<String, String> userIdSessionIds = myRedisUtil.getRedisTemplate().boundSetOps(SessionConstants.USERID_SESSIONID_KEY + user.getId());
+	public void setUserIdSessionIdKey(String userId, String sessionId) {
+		BoundSetOperations<String, String> userIdSessionIds = myRedisUtil.getRedisTemplate().boundSetOps(SessionConstants.USERID_SESSIONID_KEY + userId);
 		userIdSessionIds.add(sessionId);
 		userIdSessionIds.expire(SessionConstants.SESSION_TIMEOUT, TimeUnit.SECONDS);
 //		myRedisUtil.set(SessionConstants.USERID_SESSIONID_KEY + user.getId(), sessionId,
@@ -33,7 +32,7 @@ public class SessionRedisManagerImpl implements SessionRedisManager {
 	}
 
 	@Override
-	public List<String> getUserIdSessionDataKey(String userId) {
+	public List<String> getSessionIdsByUserId(String userId) {
 //		return myRedisUtil.get(SessionConstants.USERID_SESSIONID_KEY + userId, String.class);
 		BoundSetOperations<String, String> userIdSessionIds = myRedisUtil.getRedisTemplate().boundSetOps(SessionConstants.USERID_SESSIONID_KEY + userId);
 		List<String> sessionIds = Lists.newArrayList();
@@ -74,7 +73,7 @@ public class SessionRedisManagerImpl implements SessionRedisManager {
 	}
 
 	@Override
-	public Boolean existUserIdSessionDataKey(String userId) {
+	public Boolean existUserIdSessionIdKey(String userId) {
 //		return myRedisUtil.exists(SessionConstants.USERID_SESSIONID_KEY + s);
 		return myRedisUtil.getRedisTemplate().boundSetOps(SessionConstants.USERID_SESSIONID_KEY + userId).isMember(userId);
 	}
@@ -86,7 +85,7 @@ public class SessionRedisManagerImpl implements SessionRedisManager {
 
 	@Override
 	public void clearUserIdSessionDataKeyBySessionId(String sessionId) {
-		BoundSetOperations<String, String> userIdSessionIds = myRedisUtil.getRedisTemplate().boundSetOps(SessionConstants.USERID_SESSIONID_KEY + getSessionUserIdKey(sessionId));
+		BoundSetOperations<String, String> userIdSessionIds = myRedisUtil.getRedisTemplate().boundSetOps(SessionConstants.USERID_SESSIONID_KEY + getUserIdBySessionId(sessionId));
 		userIdSessionIds.remove(sessionId);
 	}
 
@@ -114,7 +113,7 @@ public class SessionRedisManagerImpl implements SessionRedisManager {
 	}
 
 	@Override
-	public String getSessionUserIdKey(String sessionId) {
+	public String getUserIdBySessionId(String sessionId) {
 		return myRedisUtil.get(SessionConstants.SESSIONID_USERID_KEY + sessionId, String.class);
 	}
 

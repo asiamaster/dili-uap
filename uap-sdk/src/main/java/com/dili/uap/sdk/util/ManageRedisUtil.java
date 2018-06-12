@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -159,5 +160,26 @@ public class ManageRedisUtil {
             e.printStackTrace();
         }
         return result;
+    }
+
+    /**
+     * 推后过期时间
+     * @param key
+     * @param timeout
+     * @param timeUnit
+     * @return
+     */
+    public Boolean expire(String key, long timeout, TimeUnit timeUnit){
+        return redisTemplate.expire(key, timeout, timeUnit);
+    }
+
+    /**
+     * 推后过期时间到指定日期
+     * @param key
+     * @param date
+     * @return
+     */
+    public Boolean expireAt(String key, Date date){
+        return redisTemplate.expireAt(key, date);
     }
 }
