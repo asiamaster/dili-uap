@@ -37,15 +37,23 @@
      * @param firmCode 市场code
      */
     function loadRoles(firmCode) {
-        $.post('${contextPath!}/role/list.action', {firmCode: firmCode}, function (ret) {
-            if (ret) {
-                var obj = {id: null, roleName: '-- 请选择 --'};
-                //动态添加'请选择'
-                ret.unshift(obj);
-                $('#roleId').combobox("clear");
-                $('#roleId').combobox("loadData", ret);
-            }
-        }, 'json');
+        var obj = {id: null, roleName: '-- 请选择 --'};
+        if (firmCode){
+            $.post('${contextPath!}/role/list.action', {firmCode: firmCode}, function (ret) {
+                if (ret) {
+
+                    //动态添加'请选择'
+                    ret.unshift(obj);
+                    $('#roleId').combobox("clear");
+                    $('#roleId').combobox("loadData", ret);
+                }
+            }, 'json');
+        }else{
+            $('#roleId').combobox("clear");
+            $('#roleId').combobox("loadData", {});
+        }
+
+
     }
 
     //表格表头右键菜单
