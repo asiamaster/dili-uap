@@ -68,7 +68,6 @@ function del(gridId) {
     $("#"+gridId).dataGridEditor().delete();
 }
 
-
 function endEditing(gridId) {
     $("#"+gridId).dataGridEditor().save();
 }
@@ -109,9 +108,9 @@ function renderMenuGrid(node, gridId) {
                 type : 'textbox',
                 options : {
                     required : true,
-                    validType : 'length[1, 50]',
+                    validType : 'length[2, 7]',
                     missingMessage : '菜单名称不能为空',
-                    invalidMessage : '菜单名称必须是1-50个字符'
+                    invalidMessage : '菜单名称必须是2-7个字符'
                 }
             }
         }, {
@@ -149,19 +148,33 @@ function renderMenuGrid(node, gridId) {
             title : '菜单链接地址',
             width : '35%',
             editor : {
-                type : 'textbox'
+                type : 'textbox',
+                options : {
+                    validType : 'length[0, 120]',
+                    invalidMessage : '链接地址必须小于120个字符'
+                }
             }
         }, {
             field : 'description',
             title : '描述',
             width : '40%',
-            editor : 'text'
+            editor : {
+                type : 'textbox',
+                options : {
+                    validType : 'length[0, 20]',
+                    invalidMessage : '描述必须小于20个字符'
+                }
+            }
         }, {
             field : 'orderNumber',
             title : '排序号',
             width : '5%',
             editor : {
-                type : 'numberbox'
+                type : 'numberbox',
+                options : {
+                    validType : 'length[0, 6]',
+                    invalidMessage : '排序号必须小于6位数'
+                }
             }
         }]]
         //columns 属性结束
@@ -195,7 +208,9 @@ function renderResourceGrid(node, gridId) {
                 type : 'textbox',
                 options : {
                     required : true,
-                    missingMessage : '请输入权限名称'
+                    validType : 'length[1, 20]',
+                    missingMessage : '请输入权限名称',
+                    invalidMessage : '权限名称必须是1-20个字符'
                 }
             }
         }, {
@@ -206,14 +221,22 @@ function renderResourceGrid(node, gridId) {
                 type : 'textbox',
                 options : {
                     required : true,
-                    missingMessage : '请输入权限代码'
+                    validType : 'length[1, 20]',
+                    missingMessage : '请输入权限代码',
+                    invalidMessage : '权限代码必须是1-20个字符'
                 }
             }
         }, {
             field : 'description',
             title : '描述',
             width : '60%',
-            editor : 'textbox'
+            editor : {
+                type : 'textbox',
+                options : {
+                    validType : 'length[0, 20]',
+                    invalidMessage : '描述必须小于20个字符'
+                }
+            }
         }
         ]]
     });
@@ -247,9 +270,9 @@ function renderInternalLinksGrid(node, gridId) {
                 type : 'textbox',
                 options : {
                     required : true,
-                    validType : 'length[1, 50]',
+                    validType : 'length[1, 20]',
                     missingMessage : '链接名称不能为空',
-                    invalidMessage : '链接名称必须是1-50个字符'
+                    invalidMessage : '链接名称必须是1-20个字符'
                 }
             }
         }, {
@@ -260,16 +283,22 @@ function renderInternalLinksGrid(node, gridId) {
                 type : 'textbox',
                 options : {
                     required : true,
-                    validType : 'length[1, 255]',
+                    validType : 'length[1, 120]',
                     missingMessage : '链接地址不能为空',
-                    invalidMessage : '链接地址必须是1-255个字符'
+                    invalidMessage : '链接地址必须是1-120个字符'
                 }
             }
         }, {
             field : 'description',
             title : '描述',
             width : '40%',
-            editor : 'text'
+            editor : {
+                type : 'textbox',
+                options : {
+                    validType : 'length[0, 20]',
+                    invalidMessage : '描述必须小于20个字符'
+                }
+            }
         }]]
         //columns 属性结束
     });
