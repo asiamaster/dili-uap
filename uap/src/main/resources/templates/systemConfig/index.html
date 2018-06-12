@@ -19,11 +19,11 @@
                             </td>
                             <td style="padding: 5px;"><input class="easyui-textbox" name="likeName" id="likeName"
                                                              style="width: 100%"
-                                                             data-options="labelWidth:50,labelAlign:'right',label:'名称:', validType:'length[0,50]'"/>
+                                                             data-options="labelWidth:50,labelAlign:'right',label:'名称:',"/>
                             </td>
                             <td style="padding: 5px;"><input class="easyui-textbox" name="code" id="code"
                                                              style="width: 100%"
-                                                             data-options="labelWidth:50,labelAlign:'right',label:'编码:', validType:'length[0,50]'"/>
+                                                             data-options="labelWidth:50,labelAlign:'right',label:'编码:'"/>
                             </td>
                             <td>
                                 <a href="#" class="easyui-linkbutton" iconCls="icon-search" id="queryBtn"
@@ -59,16 +59,16 @@
                     <th data-options="formatter :systemCodeFormatter ,editor : {type : 'combobox',options : {panelWidth:'auto'  ,panelHeight:'auto', url:'/dataDictionary/systemList.action',textField:'text',editable:false,valueField:'value',required : true}},field:'systemCode',width:'8%',sortable:'true', order:'asc', align:'center', hidden:false,resizable:'true', fixed:'false'">
                         系统
                     </th>
-                    <th data-options="editor : {type : 'textbox',options : {required : true}},field:'name',   width:'12%',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                    <th data-options="editor : {type : 'textbox',options : {required : true,validType:'length[2,20]'}},field:'name',   width:'12%',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                         名称
                     </th>
-                    <th data-options="editor : {type : 'textbox',options : {required : true}},field:'code',   width:'12%',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                    <th data-options="editor : {type : 'textbox',options : {required : true,validType:'length[2,20]'}},field:'code',   width:'12%',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                         编码
                     </th>
-                    <th data-options="editor : {type : 'textbox',options : {required : true}},field:'value',   width:'12%',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                    <th data-options="editor : {type : 'textbox',options : {required : true,validType:'length[1,20]'}},field:'value',   width:'12%',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                         值
                     </th>
-                    <th data-options="editor : {type : 'textbox',options : {}},field:'description',  width:'28%', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                    <th data-options="editor : {type : 'textbox',options : {validType:'length[0,50]'}},field:'description',  width:'28%', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                         描述
                     </th>
                     <th data-options="field:'created', width:'14%', _provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
