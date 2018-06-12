@@ -67,13 +67,17 @@
     function doLogin() {
         var username = document.getElementById("userName").value;
         if (null == username || "" == username) {
-            alert("账号不能为空");
+            $("#msg").html("账号不能为空");
             return false;
         }
 
         var password = document.getElementById("password").value;
         if (null == password || "" == password) {
-            alert("密码不能为空");
+            $("#msg").html("密码不能为空");
+            return false;
+        }
+        if(!validUserName(username)){
+            $("#msg").html("用户名只能包含中文、英文、数字和下划线");
             return false;
         }
 
@@ -113,9 +117,12 @@
         }
     }
 
+    function validUserName(value) {
+        return /^[a-zA-Z0-9\u4e00-\u9fa5_]+$/.test(value);
+    }
+
     $(function() {
         <% if(has(msg)){%>
-//            alert('${msg}');
             $("#msg").html("${msg}");
         <%}%>
         window.setTimeout(function() {
