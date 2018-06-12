@@ -9,7 +9,15 @@
     <meta name="keywords" content="" />
     <meta name="description" content="" />
     <meta name="author" content="Teaism">
-    <link rel="stylesheet" href="" />
+    <style>
+        /*消除google浏览器黄色框*/
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus {
+            box-shadow:0 0 0 60px #FFF inset;
+            -webkit-text-fill-color: #666;
+        }
+    </style>
     <!-- jquery -->
     <link rel="shortcut icon" href="${contextPath}/resources/images/icon/dili-logo.png" />
     <script type="text/javascript" src="${contextPath}/resources/easyui/js/jquery-3.2.1.min.js"></script>
@@ -27,13 +35,13 @@
                 <tr>
                     <td width="40" class="login-icon login-user-icon"></td>
                     <td>
-                        <input id="userName" name="userName" value="" type="text" placeholder="请输入账号" />
+                        <input id="userName" name="userName" value="" type="text" autocomplete="off" placeholder="请输入账号" />
                     </td>
                 </tr>
                 <tr>
                     <td width="40" class="login-icon login-password-icon"></td>
                     <td>
-                        <input id="password" name="password" value="" type="password" placeholder="请输入密码" />
+                        <input id="password" name="password" value="" type="password" autocomplete="off" placeholder="请输入密码" />
                     </td>
                 </tr>
                 <!--<tr>
