@@ -539,7 +539,7 @@ function dragMenu(target, source, point) {
                 data: {sourceId: source.id, targetId: targetNode.id},
                 processData: true,
                 dataType: "json",
-                async: false,
+                async: true,
                 success: function (ret) {
                     if (ret.success) {
                         $.messager.alert('成功', ret.result);
