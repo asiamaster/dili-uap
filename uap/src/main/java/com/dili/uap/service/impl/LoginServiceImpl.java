@@ -101,6 +101,12 @@ public class LoginServiceImpl implements LoginService {
     @Override
     public BaseOutput<LoginResult> login(LoginDto loginDto) {
         try {
+            if(loginDto.getUserName().length() < 4 || loginDto.getUserName().length() > 20){
+                return BaseOutput.failure("用户名长度不能小于4位或大于20位!").setCode(ResultCode.PARAMS_ERROR);
+            }
+            if(loginDto.getPassword().length() < 6 || loginDto.getUserName().length() > 20){
+                return BaseOutput.failure("密码长度不能小于6位或大于20位!").setCode(ResultCode.PARAMS_ERROR);
+            }
             User record = DTOUtils.newDTO(User.class);
             record.setUserName(loginDto.getUserName());
             User user = this.userMapper.selectOne(record);

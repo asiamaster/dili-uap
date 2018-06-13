@@ -76,6 +76,14 @@
             $("#msg").html("密码不能为空");
             return false;
         }
+        if(username.length < 4 || username.length > 20){
+            $("#msg").html("用户名长度不能小于4位或大于20位");
+            return false;
+        }
+        if(password.length < 6 || password.length > 20){
+            $("#msg").html("密码长度不能小于6位或大于20位");
+            return false;
+        }
         if(!validUserName(username)){
             $("#msg").html("用户名只能包含中文、英文、数字和下划线");
             return false;
