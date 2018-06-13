@@ -532,7 +532,7 @@ function dragMenu(target, source, point) {
     if(targetNode.id.startsWith("sys_") || targetNode.id.startsWith("menu_")){
         var msg = "是否要移动["+source.text+"]到["+targetNode.text+"]下面?";
         //除了原生confirm，其它第三方都无法阻塞。。。
-        if(confirm('确定要执行此操作吗?')){
+        if(confirm(msg)){
             $.ajax({
                 type: "POST",
                 url: "${contextPath}/menu/shiftMenu.action",
