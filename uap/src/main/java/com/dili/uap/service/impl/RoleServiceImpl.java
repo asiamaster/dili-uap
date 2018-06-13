@@ -73,9 +73,9 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements Role
         if (CollectionUtils.isEmpty(roles)){
             //不存在重名的情况下
             if (null != role.getId()) {
-                getActualDao().updateByPrimaryKeySelective(role);
+                updateExactSimple(role);
             }else{
-                getActualDao().insert(role);
+                insertSelective(role);
             }
         }else{
             //存在重名的情况下
@@ -86,7 +86,7 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements Role
                 Role temp = roles.get(0);
                 //如果查询出来的数据，跟当前的一样，则认为是没有修改名称
                 if (temp.getId().equals(role.getId())){
-                    getActualDao().updateByPrimaryKeySelective(role);
+                    this.updateExactSimple(role);
                 }else{
                     return BaseOutput.failure("操作失败，角色名称存在重复");
                 }
