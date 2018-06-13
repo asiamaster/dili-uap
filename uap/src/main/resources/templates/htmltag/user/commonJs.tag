@@ -21,7 +21,7 @@
                     ret.unshift(obj);
                     $('#' + controlId).combotree("clear");
                     $('#' + controlId).combotree("loadData", ret);
-                    $('#' + controlId).combotree("setValue", obj);
+                    // $('#' + controlId).combotree("setValue", obj);
                 }
             }, 'json');
         }else{

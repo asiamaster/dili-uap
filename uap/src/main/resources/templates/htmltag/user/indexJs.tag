@@ -1,5 +1,8 @@
 <script type="application/javascript">
 
+    //是否是修改用户。目前用于判断用户编辑页面，部门数据的初始值显示问题
+    var isUpdateUser = true;
+
     /**
      * datagrid行点击事件
      * 目前用于来判断 启禁用是否可点
@@ -136,6 +139,7 @@
         $('#_firmCode').combobox("loadData", firms);
         $("#_userName").textbox("enable");
         $("#_firmCode").textbox("enable");
+        isUpdateUser = false;
     }
 
     //打开修改窗口
@@ -160,6 +164,7 @@
         // $("#_password").textbox("disable");
         $("#_firmCode").textbox("disable");
         $("#_firmCode").textbox("initValue", selected.firmCode);
+        isUpdateUser = true;
     }
 
     /**
@@ -442,7 +447,7 @@
             loadRoles(firmCode);
         <%}%>
         
-        bindFormEvent("form", "userName", queryGrid);
+        bindFormEvent("form", "firmCode", queryGrid);
         bindFormEvent("_form", "_userName", saveOrUpdate, function (){$('#editDlg').dialog('close');});
         if (document.addEventListener) {
             document.addEventListener("keyup",getKey,false);
@@ -597,5 +602,19 @@
             getEmailByName();
         }
     }
-    
+
+    /**
+     * 用户数据编辑时，部门数据加载成功后的执行方法
+     */
+    function editDepartmentLoadSuccess(node,data) {
+        var selected = userGrid.datagrid("getSelected");
+        if (null == selected) {
+            return;
+        }
+        // 如果是修改用户，则显示用户已有的部门数据
+        if (isUpdateUser || 'true' == isUpdateUser){
+            $('#_departmentId').combotree('setValue', selected.$_departmentId);
+        }
+    }
+
 </script>
