@@ -1,6 +1,28 @@
 <script type="text/javascript">
+    String.prototype.endsWith = function(str){
+        if(str==null || str=="" || this.length == 0 ||str.length > this.length){
+            return false;
+        }
+        if(this.substring(this.length - str.length)){
+            return true;
+        }else{
+            return false;
+        }
+        return true;
+    };
 
-/**
+    String.prototype.startsWith = function(str){
+        if(str == null || str== "" || this.length== 0 || str.length > this.length){
+            return false;
+        }
+        if(this.substr(0,str.length) == str){
+            return true;
+        }else{
+            return false;
+        }
+        return true;
+    };
+    /**
  * 页面加载完毕后默认选中菜单树的第一个根节点节点
  * @param node
  * @param data
@@ -489,5 +511,51 @@ function updateMenuNode(row) {
         target : node.target,
         text : row.name
     })
+}
+
+/**
+ * 拖动完菜单时触发
+ * @param target the target node element to be dropped.
+ * @param source the source node being dragged.
+ */
+function dragMenu(target, source, point) {
+    //只允许拖到某个节点下面
+    if(point != "append"){
+        return false;
+    }
+    //不允许拖最顶层的系统
+    if(source.id.startsWith("sys_")){
+        return false;
+    }
+    var targetNode = $('#menuTree').tree('getNode', target);
+    //目标节点可以是系统或菜单
+    if(targetNode.id.startsWith("sys_") || targetNode.id.startsWith("menu_")){
+        var msg = "是否要移动["+source.text+"]到["+targetNode.text+"]下面?";
+        $.messager.confirm('确认', msg, function (r) {
+            if (r) {
+                $.ajax({
+                    type: "POST",
+                    url: "${contextPath}/menu/shiftMenu.action",
+                    data: {sourceId: source.id, targetId: targetNode.id},
+                    processData: true,
+                    dataType: "json",
+                    async: true,
+                    success: function (ret) {
+                        if (ret.success) {
+                            $.messager.alert('成功', ret.result);
+                        } else {
+                            $.messager.alert('错误', ret.result);
+                        }
+                    },
+                    error: function () {
+                        $.messager.alert('错误', '远程访问失败');
+                    }
+                });
+            }
+        });
+        return true;
+    }
+    return false;
+
 }
 </script>

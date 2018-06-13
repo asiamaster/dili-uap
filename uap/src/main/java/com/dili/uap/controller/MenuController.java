@@ -121,4 +121,22 @@ public class MenuController {
         String msg = menuService.deleteMenu(id);
         return msg == null ? BaseOutput.success("删除成功") : BaseOutput.failure(msg);
     }
+
+    @ApiOperation("移动Menu")
+    @RequestMapping(value="/shiftMenu.action", method = {RequestMethod.GET, RequestMethod.POST})
+    public @ResponseBody BaseOutput shiftMenu(String sourceId, String targetId) {
+        Menu menu = DTOUtils.newDTO(Menu.class);
+        //源节点肯定是菜单，所以是以menu_开头
+        menu.setId(Long.parseLong(sourceId.substring(5)));
+        //如果拖到系统下面, 需要清空parentId
+        if(targetId.startsWith("sys_")){
+            menu.setParentId(null);
+            menu.setSystemId(Long.parseLong(targetId.substring(4)));
+        }else{//拖到菜单下面，只重置parentId
+            menu.setParentId(Long.parseLong(targetId.substring(5)));
+        }
+        menuService.updateExactSimple(menu);
+        return BaseOutput.success("移动菜单成功");
+    }
+
 }

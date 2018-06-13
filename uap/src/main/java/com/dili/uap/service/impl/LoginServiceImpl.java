@@ -115,7 +115,7 @@ public class LoginServiceImpl implements LoginService {
                 loginDto.setSystemCode(UapConstants.UAP_SYSTEM_CODE);
             }
             //判断密码不正确，三次后锁定用户、锁定后的用户12小时后自动解锁
-            if (user == null || !StringUtils.equalsIgnoreCase(user.getPassword(), this.encryptPwd(loginDto.getPassword()))) {
+            if (user == null || !StringUtils.equals(user.getPassword(), this.encryptPwd(loginDto.getPassword()))) {
                 lockUser(user);
                 logLogin(loginDto, false, "用户名或密码错误");
                 return BaseOutput.failure("用户名或密码错误").setCode(ResultCode.NOT_AUTH_ERROR);

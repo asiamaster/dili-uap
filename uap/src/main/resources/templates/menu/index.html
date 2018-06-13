@@ -8,7 +8,8 @@
 	</div>
 	<div style="width: 210px;" height="100%" align="left" data-options="region:'west',title:'菜单管理',split:true">
 			<ul id="menuTree" class="easyui-tree" lines="false" url="${contextPath}/menu/listSystemMenu.action"
-				data-options="onSelect:onSelectTree, loadFilter:treeLoadFilter, _idField:'id', _textField:'name', _parentIdField:'parent_id',onLoadSuccess:onTreeLoadSuccess" />
+				data-options="onSelect:onSelectTree, loadFilter:treeLoadFilter, _idField:'id', _textField:'name', _parentIdField:'parent_id',
+				onLoadSuccess:onTreeLoadSuccess,animate:true,dnd:true,onBeforeDrop:dragMenu" />
 	</div>
 
 	<!-- 表格 -->
