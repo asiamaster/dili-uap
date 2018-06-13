@@ -97,10 +97,9 @@
  
 
     <!-- 隐藏编辑框 -->
-    <div id="dlg" class="easyui-dialog" resizable="false" constrain="true" shadow="true" draggable="false" title="System信息" style="padding:20px" modal="true" border="thin" closed="true"
+    <div id="dlg" class="easyui-dialog" resizable="false" constrain="true" shadow="true" draggable="false" title="系统信息" style="padding:20px" modal="true" border="thin" closed="true"
          data-options="
-				iconCls: 'icon-save',
-				height: 480,
+				height: 500,
 				buttons: [{
 					text:'确认',
 					iconCls:'icon-ok',
@@ -168,7 +167,6 @@
         function openInsert(){
             $('#dlg').dialog('open');
             $('#dlg').dialog('center');
-            $('#dlg').dialog('setTitle','系统信息');
             $('#_form').form('clear');
             formFocus("_form", "_name");
             $('#_type').combobox("setValue","1");
@@ -184,7 +182,6 @@
             }
             $('#dlg').dialog('open');
             $('#dlg').dialog('center');
-            $('#dlg').dialog('setTitle','系统信息');
             $('#_form').form('clear');
             formFocus("_form", "_name");
             //console.info(selected)
