@@ -133,7 +133,7 @@ public class MenuController {
             menu.setParentId(null);
             menu.setType(MenuType.LINKS.getCode());
             menu.setSystemId(Long.parseLong(targetId.substring(4)));
-        }else{//拖到菜单下面，只重置parentId, 并且判断菜单是否目录，是目录则需要修改菜单类型为链接
+        }else{//拖到菜单下面，只重置parentId, 并且判断目标菜单是否目录，是目录则需要修改菜单类型为链接，是链接则需要改为内键
             Long targetMenuId = Long.parseLong(targetId.substring(5));
             menu.setParentId(targetMenuId);
             Menu condition = DTOUtils.newDTO(Menu.class);
@@ -141,6 +141,8 @@ public class MenuController {
             Menu targetMenu = menuService.get(targetMenuId);
             if(targetMenu.getType().equals(MenuType.DIRECTORY.getCode())){
                 menu.setType(MenuType.LINKS.getCode());
+            }else if(targetMenu.getType().equals(MenuType.LINKS.getCode())){
+                menu.setType(MenuType.INTERNAL_LINKS.getCode());
             }
         }
         menuService.updateExactSimple(menu);
