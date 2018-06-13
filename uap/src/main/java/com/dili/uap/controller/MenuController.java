@@ -128,12 +128,20 @@ public class MenuController {
         Menu menu = DTOUtils.newDTO(Menu.class);
         //源节点肯定是菜单，所以是以menu_开头
         menu.setId(Long.parseLong(sourceId.substring(5)));
-        //如果拖到系统下面, 需要清空parentId
+        //如果拖到系统下面, 需要清空parentId,并且修改菜单类型为链接
         if(targetId.startsWith("sys_")){
             menu.setParentId(null);
+            menu.setType(MenuType.LINKS.getCode());
             menu.setSystemId(Long.parseLong(targetId.substring(4)));
-        }else{//拖到菜单下面，只重置parentId
-            menu.setParentId(Long.parseLong(targetId.substring(5)));
+        }else{//拖到菜单下面，只重置parentId, 并且判断菜单是否目录，是目录则需要修改菜单类型为链接
+            Long targetMenuId = Long.parseLong(targetId.substring(5));
+            menu.setParentId(targetMenuId);
+            Menu condition = DTOUtils.newDTO(Menu.class);
+            condition.setId(targetMenuId);
+            Menu targetMenu = menuService.get(targetMenuId);
+            if(targetMenu.getType().equals(MenuType.DIRECTORY.getCode())){
+                menu.setType(MenuType.LINKS.getCode());
+            }
         }
         menuService.updateExactSimple(menu);
         return BaseOutput.success("移动菜单成功");
