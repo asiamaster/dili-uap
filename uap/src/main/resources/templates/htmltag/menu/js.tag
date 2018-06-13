@@ -531,31 +531,34 @@ function dragMenu(target, source, point) {
     //目标节点可以是系统或菜单
     if(targetNode.id.startsWith("sys_") || targetNode.id.startsWith("menu_")){
         var msg = "是否要移动["+source.text+"]到["+targetNode.text+"]下面?";
-        $.messager.confirm('确认', msg, function (r) {
-            if (r) {
-                $.ajax({
-                    type: "POST",
-                    url: "${contextPath}/menu/shiftMenu.action",
-                    data: {sourceId: source.id, targetId: targetNode.id},
-                    processData: true,
-                    dataType: "json",
-                    async: true,
-                    success: function (ret) {
-                        if (ret.success) {
-                            $.messager.alert('成功', ret.result);
-                        } else {
-                            $.messager.alert('错误', ret.result);
-                        }
-                    },
-                    error: function () {
-                        $.messager.alert('错误', '远程访问失败');
+        //除了原生confirm，其它第三方都无法阻塞。。。
+        if(confirm('确定要执行此操作吗?')){
+            $.ajax({
+                type: "POST",
+                url: "${contextPath}/menu/shiftMenu.action",
+                data: {sourceId: source.id, targetId: targetNode.id},
+                processData: true,
+                dataType: "json",
+                async: false,
+                success: function (ret) {
+                    if (ret.success) {
+                        $.messager.alert('成功', ret.result);
+                        return true;
+                    } else {
+                        $.messager.alert('错误', ret.result);
+                        return false;
                     }
-                });
-            }
-        });
-        return true;
+                },
+                error: function () {
+                    $.messager.alert('错误', '远程访问失败');
+                    return false;
+                }
+            });
+        }else{
+            return false;
+        }
     }
-    return false;
+    return true;
 
 }
 </script>
