@@ -542,7 +542,7 @@ function dragMenu(target, source, point) {
                 async: true,
                 success: function (ret) {
                     if (ret.success) {
-                        $.messager.alert('成功', ret.result);
+                        //$.messager.alert('成功', ret.result);
                         return true;
                     } else {
                         $.messager.alert('错误', ret.result);
