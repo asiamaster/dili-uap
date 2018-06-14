@@ -111,12 +111,12 @@
         <table width="500px">
             <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-textbox" name="_name" id="_name" style="width:100%" data-options="label:'系统名称:', validType:'length[2,20]'" required="true" />
+                    <input class="easyui-textbox" name="_name" id="_name" style="width:100%" data-options="label:'系统名称:', validType:['isWord','length[2,20]']" required="true" />
                 </td>
             </tr>
             <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-textbox" name="_code" id="_code" style="width:100%" data-options="label:'系统编码:', validType:'length[2,20]'" required="true" />
+                    <input class="easyui-textbox" name="_code" id="_code" style="width:100%" data-options="label:'系统编码:', validType:['isWord','length[2,20]']" required="true" />
                 </td>
             </tr>
             <tr>
@@ -126,22 +126,22 @@
             </tr>
             <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-textbox" name="_url" id="_url" style="width:100%" data-options="label:'系统链接url:', validType:'length[0,100]'" required="true" />
+                    <input class="easyui-textbox" name="_url" id="_url" style="width:100%" data-options="label:'系统链接url:', validType:['url','length[0,100]']" required="true" />
                 </td>
             </tr>
                         <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-textbox" name="_indexUrl" id="_indexUrl" style="width:100%" data-options="label:'系统首页:', validType:'length[0,100]'" required="true" />
+                    <input class="easyui-textbox" name="_indexUrl" id="_indexUrl" style="width:100%" data-options="label:'系统首页:', validType:['url','length[0,100]']" required="true" />
                 </td>
             </tr>
             <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-textbox" name="_iconUrl" id="_iconUrl" style="width:100%" data-options="label:'图标URL:', validType:'length[0,100]'" />
+                    <input class="easyui-textbox" name="_iconUrl" id="_iconUrl" style="width:100%" data-options="label:'图标URL:', validType:['url','length[0,100]']" />
                 </td>
             </tr>
             <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-textbox" name="_logoUrl" id="_logoUrl" style="width:100%" data-options="label:'LOGO URL:', validType:'length[0,100]'" />
+                    <input class="easyui-textbox" name="_logoUrl" id="_logoUrl" style="width:100%" data-options="label:'LOGO URL:', validType:['url','length[0,100]']" />
                 </td>
             </tr>
             <tr>
