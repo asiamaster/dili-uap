@@ -13,6 +13,7 @@ import com.dili.uap.domain.SystemConfig;
 import com.dili.uap.domain.User;
 import com.dili.uap.domain.dto.LoginDto;
 import com.dili.uap.domain.dto.LoginResult;
+import com.dili.uap.glossary.LoginType;
 import com.dili.uap.glossary.UserState;
 import com.dili.uap.glossary.Yn;
 import com.dili.uap.manager.*;
@@ -34,10 +35,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.BoundListOperations;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 
 /**
@@ -194,13 +192,37 @@ public class LoginServiceImpl implements LoginService {
             public void run() {
                 LoginLog loginLog = DTOUtils.as(loginDto, LoginLog.class);
                 loginLog.setSuccess(isSuccess ? Yn.YES.getCode() : Yn.NO.getCode());
-                loginLog.setReason(msg);
+                loginLog.setMsg(msg);
                 //设置系统名称
                 if(StringUtils.isNotBlank(loginLog.getSystemCode())) {
                     System system = DTOUtils.newDTO(System.class);
                     system.setCode(loginDto.getSystemCode());
                     List<System> systemList = systemService.listByExample(system);
                     loginLog.setSystemName(systemList.isEmpty() ? loginDto.getSystemCode() : systemList.get(0).getName());
+                }
+                loginLogService.insertSelective(loginLog);
+            }
+        }.start();
+    }
+
+    /**
+     * 异步记录登出日志
+     */
+    @Override
+    public void logLogout(LoginLog loginLog){
+        new Thread(){
+            @Override
+            public void run() {
+                loginLog.setSuccess(Yn.YES.getCode());
+                loginLog.setMsg("登出成功");
+                loginLog.setType(LoginType.LOGOUT.getCode());
+                loginLog.setLoginTime(new Date());
+                //设置系统名称
+                if(StringUtils.isNotBlank(loginLog.getSystemCode()) && loginLog.getSystemName() == null) {
+                    System system = DTOUtils.newDTO(System.class);
+                    system.setCode(loginLog.getSystemCode());
+                    List<System> systemList = systemService.listByExample(system);
+                    loginLog.setSystemName(systemList.isEmpty() ? loginLog.getSystemCode() : systemList.get(0).getName());
                 }
                 loginLogService.insertSelective(loginLog);
             }

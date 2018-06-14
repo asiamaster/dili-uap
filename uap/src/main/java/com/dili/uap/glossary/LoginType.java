@@ -5,8 +5,8 @@ package com.dili.uap.glossary;
  * Created by asiam on 2018/5/21.
  */
 public enum LoginType {
-    LOGIN(0,"登出"),
-    LOGOUT(1,"登录");
+    LOGIN(1,"登录"),
+    LOGOUT(0,"登出");
 
     private String name;
     private Integer code ;

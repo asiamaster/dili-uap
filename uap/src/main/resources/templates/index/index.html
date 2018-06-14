@@ -228,7 +228,7 @@
         }
 
         function logout() {
-            $.post('${contextPath!}/login/logout.action',null,function(data){
+            $.post('${contextPath!}/login/logout.action',{systemCode:'${system.code}', userId:'${userid}'},function(data){
                 if ("200" == data.code) {
                     window.location.href = "${contextPath}/login/index.html";
                 } else {

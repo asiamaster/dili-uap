@@ -1,9 +1,13 @@
 package com.dili.uap.controller;
 
 import com.dili.ss.domain.BaseOutput;
+import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.constants.UapConstants;
+import com.dili.uap.domain.LoginLog;
 import com.dili.uap.domain.dto.LoginDto;
+import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.session.SessionConstants;
+import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.sdk.util.WebContent;
 import com.dili.uap.service.LoginService;
 import com.dili.uap.service.UserService;
@@ -21,6 +25,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
@@ -83,8 +88,21 @@ public class LoginController {
 
     @ApiOperation("执行logout请求，跳转login页面或者弹出错误")
     @RequestMapping(value = "/logout.action", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public @ResponseBody BaseOutput logoutAction(ModelMap modelMap) {
+    public @ResponseBody BaseOutput logoutAction(String systemCode, @RequestParam(required = false) Long userId, HttpServletRequest request) {
         this.userService.logout(WebContent.getPC().getSessionId());
+		UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
+		//没有userId则取userTicket
+		userId = userId == null ? userTicket == null ? null : userTicket.getId() : userId;
+		//如果有用户id，则记录登出日志
+        if(userId != null) {
+			LoginLog loginLog = DTOUtils.newDTO(LoginLog.class);
+			//设置ip和hosts,用于记录登录日志
+			loginLog.setIp(WebUtil.getRemoteIP(request));
+			loginLog.setHost(request.getRemoteHost());
+			loginLog.setUserId(userId);
+			loginLog.setSystemCode(systemCode);
+			loginService.logLogout(loginLog);
+		}
         try {
             WebContent.setCookie(SessionConstants.COOKIE_SESSION_ID, null);
         } catch (Exception e) {
