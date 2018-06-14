@@ -11,10 +11,11 @@
     <result column="host" jdbcType="VARCHAR" property="host" />
     <result column="login_time" jdbcType="TIMESTAMP" property="loginTime" />
     <result column="type" jdbcType="TIMESTAMP" property="type" />
-    <result column="system_id" jdbcType="BIGINT" property="systemId" />
+    <result column="system_code" jdbcType="VARCHAR" property="systemCode" />
+    <result column="system_name" jdbcType="VARCHAR" property="systemName" />
     <result column="firm_code" jdbcType="VARCHAR" property="firmCode" />
     <result column="success" jdbcType="INTEGER" property="success" />
-    <result column="msg" jdbcType="VARCHAR" property="reason" />
+    <result column="msg" jdbcType="VARCHAR" property="msg" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--
@@ -29,37 +30,36 @@
       WARNING - @mbg.generated
     -->
     select 
-    <include refid="Base_Column_List" />
-    from login_log
-    WHERE 1=1 
+      <include refid="Base_Column_List" />
+      from login_log
+      WHERE 1=1
     <if test="userName !=null and userName !=''">
-    AND user_id IN (SELECT id FROM user WHERE user_name LIKE '%${userName}%' or real_name LIKE '%${userName}%'  )
+      AND user_id IN (SELECT id FROM user WHERE user_name LIKE '%${userName}%' or real_name LIKE '%${userName}%'  )
     </if>
-    
     <if test="ip !=null and ip !=''">
-    AND ip =#{ip}
+      AND ip =#{ip}
     </if>
     <if test="systemCode !=null">
-    AND system_code =#{systemCode}
+      AND system_code =#{systemCode}
     </if>
-   
     <if test="success !=null">
-    AND success =#{success}
+      AND success =#{success}
     </if>
-    
     <if test="startLoginTime !=null">
-    AND login_time >=#{startLoginTime}
+      AND login_time >=#{startLoginTime}
     </if>
-    
     <if test="endLoginTime !=null">
-    AND #{endLoginTime}>=login_time
+      AND #{endLoginTime}>=login_time
+    </if>
+    <if test="type !=null">
+      AND `type`=#{type}
     </if>
     
      <if test="sort !=null">
-    ORDER BY `${sort}`
-	  <if test="order !=null">
-	   ${order}
-	  </if>
+        ORDER BY `${sort}`
+        <if test="order !=null">
+          ${order}
+        </if>
     </if>
     
   </select>

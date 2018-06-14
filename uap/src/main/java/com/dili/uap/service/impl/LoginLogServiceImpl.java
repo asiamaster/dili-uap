@@ -24,15 +24,15 @@ public class LoginLogServiceImpl extends BaseServiceImpl<LoginLog, Long> impleme
     public LoginLogMapper getActualDao() {
         return (LoginLogMapper)getDao();
     }
-    public EasyuiPageOutput findByLoginLogDto(LoginLogDto loginLog,boolean useProvider) throws Exception {
-    	
-    	       if(loginLog.getRows() != null && loginLog.getRows().intValue() >= 1) {
-    		 
-    		    PageHelper.startPage(loginLog.getPage().intValue(), loginLog.getRows().intValue());
-    		  }
-		        List list = this.getActualDao().findByLoginLogDto(loginLog);
-		       long total = list instanceof Page?((Page)list).getTotal():(long)list.size();
-		       List results = useProvider?ValueProviderUtils.buildDataByProvider(loginLog, list):list;
-		        return new EasyuiPageOutput(Integer.valueOf(Integer.parseInt(String.valueOf(total))), results);
-    }
+
+    @Override
+	public EasyuiPageOutput findByLoginLogDto(LoginLogDto loginLog, boolean useProvider) throws Exception {
+		if (loginLog.getRows() != null && loginLog.getRows().intValue() >= 1) {
+			PageHelper.startPage(loginLog.getPage().intValue(), loginLog.getRows().intValue());
+		}
+		List list = this.getActualDao().findByLoginLogDto(loginLog);
+		long total = list instanceof Page ? ((Page) list).getTotal() : (long) list.size();
+		List results = useProvider ? ValueProviderUtils.buildDataByProvider(loginLog, list) : list;
+		return new EasyuiPageOutput(Integer.valueOf(Integer.parseInt(String.valueOf(total))), results);
+	}
 }

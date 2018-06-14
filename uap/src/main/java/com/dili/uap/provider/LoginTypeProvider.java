@@ -4,6 +4,7 @@ import com.dili.ss.metadata.FieldMeta;
 import com.dili.ss.metadata.ValuePair;
 import com.dili.ss.metadata.ValuePairImpl;
 import com.dili.ss.metadata.ValueProvider;
+import com.dili.uap.glossary.LoginType;
 import com.dili.uap.glossary.UserState;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +15,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * <B>Description 用户状态的枚举转换 </B>
+ * <B>Description 登录/出操作类型枚举转换 </B>
  * <B>Copyright</B>
  * 本软件源代码版权归农丰时代所有,未经许可不得任意复制与传播.<br />
  * <B>农丰时代科技有限公司</B>
@@ -23,16 +24,15 @@ import java.util.stream.Stream;
  * @createTime 2018/5/29 18:32
  */
 @Component
-public class UserStateProvider implements ValueProvider {
+public class LoginTypeProvider implements ValueProvider {
 
     private static final List<ValuePair<?>> BUFFER = new ArrayList<>();
 
     static {
         BUFFER.add(new ValuePairImpl(EMPTY_ITEM_TEXT, null));
-        BUFFER.addAll(Stream.of(UserState.values())
+        BUFFER.addAll(Stream.of(LoginType.values())
                 .map(e -> new ValuePairImpl<String>(e.getName(), e.getCode().toString()))
                 .collect(Collectors.toList()));
-
     }
 
     @Override

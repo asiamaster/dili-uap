@@ -57,7 +57,7 @@ public interface LoginLog extends IBaseDomain {
 
     @Column(name = "`type`")
     @FieldDef(label="操作类型")
-    @EditMode(editor = FieldEditor.Datetime, required = false)
+    @EditMode(editor = FieldEditor.Number, required = false)
     Integer getType();
 
     void setType(Integer type);

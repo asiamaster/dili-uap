@@ -119,6 +119,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
     @Override
     @Transactional(rollbackFor = Exception.class)
     public BaseOutput save(User user) {
+        user.setUserName(user.getUserName().toLowerCase());
         //验证邮箱是否重复
         User query = DTOUtils.newDTO(User.class);
         query.setEmail(user.getEmail());

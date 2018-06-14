@@ -17,7 +17,7 @@
                                   <#comboProvider _id="systemCode" _provider='systemProvider' _queryParams='{}'/>
                             </td>
                             <td style="padding:5px;">
-                                 <input name="type" id="type" style="width:100%;" editable="false" panelWidth="auto" panelHeight="auto" label="异常类型:" value=""/>
+                                 <input name="type" id="type" style="width:100%;" editable="false" panelWidth="auto" panelHeight="auto" label="异常类型:" labelAlign="right" value=""/>
                                  <#comboProvider _id="type" _provider='exceptionTypeProvider' _queryParams='{}'/>
                             </td>
                            
@@ -30,7 +30,7 @@
                         </td>
                             <td>
                                 <a href="#" class="easyui-linkbutton" data-options="width:80"  iconCls="icon-search" id="queryBtn"
-                                   onclick="queryGrid()">查询</a>
+                                   onclick="queryGrid()">查询</a>&nbsp;&nbsp;
                                 <a href="javascript:void(0)" class="easyui-linkbutton" data-options="width:80"  iconCls="icon-clear"  onclick="clearForm()">清除</a>
                             </td>
                         </tr>
