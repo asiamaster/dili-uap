@@ -193,6 +193,7 @@ public class LoginServiceImpl implements LoginService {
                 LoginLog loginLog = DTOUtils.as(loginDto, LoginLog.class);
                 loginLog.setSuccess(isSuccess ? Yn.YES.getCode() : Yn.NO.getCode());
                 loginLog.setMsg(msg);
+                loginLog.setType(LoginType.LOGIN.getCode());
                 //设置系统名称
                 if(StringUtils.isNotBlank(loginLog.getSystemCode())) {
                     System system = DTOUtils.newDTO(System.class);
