@@ -3,6 +3,7 @@ package com.dili.uap.service.impl;
 import com.dili.ss.base.BaseServiceImpl;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.domain.EasyuiPageOutput;
+import com.dili.ss.dto.DTO;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.metadata.ValueProviderUtils;
 import com.dili.uap.constants.UapConstants;
@@ -119,7 +120,9 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
     @Override
     @Transactional(rollbackFor = Exception.class)
     public BaseOutput save(User user) {
-        user.setUserName(user.getUserName().toLowerCase());
+        if (StringUtils.isNotBlank(user.getUserName())) {
+            user.setUserName(user.getUserName().toLowerCase());
+        }
         //验证邮箱是否重复
         User query = DTOUtils.newDTO(User.class);
         query.setEmail(user.getEmail());
@@ -146,7 +149,6 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
             user.setPassword(encryptPwd(UapConstants.DEFAULT_PASS));
             this.insertExactSimple(user);
         } else {
-            User update = this.get(user.getId());
             if (CollectionUtils.isNotEmpty(userList)) {
                 //匹配是否有用户ID不等当前修改记录的用户
                 boolean result = userList.stream().anyMatch(u -> !u.getId().equals(user.getId()));
@@ -164,13 +166,13 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
                     return BaseOutput.failure("手机号码已存在");
                 }
             }
-            update.setRealName(user.getRealName());
-            update.setCellphone(user.getCellphone());
-            update.setEmail(user.getEmail());
-            update.setPosition(user.getPosition());
-            update.setCardNumber(user.getCardNumber());
-            update.setDepartmentId(user.getDepartmentId());
-            update.setDescription(user.getDescription());
+            User update = DTOUtils.as(user, User.class);
+            DTO go = DTOUtils.go(update);
+            go.remove("userName");
+            go.remove("password");
+            go.remove("firmCode");
+            go.remove("created");
+            go.remove("modified");
             this.updateExactSimple(update);
         }
         return BaseOutput.success("操作成功");
