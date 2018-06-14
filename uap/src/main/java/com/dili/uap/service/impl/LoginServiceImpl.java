@@ -114,26 +114,26 @@ public class LoginServiceImpl implements LoginService {
             if(StringUtils.isBlank(loginDto.getSystemCode())){
                 loginDto.setSystemCode(UapConstants.UAP_SYSTEM_CODE);
             }
+            //记录用户id和市场编码，用于记录登录日志
+            loginDto.setUserId(user.getId());
+            loginDto.setFirmCode(user.getFirmCode());
+            //用户状态为锁定和禁用不允许登录
+            if(user.getState().equals(UserState.LOCKED.getCode())){
+                logLogin(loginDto, false, "用户已被锁定，请联系管理员");
+                return BaseOutput.failure("用户已被锁定，请联系管理员").setCode(ResultCode.NOT_AUTH_ERROR);
+            }
+            if (user.getState().equals(UserState.DISABLED.getCode())) {
+                logLogin(loginDto, false, "用户已被禁用，请联系管理员");
+                return BaseOutput.failure("用户已被禁用，请联系管理员!");
+            }
             //判断密码不正确，三次后锁定用户、锁定后的用户12小时后自动解锁
             if (user == null || !StringUtils.equals(user.getPassword(), this.encryptPwd(loginDto.getPassword()))) {
                 lockUser(user);
                 logLogin(loginDto, false, "用户名或密码错误");
                 return BaseOutput.failure("用户名或密码错误").setCode(ResultCode.NOT_AUTH_ERROR);
             }
-            //记录用户id和市场编码，用于记录登录日志
-            loginDto.setUserId(user.getId());
-            loginDto.setFirmCode(user.getFirmCode());
             //登录成功后清除锁定计时
             clearUserLock(user.getId());
-            if(user.getState().equals(UserState.LOCKED.getCode())){
-                logLogin(loginDto, false, "用户已被锁定，请联系管理员");
-                return BaseOutput.failure("用户已被锁定，请联系管理员").setCode(ResultCode.NOT_AUTH_ERROR);
-            }
-            //用户状态为锁定和禁用不允许登录
-            if (user.getState().equals(UserState.DISABLED.getCode()) || user.getState().equals(UserState.LOCKED.getCode())) {
-                return BaseOutput.failure("用户状态"+UserState.getUserState(user.getState()).getName()+", 不能进行登录!");
-            }
-
             //加载用户系统
             this.systemManager.initUserSystemInRedis(user.getId());
             // 加载用户url
