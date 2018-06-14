@@ -49,28 +49,28 @@ public interface LoginLog extends IBaseDomain {
     void setHost(String host);
 
     @Column(name = "`login_time`")
-    @FieldDef(label="登录时间")
+    @FieldDef(label="操作时间")
     @EditMode(editor = FieldEditor.Datetime, required = true)
     Date getLoginTime();
 
     void setLoginTime(Date loginTime);
 
-    @Column(name = "`logout_time`")
-    @FieldDef(label="登出时间")
+    @Column(name = "`type`")
+    @FieldDef(label="操作类型")
     @EditMode(editor = FieldEditor.Datetime, required = false)
-    Date getLogoutTime();
+    Integer getType();
 
-    void setLogoutTime(Date logoutTime);
+    void setType(Integer type);
 
     @Column(name = "`system_code`")
-    @FieldDef(label="登录系统编码", maxLength = 50)
+    @FieldDef(label="系统编码", maxLength = 50)
     @EditMode(editor = FieldEditor.Text, required = false)
     String getSystemCode();
 
     void setSystemCode(String systemCode);
 
     @Column(name = "`system_name`")
-    @FieldDef(label="登录系统名称", maxLength = 50)
+    @FieldDef(label="系统名称", maxLength = 50)
     @EditMode(editor = FieldEditor.Text, required = false)
     String getSystemName();
 
