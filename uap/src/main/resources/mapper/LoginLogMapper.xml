@@ -10,17 +10,17 @@
     <result column="ip" jdbcType="VARCHAR" property="ip" />
     <result column="host" jdbcType="VARCHAR" property="host" />
     <result column="login_time" jdbcType="TIMESTAMP" property="loginTime" />
-    <result column="logout_time" jdbcType="TIMESTAMP" property="logoutTime" />
+    <result column="type" jdbcType="TIMESTAMP" property="type" />
     <result column="system_id" jdbcType="BIGINT" property="systemId" />
     <result column="firm_code" jdbcType="VARCHAR" property="firmCode" />
     <result column="success" jdbcType="INTEGER" property="success" />
-    <result column="reason" jdbcType="VARCHAR" property="reason" />
+    <result column="msg" jdbcType="VARCHAR" property="reason" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--
       WARNING - @mbg.generated
     -->
-    id, user_id, ip, host, login_time, logout_time, system_code,system_name,firm_code,success,reason
+    id, user_id, ip, host, login_time, `type`, system_code,system_name,firm_code,success,msg
   </sql>
 
   <!--根据用户输入查询所有登录日志 -->

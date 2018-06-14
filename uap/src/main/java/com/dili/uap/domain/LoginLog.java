@@ -97,10 +97,10 @@ public interface LoginLog extends IBaseDomain {
 
     void setSuccess(Integer success);
 
-    @Column(name = "`reason`")
-    @FieldDef(label="失败原因", maxLength = 511)
+    @Column(name = "`msg`")
+    @FieldDef(label="结果信息", maxLength = 511)
     @EditMode(editor = FieldEditor.Text, required = false)
-    String getReason();
+    String getMsg();
 
-    void setReason(String reason);
+    void setMsg(String msg);
 }
