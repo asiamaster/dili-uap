@@ -14,6 +14,7 @@ import com.dili.uap.domain.SystemConfig;
 import com.dili.uap.service.SystemService;
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -130,7 +131,12 @@ public class SystemServiceImpl extends BaseServiceImpl<System, Long> implements 
 		super.delete(id);
 		return BaseOutput.success("删除成功");
 	}
-	
+
+	@Override
+	public List<System> listByUserId(Long userId) {
+		return getActualDao().listByUserId(userId);
+	}
+
 	/**
 	 * 是否通过code关系了字典数据(DataDictionary)
 	 * @param system

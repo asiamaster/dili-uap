@@ -11,7 +11,6 @@ import com.dili.uap.service.SystemService;
 import com.dili.uap.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -20,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.List;
 
 @Api("/index")
 @Controller
@@ -91,17 +90,7 @@ public class IndexController {
 	public String platform(ModelMap modelMap) {
 		UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
 		if (userTicket != null) {
-			List<System> systems = userSystemRedis.getRedisUserSystems(userTicket.getId());
-//			判断是否包含统一权限平台，如果不包含则添加，保证用户一定能看到平台页面
-//			if(!containsUap(systems)) {
-//				com.dili.uap.domain.System condition = DTOUtils.newDTO(com.dili.uap.domain.System.class);
-//				condition.setCode(UapConstants.UAP_SYSTEM_CODE);
-//				List<com.dili.uap.domain.System> uap = systemService.listByExample(condition);
-//				if (CollectionUtils.isEmpty(uap)) {
-//					throw new AppException("未配置统一权限系统");
-//				}
-//				systems.add(DTOUtils.as(uap.get(0), System.class));
-//			}
+			List<com.dili.uap.domain.System> systems = systemService.listByUserId(userTicket.getId());
 			modelMap.put("systems", systems);
 			modelMap.put("userid", userTicket.getId());
 			modelMap.put("username", userTicket.getRealName());
