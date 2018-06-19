@@ -29,9 +29,11 @@ $(function () {
         $(this).val($.trim($(this).val()));
     });
     //过滤某些特殊字符，不能被输入
-    $(document).on('keyup', 'input[type=text], textarea', function () {
-        var isContainsSpecialChar = /[(\`)(\~)(\^)(\<)(\>)(\/)(\$)(\—)(\-)]+/g;
-        $(this).val($(this).val().replace(isContainsSpecialChar, ''))
+    $(document).on('keydown', 'input[type=text], textarea', function (e) {
+        var isContainsSpecialChar = /[(\`)(\~)(\^)(\<)(\>)(\/)(\$)(\—)]+/g;
+        if (isContainsSpecialChar.test(e.key)) {
+            e.preventDefault();
+        }
     });
 
     /**
