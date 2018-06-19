@@ -101,6 +101,13 @@
            and d.firm_code = #{firmCode}
         </if>
           
+          
+     <if test="sort !=null">
+        ORDER BY `${sort}`
+        <if test="order !=null">
+          ${order}
+        </if>
+    </if>
     </select>
     
 </mapper>

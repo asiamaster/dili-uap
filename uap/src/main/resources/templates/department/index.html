@@ -13,10 +13,10 @@
     <div region="center" style="width: 100%;border:0px;" height="auto" border="false" align="center">
         <div class="easyui-panel" align="center" style="width:100%;height:100%;" border="false">
             <!-- =========================================================表格========================================================= -->
-            <table class="easyui-treegrid" title="部门列表" noheader="true" id="grid" sortName="id" sortOrder="asc"
+            <table class="easyui-treegrid" title="部门列表" noheader="true" id="grid" sortName="created" sortOrder="asc"
                    fitColumns="true" remoteSort="false" loadMsg="数据加载中..." singleSelect="true" method="post"
                    multiSort="true"
-                   sortName="id" align="center" fit="true" striped="true" toolbar="#toolbar" idField="id"
+                   align="center" fit="true" striped="true" toolbar="#toolbar" idField="id"
                    treeField="name" url="${contextPath!}/department/list.action"
                    data-options="loadFilter:treegridLoadFilter, _parentIdField:'parentId'">
                 <thead>
@@ -46,7 +46,7 @@
                        		if(datas.length>=2){
                        		   var defaultValue=datas[1].value;
                        		   if(defaultValue!=$('#firm').combobox('getValue')){
-                       		   	$('#firm').combobox('select',defaultValue);
+                       		   	//$('#firm').combobox('select',defaultValue);
                        		   }
                        		}
                        },onChange:function(newValue,oldValue){

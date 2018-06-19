@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -56,17 +57,20 @@ public class DepartmentController {
     @RequestMapping(value = "/list.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody
     Object list(Department department) {
-        // 首次进入
-        if (StringUtils.isEmpty(department.getFirmCode())) {
-            boolean isGroup = SessionContext.getSessionContext().getUserTicket().getFirmCode().equalsIgnoreCase(UapConstants.GROUP_CODE);
-            // 集团用户
-            if (isGroup) {
-                department.setFirmCode("group");
-            } else {
-                department.setFirmCode(SessionContext.getSessionContext().getUserTicket().getFirmCode());
-            }
-        } 
-        List<Map> list = departmentService.listDepartments(department);
+//        // 首次进入
+//        if (StringUtils.isEmpty(department.getFirmCode())) {
+//            boolean isGroup = SessionContext.getSessionContext().getUserTicket().getFirmCode().equalsIgnoreCase(UapConstants.GROUP_CODE);
+//            // 集团用户
+//            if (isGroup) {
+//                department.setFirmCode("group");
+//            } else {
+//                department.setFirmCode(SessionContext.getSessionContext().getUserTicket().getFirmCode());
+//            }
+//        } 
+    	List<Map> list=Collections.emptyList();
+    	if (StringUtils.isNotBlank(department.getFirmCode())) {
+    		list=departmentService.listDepartments(department);
+    	}
         return new EasyuiPageOutput(list.size(), list).toString();
 //        return list;
     }
