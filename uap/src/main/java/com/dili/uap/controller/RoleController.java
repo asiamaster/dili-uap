@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.domain.EasyuiPageOutput;
 import com.dili.ss.dto.DTOUtils;
+import com.dili.ss.dto.IDTO;
 import com.dili.uap.constants.UapConstants;
 import com.dili.uap.domain.Firm;
 import com.dili.uap.domain.Role;
@@ -11,15 +12,18 @@ import com.dili.uap.domain.dto.SystemResourceDto;
 import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.service.FirmService;
 import com.dili.uap.service.RoleService;
-import com.google.common.collect.Lists;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import java.util.Date;
@@ -79,7 +83,11 @@ public class RoleController {
 		@ApiImplicitParam(name="Role", paramType="form", value = "Role的form信息", required = true, dataType = "string")
 	})
     @RequestMapping(value="/insert.action", method = {RequestMethod.GET, RequestMethod.POST})
-    public @ResponseBody BaseOutput insert(Role role) {
+    public @ResponseBody BaseOutput insert(@Validated Role role) {
+        String validator = (String) role.mget(IDTO.ERROR_MSG_KEY);
+        if (StringUtils.isNotBlank(validator)){
+            return BaseOutput.failure(validator);
+        }
         role.setCreated(new Date());
         role.setModified(role.getCreated());
         return roleService.save(role).setData(role);
@@ -90,7 +98,11 @@ public class RoleController {
 		@ApiImplicitParam(name="Role", paramType="form", value = "Role的form信息", required = true, dataType = "string")
 	})
     @RequestMapping(value="/update.action", method = {RequestMethod.GET, RequestMethod.POST})
-    public @ResponseBody BaseOutput update(Role role) {
+    public @ResponseBody BaseOutput update(@Validated Role role) {
+        String validator = (String) role.mget(IDTO.ERROR_MSG_KEY);
+        if (StringUtils.isNotBlank(validator)){
+            return BaseOutput.failure(validator);
+        }
         Role updateRole = DTOUtils.newDTO(Role.class);
         updateRole.setId(role.getId());
         updateRole.setDescription(role.getDescription());
