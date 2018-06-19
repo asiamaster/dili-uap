@@ -107,6 +107,7 @@ public class RoleController {
         updateRole.setId(role.getId());
         updateRole.setDescription(role.getDescription());
         updateRole.setRoleName(role.getRoleName());
+        updateRole.setFirmCode(role.getFirmCode());
         return roleService.save(updateRole).setData(updateRole);
     }
 

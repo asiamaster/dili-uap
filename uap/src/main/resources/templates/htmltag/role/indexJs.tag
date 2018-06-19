@@ -107,15 +107,19 @@
                 editors[0].target.trigger('focus');
                 //获取市场字段的编辑框
                 var ed = $("#roleGrid").datagrid('getEditor', {index:index,field:'firmCode'});
-                //存在ID，数据编辑情况下
+                //存在ID，数据编辑情况下,市场信息不可更改
                 if (row.id != 'temp'){
-                    $(ed.target).datebox('readonly');
-                    $(ed.target).datebox('disable');
+                    var obj = {};
+                    obj.code = row.$_firmCode;
+                    obj.name = row.firmCode;
+                    var datas = [];
+                    datas.push(obj);
+                    $(ed.target).combobox('loadData', datas);
                 }else{
                     //新增数据时，加载市场信息
                     $(ed.target).combobox("loadData", firms);
-                    firmLoadSuccess(index);
                 }
+                firmLoadSuccess(index);
                 setOptBtnDisplay(true);
             },
             onAfterEdit: function () {
