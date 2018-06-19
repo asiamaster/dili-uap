@@ -5,6 +5,7 @@ import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.domain.EasyuiPageOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.dto.IDTO;
+import com.dili.ss.metadata.ValueProviderUtils;
 import com.dili.uap.constants.UapConstants;
 import com.dili.uap.domain.DataAuth;
 import com.dili.uap.domain.Firm;
@@ -133,9 +134,10 @@ public class UserController {
     @ApiOperation(value = "根据角色id查询User", notes = "根据角色id查询User，返回列表信息")
     @RequestMapping(value = "/findUserByRole.action", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
-    public String findUserByRole(Long roleId) {
+    public String findUserByRole(Long roleId,User user) throws Exception {
         List<User> retList = userService.findUserByRole(roleId);
-        return new EasyuiPageOutput(retList.size(), retList).toString();
+        List results = ValueProviderUtils.buildDataByProvider(user, retList);
+        return new EasyuiPageOutput(results.size(), results).toString();
     }
 
     @ApiOperation(value = "修改密码", notes = "修改密码")

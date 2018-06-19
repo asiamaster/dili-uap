@@ -308,7 +308,7 @@
         if (null == opts.url || "" == opts.url) {
             opts.url = "${contextPath!}/user/findUserByRole.action";
         }
-        $("#userListGrid").datagrid("load", {roleId:selected.id});
+        $("#userListGrid").datagrid("load",bindGridMeta2Data("userListGrid", {roleId:selected.id}));
         $('#userListDlg').dialog('open');
         $('#userListDlg').dialog('center');
     }
