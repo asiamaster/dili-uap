@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.domain.EasyuiPageOutput;
 import com.dili.ss.dto.DTOUtils;
+import com.dili.ss.dto.IDTO;
 import com.dili.uap.constants.UapConstants;
 import com.dili.uap.domain.DataAuth;
 import com.dili.uap.domain.Firm;
@@ -16,16 +17,19 @@ import com.dili.uap.service.FirmService;
 import com.dili.uap.service.UserDataAuthService;
 import com.dili.uap.service.UserService;
 import com.dili.uap.utils.PinYinUtil;
+import com.dili.uap.validator.group.AddView;
+import com.dili.uap.validator.group.ModifyView;
 import com.google.common.collect.Maps;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.collections4.CollectionUtils;
-import org.omg.CORBA.UserException;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -96,14 +100,22 @@ public class UserController {
     @ApiOperation("新增User")
     @RequestMapping(value = "/insert.action", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
-    public BaseOutput insert(User user) {
+    public BaseOutput insert(@Validated(AddView.class) User user) {
+        String validator = (String) user.mget(IDTO.ERROR_MSG_KEY);
+        if (StringUtils.isNotBlank(validator)) {
+            return BaseOutput.failure(validator);
+        }
         return userService.save(user);
     }
 
     @ApiOperation("修改User")
     @RequestMapping(value = "/update.action", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
-    public BaseOutput update(User user) {
+    public BaseOutput update(@Validated(ModifyView.class) User user) {
+        String validator = (String) user.mget(IDTO.ERROR_MSG_KEY);
+        if (StringUtils.isNotBlank(validator)) {
+            return BaseOutput.failure(validator);
+        }
         return userService.save(user);
     }
 
@@ -181,7 +193,7 @@ public class UserController {
     public BaseOutput saveUserRoles(Long userId,String roleIds[]){
         return userService.saveUserRoles(userId,roleIds);
     }
-    
+
 
     @ApiOperation(value = "获取当前登录用户的信息", notes = "获取用户信息")
     @ApiImplicitParams({})

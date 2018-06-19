@@ -6,12 +6,16 @@ import com.dili.ss.dto.IMybatisForceParams;
 import com.dili.ss.metadata.FieldEditor;
 import com.dili.ss.metadata.annotation.EditMode;
 import com.dili.ss.metadata.annotation.FieldDef;
+import com.dili.uap.validator.group.AddView;
+
 import java.util.Date;
 import javax.persistence.*;
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  * 由MyBatis Generator工具自动生成
@@ -33,6 +37,8 @@ public interface Role extends IBaseDomain,IMybatisForceParams {
     @FieldDef(label="角色名", maxLength = 255)
     @EditMode(editor = FieldEditor.Text, required = true)
     @Like
+    @NotNull(message = "角色名不能为空")
+    @Size(min = 2,max = 20,message = "角色名称长度介于2-20之间")
     String getRoleName();
 
     void setRoleName(String roleName);
@@ -40,6 +46,7 @@ public interface Role extends IBaseDomain,IMybatisForceParams {
     @Column(name = "`description`")
     @FieldDef(label="角色描述", maxLength = 255)
     @EditMode(editor = FieldEditor.Text)
+    @Size(max = 20,message = "角色描述长度不能超过20个字符")
     String getDescription();
 
     void setDescription(String description);
