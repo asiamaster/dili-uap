@@ -68,7 +68,7 @@
         WHERE
         ud.user_id =  #{userId}
         <if test="firm_code != null and firm_code != ''">
-            d.firm_code = #{firmCode}
+           and d.firm_code = #{firmCode}
         </if>
     </select>
 
