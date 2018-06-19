@@ -113,6 +113,8 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements Role
         Set<String> checkedRole = Sets.newHashSet();
         //选中的系统
         Set<String> checkedSystem = Sets.newHashSet();
+        //有菜单资源的系统集
+        Set<Long> hasMenu = Sets.newHashSet();
         /**
          * 遍历已选择的资源信息，根据是否是菜单，添加不同的前缀
          */
@@ -132,12 +134,12 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements Role
             //如果是菜单，则ID加上对应前缀
             if (s.getMenu().intValue() == Yn.YES.getCode().intValue()) {
                 //设置节点为关闭
-                s.setState("closed");
+//                s.setState("closed");
                 s.setTreeId(UapConstants.MENU_PREFIX + s.getTreeId());
             } else {
                 s.setTreeId(UapConstants.RESOURCE_PREFIX + s.getTreeId());
                 //设置节点为开启
-                s.setState("open");
+//                s.setState("open");
             }
             //只有在菜单中，才会存在父ID为空的情况
             if (StringUtils.isBlank(s.getParentId())) {
@@ -155,23 +157,29 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements Role
             } else {
                 s.setChecked(false);
             }
+            if (MenuType.DIRECTORY.getCode().intValue() == Integer.parseInt(s.getType())) {
+                s.setState("closed");
+            }
             s.setType(MenuType.getMenuType(Integer.parseInt(s.getType())).getName());
+            hasMenu.add(s.getSystemId());
         });
 
         /**
          * 遍历系统信息，存入到需要显示的树集中
          */
         systemList.stream().forEach(s -> {
-            SystemResourceDto dto = DTOUtils.newDTO(SystemResourceDto.class);
-            dto.setTreeId(UapConstants.SYSTEM_PREFIX + s.getId());
-            dto.setName(s.getName());
-            dto.setDescription(s.getDescription());
-            dto.setState("closed");
-            dto.setType("系统");
-            if (checkedSystem.contains(dto.getTreeId())){
-                dto.setChecked(true);
+            if (hasMenu.contains(s.getId())){
+                SystemResourceDto dto = DTOUtils.newDTO(SystemResourceDto.class);
+                dto.setTreeId(UapConstants.SYSTEM_PREFIX + s.getId());
+                dto.setName(s.getName());
+                dto.setDescription(s.getDescription());
+                dto.setState("closed");
+                dto.setType("系统");
+                if (checkedSystem.contains(dto.getTreeId())){
+                    dto.setChecked(true);
+                }
+                target.add(dto);
             }
-            target.add(dto);
         });
 
         return target;

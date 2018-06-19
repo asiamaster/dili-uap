@@ -69,9 +69,9 @@
 
     <!-- 查询所有的菜单及资源信息 -->
     <select id="getRoleMenuAndResource" resultType="com.dili.uap.domain.dto.SystemResourceDto">
-          SELECT m.id AS treeId,m.parent_id AS parentId,
+          (SELECT m.id AS treeId,m.parent_id AS parentId,
             m.system_id AS systemId,m.`name`,m.description,1 AS menu,m.type
-          FROM menu m
+          FROM menu m order by m.order_number asc)
         UNION ALL
           SELECT
               r.id AS treeId,r.menu_id AS parentId,NULL AS systemId,r.`name`,r.description,0 AS menu,'3' as type
