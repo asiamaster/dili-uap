@@ -68,9 +68,19 @@ public class DepartmentController {
 //            }
 //        } 
     	List<Map> list=Collections.emptyList();
-    	if (StringUtils.isNotBlank(department.getFirmCode())) {
+    	//如果有选中市场，则以选中市场为过滤条件
+    	//如果没有选中市场，集团用户不显示任何数据，非集团用户显示其所属于市场数据(页面上没有市场选择框)
+    	if (StringUtils.isBlank(department.getFirmCode())) {
+    		boolean isGroup = SessionContext.getSessionContext().getUserTicket().getFirmCode().equalsIgnoreCase(UapConstants.GROUP_CODE);
+            // 非集团用户
+            if (!isGroup) {
+                department.setFirmCode(SessionContext.getSessionContext().getUserTicket().getFirmCode());
+                list=departmentService.listDepartments(department);
+            }
+    	}else {
     		list=departmentService.listDepartments(department);
     	}
+    	
         return new EasyuiPageOutput(list.size(), list).toString();
 //        return list;
     }
