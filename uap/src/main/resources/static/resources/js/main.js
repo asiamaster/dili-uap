@@ -60,7 +60,14 @@ $(function () {
                 return /^[a-zA-Z0-9\u4e00-\u9fa5_]+$/.test(value);
             },
             message:'只能包含中文、英文、数字、下划线'
-        }
+        },
+        //验证银行卡号规则：目前只要求是数字，且长度在12-22位之间即可
+        bankCard: {
+            validator: function(value, param){
+                return /^[1-9]\d{11,21}$/.test(value);
+            },
+            message: '请输入正确的卡号。'
+        },
     });
 })
 
