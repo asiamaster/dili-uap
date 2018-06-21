@@ -124,6 +124,7 @@
         $('#viewDlg').dialog('center');
         var formData = $.extend({}, selected);
         formData = addKeyStartWith(formData, "_view_");
+        $('#_view_form').form('clear');
         $('#_view_form').form('load', formData);
         $('#viewDlg input[class^=easyui-]').textbox("readonly", true);
         $('#viewDlg input[class^=easyui-]').textbox("editable", false);
@@ -159,6 +160,7 @@
         formFocus("_form", "_userName");
         var formData = $.extend({}, selected);
         formData = addKeyStartWith(getOriginalData(formData), "_");
+        $('#_form').form('clear');
         $('#_form').form('load', formData);
         $("#_userName").textbox("disable");
         // $("#_password").textbox("disable");
