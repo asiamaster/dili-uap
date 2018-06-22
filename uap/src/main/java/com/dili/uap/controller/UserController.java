@@ -102,7 +102,7 @@ public class UserController {
     @RequestMapping(value = "/insert.action", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
     public BaseOutput insert(@Validated(AddView.class) User user) {
-        String validator = (String) user.mget(IDTO.ERROR_MSG_KEY);
+        String validator = (String) user.aget(IDTO.ERROR_MSG_KEY);
         if (StringUtils.isNotBlank(validator)) {
             return BaseOutput.failure(validator);
         }
@@ -113,7 +113,7 @@ public class UserController {
     @RequestMapping(value = "/update.action", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
     public BaseOutput update(@Validated(ModifyView.class) User user) {
-        String validator = (String) user.mget(IDTO.ERROR_MSG_KEY);
+        String validator = (String) user.aget(IDTO.ERROR_MSG_KEY);
         if (StringUtils.isNotBlank(validator)) {
             return BaseOutput.failure(validator);
         }

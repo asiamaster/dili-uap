@@ -93,7 +93,7 @@ public class RoleController {
 	})
     @RequestMapping(value="/insert.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody BaseOutput insert(@Validated Role role) {
-        String validator = (String) role.mget(IDTO.ERROR_MSG_KEY);
+        String validator = (String) role.aget(IDTO.ERROR_MSG_KEY);
         if (StringUtils.isNotBlank(validator)){
             return BaseOutput.failure(validator);
         }
@@ -108,7 +108,7 @@ public class RoleController {
 	})
     @RequestMapping(value="/update.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody BaseOutput update(@Validated Role role) {
-        String validator = (String) role.mget(IDTO.ERROR_MSG_KEY);
+        String validator = (String) role.aget(IDTO.ERROR_MSG_KEY);
         if (StringUtils.isNotBlank(validator)){
             return BaseOutput.failure(validator);
         }
