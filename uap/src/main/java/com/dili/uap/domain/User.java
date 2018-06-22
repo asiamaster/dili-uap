@@ -83,6 +83,13 @@ public interface User extends IBaseDomain,IMybatisForceParams {
 
     void setCardNumber(String cardNumber);
 
+    @Column(name = "`locked`")
+    @FieldDef(label="锁定时间")
+    @EditMode(editor = FieldEditor.Datetime, required = true)
+    Date getLocked();
+
+    void setLocked(Date locked);
+
     @Column(name = "`created`")
     @FieldDef(label="创建时间")
     @EditMode(editor = FieldEditor.Datetime, required = true)

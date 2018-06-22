@@ -113,4 +113,11 @@ public interface UserTicket {
 
 	void setEmail(String email);
 
+	@Column(name = "`locked`")
+	@FieldDef(label="锁定时间")
+	@EditMode(editor = FieldEditor.Datetime, required = true)
+	Date getLocked();
+
+	void setLocked(Date locked);
+
 }

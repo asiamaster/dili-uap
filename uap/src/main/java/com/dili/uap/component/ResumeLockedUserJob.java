@@ -68,7 +68,7 @@ public class ResumeLockedUserJob implements ApplicationListener<ContextRefreshed
         Long resumeDuration = Long.parseLong(systemConfig.getValue()) * 1000;
 		lockedUsers.forEach( lockedUser -> {
 		    //超过锁定时长就解锁
-			if((now - lockedUser.getModified().getTime()) >= resumeDuration){
+			if((now - lockedUser.getLocked().getTime()) >= resumeDuration){
                 lockedUser.setState(UserState.NORMAL.getCode());
                 userService.updateSelective(lockedUser);
 			}

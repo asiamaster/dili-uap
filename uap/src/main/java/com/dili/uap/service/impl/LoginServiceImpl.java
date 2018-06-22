@@ -344,6 +344,7 @@ public class LoginServiceImpl implements LoginService {
         if (!user.getState().equals(UserState.LOCKED.getCode())) {
             User updateUser = DTOUtils.newDTO(User.class);
             updateUser.setId(user.getId());
+            updateUser.setLocked(new Date());
             updateUser.setState(UserState.LOCKED.getCode());
             this.userMapper.updateByPrimaryKeySelective(updateUser);
             //清空计时器

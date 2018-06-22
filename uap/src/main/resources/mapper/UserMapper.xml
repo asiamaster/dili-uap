@@ -12,6 +12,7 @@
     <result column="department_id" jdbcType="BIGINT" property="departmentId" />
     <result column="position" jdbcType="VARCHAR" property="position" />
     <result column="card_number" jdbcType="VARCHAR" property="cardNumber" />
+    <result column="locked" jdbcType="TIMESTAMP" property="locked" />
     <result column="created" jdbcType="TIMESTAMP" property="created" />
     <result column="modified" jdbcType="TIMESTAMP" property="modified" />
     <result column="state" jdbcType="INTEGER" property="state" />
@@ -25,7 +26,7 @@
       WARNING - @mbg.generated
     -->
     id, user_name, password, firm_code, department_id, position, card_number, created, 
-    modified, state, real_name, serial_number, cellphone, email
+    modified, state, real_name, serial_number, cellphone, email,locked
   </sql>
   <select id="selectBy" parameterType="java.lang.Long" resultMap="BaseResultMap">
     <!--
@@ -36,54 +37,7 @@
     from user
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <update id="updateBy" parameterType="com.dili.uap.domain.User">
-    <!--
-      WARNING - @mbg.generated
-    -->
-    update user
-    <set>
-      <if test="userName != null">
-        user_name = #{userName,jdbcType=VARCHAR},
-      </if>
-      <if test="password != null">
-        password = #{password,jdbcType=VARCHAR},
-      </if>
-      <if test="firmCode != null">
-        firm_code = #{firmCode,jdbcType=VARCHAR},
-      </if>
-      <if test="departmentId != null">
-        department_id = #{departmentId,jdbcType=BIGINT},
-      </if>
-      <if test="position != null">
-        position = #{position,jdbcType=VARCHAR},
-      </if>
-      <if test="cardNumber != null">
-        card_number = #{cardNumber,jdbcType=VARCHAR},
-      </if>
-      <if test="created != null">
-        created = #{created,jdbcType=TIMESTAMP},
-      </if>
-      <if test="modified != null">
-        modified = #{modified,jdbcType=TIMESTAMP},
-      </if>
-      <if test="state != null">
-        state = #{state,jdbcType=INTEGER},
-      </if>
-      <if test="realName != null">
-        real_name = #{realName,jdbcType=VARCHAR},
-      </if>
-      <if test="serialNumber != null">
-        serial_number = #{serialNumber,jdbcType=VARCHAR},
-      </if>
-      <if test="cellphone != null">
-        cellphone = #{cellphone,jdbcType=VARCHAR},
-      </if>
-      <if test="email != null">
-        email = #{email,jdbcType=VARCHAR},
-      </if>
-    </set>
-    where id = #{id,jdbcType=BIGINT}
-  </update>
+
 
   <!-- 根据角色ID查询用户列表信息 -->
   <select id="findUserByRole" parameterType="Long" resultMap="BaseResultMap">
