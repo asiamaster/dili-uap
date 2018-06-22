@@ -6,6 +6,7 @@ import com.dili.ss.domain.EasyuiPageOutput;
 import com.dili.ss.dto.DTO;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.metadata.ValueProviderUtils;
+import com.dili.ss.util.POJOUtils;
 import com.dili.uap.constants.UapConstants;
 import com.dili.uap.dao.*;
 import com.dili.uap.domain.*;
@@ -293,6 +294,9 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
         if (domain.getRows() != null && domain.getRows() >= 1) {
             PageHelper.startPage(domain.getPage(), domain.getRows());
         }
+        if (StringUtils.isNotBlank(domain.getSort())) {
+            domain.setSort(POJOUtils.humpToLineFast(domain.getSort()));
+        }
         List<UserDto> users = getActualDao().selectForPage(domain);
         long total = users instanceof Page ? ((Page) users).getTotal() : (long) users.size();
         List results = useProvider ? ValueProviderUtils.buildDataByProvider(domain, users) : users;
@@ -413,7 +417,6 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
         if (CollectionUtils.isEmpty(onlineUserIds)) {
             return new EasyuiPageOutput(0, Lists.newArrayList());
         }
-        List queryList = Lists.newArrayList();
         user.setIds(onlineUserIds);
         return super.listEasyuiPageByExample(user, true);
     }

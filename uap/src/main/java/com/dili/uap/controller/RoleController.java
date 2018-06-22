@@ -1,10 +1,13 @@
 package com.dili.uap.controller;
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.domain.EasyuiPageOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.dto.IDTO;
+import com.dili.ss.metadata.ValueProvider;
+import com.dili.ss.metadata.ValueProviderUtils;
 import com.dili.uap.constants.UapConstants;
 import com.dili.uap.domain.Firm;
 import com.dili.uap.domain.Role;
@@ -26,8 +29,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 由MyBatis Generator工具自动生成
@@ -65,8 +68,14 @@ public class RoleController {
 		@ApiImplicitParam(name="Role", paramType="form", value = "Role的form信息", required = false, dataType = "string")
 	})
     @RequestMapping(value="/list.action", method = {RequestMethod.GET, RequestMethod.POST})
-    public @ResponseBody List<Role> list(Role role) {
-        return roleService.list(role);
+    @ResponseBody
+    public String list(Role role) throws Exception {
+        List<Role> roleList = roleService.list(role);
+        List<Role> sortList = roleList.stream().sorted(Comparator.comparing(r -> {
+            return UapConstants.GROUP_CODE.equals(r.getFirmCode()) ? -1 : 1;
+        })).collect(Collectors.toList());
+        List<Map> list = ValueProviderUtils.buildDataByProvider(getRoleMetadata(), sortList);
+        return JSONObject.toJSONString(list);
     }
 
     @ApiOperation(value="分页查询Role", notes = "分页查询Role，返回easyui分页信息")
@@ -141,5 +150,20 @@ public class RoleController {
     @RequestMapping(value = "/unbindRoleUser.action", method = { RequestMethod.GET, RequestMethod.POST })
     public @ResponseBody BaseOutput unbindRoleUser(Long roleId,Long userId) {
         return roleService.unbindRoleUser(roleId,userId);
+    }
+
+    /**
+     * 由于无法获取到表头上的meta信息，展示客户详情只有id参数，所以需要在后台构建
+     * @return
+     */
+    private Map getRoleMetadata(){
+        Map<Object, Object> metadata = new HashMap<>();
+        //市场信息
+        JSONObject firmCodeProvider = new JSONObject();
+        firmCodeProvider.put("provider", "firmCodeProvider");
+        firmCodeProvider.put(ValueProvider.FIELD_KEY, "firmCode");
+        metadata.put("firmCode", firmCodeProvider);
+        
+        return metadata;
     }
 }
