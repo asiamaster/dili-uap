@@ -1,5 +1,6 @@
 package com.dili.uap.sdk.domain;
 
+import com.dili.ss.dto.IDTO;
 import com.dili.ss.metadata.FieldEditor;
 import com.dili.ss.metadata.annotation.EditMode;
 import com.dili.ss.metadata.annotation.FieldDef;
@@ -12,7 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-public interface UserTicket {
+public interface UserTicket extends IDTO {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "`id`")

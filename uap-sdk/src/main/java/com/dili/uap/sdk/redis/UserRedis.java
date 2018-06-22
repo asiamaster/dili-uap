@@ -1,6 +1,8 @@
 package com.dili.uap.sdk.redis;
 
 import com.alibaba.fastjson.JSONObject;
+import com.dili.ss.dto.DTO;
+import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.manager.SessionRedisManager;
 import com.dili.uap.sdk.session.SessionConstants;
@@ -38,26 +40,14 @@ public class UserRedis {
         return Long.valueOf(rst);
     }
 
-
-    /**
-     *  根据sessionId获取UserTicket
-     * @param sessionId
-     * @return
-     */
-    public UserTicket getUser(String sessionId) {
-        return getUser(sessionId, UserTicket.class);
-    }
-
     /**
      * 根据sessionId获取数据，支持转型为指定的clazz<br/>
      * 如果有数据则将redis超时推后SessionConstants.SESSION_TIMEOUT的时间<br/>
      *
      * @param sessionId
-     * @param clazz
-     * @param <T>
      * @return
      */
-    private <T> T getUser(String sessionId, Class<T> clazz) {
+    public UserTicket getUser(String sessionId) {
         String sessionData = getSession(sessionId);
         if (StringUtils.isBlank(sessionData)) {
             return null;
@@ -65,7 +55,8 @@ public class UserRedis {
         //推后SESSIONID_USERID_KEY+sessionId和SessionConstants.USERID_SESSIONID_KEY+userId
         redisUtil.expire(SessionConstants.SESSIONID_USERID_KEY + sessionId, SessionConstants.SESSION_TIMEOUT, TimeUnit.SECONDS);
         redisUtil.expire(SessionConstants.USERID_SESSIONID_KEY + getUserIdBySessionId(sessionId), SessionConstants.SESSION_TIMEOUT, TimeUnit.SECONDS);
-        return JSONObject.parseObject(String.valueOf(JSONObject.parseObject(sessionData).get(SessionConstants.LOGGED_USER)), clazz);
+        DTO userDto = JSONObject.parseObject(String.valueOf(JSONObject.parseObject(sessionData).get(SessionConstants.LOGGED_USER)), DTO.class);
+        return DTOUtils.proxy(userDto, UserTicket.class);
     }
     
     /**
