@@ -59,6 +59,7 @@
       FROM user u LEFT JOIN user_role ur ON u.id=ur.user_id LEFT JOIN role r ON ur.role_id=r.id
       <include refid="QUERY_WHERE_CLAUSE" />
       GROUP BY  u.id
+      order by ${sort} ${order}
   </select>
 
   <!-- 全部条件(更多功能可以通过queryData扩展实现)  -->

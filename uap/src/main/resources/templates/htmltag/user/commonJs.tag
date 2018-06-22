@@ -39,9 +39,17 @@
     function loadRoles(firmCode) {
         var obj = {id: null, roleName: '-- 请选择 --'};
         if (firmCode){
-            $.post('${contextPath!}/role/list.action', {firmCode: firmCode}, function (ret) {
+            var params = {sort:'frim_code',order:'desc'};
+            if ("group" != firmCode) {
+                params = {firmCode: firmCode};
+            }
+            $.post('${contextPath!}/role/list.action',params, function (ret) {
                 if (ret) {
-
+                    if ("group" == firmCode) {
+                        $.each(ret, function (index, item) {
+                            item.roleName = item.firmCode + "—" + item.roleName;
+                        })
+                    }
                     //动态添加'请选择'
                     ret.unshift(obj);
                     $('#roleId').combobox("clear");
