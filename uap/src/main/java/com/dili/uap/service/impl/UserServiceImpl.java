@@ -115,10 +115,6 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
         return BaseOutput.success("修改密码成功");
     }
 
-    private String encryptPwd(String passwd) {
-        return md5Util.getMD5ofStr(passwd).substring(6, 24);
-    }
-
     @Override
     @Transactional(rollbackFor = Exception.class)
     public BaseOutput save(User user) {
@@ -445,5 +441,13 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
         userRoleMapper.delete(userRole);
         //删除用户本身
         return super.delete(id);
+    }
+    /**
+     * 对密码加密
+     * @param passwd
+     * @return
+     */
+    private String encryptPwd(String passwd) {
+        return md5Util.getMD5ofStr(passwd).substring(6, 24);
     }
 }
