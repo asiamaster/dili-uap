@@ -5,7 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.domain.DataAuth;
-import com.dili.uap.domain.SystemExceptionLog;
+import com.dili.uap.sdk.domain.SystemExceptionLog;
 import com.dili.uap.domain.UserDataAuth;
 import com.dili.uap.manager.DataAuthManager;
 import com.dili.uap.service.DataAuthService;

@@ -1,7 +1,7 @@
 package com.dili.uap.controller;
 
 import com.dili.ss.domain.BaseOutput;
-import com.dili.uap.domain.SystemExceptionLog;
+import com.dili.uap.sdk.domain.SystemExceptionLog;
 import com.dili.uap.domain.dto.SystemExceptionLogDto;
 import com.dili.uap.service.SystemExceptionLogService;
 import io.swagger.annotations.Api;

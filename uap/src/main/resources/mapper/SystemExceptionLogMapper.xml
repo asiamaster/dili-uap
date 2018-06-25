@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.dili.uap.dao.SystemExceptionLogMapper">
-  <resultMap id="BaseResultMap" type="com.dili.uap.domain.SystemExceptionLog">
+  <resultMap id="BaseResultMap" type="com.dili.uap.sdk.domain.SystemExceptionLog">
     <!--
       WARNING - @mbg.generated
     -->
@@ -33,7 +33,7 @@
     from system_exception_log
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <update id="updateBy" parameterType="com.dili.uap.domain.SystemExceptionLog">
+  <update id="updateBy" parameterType="com.dili.uap.sdk.domain.SystemExceptionLog">
     <!--
       WARNING - @mbg.generated
     -->

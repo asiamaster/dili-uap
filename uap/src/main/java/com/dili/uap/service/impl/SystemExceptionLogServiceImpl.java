@@ -2,7 +2,7 @@ package com.dili.uap.service.impl;
 
 import com.dili.ss.base.BaseServiceImpl;
 import com.dili.uap.dao.SystemExceptionLogMapper;
-import com.dili.uap.domain.SystemExceptionLog;
+import com.dili.uap.sdk.domain.SystemExceptionLog;
 import com.dili.uap.service.SystemExceptionLogService;
 import org.springframework.stereotype.Service;
 

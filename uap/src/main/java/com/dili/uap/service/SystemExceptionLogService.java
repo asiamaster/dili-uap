@@ -1,7 +1,7 @@
 package com.dili.uap.service;
 
 import com.dili.ss.base.BaseService;
-import com.dili.uap.domain.SystemExceptionLog;
+import com.dili.uap.sdk.domain.SystemExceptionLog;
 
 /**
  * 由MyBatis Generator工具自动生成

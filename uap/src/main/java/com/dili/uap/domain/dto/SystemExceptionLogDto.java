@@ -5,7 +5,7 @@ import java.util.Date;
 import javax.persistence.Column;
 
 import com.dili.ss.domain.annotation.Operator;
-import com.dili.uap.domain.SystemExceptionLog;
+import com.dili.uap.sdk.domain.SystemExceptionLog;
 
 public interface SystemExceptionLogDto extends SystemExceptionLog{
 	 @Column(name = "`exception_time`")
