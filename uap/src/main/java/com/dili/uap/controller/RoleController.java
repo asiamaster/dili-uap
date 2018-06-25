@@ -72,7 +72,11 @@ public class RoleController {
     public String list(Role role) throws Exception {
         List<Role> roleList = roleService.list(role);
         List<Role> sortList = roleList.stream().sorted(Comparator.comparing(r -> {
-            return UapConstants.GROUP_CODE.equals(r.getFirmCode()) ? -1 : 1;
+            if (UapConstants.GROUP_CODE.equals(r.getFirmCode())) {
+                return -2;
+            } else {
+                return r.getFirmCode().intern().hashCode();
+            }
         })).collect(Collectors.toList());
         List<Map> list = ValueProviderUtils.buildDataByProvider(getRoleMetadata(), sortList);
         return JSONObject.toJSONString(list);
