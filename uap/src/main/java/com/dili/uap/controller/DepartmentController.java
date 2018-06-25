@@ -1,18 +1,9 @@
 package com.dili.uap.controller;
 
-import com.dili.ss.domain.BaseOutput;
-import com.dili.ss.domain.EasyuiPageOutput;
-import com.dili.ss.dto.DTOUtils;
-import com.dili.uap.constants.UapConstants;
-import com.dili.uap.domain.Department;
-import com.dili.uap.domain.Firm;
-import com.dili.uap.sdk.session.SessionContext;
-import com.dili.uap.service.DepartmentService;
-import com.dili.uap.service.FirmService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,9 +12,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import com.dili.ss.domain.BaseOutput;
+import com.dili.ss.domain.EasyuiPageOutput;
+import com.dili.ss.dto.DTOUtils;
+import com.dili.uap.constants.UapConstants;
+import com.dili.uap.domain.Department;
+import com.dili.uap.sdk.session.SessionContext;
+import com.dili.uap.service.DepartmentService;
+import com.dili.uap.service.FirmService;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * 由MyBatis Generator工具自动生成
@@ -142,23 +143,22 @@ public class DepartmentController {
      * @return
      */
     private Department trimIdAndParentId(Department department) {
-    	if(department.aget("id")!=null) {
-    		String id = department.aget("id").toString();
-            if(id.startsWith("department_")){
-            	department.setId(Long.parseLong(id.replace("department_", "")));
-            }
-    	}
-        	if(department.aget("parentId")!=null) {
-                String parentId = department.aget("parentId").toString();
-                if(parentId.startsWith("department_")){
-                	department.setParentId(Long.parseLong(parentId.replace("department_", "")));
-                }else {
-                	department.setParentId(null);
-                }
-        	}
-         
+		if (department.aget("id") != null) {
+			String id = department.aget("id").toString();
+			if (id.startsWith("department_")) {
+				department.setId(Long.parseLong(id.replace("department_", "")));
+			}
+		}
+		if (department.aget("parentId") != null) {
+			String parentId = department.aget("parentId").toString();
+			if (parentId.startsWith("department_")) {
+				department.setParentId(Long.parseLong(parentId.replace("department_", "")));
+			} else {
+				department.setParentId(null);
+			}
+		}
 
-        return department;
+		return department;
     }
     /**
      * 在返回数据前加上id以及parentId的前辍
@@ -166,19 +166,19 @@ public class DepartmentController {
      * @return
      */
     private BaseOutput<?> resetIdAndParentId(BaseOutput<Department>out) {
-    	if(!out.isSuccess()) {
-    		return out;
-    	}
-    	Department department=out.getData();
-    		String id =department.getId().toString();
-        	department.aset("id", "department_"+id);
-        	
-        	if(department.getParentId()!=null) {
-                department.aset("parentId", "department_"+department.getParentId());
-        	}else {
-        		department.aset("parentId", "firm"+department.getFirmCode());
-        	}
-        	Object obj=DTOUtils.go(department);
-        	 return BaseOutput.success().setData(obj);
+		if (!out.isSuccess()) {
+			return out;
+		}
+		Department department = out.getData();
+		String id = department.getId().toString();
+		department.aset("id", "department_" + id);
+
+		if (department.getParentId() != null) {
+			department.aset("parentId", "department_" + department.getParentId());
+		} else {
+			department.aset("parentId", "firm_" + department.getFirmCode());
+		}
+		Object obj = DTOUtils.go(department);
+		return BaseOutput.success().setData(obj);
     }
 }
