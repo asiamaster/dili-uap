@@ -2,7 +2,7 @@ package com.dili.uap.service.impl;
 
 import com.dili.ss.base.BaseServiceImpl;
 import com.dili.uap.dao.SystemConfigMapper;
-import com.dili.uap.domain.SystemConfig;
+import com.dili.uap.sdk.domain.SystemConfig;
 import com.dili.uap.service.SystemConfigService;
 import org.springframework.stereotype.Service;
 

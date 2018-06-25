@@ -9,7 +9,7 @@ import com.dili.uap.dao.SystemConfigMapper;
 import com.dili.uap.dao.UserMapper;
 import com.dili.uap.domain.LoginLog;
 import com.dili.uap.sdk.domain.System;
-import com.dili.uap.domain.SystemConfig;
+import com.dili.uap.sdk.domain.SystemConfig;
 import com.dili.uap.sdk.domain.User;
 import com.dili.uap.domain.dto.LoginDto;
 import com.dili.uap.domain.dto.LoginResult;

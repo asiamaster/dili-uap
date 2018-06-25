@@ -2,7 +2,7 @@ package com.dili.uap.service;
 
 import com.dili.ss.base.BaseService;
 import com.dili.ss.domain.BaseOutput;
-import com.dili.uap.domain.DataDictionary;
+import com.dili.uap.sdk.domain.DataDictionary;
 
 /**
  * 由MyBatis Generator工具自动生成

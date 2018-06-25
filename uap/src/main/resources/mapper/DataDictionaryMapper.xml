@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.dili.uap.dao.DataDictionaryMapper">
-  <resultMap id="BaseResultMap" type="com.dili.uap.domain.DataDictionary">
+  <resultMap id="BaseResultMap" type="com.dili.uap.sdk.domain.DataDictionary">
     <!--
       WARNING - @mbg.generated
     -->
@@ -28,7 +28,7 @@
     from data_dictionary
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <update id="updateBy" parameterType="com.dili.uap.domain.DataDictionary">
+  <update id="updateBy" parameterType="com.dili.uap.sdk.domain.DataDictionary">
     <!--
       WARNING - @mbg.generated
     -->

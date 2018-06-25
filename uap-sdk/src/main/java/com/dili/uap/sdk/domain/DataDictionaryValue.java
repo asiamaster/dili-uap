@@ -1,23 +1,20 @@
-package com.dili.uap.domain;
+package com.dili.uap.sdk.domain;
 
 import com.dili.ss.dto.IBaseDomain;
 import com.dili.ss.metadata.FieldEditor;
 import com.dili.ss.metadata.annotation.EditMode;
 import com.dili.ss.metadata.annotation.FieldDef;
-import java.util.Date;
+
 import javax.persistence.*;
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import java.util.Date;
 
 /**
  * 由MyBatis Generator工具自动生成
  * 
- * This file was generated on 2018-05-24 17:44:01.
+ * This file was generated on 2018-05-22 11:25:14.
  */
-@Table(name = "`data_dictionary`")
-public interface DataDictionary extends IBaseDomain {
+@Table(name = "`data_dictionary_value`")
+public interface DataDictionaryValue extends IBaseDomain {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "`id`")
@@ -27,26 +24,40 @@ public interface DataDictionary extends IBaseDomain {
 
     void setId(Long id);
 
-    @Column(name = "`code`")
-    @FieldDef(label="编码", maxLength = 50)
-    @EditMode(editor = FieldEditor.Text, required = false)
-    String getCode();
+    @Column(name = "`parent_id`")
+    @FieldDef(label="上级id")
+    @EditMode(editor = FieldEditor.Number, required = false)
+    Long getParentId();
 
-    void setCode(String code);
+    void setParentId(Long parentId);
+
+    @Column(name = "`dd_code`")
+    @FieldDef(label="数据字典编码", maxLength = 50)
+    @EditMode(editor = FieldEditor.Text, required = false)
+    String getDdCode();
+
+    void setDdCode(String ddCode);
+
+    @Column(name = "`order_number`")
+    @FieldDef(label="排序号")
+    @EditMode(editor = FieldEditor.Number, required = false)
+    Integer getOrderNumber();
+
+    void setOrderNumber(Integer orderNumber);
 
     @Column(name = "`name`")
-    @FieldDef(label="名称", maxLength = 50)
+    @FieldDef(label="名称", maxLength = 40)
     @EditMode(editor = FieldEditor.Text, required = false)
     String getName();
 
     void setName(String name);
 
-    @Column(name = "`system_code`")
-    @FieldDef(label="所属系统编码", maxLength = 50)
+    @Column(name = "`code`")
+    @FieldDef(label="编码", maxLength = 40)
     @EditMode(editor = FieldEditor.Text, required = false)
-    String getSystemCode();
+    String getCode();
 
-    void setSystemCode(String systemCode);
+    void setCode(String code);
 
     @Column(name = "`description`")
     @FieldDef(label="描述", maxLength = 255)

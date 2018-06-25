@@ -1,7 +1,7 @@
 package com.dili.uap.controller;
 
 import com.dili.ss.domain.BaseOutput;
-import com.dili.uap.domain.DataDictionaryValue;
+import com.dili.uap.sdk.domain.DataDictionaryValue;
 import com.dili.uap.service.DataDictionaryValueService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;

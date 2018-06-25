@@ -3,7 +3,7 @@ package com.dili.uap.component;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.constants.UapConstants;
 import com.dili.uap.dao.SystemConfigMapper;
-import com.dili.uap.domain.SystemConfig;
+import com.dili.uap.sdk.domain.SystemConfig;
 import com.dili.uap.sdk.session.SessionConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;

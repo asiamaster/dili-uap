@@ -1,23 +1,20 @@
-package com.dili.uap.domain;
+package com.dili.uap.sdk.domain;
 
 import com.dili.ss.dto.IBaseDomain;
 import com.dili.ss.metadata.FieldEditor;
 import com.dili.ss.metadata.annotation.EditMode;
 import com.dili.ss.metadata.annotation.FieldDef;
-import java.util.Date;
+
 import javax.persistence.*;
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import java.util.Date;
 
 /**
  * 由MyBatis Generator工具自动生成
  * 
- * This file was generated on 2018-05-22 11:25:14.
+ * This file was generated on 2018-05-24 17:44:18.
  */
-@Table(name = "`data_dictionary_value`")
-public interface DataDictionaryValue extends IBaseDomain {
+@Table(name = "`system_config`")
+public interface SystemConfig extends IBaseDomain {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "`id`")
@@ -27,40 +24,26 @@ public interface DataDictionaryValue extends IBaseDomain {
 
     void setId(Long id);
 
-    @Column(name = "`parent_id`")
-    @FieldDef(label="上级id")
-    @EditMode(editor = FieldEditor.Number, required = false)
-    Long getParentId();
-
-    void setParentId(Long parentId);
-
-    @Column(name = "`dd_code`")
-    @FieldDef(label="数据字典编码", maxLength = 50)
-    @EditMode(editor = FieldEditor.Text, required = false)
-    String getDdCode();
-
-    void setDdCode(String ddCode);
-
-    @Column(name = "`order_number`")
-    @FieldDef(label="排序号")
-    @EditMode(editor = FieldEditor.Number, required = false)
-    Integer getOrderNumber();
-
-    void setOrderNumber(Integer orderNumber);
-
     @Column(name = "`name`")
-    @FieldDef(label="名称", maxLength = 40)
+    @FieldDef(label="名称", maxLength = 100)
     @EditMode(editor = FieldEditor.Text, required = false)
     String getName();
 
     void setName(String name);
 
     @Column(name = "`code`")
-    @FieldDef(label="编码", maxLength = 40)
+    @FieldDef(label="编码", maxLength = 100)
     @EditMode(editor = FieldEditor.Text, required = false)
     String getCode();
 
     void setCode(String code);
+
+    @Column(name = "`value`")
+    @FieldDef(label="值", maxLength = 100)
+    @EditMode(editor = FieldEditor.Text, required = false)
+    String getValue();
+
+    void setValue(String value);
 
     @Column(name = "`description`")
     @FieldDef(label="描述", maxLength = 255)
@@ -68,6 +51,13 @@ public interface DataDictionaryValue extends IBaseDomain {
     String getDescription();
 
     void setDescription(String description);
+
+    @Column(name = "`system_code`")
+    @FieldDef(label="所属系统编码", maxLength = 50)
+    @EditMode(editor = FieldEditor.Text, required = false)
+    String getSystemCode();
+
+    void setSystemCode(String systemCode);
 
     @Column(name = "`created`")
     @FieldDef(label="创建时间")
@@ -82,4 +72,5 @@ public interface DataDictionaryValue extends IBaseDomain {
     Date getModified();
 
     void setModified(Date modified);
+
 }

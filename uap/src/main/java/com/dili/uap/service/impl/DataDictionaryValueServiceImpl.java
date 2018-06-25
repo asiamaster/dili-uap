@@ -4,7 +4,7 @@ import com.dili.ss.base.BaseServiceImpl;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.dao.DataDictionaryValueMapper;
-import com.dili.uap.domain.DataDictionaryValue;
+import com.dili.uap.sdk.domain.DataDictionaryValue;
 import com.dili.uap.service.DataDictionaryValueService;
 
 import org.apache.commons.lang3.StringUtils;

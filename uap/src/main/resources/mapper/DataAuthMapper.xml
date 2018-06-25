@@ -49,13 +49,13 @@
         user_data_auth uda ON da.id = uda.data_auth_id
         WHERE 1=1
         <if test="userId != null and userId != ''">
-          and ud.user_id =  #{userId}
+            and ud.user_id =  #{userId}
         </if>
         <if test="type != null and type != ''">
-          and da.`type` = #{type}
+            and da.`type` = #{type}
         </if>
         <if test="dataId != null and dataId != ''">
-          and da.`data_id` = #{dataId}
+            and da.`data_id` = #{dataId}
         </if>
     </select>
 

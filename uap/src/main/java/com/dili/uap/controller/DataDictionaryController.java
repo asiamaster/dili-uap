@@ -1,7 +1,7 @@
 package com.dili.uap.controller;
 
 import com.dili.ss.domain.BaseOutput;
-import com.dili.uap.domain.DataDictionary;
+import com.dili.uap.sdk.domain.DataDictionary;
 import com.dili.uap.domain.dto.DataDictionaryDto;
 import com.dili.uap.provider.SystemProvider;
 import com.dili.uap.service.DataDictionaryService;

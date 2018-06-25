@@ -5,7 +5,7 @@ import com.dili.ss.metadata.FieldMeta;
 import com.dili.ss.metadata.ValuePair;
 import com.dili.ss.metadata.ValuePairImpl;
 import com.dili.ss.metadata.provider.BatchDisplayTextProviderAdaptor;
-import com.dili.uap.domain.DataDictionaryValue;
+import com.dili.uap.sdk.domain.DataDictionaryValue;
 import com.dili.uap.service.DataDictionaryValueService;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections4.CollectionUtils;

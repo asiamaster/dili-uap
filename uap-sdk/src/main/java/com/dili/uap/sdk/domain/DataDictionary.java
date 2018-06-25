@@ -1,23 +1,20 @@
-package com.dili.uap.domain;
+package com.dili.uap.sdk.domain;
 
 import com.dili.ss.dto.IBaseDomain;
 import com.dili.ss.metadata.FieldEditor;
 import com.dili.ss.metadata.annotation.EditMode;
 import com.dili.ss.metadata.annotation.FieldDef;
-import java.util.Date;
+
 import javax.persistence.*;
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import java.util.Date;
 
 /**
  * 由MyBatis Generator工具自动生成
  * 
- * This file was generated on 2018-05-24 17:44:18.
+ * This file was generated on 2018-05-24 17:44:01.
  */
-@Table(name = "`system_config`")
-public interface SystemConfig extends IBaseDomain {
+@Table(name = "`data_dictionary`")
+public interface DataDictionary extends IBaseDomain {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "`id`")
@@ -27,33 +24,19 @@ public interface SystemConfig extends IBaseDomain {
 
     void setId(Long id);
 
-    @Column(name = "`name`")
-    @FieldDef(label="名称", maxLength = 100)
-    @EditMode(editor = FieldEditor.Text, required = false)
-    String getName();
-
-    void setName(String name);
-
     @Column(name = "`code`")
-    @FieldDef(label="编码", maxLength = 100)
+    @FieldDef(label="编码", maxLength = 50)
     @EditMode(editor = FieldEditor.Text, required = false)
     String getCode();
 
     void setCode(String code);
 
-    @Column(name = "`value`")
-    @FieldDef(label="值", maxLength = 100)
+    @Column(name = "`name`")
+    @FieldDef(label="名称", maxLength = 50)
     @EditMode(editor = FieldEditor.Text, required = false)
-    String getValue();
+    String getName();
 
-    void setValue(String value);
-
-    @Column(name = "`description`")
-    @FieldDef(label="描述", maxLength = 255)
-    @EditMode(editor = FieldEditor.Text, required = false)
-    String getDescription();
-
-    void setDescription(String description);
+    void setName(String name);
 
     @Column(name = "`system_code`")
     @FieldDef(label="所属系统编码", maxLength = 50)
@@ -61,6 +44,13 @@ public interface SystemConfig extends IBaseDomain {
     String getSystemCode();
 
     void setSystemCode(String systemCode);
+
+    @Column(name = "`description`")
+    @FieldDef(label="描述", maxLength = 255)
+    @EditMode(editor = FieldEditor.Text, required = false)
+    String getDescription();
+
+    void setDescription(String description);
 
     @Column(name = "`created`")
     @FieldDef(label="创建时间")
@@ -75,5 +65,4 @@ public interface SystemConfig extends IBaseDomain {
     Date getModified();
 
     void setModified(Date modified);
-
 }

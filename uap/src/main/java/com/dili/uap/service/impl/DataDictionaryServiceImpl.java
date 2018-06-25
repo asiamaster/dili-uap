@@ -5,8 +5,8 @@ import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.dao.DataDictionaryMapper;
 import com.dili.uap.dao.DataDictionaryValueMapper;
-import com.dili.uap.domain.DataDictionary;
-import com.dili.uap.domain.DataDictionaryValue;
+import com.dili.uap.sdk.domain.DataDictionary;
+import com.dili.uap.sdk.domain.DataDictionaryValue;
 import com.dili.uap.service.DataDictionaryService;
 
 import org.apache.commons.lang3.StringUtils;

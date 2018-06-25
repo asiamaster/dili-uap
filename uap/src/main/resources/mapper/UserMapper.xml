@@ -28,16 +28,6 @@
     id, user_name, password, firm_code, department_id, position, card_number, created, 
     modified, state, real_name, serial_number, cellphone, email,locked
   </sql>
-  <select id="selectBy" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    <!--
-      WARNING - @mbg.generated
-    -->
-    select 
-    <include refid="Base_Column_List" />
-    from user
-    where id = #{id,jdbcType=BIGINT}
-  </select>
-
 
   <!-- 根据角色ID查询用户列表信息 -->
   <select id="findUserByRole" parameterType="Long" resultMap="BaseResultMap">

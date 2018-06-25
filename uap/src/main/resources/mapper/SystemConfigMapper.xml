@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.dili.uap.dao.SystemConfigMapper">
-  <resultMap id="BaseResultMap" type="com.dili.uap.domain.SystemConfig">
+  <resultMap id="BaseResultMap" type="com.dili.uap.sdk.domain.SystemConfig">
     <!--
       WARNING - @mbg.generated
     -->
@@ -28,7 +28,7 @@
     from system_config
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <update id="updateBy" parameterType="com.dili.uap.domain.SystemConfig">
+  <update id="updateBy" parameterType="com.dili.uap.sdk.domain.SystemConfig">
     <!--
       WARNING - @mbg.generated
     -->
