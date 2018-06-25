@@ -1,4 +1,4 @@
-package com.dili.uap.validator.group;
+package com.dili.uap.sdk.validator;
 
 /**
  * <B>后台验证分组，此配置表示在修改时做验证</B>

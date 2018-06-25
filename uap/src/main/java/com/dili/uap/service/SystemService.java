@@ -2,7 +2,7 @@ package com.dili.uap.service;
 
 import com.dili.ss.base.BaseService;
 import com.dili.ss.domain.BaseOutput;
-import com.dili.uap.domain.System;
+import com.dili.uap.sdk.domain.System;
 
 import java.util.List;
 

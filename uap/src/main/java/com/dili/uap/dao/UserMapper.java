@@ -1,7 +1,7 @@
 package com.dili.uap.dao;
 
 import com.dili.ss.base.MyMapper;
-import com.dili.uap.domain.User;
+import com.dili.uap.sdk.domain.User;
 import com.dili.uap.domain.dto.UserDataDto;
 import com.dili.uap.domain.dto.UserDto;
 

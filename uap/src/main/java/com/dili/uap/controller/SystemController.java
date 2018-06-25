@@ -1,7 +1,7 @@
 package com.dili.uap.controller;
 
 import com.dili.ss.domain.BaseOutput;
-import com.dili.uap.domain.System;
+import com.dili.uap.sdk.domain.System;
 import com.dili.uap.domain.dto.SystemDto;
 import com.dili.uap.service.SystemService;
 import io.swagger.annotations.Api;

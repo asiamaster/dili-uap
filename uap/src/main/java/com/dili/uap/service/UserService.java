@@ -3,10 +3,9 @@ package com.dili.uap.service;
 import com.dili.ss.base.BaseService;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.domain.EasyuiPageOutput;
-import com.dili.uap.domain.DataAuth;
-import com.dili.uap.domain.User;
-import com.dili.uap.domain.dto.UserDto;
 import com.dili.uap.domain.dto.UserDataDto;
+import com.dili.uap.domain.dto.UserDto;
+import com.dili.uap.sdk.domain.User;
 
 import java.util.List;
 

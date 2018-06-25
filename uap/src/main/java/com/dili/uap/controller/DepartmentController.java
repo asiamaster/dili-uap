@@ -62,7 +62,7 @@ public class DepartmentController {
 //            boolean isGroup = SessionContext.getSessionContext().getUserTicket().getFirmCode().equalsIgnoreCase(UapConstants.GROUP_CODE);
 //            // 集团用户
 //            if (isGroup) {
-//                department.setFirmCode("group");
+//                department.setFirmCode("validator");
 //            } else {
 //                department.setFirmCode(SessionContext.getSessionContext().getUserTicket().getFirmCode());
 //            }

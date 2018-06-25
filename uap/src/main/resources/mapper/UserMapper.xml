@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.dili.uap.dao.UserMapper">
-  <resultMap id="BaseResultMap" type="com.dili.uap.domain.User">
+  <resultMap id="BaseResultMap" type="com.dili.uap.sdk.domain.User">
     <!--
       WARNING - @mbg.generated
     -->
@@ -50,7 +50,7 @@
 	</select>
 
   <!--- 联合查询分页信息 -->
-  <select id="selectForPage" parameterType="com.dili.uap.domain.User" resultType="com.dili.uap.domain.dto.UserDto">
+  <select id="selectForPage" parameterType="com.dili.uap.sdk.domain.User" resultType="com.dili.uap.domain.dto.UserDto">
       select u.*,
             CASE
               WHEN group_concat(r.role_name) IS NOT NULL THEN group_concat(r.role_name)

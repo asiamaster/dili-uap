@@ -1,4 +1,4 @@
-package com.dili.uap.domain;
+package com.dili.uap.sdk.domain;
 
 import com.dili.ss.domain.annotation.Like;
 import com.dili.ss.dto.IBaseDomain;
@@ -6,22 +6,18 @@ import com.dili.ss.dto.IMybatisForceParams;
 import com.dili.ss.metadata.FieldEditor;
 import com.dili.ss.metadata.annotation.EditMode;
 import com.dili.ss.metadata.annotation.FieldDef;
-import com.dili.uap.validator.group.AddView;
-import com.dili.uap.validator.group.ModifyView;
+import com.dili.uap.sdk.validator.AddView;
+import com.dili.uap.sdk.validator.ModifyView;
 
-import java.util.Date;
 import javax.persistence.*;
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.util.Date;
 
 /**
  * 由MyBatis Generator工具自动生成
- * 
+ *
  * This file was generated on 2018-05-23 16:17:38.
  */
 @Table(name = "`user`")
@@ -55,7 +51,7 @@ public interface User extends IBaseDomain,IMybatisForceParams {
     @Column(name = "`firm_code`")
     @FieldDef(label="归属市场编码", maxLength = 50)
     @EditMode(editor = FieldEditor.Text)
-    @NotNull(message = "所属市场不能为空", groups = {AddView.class})
+    @NotNull(message = "所属市场不能为空", groups = {AddView.class, ModifyView.class})
     String getFirmCode();
 
     void setFirmCode(String firmCode);

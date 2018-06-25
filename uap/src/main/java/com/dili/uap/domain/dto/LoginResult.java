@@ -1,7 +1,7 @@
 package com.dili.uap.domain.dto;
 
 import com.dili.ss.dto.IDTO;
-import com.dili.uap.domain.User;
+import com.dili.uap.sdk.domain.User;
 
 /**
  * 登录结果

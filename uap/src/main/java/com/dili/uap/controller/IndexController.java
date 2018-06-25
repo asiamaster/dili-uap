@@ -58,9 +58,9 @@ public class IndexController {
 			String systemCode = request.getParameter("systemCode") == null ? UapConstants.UAP_SYSTEM_CODE : request.getParameter("systemCode");
 			modelMap.put("systemCode", systemCode);
 			if(systemCode.equals(UapConstants.UAP_SYSTEM_CODE)){
-				com.dili.uap.domain.System condition = DTOUtils.newDTO(com.dili.uap.domain.System.class);
+				System condition = DTOUtils.newDTO(System.class);
 				condition.setCode(UapConstants.UAP_SYSTEM_CODE);
-				List<com.dili.uap.domain.System> uap = systemService.listByExample(condition);
+				List<System> uap = systemService.listByExample(condition);
 				if(CollectionUtils.isEmpty(uap)){
 					throw new AppException("未配置统一权限系统");
 				}
@@ -90,7 +90,7 @@ public class IndexController {
 	public String platform(ModelMap modelMap) {
 		UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
 		if (userTicket != null) {
-			List<com.dili.uap.domain.System> systems = systemService.listByUserId(userTicket.getId());
+			List<System> systems = systemService.listByUserId(userTicket.getId());
 			modelMap.put("systems", systems);
 			modelMap.put("userid", userTicket.getId());
 			modelMap.put("username", userTicket.getRealName());

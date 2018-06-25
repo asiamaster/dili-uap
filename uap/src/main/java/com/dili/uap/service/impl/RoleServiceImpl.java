@@ -6,7 +6,7 @@ import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.constants.UapConstants;
 import com.dili.uap.dao.*;
 import com.dili.uap.domain.*;
-import com.dili.uap.domain.System;
+import com.dili.uap.sdk.domain.System;
 import com.dili.uap.domain.dto.SystemResourceDto;
 import com.dili.uap.glossary.MenuType;
 import com.dili.uap.glossary.Yn;

@@ -1,22 +1,18 @@
 package com.dili.uap.manager.impl;
 
 import com.dili.uap.dao.SystemMapper;
-import com.dili.uap.domain.Menu;
-import com.dili.uap.domain.System;
 import com.dili.uap.manager.SystemManager;
+import com.dili.uap.sdk.domain.System;
 import com.dili.uap.sdk.session.SessionConstants;
 import com.dili.uap.sdk.util.ManageRedisUtil;
 import com.dili.uap.sdk.util.SerializeUtil;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.BoundSetOperations;
 import org.springframework.stereotype.Component;
 import sun.misc.BASE64Encoder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 

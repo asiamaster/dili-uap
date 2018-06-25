@@ -3,7 +3,7 @@ package com.dili.uap.domain.dto;
 import javax.persistence.Column;
 
 import com.dili.ss.domain.annotation.Like;
-import com.dili.uap.domain.System;
+import com.dili.uap.sdk.domain.System;
 
 /**
  * 用于查询系统信息对象
