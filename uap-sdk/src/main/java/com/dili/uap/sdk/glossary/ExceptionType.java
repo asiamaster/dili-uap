@@ -20,7 +20,7 @@ public enum ExceptionType {
         this.name = name;
     }
 
-    public static ExceptionType getMenuType(Integer code) {
+    public static ExceptionType getMenuType(String code) {
         for (ExceptionType userState : ExceptionType.values()) {
             if (userState.getCode().equals(code)) {
                 return userState;

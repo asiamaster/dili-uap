@@ -19,7 +19,7 @@ public enum DataAuthType {
         this.name = name;
     }
 
-    public static DataAuthType getDataAuthType(Integer code) {
+    public static DataAuthType getDataAuthType(String code) {
         for (DataAuthType dataAuthType : DataAuthType.values()) {
             if (dataAuthType.getCode().equals(code)) {
                 return dataAuthType;
