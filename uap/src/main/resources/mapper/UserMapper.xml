@@ -78,7 +78,7 @@
       SELECT
         d.id AS treeId,
         CASE
-          WHEN d.parent_id ='-1' THEN
+          WHEN d.parent_id is null THEN
             CONCAT('firm_',d.firm_code)
           ELSE
             d.parent_id
