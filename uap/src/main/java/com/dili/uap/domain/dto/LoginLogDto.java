@@ -8,7 +8,6 @@ import javax.persistence.Transient;
 
 import com.dili.ss.domain.annotation.Operator;
 import com.dili.uap.domain.LoginLog;
-import com.dili.uap.domain.User;
 
 
 public interface LoginLogDto extends LoginLog {
