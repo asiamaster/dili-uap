@@ -30,28 +30,6 @@ public class DepartmentServiceImpl extends BaseServiceImpl<Department, Long> imp
         return (DepartmentMapper)getDao();
     }
     
-    /**
-     * 部门相同时，返回一个错误信息字符串
-     * @param department
-     * @return 相同市场存在相同部门的错误信息
-     */
-    private String buildErrorMessage(Department department) {
-		String firmName = "";
-		Firm condition = DTOUtils.newDTO(Firm.class);
-		condition.setCode(department.getFirmCode());
-		
-		Firm firm = firmMapper.selectOne(condition);
-		if (firm != null) {
-			firmName = firm.getName();
-		}
-
-		StringBuilder sb = new StringBuilder()
-				.append("[").append(firmName).append("]")
-				.append("市场下存在相同的部门")
-				.append("[").append(department.getName()).append("]");
-		return sb.toString();
-    	
-    }
     @Override
     @Transactional
     public BaseOutput<Department> insertAfterCheck(Department department) {
@@ -98,4 +76,27 @@ public class DepartmentServiceImpl extends BaseServiceImpl<Department, Long> imp
 	public List<Map> listDepartments(Department department) {
 		return this.getActualDao().listDepartments(department);
 	}
+	
+	/**
+     * 部门相同时，返回一个错误信息字符串
+     * @param department
+     * @return 相同市场存在相同部门的错误信息
+     */
+    private String buildErrorMessage(Department department) {
+		String firmName = "";
+		Firm condition = DTOUtils.newDTO(Firm.class);
+		condition.setCode(department.getFirmCode());
+		
+		Firm firm = firmMapper.selectOne(condition);
+		if (firm != null) {
+			firmName = firm.getName();
+		}
+
+		StringBuilder sb = new StringBuilder()
+				.append("[").append(firmName).append("]")
+				.append("市场下存在相同的部门")
+				.append("[").append(department.getName()).append("]");
+		return sb.toString();
+    	
+    }
 }

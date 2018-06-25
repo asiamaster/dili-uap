@@ -32,7 +32,7 @@ public class UapConstants {
     public static final String RESOURCE_PREFIX = "resource_";
 
     // 集团编码
-    public static final String GROUP_CODE = "validator";
+    public static final String GROUP_CODE = "group";
 
     /**
      * 默认的邮箱后缀

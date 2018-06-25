@@ -1,18 +1,5 @@
 package com.dili.uap.controller;
 
-import com.alibaba.fastjson.JSONObject;
-import com.dili.ss.domain.BaseOutput;
-import com.dili.ss.domain.EasyuiPageOutput;
-import com.dili.ss.metadata.ValueProviderUtils;
-import com.dili.uap.domain.LoginLog;
-import com.dili.uap.domain.dto.LoginLogDto;
-import com.dili.uap.service.LoginLogService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +10,18 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.alibaba.fastjson.JSONObject;
+import com.dili.ss.domain.BaseOutput;
+import com.dili.ss.domain.EasyuiPageOutput;
+import com.dili.uap.domain.LoginLog;
+import com.dili.uap.domain.dto.LoginLogDto;
+import com.dili.uap.service.LoginLogService;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * 由MyBatis Generator工具自动生成
