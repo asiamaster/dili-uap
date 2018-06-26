@@ -114,54 +114,54 @@
 }
 
 
- .l-btn:hover .icon-add{
-	background-image:url('icons/edit_add-on.png'); 
+.l-btn:hover .icon-add{
+	background-image:url('icons/edit_add-on.png');
 }
 .l-btn:hover .icon-edit{
-	background-image:url('icons/pencil-on.png'); 
+	background-image:url('icons/pencil-on.png');
 }
 .menu-item:hover .icon-remove,
 .l-btn:hover .icon-remove{
-	background-image:url('icons/edit_remove-on.png'); 
+	background-image:url('icons/edit_remove-on.png');
 }
 .l-btn:hover .icon-save{
-	background-image:url('icons/filesave-on.png'); 
-} 
+	background-image:url('icons/filesave-on.png');
+}
 .l-btn:hover .icon-cut{
-	background-image:url('icons/cut-on.png'); 
+	background-image:url('icons/cut-on.png');
 }
 .l-btn:hover .icon-ok,
 .accordion-header-selected .icon-ok,
 .searchbox .l-btn-icon-left:hover .icon-ok{
-    background-image:url('icons/ok-on.png'); 
+	background-image:url('icons/ok-on.png');
 }
 .l-btn:hover .icon-reload{
-	background-image:url('icons/reload-on.png'); 
+	background-image:url('icons/reload-on.png');
 }
 .l-btn:hover .icon-search,
 .accordion-header-selected .icon-search{
-	background-image:url('icons/search-on.png'); 
+	background-image:url('icons/search-on.png');
 }
 .l-btn:hover .icon-print{
-	background-image:url('icons/print-on.png'); 
+	background-image:url('icons/print-on.png');
 }
 .menu-item:hover .icon-undo,
 .l-btn:hover .icon-undo{
-	background-image:url('icons/undo-on.png'); 
+	background-image:url('icons/undo-on.png');
 }
 .menu-item:hover .icon-redo,
 .l-btn:hover .icon-redo{
-	background-image:url('icons/redo-on.png'); 
+	background-image:url('icons/redo-on.png');
 }
 .l-btn:hover .icon-back{
-	background-image:url('icons/back-on.png'); 
+	background-image:url('icons/back-on.png');
 }
 .l-btn:hover .icon-tip{
-	background-image:url('icons/tip-on.png'); 
+	background-image:url('icons/tip-on.png');
 }
 .l-btn:hover .icon-filter{
-	background-image:url('icons/filter-on.png'); 
-} 
+	background-image:url('icons/filter-on.png');
+}
 
 /* 自定义样式 */
 .icon-export{
@@ -205,26 +205,26 @@
 	background:url('icons/role.png') no-repeat center center;
 }
 .l-btn:hover .icon-role{
-	background-image:url('icons/role-on.png') no-repeat center center;;
+	background:url('icons/role-on.png') no-repeat center center;;
 }
 
 .icon-reset{
 	background:url('icons/reset.png') no-repeat center center;
 }
 .l-btn:hover .icon-reset{
-	background-image:url('icons/reset-on.png') no-repeat center center;;
+	background:url('icons/reset-on.png') no-repeat center center;;
 }
 
 .icon-data{
 	background:url('icons/data.png') no-repeat center center;
 }
 .l-btn:hover .icon-data{
-	background-image:url('icons/data-on.png') no-repeat center center;;
+	background:url('icons/data-on.png') no-repeat center center;;
 }
 
 .icon-unlock{
 	background:url('icons/unlock.png') no-repeat center center;
 }
 .l-btn:hover .icon-unlock{
-	background-image:url('icons/unlock-on.png') no-repeat center center;;
+	background:url('icons/unlock-on.png') no-repeat center center;;
 }
