@@ -108,6 +108,9 @@ public class LoginServiceImpl implements LoginService {
             User record = DTOUtils.newDTO(User.class);
             record.setUserName(loginDto.getUserName());
             User user = this.userMapper.selectOne(record);
+            if(user == null){
+                BaseOutput.failure("登录失败").setResult("用户不存在");
+            }
             //设置默认登录系统为UAP
             if(StringUtils.isBlank(loginDto.getSystemCode())){
                 loginDto.setSystemCode(UapConstants.UAP_SYSTEM_CODE);
@@ -125,7 +128,7 @@ public class LoginServiceImpl implements LoginService {
                 return BaseOutput.failure("用户已被禁用，请联系管理员!");
             }
             //判断密码不正确，三次后锁定用户、锁定后的用户12小时后自动解锁
-            if (user == null || !StringUtils.equals(user.getPassword(), this.encryptPwd(loginDto.getPassword()))) {
+            if (!StringUtils.equals(user.getPassword(), this.encryptPwd(loginDto.getPassword()))) {
                 lockUser(user);
                 logLogin(loginDto, false, "用户名或密码错误");
                 return BaseOutput.failure("用户名或密码错误").setCode(ResultCode.NOT_AUTH_ERROR);
