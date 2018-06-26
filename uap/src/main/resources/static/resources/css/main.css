@@ -94,6 +94,8 @@ h2 {
     height: 38px;
 }
 
-
+.datagrid .datagrid-pager {
+    background: #FFFFFF;
+}
 
 
