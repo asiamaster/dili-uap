@@ -163,7 +163,6 @@
         },
         _onCancelEdit: function (index, row) {
             this.editId = undefined;
-
             if (this.options.target != 'datagrid') {
                 if (row.id == 'temp') {
                     this.element[this.options.target]('remove', row.id);
@@ -312,24 +311,37 @@
 
             this.editId = 'temp';
             if (this.options.target == 'datagrid') {
-                var index = this.element.datagrid('getRows').length;
-                this.editIndex = index;
-                this.element.datagrid('appendRow', {
-                    id: 'temp'
+                // var index = this.element.datagrid('getRows').length;
+                //在首行添加可编辑框
+                this.editIndex = 0;
+                this.element.datagrid('insertRow', {
+                    index: this.editIndex,
+                    row: {
+                        id: this.editId
+                    }
                 });
-
-                this.element[this.options.target]('selectRow', index);
-                this.element[this.options.target]('beginEdit', index);
+                this.element[this.options.target]('selectRow', this.editIndex);
+                this.element[this.options.target]('beginEdit', this.editIndex);
             } else {
-                this.element[this.options.target]('append', {
-                    parent: node.id,
-                    data: [{
-                        id: 'temp'
-                    }]
-                });
-
-                this.element[this.options.target]('select', 'temp');
-                this.element[this.options.target]('beginEdit', 'temp');
+                var childrens = this.element[this.options.target]('getChildren',node.id);
+                //如果该节点下存在子节点，则追加的编辑框，设置为在第一行，如果不存在，则默认也是在该节点下的第一行
+                if (null != childrens && childrens.length > 0){
+                    this.element[this.options.target]('insert', {
+                        before: childrens[0].id,
+                        data: {
+                            id: this.editId
+                        }
+                    });
+                }else{
+                    this.element[this.options.target]('append', {
+                        parent: node.id,
+                        data: [{
+                            id: this.editId
+                        }]
+                    });
+                }
+                this.element[this.options.target]('select', this.editId);
+                this.element[this.options.target]('beginEdit', this.editId);
             }
         }
 
