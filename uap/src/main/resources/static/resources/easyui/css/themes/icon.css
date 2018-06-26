@@ -205,26 +205,26 @@
 	background:url('icons/role.png') no-repeat center center;
 }
 .l-btn:hover .icon-role{
-	background:url('icons/role-on.png') no-repeat center center;;
+	background:url('icons/role-on.png') no-repeat center center;
 }
 
 .icon-reset{
 	background:url('icons/reset.png') no-repeat center center;
 }
 .l-btn:hover .icon-reset{
-	background:url('icons/reset-on.png') no-repeat center center;;
+	background:url('icons/reset-on.png') no-repeat center center;
 }
 
 .icon-data{
 	background:url('icons/data.png') no-repeat center center;
 }
 .l-btn:hover .icon-data{
-	background:url('icons/data-on.png') no-repeat center center;;
+	background:url('icons/data-on.png') no-repeat center center;
 }
 
 .icon-unlock{
 	background:url('icons/unlock.png') no-repeat center center;
 }
 .l-btn:hover .icon-unlock{
-	background:url('icons/unlock-on.png') no-repeat center center;;
+	background:url('icons/unlock-on.png') no-repeat center center;
 }
