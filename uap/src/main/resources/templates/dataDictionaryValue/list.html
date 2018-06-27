@@ -1,0 +1,29 @@
+<div class="easyui-layout" fit="true">
+    <!-- ====================================================================================================================== -->
+    <!-- 中央布局 -->
+    <!-- ====================================================================================================================== -->
+    <!-- 表格 -->
+    <div region="center" height="auto" align="center" border="false">
+        <div style="width: 100%;height: 100%;" align="center">
+            <!-- =========================================================表格========================================================= -->
+            <table class="easyui-datagrid" id="ddValueGrid" fitColumns="true" pagination="true" pageSize="30" pageNumber="1" pagePosition="top" rownumbers="false" remoteSort="false" loadMsg="数据加载中..."
+                   singleSelect="true" method="post" align="center" fit="true" idField="id" border="false"
+                   data-options="onClickRow:onClickDdValueGridRow,onDblClickRow:openUpdateDdValue,onBeginEdit:onBeginEditDdValue,onAfterEdit:onAfterEditDdValue,
+				onCancelEdit:onCancelEditDdValue">
+                <thead>
+                <tr>
+                    <th  data-options="field:'ddCode',sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false', hidden:true">字典id</th>
+                    <th width="25%" data-options="field:'name',sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false',editor:{type : 'textbox',options : {required : true,validType:'length[2,20]'}}">名称</th>
+                    <th width="25%" data-options="field:'code',sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false',editor:{type : 'textbox',options : {required : true,validType:'length[2,20]'}}">编码</th>
+                    <th width="18%" data-options="field:'orderNumber',sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false',
+						editor:{type : 'numberbox',options : {required : true,validType:'length[1,5]'}}">排序号</th>
+                    <th width="33%" data-options="field:'description',sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false',
+						editor:{type : 'textbox',options : {validType:'length[0,20]'}}">备注</th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+    <#dataDictionaryValue_listJs/>
