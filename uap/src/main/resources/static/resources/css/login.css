@@ -139,7 +139,7 @@ html {
 
 .login {
     width: 388px;
-    margin-top: 66px;
+    margin-top: 80px;
     margin-left: 94px;
     border-radius: 5px;
     overflow: hidden;
@@ -150,7 +150,7 @@ html {
 }
 .userinfo {
     width: 100%;
-    margin-top: 54px;
+    margin-top: 34px;
     padding-left: 40px;
     padding-right: 40px;
     background-color: #fff;
@@ -181,8 +181,8 @@ html {
 }
 .login-form .submit {
     width: 230px;
-    margin-left: 70px;
-    margin-top: 20px;
+    margin-left: 74px;
+    margin-top: 5px;
     background-color: #269eff;
     border-radius: 20px;
     color: #fff;
