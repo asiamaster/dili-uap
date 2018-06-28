@@ -29,7 +29,7 @@ public class LoginTypeProvider implements ValueProvider {
     private static final List<ValuePair<?>> BUFFER = new ArrayList<>();
 
     static {
-        BUFFER.add(new ValuePairImpl(EMPTY_ITEM_TEXT, null));
+        BUFFER.add(new ValuePairImpl(EMPTY_ITEM_TEXT, ""));
         BUFFER.addAll(Stream.of(LoginType.values())
                 .map(e -> new ValuePairImpl<String>(e.getName(), e.getCode().toString()))
                 .collect(Collectors.toList()));
