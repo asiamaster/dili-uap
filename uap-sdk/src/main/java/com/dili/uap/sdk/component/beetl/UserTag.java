@@ -14,10 +14,10 @@ import java.util.Map;
  * Created by asiamaster on 2018/1/22 0021.
  */
 @Component("user")
-public class userTag extends Tag {
+public class UserTag extends Tag {
 
 	//标签自定义属性
-	private final String FIELD_KEY = "field";
+	private static final String FIELD_KEY = "field";
 
 	@Override
 	public void render() {
