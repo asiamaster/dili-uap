@@ -11,6 +11,13 @@ import com.dili.uap.domain.dto.LoginDto;
 public interface LoginService {
 
     /**
+     * 登录验证
+     * @param loginDto
+     * @return
+     */
+    BaseOutput<String> validate(LoginDto loginDto);
+
+    /**
      * 根据用户名和密码登录，返回登录结果DTO
      * @param loginDto
      * @return

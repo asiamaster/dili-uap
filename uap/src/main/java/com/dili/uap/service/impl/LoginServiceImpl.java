@@ -97,6 +97,34 @@ public class LoginServiceImpl implements LoginService {
     private SystemService systemService;
 
     @Override
+    public BaseOutput<String> validate(LoginDto loginDto){
+        if(loginDto.getUserName().length() < 4 || loginDto.getUserName().length() > 20){
+            return BaseOutput.failure("用户名长度不能小于4位或大于20位!").setCode(ResultCode.PARAMS_ERROR);
+        }
+        if(loginDto.getPassword().length() < 6 || loginDto.getUserName().length() > 20){
+            return BaseOutput.failure("密码长度不能小于6位或大于20位!").setCode(ResultCode.PARAMS_ERROR);
+        }
+        User record = DTOUtils.newDTO(User.class);
+        record.setUserName(loginDto.getUserName());
+        User user = this.userMapper.selectOne(record);
+        if(user == null){
+            return BaseOutput.failure("用户不存在");
+        }
+        //用户状态为锁定和禁用不允许登录
+        if(user.getState().equals(UserState.LOCKED.getCode())){
+            return BaseOutput.failure("用户已被锁定，请联系管理员").setCode(ResultCode.NOT_AUTH_ERROR);
+        }
+        if (user.getState().equals(UserState.DISABLED.getCode())) {
+            return BaseOutput.failure("用户已被禁用，请联系管理员!");
+        }
+        //判断密码不正确，三次后锁定用户、锁定后的用户12小时后自动解锁
+        if (!StringUtils.equals(user.getPassword(), this.encryptPwd(loginDto.getPassword()))) {
+            return BaseOutput.failure("用户名或密码错误").setCode(ResultCode.NOT_AUTH_ERROR);
+        }
+        return BaseOutput.success("登录成功");
+    }
+
+    @Override
     public BaseOutput<LoginResult> login(LoginDto loginDto) {
         try {
             if(loginDto.getUserName().length() < 4 || loginDto.getUserName().length() > 20){
@@ -109,7 +137,7 @@ public class LoginServiceImpl implements LoginService {
             record.setUserName(loginDto.getUserName());
             User user = this.userMapper.selectOne(record);
             if(user == null){
-                BaseOutput.failure("登录失败").setResult("用户不存在");
+                return BaseOutput.failure("用户不存在");
             }
             //设置默认登录系统为UAP
             if(StringUtils.isBlank(loginDto.getSystemCode())){

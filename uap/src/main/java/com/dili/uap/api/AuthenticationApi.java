@@ -104,6 +104,22 @@ public class AuthenticationApi {
     }
 
     /**
+     * 用户登录验证
+     * @param json
+     * @return
+     */
+    @ApiOperation("登录验证")
+    @RequestMapping(value = "/validate.api", method = { RequestMethod.GET, RequestMethod.POST })
+    @ResponseBody
+    public BaseOutput validate(@RequestBody String json){
+        JSONObject jsonObject = JSONObject.parseObject(json);
+        LoginDto loginDto = DTOUtils.newDTO(LoginDto.class);
+        loginDto.setUserName(jsonObject.getString("userName"));
+        loginDto.setPassword(jsonObject.getString("password"));
+        return loginService.validate(loginDto);
+    }
+
+    /**
      * 根据sessionId获取系统权限列表，如果未登录将返回空
      * @param json
      * @return
