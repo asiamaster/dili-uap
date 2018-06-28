@@ -343,10 +343,6 @@ function bindEditMenuGrid(node) {
             $("#btnSave1").show();
             $("#btnCancel1").show();
         },
-        onAfterEdit: function (index, row) {
-//            alert(JSON.stringify(row));
-//            return false;
-        },
         onEndEdit: function (index, row) {
             $("#btnSave1").hide();
             $("#btnCancel1").hide();
@@ -405,7 +401,7 @@ function bindEditResourceGrid(node) {
             $("#btnSave1").show();
             $("#btnCancel1").show();
         },
-        onAfterEdit: function () {
+        onEndEdit: function () {
             $("#btnSave1").hide();
             $("#btnCancel1").hide();
         },
@@ -449,7 +445,7 @@ function bindInternalLinksGrid(node) {
             $("#btnSave2").show();
             $("#btnCancel2").show();
         },
-        onAfterEdit: function () {
+        onEndEdit: function () {
             $("#btnSave2").hide();
             $("#btnCancel2").hide();
 

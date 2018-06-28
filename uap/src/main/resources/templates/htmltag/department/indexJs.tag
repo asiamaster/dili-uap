@@ -55,7 +55,7 @@
                 $("#btnSave").show();
                 $("#btnCancel").show();
             },
-            onAfterEdit: function () {
+            onEndEdit: function () {
                 $("#btnSave").hide();
                 $("#btnCancel").hide();
             },

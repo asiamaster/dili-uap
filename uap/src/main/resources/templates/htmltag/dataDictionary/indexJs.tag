@@ -180,7 +180,7 @@ $(function() {
         onBeforeEdit: function () {
             setOptBtnDisplay(true)
         },
-        onAfterEdit: function () {
+        onEndEdit: function () {
             setOptBtnDisplay(false);
         },canEdit:function(){
         	 <#resource code="updateDataDictionary">

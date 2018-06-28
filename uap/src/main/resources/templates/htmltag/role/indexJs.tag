@@ -122,7 +122,7 @@
                 firmLoadSuccess(index);
                 setOptBtnDisplay(true);
             },
-            onAfterEdit: function () {
+            onEndEdit: function () {
                 setOptBtnDisplay(false);
             },
             onSaveSuccess: function (row, data) {
