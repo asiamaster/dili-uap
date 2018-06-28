@@ -17,16 +17,16 @@ import java.util.Map;
  * Created by asiamaster on 2017/7/21 0021.
  */
 @Component("resource")
-public class resourceTag extends Tag {
+public class ResourceTag extends Tag {
 
 	@Autowired
-	UserResourceRedis userResourceRedis;
+	private UserResourceRedis userResourceRedis;
 
 	@Autowired
-	UserUrlRedis userUrlRedis;
+	private UserUrlRedis userUrlRedis;
 	//标签自定义属性
-	private final String CODE_FIELD = "code";
-	private final String URL_FIELD = "url";
+	private static final String CODE_FIELD = "code";
+	private static final String URL_FIELD = "url";
 
 	@Override
 	public void render() {
