@@ -36,6 +36,8 @@ function onTreeLoadSuccess(node, data) {
  * 点击菜单树事件
  */
 function onSelectTree(node) {
+    $("#btnSave1").hide();
+    $("#btnCancel1").hide();
     queryGrid(node);
 }
 
@@ -98,7 +100,9 @@ function cancelEdit(gridId) {
     $("#"+gridId).dataGridEditor().cancel();
 }
 
-
+function restore(gridId){
+    $("#"+gridId).dataGridEditor().restore();
+}
 
 
 // ======================  私有方法分割线  ======================
@@ -339,7 +343,11 @@ function bindEditMenuGrid(node) {
             $("#btnSave1").show();
             $("#btnCancel1").show();
         },
-        onAfterEdit: function () {
+        onAfterEdit: function (index, row) {
+//            alert(JSON.stringify(row));
+//            return false;
+        },
+        onEndEdit: function (index, row) {
             $("#btnSave1").hide();
             $("#btnCancel1").hide();
         },
@@ -429,7 +437,7 @@ function bindEditResourceGrid(node) {
 }
 
 /**
- * 绑定可编辑菜单表格
+ * 绑定内链菜单表格
  * @param node
  */
 function bindInternalLinksGrid(node) {
@@ -509,7 +517,8 @@ function updateMenuNode(row) {
     var node = $('#menuTree').tree('find', "menu_"+row.id);
     $("#menuTree").tree("update",{
         target : node.target,
-        text : row.name
+        text : row.name,
+        attributes : {type: row.type, systemId : $("#grid1").data('systemId')}
     })
 }
 
@@ -519,6 +528,8 @@ function updateMenuNode(row) {
  * @param source the source node being dragged.
  */
 function dragMenu(target, source, point) {
+    endEditing("grid1");
+    endEditing("grid2");
     //只允许拖到某个节点下面
     if(point != "append"){
         return false;
@@ -533,32 +544,34 @@ function dragMenu(target, source, point) {
         var msg = "是否要移动["+source.text+"]到["+targetNode.text+"]下面?";
         //除了原生confirm，其它第三方都无法阻塞。。。
         if(confirm(msg)){
+            //是否拖动成功
+            var flag = false;
             $.ajax({
                 type: "POST",
                 url: "${contextPath}/menu/shiftMenu.action",
                 data: {sourceId: source.id, targetId: targetNode.id},
                 processData: true,
                 dataType: "json",
-                async: true,
+                async: false,
                 success: function (ret) {
                     if (ret.success) {
-                        //$.messager.alert('成功', ret.result);
-                        return true;
+                        $.messager.alert('成功', ret.result);
+                        flag = true;
                     } else {
                         $.messager.alert('错误', ret.result);
-                        return false;
+                        flag = false;
                     }
                 },
                 error: function () {
                     $.messager.alert('错误', '远程访问失败');
-                    return false;
+                    flag = false;
                 }
             });
+            return flag;
         }else{
             return false;
         }
     }
-    return true;
-
+    return false;
 }
 </script>

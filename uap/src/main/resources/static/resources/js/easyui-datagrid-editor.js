@@ -14,7 +14,8 @@
         extendParams: undefined, // 默认新增和修改会把 row 的数据发送给服务端,如果需新增参数,需提供此方法并返回要扩展参数的 json 对象.方法入参为当前操作的 row 对象
         onBeforeEdit: undefined, // 开启编辑模式前回调方法
         onBeginEdit:undefined,   // 在一行进入编辑模式的时候触发
-        onAfterEdit: undefined, // 关闭编辑模式后回调方法
+        onAfterEdit: undefined, // 在用户完成编辑一行的时候触发，返回false会取消编辑
+        onEndEdit : undefined, //在完成编辑但编辑器还没有销毁之前触发
         onSaveSuccess: undefined, //新增或修改成功后回调方法,方法入参为修改后的数据
         onDeleteSuccess: undefined, //删除成功后回调方法
         canEdit: undefined // 控制 row 是否可以编辑,返回 false 取消编辑动作,方法入参为被编辑的 row 对象
@@ -40,10 +41,11 @@
                     that.openUpdate();
                 },
                 onAfterEdit: function (index, row, changes) {
+                    //treegrid只有row,changes属性
                     if (!changes) {
                         row = index;
                     }
-                    that._onAfterEdit(index, row);
+                    that._onAfterEdit(index, row, changes);
                 },
                 onBeforeEdit: function (index, row) {
                     that._onBeforeEdit(index, row);
@@ -57,13 +59,42 @@
                     }
                     that._onCancelEdit(index, row);
                 },
-                onEndEdit: function () {
-                    that._onEndEdit();
+                onEndEdit: function (index, row, changes) {
+                    that._onEndEdit(index, row, changes);
                 }
             });
         },
         isEditing: function () {
             return undefined != this.editId;
+        },
+        restoreEditing: function () {
+            var oldRecord = this.oldRecord;
+            if (this.editId == undefined) {
+                return;
+            }
+            var indexOrId = this.editId;
+            if (this.options.target == 'datagrid') {
+                indexOrId = this.editIndex;
+            }
+            if (oldRecord) {
+                if (this.options.target != 'datagrid') {
+                    this.element[this.options.target]('update', {
+                        id: indexOrId,
+                        row: oldRecord
+                    });
+                } else {
+                    this.element[this.options.target]('updateRow', {
+                        index: indexOrId,
+                        row: oldRecord
+                    });
+                }
+            } else {
+                if (this.options.target != 'datagrid') {
+                    this.element[this.options.target]('remove', indexOrId);
+                } else {
+                    this.element[this.options.target]('deleteRow', indexOrId);
+                }
+            }
         },
         // 结束行编辑
         endEditing: function () {
@@ -103,7 +134,6 @@
                 $.messager.alert('警告', '请选中一条数据');
                 return;
             }
-
             if (this.options.canEdit) {
                 if (!this.options.canEdit(selected)) {
                     return;
@@ -121,7 +151,13 @@
                 this.editId = selected.id;
             }
         },
-        _onAfterEdit: function (index, row) {
+        _onAfterEdit: function (index, row, changes) {
+            if (this.options.onAfterEdit) {
+                if(false == this.options.onAfterEdit(index, row, changes)){
+                    this.restoreEditing();
+                    return false;
+                }
+            }
             var _index;
             if (this.options.target != 'datagrid') {
                 _index = row.id;
@@ -173,11 +209,11 @@
                 }
             }
 
-            this._onEndEdit();
+            this._onEndEdit(index, row);
         },
-        _onEndEdit: function () {
-            if (this.options.onAfterEdit) {
-                this.options.onAfterEdit();
+        _onEndEdit: function (index, row, changes) {
+            if (this.options.onEndEdit) {
+                this.options.onEndEdit(index, row, changes);
             }
         },
         insertOrUpdate: function (index, row) {
@@ -213,7 +249,6 @@
                                 row: oldRecord
                             });
                         }
-
                     } else {
                         if (that.options.target != 'datagrid') {
                             that.element[that.options.target]('remove', row.id);
@@ -368,6 +403,9 @@
             },
             save: function () {
                 that.data('plugin'+that.attr('id')+'_dataGridEditor').endEditing();
+            },
+            restore: function () {
+                that.data('plugin'+that.attr('id')+'_dataGridEditor').restoreEditing();
             }
         });
 

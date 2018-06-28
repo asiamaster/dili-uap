@@ -13,6 +13,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -108,6 +109,12 @@ public class MenuController {
             //如果菜单树上点的节点是菜单， 需要设置当前节点的父节点
             menu.setParentId(Long.parseLong(menuId.substring(5)));
         }
+        Menu condition = DTOUtils.newDTO(Menu.class);
+        condition.setParentId(menu.getId());
+        List children = menuService.list(condition);
+        if(!CollectionUtils.isEmpty(children)){
+            return BaseOutput.failure("菜单有子节点，不允许修改类型");
+        }
         menuService.updateExactSimple(menu);
         return BaseOutput.success("修改成功");
     }
@@ -122,30 +129,43 @@ public class MenuController {
         return msg == null ? BaseOutput.success("删除成功") : BaseOutput.failure(msg);
     }
 
+    /**
+     * 拖动到菜单下面，需要修改parentId, 并且判断目标菜单是否目录，是目录则不处理menu类型，是链接则需要改为内键
+     * 不允许跨系统拖动，不允许将目录拖到链接下面
+     * @param sourceId
+     * @param targetId
+     * @return
+     */
     @ApiOperation("移动Menu")
     @RequestMapping(value="/shiftMenu.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody BaseOutput shiftMenu(String sourceId, String targetId) {
-        Menu menu = DTOUtils.newDTO(Menu.class);
         //源节点肯定是菜单，所以是以menu_开头
-        menu.setId(Long.parseLong(sourceId.substring(5)));
+        Menu sourceMenu = menuService.get(Long.parseLong(sourceId.substring(5)));
+        //如果拖动到系统下面，需要判断不允许跨系统拖动
+        if(targetId.startsWith("sys_") && !sourceMenu.getSystemId().equals(Long.parseLong(targetId.substring(4)))){
+            return BaseOutput.failure("不允许跨系统拖动");
+        }
         //如果拖到系统下面, 需要清空parentId,并且修改菜单类型为链接
         if(targetId.startsWith("sys_")){
-            menu.setParentId(null);
-            menu.setType(MenuType.LINKS.getCode());
-            menu.setSystemId(Long.parseLong(targetId.substring(4)));
-        }else{//拖到菜单下面，只重置parentId, 并且判断目标菜单是否目录，是目录则需要修改菜单类型为链接，是链接则需要改为内键
+            sourceMenu.setParentId(null);
+            sourceMenu.setType(MenuType.LINKS.getCode());
+        }else{
+            //拖动到菜单下面，判断不允许跨系统拖动，不允许将目录拖动下链接下面
+            //验证通过后需要修改parentId, 并且判断目标菜单是否目录，是目录则不处理menu类型，是链接则需要改为内键
             Long targetMenuId = Long.parseLong(targetId.substring(5));
-            menu.setParentId(targetMenuId);
-            Menu condition = DTOUtils.newDTO(Menu.class);
-            condition.setId(targetMenuId);
             Menu targetMenu = menuService.get(targetMenuId);
-            if(targetMenu.getType().equals(MenuType.DIRECTORY.getCode())){
-                menu.setType(MenuType.LINKS.getCode());
-            }else if(targetMenu.getType().equals(MenuType.LINKS.getCode())){
-                menu.setType(MenuType.INTERNAL_LINKS.getCode());
+            if(!targetMenu.getSystemId().equals(sourceMenu.getSystemId())){
+                return BaseOutput.failure("不允许跨系统拖动");
+            }
+            if(sourceMenu.getType().equals(MenuType.DIRECTORY.getCode()) && !targetMenu.getType().equals(MenuType.DIRECTORY.getCode())){
+                return BaseOutput.failure("不允许将目录拖动下链接下面");
+            }
+            sourceMenu.setParentId(targetMenuId);
+            if(targetMenu.getType().equals(MenuType.LINKS.getCode())){
+                sourceMenu.setType(MenuType.INTERNAL_LINKS.getCode());
             }
         }
-        menuService.updateExactSimple(menu);
+        menuService.updateExactSimple(sourceMenu);
         return BaseOutput.success("移动菜单成功");
     }
 
