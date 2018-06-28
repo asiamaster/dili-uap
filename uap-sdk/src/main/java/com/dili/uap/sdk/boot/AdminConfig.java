@@ -1,7 +1,6 @@
 package com.dili.uap.sdk.boot;
 
-import com.dili.ss.util.SystemConfigUtils;
-import com.dili.uap.sdk.exception.NotAccessPermission;
+import com.dili.uap.sdk.exception.NotAccessPermissionException;
 import com.dili.uap.sdk.exception.NotLoginException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,7 +34,7 @@ public class AdminConfig {
 //		mappings.put("java.lang.Exception", SystemConfigUtils.getProperty("error.page.default", "error/default"));
 //		mappings.put("java.lang.Throwable", SystemConfigUtils.getProperty("error.page.default", "error/default"));
 		mappings.put(NotLoginException.class.getName(), "/error/noAccess.do");
-		mappings.put(NotAccessPermission.class.getName(), "/error/noAccess.do");
+		mappings.put(NotAccessPermissionException.class.getName(), "/error/noAccess.do");
 		simpleMappingExceptionResolver.setExceptionMappings(mappings);
 		return simpleMappingExceptionResolver;
 	}

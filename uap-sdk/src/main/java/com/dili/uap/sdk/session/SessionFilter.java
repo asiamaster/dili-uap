@@ -6,7 +6,7 @@ import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.sdk.domain.Menu;
 import com.dili.uap.sdk.domain.SystemExceptionLog;
 import com.dili.uap.sdk.domain.UserTicket;
-import com.dili.uap.sdk.exception.NotAccessPermission;
+import com.dili.uap.sdk.exception.NotAccessPermissionException;
 import com.dili.uap.sdk.exception.NotLoginException;
 import com.dili.uap.sdk.exception.RedirectException;
 import com.dili.uap.sdk.glossary.ExceptionType;
@@ -109,7 +109,7 @@ public class SessionFilter implements Filter {
         } catch (NotLoginException e) {
             pc.noAccess();
             systemExceptionLog(pc, e);
-        } catch (NotAccessPermission e) {
+        } catch (NotAccessPermissionException e) {
             if (log.isInfoEnabled()) {
                 log.info("用户{Session:" + pc.getSessionId() + ", userId:" + pc.getUserId() + "}没有访问" + pc.getUrl() + "权限！");
             }
@@ -160,7 +160,7 @@ public class SessionFilter implements Filter {
         if (!StringUtils.isBlank(referer)) {
             return;
         }
-        if(pc.getHandler().getClass().getName().equalsIgnoreCase("ResourceHttpRequestHandler")){
+        if("ResourceHttpRequestHandler".equalsIgnoreCase(pc.getHandler().getClass().getName())){
             return;
         }
         StringBuffer path = new StringBuffer();
@@ -189,9 +189,9 @@ public class SessionFilter implements Filter {
         //检测授权
         UserTicket auth = pc.getAuthorizer();
         if(auth == null){
-            throw new NotAccessPermission();
+            throw new NotAccessPermissionException();
         }
-        throw new NotAccessPermission();
+        throw new NotAccessPermissionException();
     }
 
     /**

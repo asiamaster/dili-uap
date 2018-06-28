@@ -177,6 +177,7 @@ public class WebContent {
             case "127.0.0.1":
             case "localhost":
                 return host;
+            default:break;
         }
         return host.substring(host.indexOf(".")+1);
     }
