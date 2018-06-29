@@ -52,7 +52,7 @@ public class SystemServiceImpl extends BaseServiceImpl<System, Long> implements 
 		systemCodeCondition.setCode(system.getCode());
 //		systemCodeCondition.setFirmCode(system.getFirmCode());
 		
-		int systemCodeCount = this.getActualDao().selectCount(systemNameCondition);
+		int systemCodeCount = this.getActualDao().selectCount(systemCodeCondition);
 		if (systemCodeCount > 0) {
 			return BaseOutput.failure("存在相同编码的系统");
 		}
@@ -82,7 +82,7 @@ public class SystemServiceImpl extends BaseServiceImpl<System, Long> implements 
 		systemCodeCondition.setCode(system.getCode());
 //		systemCodeCondition.setFirmCode(system.getFirmCode());
 		
-		System systemWithSameCode = this.getActualDao().selectOne(systemNameCondition);
+		System systemWithSameCode = this.getActualDao().selectOne(systemCodeCondition);
 		if (systemWithSameCode != null && !systemWithSameCode.getId().equals(system.getId())) {
 			return BaseOutput.failure("存在相同编码的系统");
 		}
