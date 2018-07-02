@@ -390,22 +390,35 @@
         var that = this;
         this.extend({
             insert: function () {
-                that.data('plugin'+that.attr('id')+'_dataGridEditor').openInsert();
+                //判断控件是否加载完, 这里if判断是解决同一个datagrid重新渲染后(比如菜单管理)，调用这里的方法会因为DataGridEditor没有渲染报错
+                if(that.data('plugin'+that.attr('id')+'_dataGridEditor')) {
+                    that.data('plugin' + that.attr('id') + '_dataGridEditor').openInsert();
+                }
             },
             update: function () {
-                that.data('plugin'+that.attr('id')+'_dataGridEditor').openUpdate();
+                if(that.data('plugin'+that.attr('id')+'_dataGridEditor')) {
+                    that.data('plugin' + that.attr('id') + '_dataGridEditor').openUpdate();
+                }
             },
             cancel: function () {
-                that.data('plugin'+that.attr('id')+'_dataGridEditor').cancelEdit();
+                if(that.data('plugin'+that.attr('id')+'_dataGridEditor')){
+                    that.data('plugin'+that.attr('id')+'_dataGridEditor').cancelEdit();
+                }
             },
             delete: function () {
-                that.data('plugin'+that.attr('id')+'_dataGridEditor').delete();
+                if(that.data('plugin'+that.attr('id')+'_dataGridEditor')) {
+                    that.data('plugin' + that.attr('id') + '_dataGridEditor').delete();
+                }
             },
             save: function () {
-                that.data('plugin'+that.attr('id')+'_dataGridEditor').endEditing();
+                if(that.data('plugin'+that.attr('id')+'_dataGridEditor')) {
+                    that.data('plugin' + that.attr('id') + '_dataGridEditor').endEditing();
+                }
             },
             restore: function () {
-                that.data('plugin'+that.attr('id')+'_dataGridEditor').restoreEditing();
+                if(that.data('plugin'+that.attr('id')+'_dataGridEditor')) {
+                    that.data('plugin' + that.attr('id') + '_dataGridEditor').restoreEditing();
+                }
             }
         });
 

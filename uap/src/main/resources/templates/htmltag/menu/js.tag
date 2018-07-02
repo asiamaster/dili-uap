@@ -38,6 +38,10 @@ function onTreeLoadSuccess(node, data) {
 function onSelectTree(node) {
     $("#btnSave1").hide();
     $("#btnCancel1").hide();
+    $("#btnSave2").hide();
+    $("#btnCancel2").hide();
+    cancelEdit("grid1");
+    cancelEdit("grid2");
     queryGrid(node);
 }
 
