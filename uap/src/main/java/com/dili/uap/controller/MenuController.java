@@ -160,10 +160,13 @@ public class MenuController {
         if(targetId.startsWith("sys_") && !sourceMenu.getSystemId().equals(Long.parseLong(targetId.substring(4)))){
             return BaseOutput.failure("不允许跨系统拖动");
         }
-        //如果拖到系统下面, 需要清空parentId,并且修改菜单类型为链接
+        //如果拖到系统下面, 需要清空parentId
         if(targetId.startsWith("sys_")){
             sourceMenu.setParentId(null);
-            sourceMenu.setType(MenuType.LINKS.getCode());
+            //修改内链菜单类型为链接
+            if(sourceMenu.getType().equals(MenuType.INTERNAL_LINKS.getCode())) {
+                sourceMenu.setType(MenuType.LINKS.getCode());
+            }
         }else{
             //拖动到菜单下面，判断不允许跨系统拖动，不允许将目录拖动下链接下面
             //验证通过后需要修改parentId, 并且判断目标菜单是否目录，是目录则不处理menu类型，是链接则需要改为内键
