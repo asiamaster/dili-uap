@@ -175,8 +175,17 @@ public class MenuController {
             if(!targetMenu.getSystemId().equals(sourceMenu.getSystemId())){
                 return BaseOutput.failure("不允许跨系统拖动");
             }
+            //如果源是目录，目标非目录
             if(sourceMenu.getType().equals(MenuType.DIRECTORY.getCode()) && !targetMenu.getType().equals(MenuType.DIRECTORY.getCode())){
                 return BaseOutput.failure("不允许将目录拖动下链接下面");
+            }
+            //如果源是链接，目标是内链, 修改源为内链
+            if(sourceMenu.getType().equals(MenuType.LINKS.getCode()) && targetMenu.getType().equals(MenuType.INTERNAL_LINKS.getCode())){
+                sourceMenu.setType(MenuType.INTERNAL_LINKS.getCode());
+            }
+            //如果源是内链，目标是目录，修改源为链接
+            if(sourceMenu.getType().equals(MenuType.INTERNAL_LINKS.getCode()) && targetMenu.getType().equals(MenuType.DIRECTORY.getCode())){
+                sourceMenu.setType(MenuType.LINKS.getCode());
             }
             sourceMenu.setParentId(targetMenuId);
             if(targetMenu.getType().equals(MenuType.LINKS.getCode())){
