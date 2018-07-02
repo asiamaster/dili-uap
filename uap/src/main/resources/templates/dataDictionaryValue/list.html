@@ -9,7 +9,7 @@
             <table class="easyui-datagrid" id="ddValueGrid" fitColumns="true" pagination="true" pageSize="30" pageNumber="1" pagePosition="top" rownumbers="false" remoteSort="false" loadMsg="数据加载中..."
                    singleSelect="true" method="post" align="center" fit="true" idField="id" border="false"
                    data-options="onClickRow:onClickDdValueGridRow,onDblClickRow:openUpdateDdValue,onBeginEdit:onBeginEditDdValue,onAfterEdit:onAfterEditDdValue,
-				onCancelEdit:onCancelEditDdValue">
+				onCancelEdit:onCancelEditDdValue,onLoadSuccess:gridLoadSuccess">
                 <thead>
                 <tr>
                     <th  data-options="field:'ddCode',sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false', hidden:true">字典id</th>
