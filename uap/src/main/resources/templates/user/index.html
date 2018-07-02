@@ -60,7 +60,7 @@
             <table class="easyui-datagrid" title="用户列表" id="userGrid" fitColumns="true" noheader="true"
                    pagination="true" pageSize="30" pageNumber="1" pagePosition="top" remoteSort="true" border="false"
                    loadMsg="数据加载中..." singleSelect="true" method="post" multiSort="false" sortName="id" sortOrder="desc"
-                   align="center" fit="true" striped="true" idField="id" data-options="onClickRow:onClickRow,onDblClickRow:openUpdate, onHeaderContextMenu:headerContextMenu">
+                   align="center" fit="true" striped="true" idField="id" data-options="onClickRow:onClickRow,onDblClickRow:openUpdate, onHeaderContextMenu:headerContextMenu,onLoadSuccess:gridLoadSuccess">
                 <thead>
                     <tr>
                         <th width="10%" data-options="field:'userName',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
