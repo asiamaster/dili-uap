@@ -18,7 +18,7 @@
                    multiSort="true" border="false"
                    align="center" fit="true" striped="true" toolbar="#toolbar" idField="id"
                    treeField="name" url="${contextPath!}/department/list.action"
-                   data-options="loadFilter:treegridLoadFilter, _parentIdField:'parentId'">
+                   data-options="loadFilter:treegridLoadFilter, _parentIdField:'parentId',onLoadSuccess:gridLoadSuccess">
                 <thead>
                 <tr>
                     <th data-options="field:'id',hidden:true">id</th>

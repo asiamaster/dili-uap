@@ -48,7 +48,7 @@
                    loadMsg="数据加载中..." border="false"
                    singleSelect="true" method="post" multiSort="true" sortName="code" align="center" fit="true"
                    striped="true" idField="id"
-                   data-options="onBeforeLoad:onBeforeLoad">
+                   data-options="onBeforeLoad:onBeforeLoad,onLoadSuccess:gridLoadSuccess">
                 <thead>
                 <tr>
                     <th data-options="field:'id',width:'6%',sortable:'true', order:'asc', align:'center', hidden:true,resizable:'true', fixed:'false'">
