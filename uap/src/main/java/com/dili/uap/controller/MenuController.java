@@ -179,8 +179,10 @@ public class MenuController {
             if(sourceMenu.getType().equals(MenuType.DIRECTORY.getCode()) && !targetMenu.getType().equals(MenuType.DIRECTORY.getCode())){
                 return BaseOutput.failure("不允许将目录拖动下链接下面");
             }
-            //如果源是链接，目标是内链, 修改源为内链
-            if(sourceMenu.getType().equals(MenuType.LINKS.getCode()) && targetMenu.getType().equals(MenuType.INTERNAL_LINKS.getCode())){
+            //如果源是链接，目标是链接或内链, 修改源为内链
+            if(sourceMenu.getType().equals(MenuType.LINKS.getCode())
+                    && (targetMenu.getType().equals(MenuType.INTERNAL_LINKS.getCode())
+                    || targetMenu.getType().equals(MenuType.LINKS.getCode()))){
                 sourceMenu.setType(MenuType.INTERNAL_LINKS.getCode());
             }
             //如果源是内链，目标是目录，修改源为链接
