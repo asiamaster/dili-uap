@@ -71,6 +71,9 @@ $(function () {
     });
 })
 
-
+//清空datagrid选择
+function gridLoadSuccess(data) {
+    $(this).datagrid("clearSelections");
+}
 
 
