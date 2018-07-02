@@ -287,9 +287,9 @@ public class LoginServiceImpl implements LoginService {
     private void makeCookieTag(User user, String sessionId) {
         String referer = WebUtil.fetchReferer(WebContent.getRequest());
         WebContent.setCookie(SessionConstants.COOKIE_SESSION_ID, sessionId);
-        WebContent.setCookie("u", user.getId().toString());
-        WebContent.setCookie("n", user.getUserName());
-        WebContent.setCookie("loginPath", referer);
+        WebContent.setCookie(SessionConstants.COOKIE_USER_ID_KEY, user.getId().toString());
+        WebContent.setCookie(SessionConstants.COOKIE_USER_NAME_KEY, user.getUserName());
+        WebContent.setCookie(SessionConstants.COOKIE_LOGIN_PATH_KEY, referer);
     }
 
     /**

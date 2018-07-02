@@ -21,8 +21,6 @@ public class SessionConstants {
     public static Long SESSION_TIMEOUT = 60 * 30L;  // 30分钟
     // sessionId - userId和UserIdSessionData的Redis 过期时间(秒)
 //    public static Long SESSIONID_USERID_TIMEOUT = 60 * 60 * 24L;
-    //Cookie过期时间(秒)
-    public  static Integer COOKIE_TIMEOUT = SESSION_TIMEOUT.intValue() * 48;
 
     // 新的redis关系 - kv定义表 - START
     // 用户数据权限 redis的key
@@ -42,9 +40,19 @@ public class SessionConstants {
     // 限制用户唯一登陆 - START
     public static final String KICK_OLDSESSIONID_KEY = "manage:kickOldSessionId:";
     // 限制用户唯一登陆 - END
-    //登录会话id
-    public static final String COOKIE_SESSION_ID = "SessionId";
 
     //登录密码错误锁定的key
     public static final String USER_PWD_ERROR_KEY = "manage:user_pwd_error:";
+
+    //Cookie key
+    //Cookie过期时间(秒)
+    public  static Integer COOKIE_TIMEOUT = SESSION_TIMEOUT.intValue() * 48;
+    //登录会话id
+    public static final String COOKIE_SESSION_ID = "SessionId";
+    //用户id
+    public static final String COOKIE_USER_ID_KEY="userId";
+    //用户名
+    public static final String COOKIE_USER_NAME_KEY="username";
+    //登录地址referer
+    public static final String COOKIE_LOGIN_PATH_KEY="loginPath";
 }
