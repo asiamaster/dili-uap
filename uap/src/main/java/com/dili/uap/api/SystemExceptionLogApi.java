@@ -38,7 +38,7 @@ public class SystemExceptionLogApi {
 
 	@ApiOperation("新增DataAuth")
 	@ApiImplicitParams({ @ApiImplicitParam(name = "SystemExceptionLog", paramType = "form", value = "SystemExceptionLog的form信息", required = true, dataType = "SystemExceptionLog") })
-	@RequestMapping(value = "/insert.api", method = { RequestMethod.GET, RequestMethod.POST })
+	@RequestMapping(value = "/insert.api", method = { RequestMethod.POST })
 	public @ResponseBody BaseOutput insert(SystemExceptionLog systemExceptionLog) {
 		systemExceptionLogService.insertSelective(systemExceptionLog);
 		return BaseOutput.success("插入成功");

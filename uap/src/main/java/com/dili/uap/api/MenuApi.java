@@ -25,14 +25,14 @@ public class MenuApi {
 
 	@ApiOperation(value = "查询menu实体接口", notes = "根据id查询menu接口，返回menu实体")
 	@ApiImplicitParams({ @ApiImplicitParam(name = "id", value = "menu的id", required = true, dataType = "long") })
-	@RequestMapping(value = "/get.api", method = { RequestMethod.GET, RequestMethod.POST })
+	@RequestMapping(value = "/get.api", method = { RequestMethod.POST })
 	public @ResponseBody BaseOutput<Menu> get(@RequestBody Long id) {
 		return BaseOutput.success().setData(menuService.get(id));
 	}
 
 	@ApiOperation(value = "查询menu列表接口", notes = "查询menu列表接口，返回列表信息")
 	@ApiImplicitParams({ @ApiImplicitParam(name = "menu", paramType = "form", value = "menu的form信息", required = false, dataType = "string") })
-	@RequestMapping(value = "/list.api", method = { RequestMethod.GET, RequestMethod.POST })
+	@RequestMapping(value = "/list.api", method = { RequestMethod.POST })
 	public @ResponseBody BaseOutput<List<Menu>> list(@RequestBody(required = false) Menu menu) {
 		return BaseOutput.success().setData(menuService.list(menu));
 	}
@@ -44,13 +44,13 @@ public class MenuApi {
 	}
 
 	@ResponseBody
-	@RequestMapping(value = "/listByExample.api", method = { RequestMethod.GET, RequestMethod.POST })
+	@RequestMapping(value = "/listByExample.api", method = { RequestMethod.POST })
 	public BaseOutput<Menu> listByExample(@RequestBody(required = false) Menu menu) {
 		return BaseOutput.success().setData(this.menuService.listByExample(menu));
 	}
 
 	@ResponseBody
-	@RequestMapping(value = "/getParentMenusByUrl.api", method = { RequestMethod.GET, RequestMethod.POST })
+	@RequestMapping(value = "/getParentMenusByUrl.api", method = { RequestMethod.POST })
 	public BaseOutput<List<Menu>> getParentMenusByUrl(@RequestBody String url) {
 		return BaseOutput.success().setData(this.menuService.getParentMenusByUrl(url));
 	}

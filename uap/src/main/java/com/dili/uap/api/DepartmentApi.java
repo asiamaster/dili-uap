@@ -26,7 +26,7 @@ public class DepartmentApi {
 
 	@ApiOperation(value = "查询Department实体接口", notes = "根据id查询Department接口，返回Department实体")
 	@ApiImplicitParams({ @ApiImplicitParam(name = "id", value = "Department的id", required = true, dataType = "long") })
-	@RequestMapping(value = "/get.api", method = { RequestMethod.GET, RequestMethod.POST })
+	@RequestMapping(value = "/get.api", method = { RequestMethod.POST })
 	public @ResponseBody BaseOutput<Department> get(@RequestBody Long id) {
 		return BaseOutput.success().setData(departmentService.get(id));
 	}

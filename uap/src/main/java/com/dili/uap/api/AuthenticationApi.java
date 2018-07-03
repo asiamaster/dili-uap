@@ -60,7 +60,7 @@ public class AuthenticationApi {
     private ResourceMapper resourceMapper;
 
     @ApiOperation("统一授权登录")
-    @RequestMapping(value = "/login.api", method = { RequestMethod.GET, RequestMethod.POST })
+    @RequestMapping(value = "/login.api", method = { RequestMethod.POST })
     @ResponseBody
     public BaseOutput login(@RequestBody String json, HttpServletRequest request){
         JSONObject jsonObject = JSONObject.parseObject(json);
@@ -76,7 +76,7 @@ public class AuthenticationApi {
     }
 
     @ApiOperation("统一授权登出")
-    @RequestMapping(value = "/loginout.api", method = { RequestMethod.GET, RequestMethod.POST })
+    @RequestMapping(value = "/loginout.api", method = { RequestMethod.POST })
     @ResponseBody
     public BaseOutput loginout(@RequestBody String json, HttpServletRequest request){
         String sessionId = getSessionIdByJson(json);
@@ -93,7 +93,7 @@ public class AuthenticationApi {
      * @return
      */
     @ApiOperation("鉴权")
-    @RequestMapping(value = "/authentication.api", method = { RequestMethod.GET, RequestMethod.POST })
+    @RequestMapping(value = "/authentication.api", method = { RequestMethod.POST })
     @ResponseBody
     public BaseOutput authentication(@RequestBody String json){
         String sessionId = getSessionIdByJson(json);
@@ -109,7 +109,7 @@ public class AuthenticationApi {
      * @return
      */
     @ApiOperation("登录验证")
-    @RequestMapping(value = "/validate.api", method = { RequestMethod.GET, RequestMethod.POST })
+    @RequestMapping(value = "/validate.api", method = { RequestMethod.POST })
     @ResponseBody
     public BaseOutput validate(@RequestBody String json){
         JSONObject jsonObject = JSONObject.parseObject(json);
@@ -125,7 +125,7 @@ public class AuthenticationApi {
      * @return
      */
     @ApiOperation("获取系统权限列表")
-    @RequestMapping(value = "/listSystems.api", method = { RequestMethod.GET, RequestMethod.POST })
+    @RequestMapping(value = "/listSystems.api", method = { RequestMethod.POST })
     @ResponseBody
     public BaseOutput<List<System>> listSystems(@RequestBody String json){
         String sessionId = getSessionIdByJson(json);
@@ -140,7 +140,7 @@ public class AuthenticationApi {
     }
 
     @ApiOperation("获取菜单权限列表")
-    @RequestMapping(value = "/listMenus.api", method = { RequestMethod.GET, RequestMethod.POST })
+    @RequestMapping(value = "/listMenus.api", method = { RequestMethod.POST })
     @ResponseBody
     public BaseOutput<List<Menu>> listMenus(@RequestBody String json){
         String sessionId = getSessionIdByJson(json);
@@ -156,7 +156,7 @@ public class AuthenticationApi {
     }
 
     @ApiOperation("获取资源权限列表")
-    @RequestMapping(value = "/listResources.api", method = { RequestMethod.GET, RequestMethod.POST })
+    @RequestMapping(value = "/listResources.api", method = { RequestMethod.POST })
     @ResponseBody
     public BaseOutput<List<Resource>> listResources(@RequestBody String json){
         String sessionId = getSessionIdByJson(json);
@@ -171,7 +171,7 @@ public class AuthenticationApi {
     }
 
     @ApiOperation("获取数据权限列表")
-    @RequestMapping(value = "/listDataAuthes.api", method = { RequestMethod.GET, RequestMethod.POST })
+    @RequestMapping(value = "/listDataAuthes.api", method = { RequestMethod.POST })
     @ResponseBody
     public BaseOutput<List<Map>> listDataAuthes(@RequestBody String json){
         String sessionId = getSessionIdByJson(json);

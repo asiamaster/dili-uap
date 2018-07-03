@@ -42,7 +42,7 @@ public class DataAuthApi {
 
 	@ApiOperation("刷新DataAuth缓存")
 	@RequestMapping(value = "/refreshAuthData.api", method = { RequestMethod.GET, RequestMethod.POST })
-	public @ResponseBody BaseOutput refreshAuthData(String json){
+	public @ResponseBody BaseOutput refreshAuthData(@RequestBody String json){
 		JSONObject jo = JSON.parseObject(json);
 		dataAuthManager.listUserDataAuthesByType(jo.getLong("userId"), jo.getString("type"));
 		return BaseOutput.success("刷新缓存成功");
