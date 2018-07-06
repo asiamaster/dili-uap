@@ -238,7 +238,11 @@
         function logout() {
             $.post('${contextPath!}/login/logout.action',{systemCode:'${system.code}', userId:'${userid}'},function(data){
                 if ("200" == data.code) {
-                    window.location.href = "${contextPath}/login/index.html";
+                    if(typeof callbackObj != "undefined"){
+                        callbackObj.logout();
+                    }else{
+                        window.location.href = "${contextPath}/login/index.html";
+                    }
                 } else {
                     $.messager.alert('提示','注销失败');
                 }
