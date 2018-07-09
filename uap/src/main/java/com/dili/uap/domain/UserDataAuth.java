@@ -13,7 +13,7 @@ import javax.persistence.Id;
 /**
  * 由MyBatis Generator工具自动生成
  * 
- * This file was generated on 2018-05-25 14:28:01.
+ * This file was generated on 2018-07-09 12:26:49.
  */
 @Table(name = "`user_data_auth`")
 public interface UserDataAuth extends IBaseDomain {
@@ -26,12 +26,12 @@ public interface UserDataAuth extends IBaseDomain {
 
     void setId(Long id);
 
-    @Column(name = "`data_auth_id`")
-    @FieldDef(label="数据权限id")
-    @EditMode(editor = FieldEditor.Number, required = true)
-    Long getDataAuthId();
+    @Column(name = "`ref_code`")
+    @FieldDef(label="数据权限引用编码", maxLength = 50)
+    @EditMode(editor = FieldEditor.Text, required = true)
+    String getRefCode();
 
-    void setDataAuthId(Long dataAuthId);
+    void setRefCode(String refCode);
 
     @Column(name = "`user_id`")
     @FieldDef(label="用户id")
@@ -39,4 +39,11 @@ public interface UserDataAuth extends IBaseDomain {
     Long getUserId();
 
     void setUserId(Long userId);
+
+    @Column(name = "`value`")
+    @FieldDef(label="数据权限值", maxLength = 50)
+    @EditMode(editor = FieldEditor.Text, required = true)
+    String getValue();
+
+    void setValue(String value);
 }

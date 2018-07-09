@@ -15,6 +15,7 @@ import com.dili.uap.domain.dto.UserDto;
 import com.dili.uap.glossary.UserState;
 import com.dili.uap.manager.UserManager;
 import com.dili.uap.sdk.domain.User;
+import com.dili.uap.sdk.glossary.DataAuthType;
 import com.dili.uap.service.UserService;
 import com.dili.uap.utils.MD5Util;
 import com.github.pagehelper.Page;
@@ -347,53 +348,32 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
         if (null == userId || null == dataRange) {
             return BaseOutput.failure("用户数据丢失");
         }
-        //先根据用户删除现有的部门权限信息
-        UserDepartment delete = DTOUtils.newDTO(UserDepartment.class);
-        delete.setUserId(userId);
-        userDepartmentMapper.delete(delete);
-        //需要保存的用户角色信息
+        UserDataAuth userDataAuth = DTOUtils.newDTO(UserDataAuth.class);
+        userDataAuth.setUserId(userId);
+        userDataAuthMapper.delete(userDataAuth);
+        //需要保存的用户部门和市场信息
         if (null != dataIds && dataIds.length > 0) {
-            List<UserDepartment> saveDatas = Lists.newArrayList();
+            List<UserDataAuth> saveDatas = Lists.newArrayList();
             for (String id : dataIds) {
                 if (!id.startsWith(UapConstants.FIRM_PREFIX)) {
-                    UserDepartment ud = DTOUtils.newDTO(UserDepartment.class);
+                    UserDataAuth ud = DTOUtils.newDTO(UserDataAuth.class);
                     ud.setUserId(userId);
-                    ud.setDepartmentId(Long.valueOf(id));
+                    ud.setValue(id);
+                    ud.setRefCode(DataAuthType.DEPARTMENT.getCode());
                     saveDatas.add(ud);
                 }
             }
             //如果存在需要保存的用户角色数据，则保存数据
             if (CollectionUtils.isNotEmpty(saveDatas)) {
-                userDepartmentMapper.insertList(saveDatas);
+                userDataAuthMapper.insertList(saveDatas);
             }
         }
-        //查询当前用户所属的权限范围
-        UserDataAuth userDataAuth = DTOUtils.newDTO(UserDataAuth.class);
-        userDataAuth.setUserId(userId);
-        List<UserDataAuth> userDataAuths = userDataAuthMapper.select(userDataAuth);
-        /**
-         * 判断是否存在权限信息
-         * 正常情况下，目前要么没有，要么应该只有一种type范围对应的一条，所以，前期不需要关联查询，否则需要关联dataAuth进行type区分
-         */
-        if (CollectionUtils.isNotEmpty(userDataAuths)) {
-            //如果存在多条，则先直接根据用户删除所有，再重新新增
-            if (userDataAuths.size() > 1) {
-                userDataAuthMapper.delete(userDataAuth);
-                userDataAuth.setDataAuthId(dataRange);
-                userDataAuthMapper.insert(userDataAuth);
-            } else {
-                //否则，比较是否相同，不同则执行更改
-                UserDataAuth temp = userDataAuths.get(0);
-                if (!temp.getDataAuthId().equals(dataRange)) {
-                    temp.setDataAuthId(dataRange);
-                    userDataAuthMapper.updateByPrimaryKeySelective(temp);
-                }
-            }
-        } else {
-            //数据库里不存的话，则直接新增数据
-            userDataAuth.setDataAuthId(dataRange);
-            userDataAuthMapper.insert(userDataAuth);
-        }
+        //保存用户数据范围信息
+        UserDataAuth ud = DTOUtils.newDTO(UserDataAuth.class);
+        ud.setUserId(userId);
+        ud.setValue(String.valueOf(dataRange));
+        ud.setRefCode(DataAuthType.DATA_RANGE.getCode());
+        userDataAuthMapper.insert(ud);
         return BaseOutput.success("操作成功");
     }
 

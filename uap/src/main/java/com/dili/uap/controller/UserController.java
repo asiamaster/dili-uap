@@ -6,16 +6,21 @@ import com.dili.ss.domain.EasyuiPageOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.dto.IDTO;
 import com.dili.ss.metadata.ValueProviderUtils;
+import com.dili.uap.component.DataRangeSourceService;
 import com.dili.uap.constants.UapConstants;
-import com.dili.uap.domain.DataAuth;
+import com.dili.uap.domain.DataAuthRef;
 import com.dili.uap.domain.Firm;
-import com.dili.uap.sdk.domain.User;
 import com.dili.uap.domain.UserDataAuth;
 import com.dili.uap.domain.dto.UserDto;
+import com.dili.uap.glossary.DataRange;
+import com.dili.uap.sdk.component.DataAuthSource;
+import com.dili.uap.sdk.domain.User;
+import com.dili.uap.sdk.glossary.DataAuthType;
+import com.dili.uap.sdk.service.DataAuthSourceService;
 import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.sdk.validator.AddView;
 import com.dili.uap.sdk.validator.ModifyView;
-import com.dili.uap.service.DataAuthService;
+import com.dili.uap.service.DataAuthRefService;
 import com.dili.uap.service.FirmService;
 import com.dili.uap.service.UserDataAuthService;
 import com.dili.uap.service.UserService;
@@ -48,13 +53,17 @@ import java.util.Map;
 @RequestMapping("/user")
 public class UserController {
     @Autowired
-    UserService userService;
+    private UserService userService;
     @Resource
-    FirmService firmService;
+    private FirmService firmService;
     @Resource
-    DataAuthService dataAuthService;
-    @Resource
-    UserDataAuthService userDataAuthService;
+    private UserDataAuthService userDataAuthService;
+
+    @Autowired
+    private DataAuthSource dataAuthSource;
+
+    @Autowired
+    private DataAuthRefService dataAuthRefService;
 
     @ApiOperation("跳转到User页面")
     @RequestMapping(value = "/index.html", method = RequestMethod.GET)
@@ -209,20 +218,23 @@ public class UserController {
         BaseOutput<Map<String, Object>> output = BaseOutput.success();
         Map map = Maps.newHashMap();
         //获取数据权限的可选范围
-        DataAuth da = DTOUtils.newDTO(DataAuth.class);
-        da.setType("dataRange");
-        map.put("dataRange", dataAuthService.list(da));
+        DataAuthRef dataAuthRef = DTOUtils.newDTO(DataAuthRef.class);
+        dataAuthRef.setCode(DataAuthType.DATA_RANGE.getCode());
+        List<DataAuthRef> dataAuthRefs = dataAuthRefService.list(dataAuthRef);
+
+        DataAuthSourceService dataRangeSourceService = dataAuthSource.getDataAuthSourceServiceMap().get(dataAuthRefs.get(0).getSpringId());
+        map.put("dataRange", dataRangeSourceService.listDataAuthes(dataAuthRefs.get(0).getParam()));
         //获取用户的数据权限
         map.put("userDatas", userService.getUserDataAuthForTree(id));
         //查询当前用户所属的权限范围
         UserDataAuth userDataAuth = DTOUtils.newDTO(UserDataAuth.class);
         userDataAuth.setUserId(id);
+        userDataAuth.setRefCode(DataAuthType.DATA_RANGE.getCode());
         List<UserDataAuth> userDataAuths = userDataAuthService.list(userDataAuth);
         if (CollectionUtils.isNotEmpty(userDataAuths)) {
-            map.put("currDataAuth", userDataAuths.get(0).getDataAuthId());
+            map.put("currDataAuth", userDataAuths.get(0).getValue());
         }
-        output.setData(map);
-        return output;
+        return output.setData(map);
     }
 
     @ApiOperation(value = "保存用户的数据权限信息", notes = "保存用户的数据权限")

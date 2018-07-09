@@ -8,7 +8,9 @@ public enum DataAuthType {
     //数据范围
     DATA_RANGE("dataRange","数据范围"),
     //用户和部门关系的数据权限
-    DEPARTMENT("department","部门");
+    DEPARTMENT("department","部门"),
+    //用户和市场关系的数据权限
+    MARKET("market","市场");
 
     private String name;
     //对应数据权限表中的type

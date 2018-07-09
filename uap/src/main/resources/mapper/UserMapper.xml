@@ -76,36 +76,36 @@
 
   <select id="selectUserDatas" parameterType="map" resultType="com.dili.uap.domain.dto.UserDataDto">
       SELECT
-        d.id AS treeId,
-        CASE
-          WHEN d.parent_id is null THEN
-            CONCAT('firm_',d.firm_code)
-          ELSE
-            d.parent_id
-        END AS parentId,
-        d.`name`,
-        CASE
-          WHEN ud.id IS NULL THEN
-              FALSE
-          else true
-        end AS checked
+      d.id AS treeId,
+      CASE
+      WHEN d.parent_id is null THEN
+      CONCAT('firm_',d.firm_code)
+      ELSE
+      d.parent_id
+      END AS parentId,
+      d.`name`,
+      CASE
+      WHEN ud.id IS NULL THEN
+      FALSE
+      else true
+      end AS checked
       FROM
-        department d
-        LEFT JOIN user_department ud ON d.id = ud.department_id and  ud.user_id = #{userId}
-        where 1 = 1 
-        <if test="firmCode != null and firmCode != ''">
+      department d
+      LEFT JOIN user_data_auth ud ON d.id = ud.value
+      where ud.user_id = #{userId} and ud.ref_code='department'
+      <if test="firmCode != null and firmCode != ''">
           and d.firm_code = #{firmCode}
-        </if>
+      </if>
       UNION ALL
       SELECT
-          CONCAT('firm_',f.`code`) AS treeId,
-          NULL AS parentId,
-          f.`name`,
-          FALSE AS checked
-       FROM firm f  where 1 = 1
-        <if test="firmCode != null and firmCode != ''">
+      CONCAT('firm_',f.`code`) AS treeId,
+      NULL AS parentId,
+      f.`name`,
+      FALSE AS checked
+      FROM firm f  where 1 = 1
+      <if test="firmCode != null and firmCode != ''">
           and f.code = #{firmCode}
-        </if>
+      </if>
   </select>
 
 </mapper>

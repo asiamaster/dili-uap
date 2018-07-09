@@ -1,42 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.dili.uap.dao.UserDataAuthMapper">
-  <resultMap id="BaseResultMap" type="com.dili.uap.domain.UserDataAuth">
-    <!--
-      WARNING - @mbg.generated
-    -->
-    <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="data_auth_id" jdbcType="BIGINT" property="dataAuthId" />
-    <result column="user_id" jdbcType="BIGINT" property="userId" />
-  </resultMap>
-  <sql id="Base_Column_List">
-    <!--
-      WARNING - @mbg.generated
-    -->
-    id, data_auth_id, user_id
-  </sql>
-  <select id="selectBy" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    <!--
-      WARNING - @mbg.generated
-    -->
-    select 
-    <include refid="Base_Column_List" />
-    from user_data_auth
-    where id = #{id,jdbcType=BIGINT}
-  </select>
-  <update id="updateBy" parameterType="com.dili.uap.domain.UserDataAuth">
-    <!--
-      WARNING - @mbg.generated
-    -->
-    update user_data_auth
-    <set>
-      <if test="dataAuthId != null">
-        data_auth_id = #{dataAuthId,jdbcType=BIGINT},
-      </if>
-      <if test="userId != null">
-        user_id = #{userId,jdbcType=BIGINT},
-      </if>
-    </set>
-    where id = #{id,jdbcType=BIGINT}
-  </update>
+    <resultMap id="BaseResultMap" type="com.dili.uap.domain.UserDataAuth">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="ref_code" jdbcType="VARCHAR" property="refCode"/>
+        <result column="user_id" jdbcType="BIGINT" property="userId"/>
+        <result column="value" jdbcType="VARCHAR" property="value"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        id, ref_code, user_id, value
+    </sql>
+
+    <!--&lt;!&ndash; 查询用户的数据权限列表 &ndash;&gt;-->
+    <!--<select id="listUserDataAuth" parameterType="com.dili.uap.domain.UserDataAuth" resultMap="BaseResultMap">-->
+        <!--SELECT-->
+        <!--uda.id,-->
+        <!--uda.user_id,-->
+        <!--uda.value,-->
+        <!--uda.ref_code-->
+        <!--FROM-->
+        <!--data_auth_ref dar-->
+        <!--INNER JOIN-->
+        <!--user_data_auth uda ON dar.code = uda.ref_code-->
+        <!--<where>-->
+            <!--<if test="id != null">-->
+                <!--uda.id = #{id,jdbcType=BIGINT},-->
+            <!--</if>-->
+            <!--<if test="refCode != null">-->
+                <!--and uda.ref_code = #{refCode,jdbcType=VARCHAR},-->
+            <!--</if>-->
+            <!--<if test="userId != null">-->
+                <!--and uda.user_id = #{userId,jdbcType=BIGINT},-->
+            <!--</if>-->
+            <!--<if test="value != null">-->
+                <!--and uda.`value` = #{value,jdbcType=VARCHAR},-->
+            <!--</if>-->
+        <!--</where>-->
+    <!--</select>-->
 </mapper>

@@ -544,7 +544,6 @@
             if (ret && ret.success) {
                 //data 中存有 数据权限范围选项，数据权限本身，当前所属的数据权限
                 var data = ret.data;
-                $('#dataRange').combobox("loadData", data.dataRange);
                 $('#dataTree').tree("loadData", data.userDatas);
                 var output = [];
                 var checkedId = 1;
@@ -552,10 +551,10 @@
                     checkedId = data.currDataAuth;
                 }
                 $.each(data.dataRange, function (i, item) {
-                    if (parseInt(checkedId) == parseInt(item["id"])) {
-                        output.push('<input type="radio" name="dataRange" checked value="' + item["id"] + '">' + item["name"] + '&nbsp;&nbsp;');
+                    if (parseInt(checkedId) == parseInt(item["value"])) {
+                        output.push('<input type="radio" name="dataRange" checked value="' + item["value"] + '">' + item["name"] + '&nbsp;&nbsp;');
                     } else {
-                        output.push('<input type="radio" name="dataRange" value="' + item["id"] + '">' + item["name"] + '&nbsp;&nbsp;');
+                        output.push('<input type="radio" name="dataRange" value="' + item["value"] + '">' + item["name"] + '&nbsp;&nbsp;');
                     }
                 });
                 $('#dataRangeDiv').html(output.join(''));

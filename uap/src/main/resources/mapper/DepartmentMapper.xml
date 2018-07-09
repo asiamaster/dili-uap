@@ -17,17 +17,6 @@
         <result column="modified_id" jdbcType="BIGINT" property="modifiedId"/>
     </resultMap>
 
-    <resultMap id="DataAuthResultMap" type="com.dili.uap.domain.DataAuth">
-        <!--
-          WARNING - @mbg.generated
-        -->
-        <id column="id" jdbcType="BIGINT" property="id"/>
-        <result column="name" jdbcType="VARCHAR" property="name"/>
-        <result column="type" jdbcType="VARCHAR" property="type"/>
-        <result column="data_id" jdbcType="VARCHAR" property="dataId"/>
-        <result column="parent_data_id" jdbcType="VARCHAR" property="parentDataId"/>
-        <result column="description" jdbcType="VARCHAR" property="description"/>
-    </resultMap>
     <sql id="Base_Column_List">
         <!--
           WARNING - @mbg.generated
@@ -53,44 +42,23 @@
 		ud.user_id =  #{userId}
   </select>
 
-    <!-- 根据用户id查询部门数据权限 -->
-    <select id="listDataAuthes" parameterType="map" resultMap="DataAuthResultMap">
+    <!-- 根据firmcode查询部门 -->
+    <select id="listDepartments" parameterType="map" resultType="map">
         SELECT
-        d.id data_id,
-        d.name,
-        'department' type,
-        d.parent_id parent_data_id,
-        d.description
-        FROM
-        department d
-        INNER JOIN
-        user_department ud ON d.id = ud.department_id
-        WHERE
-        ud.user_id =  #{userId}
-        <if test="firm_code != null and firm_code != ''">
-           and d.firm_code = #{firmCode}
-        </if>
-    </select>
+        concat('firm_',#{firmCode}) AS id
+        ,null AS parentId
+        ,#{firmCode} AS firmCode
+        ,(select name from firm where code=#{firmCode}) AS name
+        ,null AS code
+        ,null AS description
+        ,null AS created_id
+        ,null AS created
+        ,null AS modified
+        ,null AS modified_id
+        union all
 
-
- <!-- 根据firmcode查询部门 -->
-    <select id="listDepartments" parameterType="map"  resultType="map">
-    
-         SELECT
-          concat('firm_',#{firmCode}) AS id
-           ,null AS parentId
-           ,#{firmCode} AS firmCode
-           ,(select name from firm where code=#{firmCode}) AS name
-           ,null AS code
-           ,null AS description
-           ,null AS created_id
-           ,null AS created
-           ,null AS modified
-           ,null AS modified_id
-           union all
-           
         SELECT
-         concat('department_',id) AS id
+        concat('department_',id) AS id
         ,case when parent_id is null then concat('firm_',firm_code) else concat('department_',parent_id) end as parentId
         , firm_code AS firmCode, name, code, description, created_id, created, modified,
         modified_id
@@ -98,16 +66,14 @@
         department d
         WHERE 1=1
         <if test="firmCode != null and firmCode != ''">
-           and d.firm_code = #{firmCode}
+            and d.firm_code = #{firmCode}
         </if>
-          
-          
-     <if test="sort !=null">
-        ORDER BY `${sort}`
-        <if test="order !=null">
-          ${order}
+        <if test="sort !=null">
+            ORDER BY `${sort}`
+            <if test="order !=null">
+                ${order}
+            </if>
         </if>
-    </if>
     </select>
-    
+
 </mapper>

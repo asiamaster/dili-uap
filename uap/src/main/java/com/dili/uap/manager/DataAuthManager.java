@@ -1,7 +1,7 @@
 package com.dili.uap.manager;
 
 
-import com.dili.uap.domain.DataAuth;
+import com.dili.uap.domain.UserDataAuth;
 
 import java.util.List;
 
@@ -19,25 +19,18 @@ public interface DataAuthManager {
 	void initUserDataAuthesInRedis(Long userId);
 
 	/**
-	 * 根据用户id和数据权限类型获取指定数据权限，并缓存到redis
+	 * 根据用户id和数据权限引用编码获取指定数据权限
 	 * @param userId 用户id
-	 * @param dataType 数据权限类型
+	 * @param refCode 数据权限引用编码
 	 * @return
 	 */
-	List<DataAuth> listUserDataAuthesByType(Long userId, String dataType);
+	List<UserDataAuth> listUserDataAuthesByRefCode(Long userId, String refCode);
 
 	/**
 	 * 根据用户id获取所有数据权限
 	 * @param userId 用户id
 	 * @return
 	 */
-	List<DataAuth> listUserDataAuthes(Long userId);
+	List<UserDataAuth> listUserDataAuthes(Long userId);
 
-	/**
-	 * 根据用户id和市场编码获取所有数据权限
-	 * @param userId	用户id	必填
-	 * @param firmCode 市场编码	必填
-	 * @return
-	 */
-	List<DataAuth> listUserDepartmentDataAuthes(Long userId, String firmCode);
 }

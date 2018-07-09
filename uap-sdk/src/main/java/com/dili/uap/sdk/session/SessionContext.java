@@ -2,7 +2,6 @@ package com.dili.uap.sdk.session;
 
 
 import com.dili.uap.sdk.domain.UserTicket;
-import com.dili.uap.sdk.service.AuthDataApiService;
 import com.dili.uap.sdk.service.UserInfoApiService;
 import com.dili.uap.sdk.util.WebContent;
 
@@ -16,8 +15,6 @@ public class SessionContext {
 	private PermissionContext pc;
 
 	private UserTicket userTicket;
-
-	private AuthDataApiService authDataApiService;
 
 	private UserInfoApiService userInfoApiService;
 
@@ -68,17 +65,6 @@ public class SessionContext {
 	 */
 	public List<Map> dataAuth() {
 		return pc.getDataAuthRedis().dataAuth(getUserTicket().getId());
-	}
-
-	/**
-	 * 刷新数据权限
-	 * @param type
-	 */
-	public void refreshAuthData(String type){
-		if (authDataApiService == null) {
-			authDataApiService = new AuthDataApiService("", pc.getConfig().getDomain());
-		}
-		authDataApiService.refreshAuthData(type);
 	}
 
 	public UserInfoApiService fetchUserApi(){
