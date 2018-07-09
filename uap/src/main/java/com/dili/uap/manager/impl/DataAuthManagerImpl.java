@@ -2,7 +2,6 @@ package com.dili.uap.manager.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.dili.ss.dto.DTOUtils;
-import com.dili.uap.dao.DepartmentMapper;
 import com.dili.uap.dao.UserDataAuthMapper;
 import com.dili.uap.domain.UserDataAuth;
 import com.dili.uap.manager.DataAuthManager;
@@ -27,8 +26,7 @@ public class DataAuthManagerImpl implements DataAuthManager {
 
 	@Autowired
 	private UserDataAuthMapper userDataAuthMapper;
-	@Autowired
-	private DepartmentMapper departmentMapper;
+
 	@Autowired
 	private ManageRedisUtil redisUtil;
 
@@ -37,14 +35,14 @@ public class DataAuthManagerImpl implements DataAuthManager {
 		UserDataAuth userDataAuth = DTOUtils.newDTO(UserDataAuth.class);
 		userDataAuth.setUserId(userId);
 		//查询数据权限，需要合并下面的部门数据权限列表
-		List<UserDataAuth> dataAuths = this.userDataAuthMapper.select(userDataAuth);
+		List<UserDataAuth> userDataAuths = this.userDataAuthMapper.select(userDataAuth);
 		String key = SessionConstants.USER_DATA_AUTH_KEY + userId;
 		this.redisUtil.remove(key);
-		if(CollectionUtils.isEmpty(dataAuths)){
+		if(CollectionUtils.isEmpty(userDataAuths)){
 			return;
 		}
 		BoundSetOperations<String, Object> ops = this.redisUtil.getRedisTemplate().boundSetOps(key);
-		for (UserDataAuth dataAuth : dataAuths) {
+		for (UserDataAuth dataAuth : userDataAuths) {
 			ops.add(JSON.toJSONString(dataAuth));
 		}
 	}

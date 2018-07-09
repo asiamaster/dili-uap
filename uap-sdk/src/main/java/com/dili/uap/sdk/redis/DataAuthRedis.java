@@ -22,11 +22,11 @@ public class DataAuthRedis {
 
     /**
      * 根据userId和数据权限type获取数据权限列表
-     * @param type
+     * @param refCode
      * @param userId
      * @return  DataAuth List<Map>
      */
-    public List<Map> dataAuth(String type, Long userId) {
+    public List<Map> dataAuth(String refCode, Long userId) {
         BoundSetOperations<String, String> boundSetOperations = redisUtil.getRedisTemplate().boundSetOps (SessionConstants.USER_DATA_AUTH_KEY + userId);
         List<Map> dataAuthMap = new ArrayList<>();
         if(boundSetOperations.size()<=0) {
@@ -36,7 +36,7 @@ public class DataAuthRedis {
         //根据类型过滤
         for(String dataAuthJson : boundSetOperations.members()) {
             JSONObject dataAuth = JSONObject.parseObject(dataAuthJson);
-            if(dataAuth.get("type").equals(type)){
+            if(dataAuth.get("refCode").equals(refCode)){
                 dataAuthMap.add(dataAuth);
             }
         }
@@ -55,8 +55,8 @@ public class DataAuthRedis {
             return dataAuthMap;
         }
         //根据类型过滤
-        for(String dataAuthJson : boundSetOperations.members()) {
-            dataAuthMap.add(JSONObject.parseObject(dataAuthJson));
+        for(String userDataAuthJson : boundSetOperations.members()) {
+            dataAuthMap.add(JSONObject.parseObject(userDataAuthJson));
         }
         return dataAuthMap;
     }
