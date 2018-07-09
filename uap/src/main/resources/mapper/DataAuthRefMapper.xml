@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dili.uap.dao.DataAuthRefMapper">
+    <resultMap id="BaseResultMap" type="com.dili.uap.domain.DataAuthRef">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="code" jdbcType="VARCHAR" property="code"/>
+        <result column="spring_id" jdbcType="VARCHAR" property="springId"/>
+        <result column="param" jdbcType="VARCHAR" property="param"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        id, `name`, code, spring_id, param
+    </sql>
+
+
+</mapper>
