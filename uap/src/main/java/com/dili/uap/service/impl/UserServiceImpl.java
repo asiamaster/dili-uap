@@ -355,13 +355,16 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
         if (null != dataIds && dataIds.length > 0) {
             List<UserDataAuth> saveDatas = Lists.newArrayList();
             for (String id : dataIds) {
-                if (!id.startsWith(UapConstants.FIRM_PREFIX)) {
-                    UserDataAuth ud = DTOUtils.newDTO(UserDataAuth.class);
-                    ud.setUserId(userId);
-                    ud.setValue(id);
+                UserDataAuth ud = DTOUtils.newDTO(UserDataAuth.class);
+                ud.setUserId(userId);
+                if (id.startsWith(UapConstants.FIRM_PREFIX)) {
+                    ud.setRefCode(DataAuthType.MARKET.getCode());
+                    ud.setValue(id.replace(UapConstants.FIRM_PREFIX, ""));
+                } else {
                     ud.setRefCode(DataAuthType.DEPARTMENT.getCode());
-                    saveDatas.add(ud);
+                    ud.setValue(id);
                 }
+                saveDatas.add(ud);
             }
             //如果存在需要保存的用户角色数据，则保存数据
             if (CollectionUtils.isNotEmpty(saveDatas)) {
