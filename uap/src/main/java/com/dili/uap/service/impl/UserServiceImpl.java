@@ -58,8 +58,6 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
     @Autowired
     DepartmentMapper departmentMapper;
     @Autowired
-    UserDepartmentMapper userDepartmentMapper;
-    @Autowired
     UserDataAuthMapper userDataAuthMapper;
 
     @Override
@@ -351,11 +349,17 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
         UserDataAuth userDataAuth = DTOUtils.newDTO(UserDataAuth.class);
         userDataAuth.setUserId(userId);
         userDataAuthMapper.delete(userDataAuth);
+        List<UserDataAuth> saveDatas = Lists.newArrayList();
+        //保存用户数据范围信息
+        UserDataAuth ud = DTOUtils.newDTO(UserDataAuth.class);
+        ud.setUserId(userId);
+        ud.setValue(String.valueOf(dataRange));
+        ud.setRefCode(DataAuthType.DATA_RANGE.getCode());
+        saveDatas.add(ud);
         //需要保存的用户部门和市场信息
         if (null != dataIds && dataIds.length > 0) {
-            List<UserDataAuth> saveDatas = Lists.newArrayList();
             for (String id : dataIds) {
-                UserDataAuth ud = DTOUtils.newDTO(UserDataAuth.class);
+                ud = DTOUtils.newDTO(UserDataAuth.class);
                 ud.setUserId(userId);
                 if (id.startsWith(UapConstants.FIRM_PREFIX)) {
                     ud.setRefCode(DataAuthType.MARKET.getCode());
@@ -366,17 +370,11 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
                 }
                 saveDatas.add(ud);
             }
-            //如果存在需要保存的用户角色数据，则保存数据
-            if (CollectionUtils.isNotEmpty(saveDatas)) {
-                userDataAuthMapper.insertList(saveDatas);
-            }
         }
-        //保存用户数据范围信息
-        UserDataAuth ud = DTOUtils.newDTO(UserDataAuth.class);
-        ud.setUserId(userId);
-        ud.setValue(String.valueOf(dataRange));
-        ud.setRefCode(DataAuthType.DATA_RANGE.getCode());
-        userDataAuthMapper.insert(ud);
+        //如果存在需要保存的用户角色数据，则保存数据
+        if (CollectionUtils.isNotEmpty(saveDatas)) {
+            userDataAuthMapper.insertList(saveDatas);
+        }
         return BaseOutput.success("操作成功");
     }
 
@@ -414,10 +412,6 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
         UserDataAuth userDataAuth = DTOUtils.newDTO(UserDataAuth.class);
         userDataAuth.setUserId(id);
         userDataAuthMapper.delete(userDataAuth);
-        //删除用户-部门数据权限
-        UserDepartment ud = DTOUtils.newDTO(UserDepartment.class);
-        ud.setUserId(id);
-        userDepartmentMapper.delete(ud);
         //删除用户-角色关系
         UserRole userRole = DTOUtils.newDTO(UserRole.class);
         userRole.setUserId(id);
