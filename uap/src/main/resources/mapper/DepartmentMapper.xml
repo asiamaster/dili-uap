@@ -25,23 +25,6 @@
         modified_id
     </sql>
 
-    <!-- 根据用户id查询部门 -->
-    <select id="listByUserId" parameterType="Long" resultMap="BaseResultMap">
-    SELECT
-		d.id,
-		d.name,
-		d.parent_id,
-		d.firm_code,
-		d.code,
-		d.description
-		FROM
-		department d
-		INNER JOIN
-		user_department ud ON d.id = ud.department_id
-		WHERE
-		ud.user_id =  #{userId}
-  </select>
-
     <!-- 根据firmcode查询部门 -->
     <select id="listDepartments" parameterType="map" resultType="map">
         SELECT
