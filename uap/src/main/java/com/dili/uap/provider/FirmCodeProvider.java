@@ -6,7 +6,7 @@ import com.dili.ss.metadata.ValuePair;
 import com.dili.ss.metadata.ValuePairImpl;
 import com.dili.ss.metadata.ValueProvider;
 import com.dili.ss.metadata.provider.BatchDisplayTextProviderAdaptor;
-import com.dili.uap.domain.Firm;
+import com.dili.uap.sdk.domain.Firm;
 import com.dili.uap.domain.dto.FirmQueryDto;
 import com.dili.uap.service.FirmService;
 import org.springframework.beans.factory.annotation.Autowired;

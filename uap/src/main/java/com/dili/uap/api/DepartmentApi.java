@@ -1,7 +1,7 @@
 package com.dili.uap.api;
 
 import com.dili.ss.domain.BaseOutput;
-import com.dili.uap.domain.Department;
+import com.dili.uap.sdk.domain.Department;
 import com.dili.uap.service.DepartmentService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;

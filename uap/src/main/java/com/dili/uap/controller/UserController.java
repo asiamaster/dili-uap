@@ -9,7 +9,7 @@ import com.dili.ss.metadata.ValueProviderUtils;
 import com.dili.uap.component.DataRangeSourceService;
 import com.dili.uap.constants.UapConstants;
 import com.dili.uap.domain.DataAuthRef;
-import com.dili.uap.domain.Firm;
+import com.dili.uap.sdk.domain.Firm;
 import com.dili.uap.domain.UserDataAuth;
 import com.dili.uap.domain.dto.UserDto;
 import com.dili.uap.glossary.DataRange;

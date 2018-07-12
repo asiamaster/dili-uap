@@ -1,7 +1,7 @@
 package com.dili.uap.domain.dto;
 
 import com.dili.ss.domain.annotation.Operator;
-import com.dili.uap.domain.Department;
+import com.dili.uap.sdk.domain.Department;
 
 import javax.persistence.Column;
 import java.util.List;

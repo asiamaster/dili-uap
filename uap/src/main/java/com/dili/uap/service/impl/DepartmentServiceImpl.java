@@ -5,8 +5,8 @@ import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.dao.DepartmentMapper;
 import com.dili.uap.dao.FirmMapper;
-import com.dili.uap.domain.Department;
-import com.dili.uap.domain.Firm;
+import com.dili.uap.sdk.domain.Department;
+import com.dili.uap.sdk.domain.Firm;
 import com.dili.uap.service.DepartmentService;
 import com.dili.uap.service.FirmService;
 

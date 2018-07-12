@@ -5,7 +5,7 @@ import java.util.Map;
 
 import com.dili.ss.base.BaseService;
 import com.dili.ss.domain.BaseOutput;
-import com.dili.uap.domain.Department;
+import com.dili.uap.sdk.domain.Department;
 
 /**
  * 由MyBatis Generator工具自动生成

@@ -16,7 +16,7 @@ import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.domain.EasyuiPageOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.constants.UapConstants;
-import com.dili.uap.domain.Department;
+import com.dili.uap.sdk.domain.Department;
 import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.service.DepartmentService;
 import com.dili.uap.service.FirmService;

@@ -2,7 +2,7 @@ package com.dili.uap.component;
 
 import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.dao.DepartmentMapper;
-import com.dili.uap.domain.Department;
+import com.dili.uap.sdk.domain.Department;
 import com.dili.uap.glossary.DataRange;
 import com.dili.uap.sdk.service.DataAuthSourceService;
 import com.google.common.collect.Lists;

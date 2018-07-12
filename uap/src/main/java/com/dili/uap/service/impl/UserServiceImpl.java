@@ -14,6 +14,8 @@ import com.dili.uap.domain.dto.UserDataDto;
 import com.dili.uap.domain.dto.UserDto;
 import com.dili.uap.glossary.UserState;
 import com.dili.uap.manager.UserManager;
+import com.dili.uap.sdk.domain.Department;
+import com.dili.uap.sdk.domain.Firm;
 import com.dili.uap.sdk.domain.User;
 import com.dili.uap.sdk.glossary.DataAuthType;
 import com.dili.uap.service.UserService;

@@ -2,7 +2,7 @@ package com.dili.uap.service.impl;
 
 import com.dili.ss.base.BaseServiceImpl;
 import com.dili.uap.dao.FirmMapper;
-import com.dili.uap.domain.Firm;
+import com.dili.uap.sdk.domain.Firm;
 import com.dili.uap.service.FirmService;
 import org.springframework.stereotype.Service;
 
