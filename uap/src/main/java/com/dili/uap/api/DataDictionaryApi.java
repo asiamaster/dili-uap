@@ -2,7 +2,6 @@ package com.dili.uap.api;
 
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
-import com.dili.uap.domain.Department;
 import com.dili.uap.sdk.domain.DataDictionaryValue;
 import com.dili.uap.service.DataDictionaryValueService;
 import io.swagger.annotations.Api;
