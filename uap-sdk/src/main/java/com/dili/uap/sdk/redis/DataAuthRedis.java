@@ -22,8 +22,8 @@ public class DataAuthRedis {
 
     /**
      * 根据userId和数据权限type获取数据权限列表
-     * @param refCode
-     * @param userId
+     * @param refCode data_auth_ref表的code字段
+     * @param userId    用户id
      * @return  UserDataAuth List<Map>
      */
     public List<Map> dataAuth(String refCode, Long userId) {
