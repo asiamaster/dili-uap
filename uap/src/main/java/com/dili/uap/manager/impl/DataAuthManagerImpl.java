@@ -3,7 +3,7 @@ package com.dili.uap.manager.impl;
 import com.alibaba.fastjson.JSON;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.dao.UserDataAuthMapper;
-import com.dili.uap.domain.UserDataAuth;
+import com.dili.uap.sdk.domain.UserDataAuth;
 import com.dili.uap.manager.DataAuthManager;
 import com.dili.uap.sdk.session.SessionConstants;
 import com.dili.uap.sdk.util.ManageRedisUtil;

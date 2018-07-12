@@ -1,6 +1,7 @@
 package com.dili.uap.sdk.redis;
 
 import com.alibaba.fastjson.JSONObject;
+import com.dili.uap.sdk.rpc.DataAuthRefRpc;
 import com.dili.uap.sdk.session.SessionConstants;
 import com.dili.uap.sdk.util.ManageRedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,33 +21,59 @@ public class DataAuthRedis {
     @Autowired
     private ManageRedisUtil redisUtil;
 
+    @Autowired
+    private DataAuthRefRpc dataAuthRefRpc;
+
     /**
-     * 根据userId和数据权限type获取数据权限列表
+     * 根据userId和数据权限type获取数据权限详情列表
+     * @param refCode data_auth_ref表的code字段
+     * @param userId    用户id
+     * @return  UserDataAuth和DataSource关联数据 List<Map>
+     */
+    public List<Map> dataAuth(String refCode, Long userId) {
+        BoundSetOperations<String, String> boundSetOperations = redisUtil.getRedisTemplate().boundSetOps (SessionConstants.USER_DATA_AUTH_KEY + userId);
+        List<Map> dataAuthList = new ArrayList<>();
+        if(boundSetOperations.size() <= 0) {
+            return dataAuthList;
+        }
+        //根据类型过滤
+        for(String dataAuthJson : boundSetOperations.members()) {
+            JSONObject dataAuth = JSONObject.parseObject(dataAuthJson);
+            if(dataAuth.get("refCode").equals(refCode)){
+                String value = dataAuth.getString("value");
+                dataAuthList.add(dataAuth);
+            }
+        }
+        return dataAuthList;
+    }
+
+    /**
+     * 根据userId和数据权限type获取数据权限value列表
      * @param refCode data_auth_ref表的code字段
      * @param userId    用户id
      * @return  UserDataAuth List<Map>
      */
-    public List<Map> dataAuth(String refCode, Long userId) {
+    public List<String> dataAuthValues(String refCode, Long userId) {
         BoundSetOperations<String, String> boundSetOperations = redisUtil.getRedisTemplate().boundSetOps (SessionConstants.USER_DATA_AUTH_KEY + userId);
-        List<Map> dataAuthMap = new ArrayList<>();
+        List<String> dataAuthList = new ArrayList<>();
         if(boundSetOperations.size()<=0) {
-            return dataAuthMap;
+            return dataAuthList;
         }
 
         //根据类型过滤
         for(String dataAuthJson : boundSetOperations.members()) {
             JSONObject dataAuth = JSONObject.parseObject(dataAuthJson);
             if(dataAuth.get("refCode").equals(refCode)){
-                dataAuthMap.add(dataAuth);
+                dataAuthList.add(dataAuth.getString("value"));
             }
         }
-        return dataAuthMap;
+        return dataAuthList;
     }
 
     /**
-     * 指定Key的当前数据权限DataAuth的Map
+     * 指定用户的数据权限UserDataAuth的Map
      * @param userId
-     * @return
+     * @return UserDataAuth List<Map>
      */
     public List<Map> dataAuth(Long userId) {
         BoundSetOperations<String, String> boundSetOperations = redisUtil.getRedisTemplate().boundSetOps (SessionConstants.USER_DATA_AUTH_KEY + userId);

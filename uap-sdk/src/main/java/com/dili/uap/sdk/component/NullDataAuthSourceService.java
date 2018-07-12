@@ -4,6 +4,7 @@ import com.dili.uap.sdk.service.DataAuthSourceService;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 空数据权限引用来源，只是保证其它项目不报错
@@ -14,6 +15,11 @@ public class NullDataAuthSourceService implements DataAuthSourceService {
 
     @Override
     public List listDataAuthes(String param) {
+        return null;
+    }
+
+    @Override
+    public Map<String, Map> bindDataAuthes(String param, List<String> values) {
         return null;
     }
 }

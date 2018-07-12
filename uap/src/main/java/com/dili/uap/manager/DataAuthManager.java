@@ -1,7 +1,7 @@
 package com.dili.uap.manager;
 
 
-import com.dili.uap.domain.UserDataAuth;
+import com.dili.uap.sdk.domain.UserDataAuth;
 
 import java.util.List;
 

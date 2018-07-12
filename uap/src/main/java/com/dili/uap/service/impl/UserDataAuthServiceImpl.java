@@ -2,7 +2,7 @@ package com.dili.uap.service.impl;
 
 import com.dili.ss.base.BaseServiceImpl;
 import com.dili.uap.dao.UserDataAuthMapper;
-import com.dili.uap.domain.UserDataAuth;
+import com.dili.uap.sdk.domain.UserDataAuth;
 import com.dili.uap.service.UserDataAuthService;
 import org.springframework.stereotype.Service;
 

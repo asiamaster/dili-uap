@@ -6,6 +6,7 @@ import com.dili.uap.sdk.domain.Department;
 import com.dili.uap.glossary.DataRange;
 import com.dili.uap.sdk.service.DataAuthSourceService;
 import com.google.common.collect.Lists;
+import org.apache.commons.collections.map.HashedMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -25,5 +26,16 @@ public class DepartmentSourceService implements DataAuthSourceService {
     @Override
     public List listDataAuthes(String param) {
         return departmentMapper.selectAll();
+    }
+
+    @Override
+    public Map<String, Map> bindDataAuthes(String param, List<String> values) {
+        Map<String, Map> retMap = new HashMap<>();
+        for(String value : values){
+            Map<String, Object> valueMap = new HashedMap();
+            valueMap.putAll(DTOUtils.go(departmentMapper.selectByPrimaryKey(value)));
+            retMap.put(value, valueMap);
+        }
+        return retMap;
     }
 }

@@ -17,6 +17,7 @@ import com.dili.uap.manager.UserManager;
 import com.dili.uap.sdk.domain.Department;
 import com.dili.uap.sdk.domain.Firm;
 import com.dili.uap.sdk.domain.User;
+import com.dili.uap.sdk.domain.UserDataAuth;
 import com.dili.uap.sdk.glossary.DataAuthType;
 import com.dili.uap.service.UserService;
 import com.dili.uap.utils.MD5Util;
