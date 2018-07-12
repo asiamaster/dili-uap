@@ -24,7 +24,7 @@ public class DataAuthRedis {
      * 根据userId和数据权限type获取数据权限列表
      * @param refCode
      * @param userId
-     * @return  DataAuth List<Map>
+     * @return  UserDataAuth List<Map>
      */
     public List<Map> dataAuth(String refCode, Long userId) {
         BoundSetOperations<String, String> boundSetOperations = redisUtil.getRedisTemplate().boundSetOps (SessionConstants.USER_DATA_AUTH_KEY + userId);
