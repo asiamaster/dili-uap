@@ -33,7 +33,7 @@ import java.util.Map;
 /**
  * Created by asiam on 2018/6/7 0007.
  */
-@Api("/authentication")
+@Api("/authenticationApi")
 @Controller
 @RequestMapping("/authenticationApi")
 public class AuthenticationApi {

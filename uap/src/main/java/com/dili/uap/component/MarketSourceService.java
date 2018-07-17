@@ -2,6 +2,7 @@ package com.dili.uap.component;
 
 import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.dao.FirmMapper;
+import com.dili.uap.sdk.domain.Firm;
 import com.dili.uap.sdk.service.DataAuthSourceService;
 import org.apache.commons.collections.map.HashedMap;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,13 @@ public class MarketSourceService implements DataAuthSourceService {
         Map<String, Map> retMap = new HashMap<>();
         for(String value : values){
             Map<String, Object> valueMap = new HashedMap();
-            valueMap.putAll(DTOUtils.go(firmMapper.selectByPrimaryKey(value)));
+            Firm firm = DTOUtils.newDTO(Firm.class);
+            firm.setCode(value);
+            firm = firmMapper.selectOne(firm);
+            if(firm == null){
+                continue;
+            }
+            valueMap.putAll(DTOUtils.go(firm));
             retMap.put(value, valueMap);
         }
         return retMap;
