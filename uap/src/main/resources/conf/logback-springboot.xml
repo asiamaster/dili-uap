@@ -82,7 +82,7 @@
             </triggeringPolicy>
         </appender>
         <logger name="org.springframework.web" level="INFO"/>
-        <logger name="com.dili.uap" level="INFO"/>
+        <logger name="com.dili.uap" level="DEBUG"/>
         <jmxConfigurator/>
     </springProfile>
 
