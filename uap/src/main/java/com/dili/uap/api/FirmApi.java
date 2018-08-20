@@ -3,6 +3,7 @@ package com.dili.uap.api;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.sdk.domain.Firm;
+import com.dili.uap.sdk.domain.dto.FirmDto;
 import com.dili.uap.service.FirmService;
 import com.google.common.collect.Lists;
 import io.swagger.annotations.Api;
@@ -27,7 +28,7 @@ public class FirmApi {
 
 	@ResponseBody
 	@RequestMapping(value = "/listByExample.api", method = { RequestMethod.GET, RequestMethod.POST })
-	public BaseOutput<List<Firm>> listByExample(Firm firm) {
+	public BaseOutput<List<Firm>> listByExample(FirmDto firm) {
 		return BaseOutput.success().setData(firmService.listByExample(firm));
 	}
 

@@ -105,5 +105,6 @@ public class ManageRedisConfig {
     public void setDatabase(Integer database) {
         this.database = database;
     }
+
 }
 
