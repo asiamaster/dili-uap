@@ -50,7 +50,7 @@ public class UserApi {
 
 	@ResponseBody
 	@RequestMapping(value = "/listByExample.api", method = { RequestMethod.GET, RequestMethod.POST })
-	public BaseOutput<User> listByExample(User user) {
+	public BaseOutput<User> listByExample(UserDto user) {
 		return BaseOutput.success().setData(this.userService.listByExample(user));
 	}
 
