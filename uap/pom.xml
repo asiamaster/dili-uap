@@ -85,7 +85,7 @@
 		<dependency>
 			<groupId>com.dili</groupId>
 			<artifactId>uap-sdk</artifactId>
-			<version>${project.parent.version}</version>
+			<version>1.1.0-SNAPSHOT</version>
 		</dependency>
 		<!-- 利刃框架引入 -->
 		<dependency>
