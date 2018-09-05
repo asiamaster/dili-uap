@@ -19,6 +19,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.security.CodeSource;
+import java.security.ProtectionDomain;
 import java.util.List;
 
 @Api("/index")
@@ -84,10 +89,51 @@ public class IndexController {
 		}
 	}
 
+	private boolean isJarRun() throws URISyntaxException {
+		ProtectionDomain protectionDomain = getClass().getProtectionDomain();
+		CodeSource codeSource = protectionDomain.getCodeSource();
+		URI location = (codeSource == null ? null : codeSource.getLocation().toURI());
+		String path = (location == null ? null : location.getSchemeSpecificPart());
+		if (path == null) {
+			throw new IllegalStateException("Unable to determine code source archive");
+		}
+		File root = new File(path);
+		return root.isDirectory() ? false : true;
+	}
 
 	@ApiOperation("跳转到平台页面")
 	@RequestMapping(value = "/platform.html", method = RequestMethod.GET)
 	public String platform(ModelMap modelMap) {
+//		java.lang.System.out.println(BsuB.b());
+//		String s = BsuB.b();
+//		Map<String, byte[]> results = null;
+		try {
+			java.lang.System.out.println("--------------");
+			java.lang.System.out.println("--------------");
+			java.lang.System.out.println("--------------");
+//			String jarDirPath = new ApplicationHome(getClass()).getDir().getAbsolutePath();
+//			String jarPath = new ApplicationHome(getClass()).getSource().getAbsolutePath();
+//			java.lang.System.out.println("jarPath:"+jarPath);
+//			java.lang.System.out.println("jarDirPath:"+jarDirPath);
+//			boolean isJar = isJarRun();
+//			java.lang.System.out.println("isJar:"+isJar);
+//			if(isJar) {
+//				ZipUtils.unzip(new File(jarDirPath), new File(jarPath));
+//			}
+//			java.lang.System.out.println("compiler.compile start===========================================");
+//			Class<?> clazz = CompileUtil.compile(s, "com.dili.http.okhttp.utils.BSU" );
+//			java.lang.System.out.println("compiler.compile end===========================================");
+//			java.lang.System.out.println("===========================================");
+//			java.lang.System.out.println(clazz);
+//			java.lang.System.out.println("===========================================");
+		}catch (Error e){
+			java.lang.System.out.println("compiler.compile Error===========================================");
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+//		B.b.e("a = \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"; System.out.println(a)");
 		UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
 		if (userTicket != null) {
 			List<System> systems = systemService.listByUserId(userTicket.getId());
