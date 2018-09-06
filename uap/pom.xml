@@ -53,6 +53,7 @@
 	</profiles>
 
 	<build>
+		<finalName>uap</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
