@@ -7,6 +7,7 @@ import com.dili.uap.sdk.domain.System;
 import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.redis.UserSystemRedis;
 import com.dili.uap.sdk.session.SessionContext;
+import com.dili.uap.service.MenuService;
 import com.dili.uap.service.SystemService;
 import com.dili.uap.service.UserService;
 import io.swagger.annotations.Api;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 
 @Api("/index")
 @Controller
@@ -44,6 +46,9 @@ public class IndexController {
 
 	@Autowired
 	private UserService userService;
+
+	@Autowired
+	private MenuService menuService;
 
 	@ApiOperation("跳转到权限主页面")
 	@RequestMapping(value = "/index.html", method = { RequestMethod.GET, RequestMethod.POST })
@@ -99,6 +104,16 @@ public class IndexController {
 		} else {
 			return LoginController.REDIRECT_INDEX_PAGE;
 		}
+	}
+
+	@ApiOperation("跳转到功能列表页面")
+	@RequestMapping(value = "/featureList.html", method = RequestMethod.GET)
+	public String featureList(String systemCode, ModelMap modelMap){
+		UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
+		//获取系统下该用户有权限显示的菜单
+		List<Map> menus = menuService.listDirAndLinks(userTicket.getId(), systemCode);
+		modelMap.put("menus", menus);
+		return "index/featureList";
 	}
 
 	@ApiOperation("跳转到园区管理首页")

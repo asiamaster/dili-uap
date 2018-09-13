@@ -75,7 +75,15 @@
     and ur.user_id = #{userId}
     and s.code=#{systemCode}
     and (m.`type` = 0 or m.`type` = 1)
+    <if test="sort == null">
     order by m.order_number
+    </if>
+    <if test="sort != null">
+      ORDER BY `${sort}`
+      <if test="order != null">
+        ${order}
+      </if>
+    </if>
   </select>
 
   <!-- 查询上级菜单 -->

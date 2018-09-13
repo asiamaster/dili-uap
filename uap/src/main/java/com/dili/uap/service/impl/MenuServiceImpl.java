@@ -11,6 +11,8 @@ import com.dili.uap.domain.Resource;
 import com.dili.uap.domain.RoleMenu;
 import com.dili.uap.domain.dto.MenuCondition;
 import com.dili.uap.service.MenuService;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,6 +42,50 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, Long> implements Menu
     @Override
     public List<Menu> listDirAndLinksByUserIdAndSystemCode(String jsonParam){
         return this.menuMapper.listDirAndLinksByUserId(JSONObject.parseObject(jsonParam));
+    }
+
+    @Override
+    public List<Map> listDirAndLinks(Long userId, String systemCode){
+        Map param = Maps.newHashMap();
+        param.put("userId", userId);
+        param.put("systemCode", systemCode);
+        List<Menu> menus =  this.menuMapper.listDirAndLinksByUserId(param);
+        return parentToChildren(menus);
+    }
+
+    /**
+     * id, parentId树型结构转children[]树型结构
+     * @param list
+     * @return
+     */
+    private List<Map> parentToChildren(List<Menu> list){
+//        final String ID_KEY = "id";
+//        final String PARENT_ID_KEY = "parentId";
+        final String CHILDREN_ID_KEY = "children";
+        List<Map> tree = Lists.newArrayList();
+        //key为parentId, value为tree node map
+        Map<Long, List<Map>> parentId2Children = Maps.newHashMap();
+        for(Menu item : list){
+            if(parentId2Children.containsKey(item.getParentId())){
+                parentId2Children.get(item.getParentId()).add(DTOUtils.go(item));
+            }else{
+                List<Map> children = Lists.newArrayList();
+                children.add(DTOUtils.go(item));
+                parentId2Children.put(item.getParentId(), children);
+            }
+        }
+        for(Menu item : list){
+            Map treeItem = DTOUtils.go(item);
+            //如果当前项有子节点，则加入到CHILDREN_ID_KEY中
+            if(parentId2Children.containsKey(item.getId())){
+                treeItem.put(CHILDREN_ID_KEY, parentId2Children.get(item.getId()));
+            }
+            //将顶层节点加入到tree列表中
+            if(item.getParentId() == null){
+                tree.add(treeItem);
+            }
+        }
+        return tree;
     }
 
     @Override
