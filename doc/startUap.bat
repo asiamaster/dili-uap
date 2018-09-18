@@ -1,2 +1,2 @@
-java -jar uap-1.0.0-SNAPSHOT.jar
+java -jar uap.jar
 echo Start Success!
