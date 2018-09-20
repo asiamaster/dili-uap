@@ -260,6 +260,7 @@
      * 保存角色-菜单-资源新
      */
     function saveRoleMenuAndResource() {
+        $("#saveRoleMenuAndResourceBtn").linkbutton("disable");
         //获取被选中的节点 此方法不会获取"半选"状态值
         var nodes = $('#roleMenuAndResourceGrid').treegrid('getCheckedNodes');
         //节点选中的ID，包括系统、菜单、资源
@@ -287,6 +288,7 @@
             traditional: true,
             async: true,
             success: function (ret) {
+                $("#saveRoleMenuAndResourceBtn").linkbutton("enable");
                 if (ret.success) {
                     $('#roleMenuAndResourceDlg').dialog('close');
                 } else {
@@ -294,6 +296,7 @@
                 }
             },
             error: function () {
+                $("#saveRoleMenuAndResourceBtn").linkbutton("enable");
                 $.messager.alert('错误', '远程访问失败');
             }
         });
