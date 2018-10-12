@@ -36,7 +36,7 @@ public interface User extends IBaseDomain,IMybatisForceParams {
     @FieldDef(label="用户名", maxLength = 50)
     @EditMode(editor = FieldEditor.Text, required = true)
     @NotNull(message = "用户名不能为空", groups = {AddView.class})
-    @Size(min = 4, max = 20, message = "角色名称长度介于4-20之间", groups = {AddView.class})
+    @Size(min = 2, max = 20, message = "用户名称长度介于2-20之间", groups = {AddView.class})
     String getUserName();
 
     void setUserName(String userName);
@@ -112,7 +112,7 @@ public interface User extends IBaseDomain,IMybatisForceParams {
     @EditMode(editor = FieldEditor.Text, required = true)
     @Like
     @NotNull(message = "真实姓名不能为空", groups = {AddView.class, ModifyView.class})
-    @Size(min = 2, max = 5, message = "真实姓名长度介于2-5之间", groups = {AddView.class, ModifyView.class})
+    @Size(min = 2, max = 8, message = "真实姓名长度介于2-8之间", groups = {AddView.class, ModifyView.class})
     String getRealName();
 
     void setRealName(String realName);
