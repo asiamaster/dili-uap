@@ -76,8 +76,8 @@
             $("#msg").html("密码不能为空");
             return false;
         }
-        if(username.length < 4 || username.length > 20){
-            $("#msg").html("用户名长度不能小于4位或大于20位");
+        if(username.length < 2 || username.length > 20){
+            $("#msg").html("用户名长度不能小于2位或大于20位");
             return false;
         }
         if(password.length < 6 || password.length > 20){

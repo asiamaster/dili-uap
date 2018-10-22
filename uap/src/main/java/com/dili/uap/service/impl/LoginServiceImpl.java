@@ -98,10 +98,10 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public BaseOutput<String> validate(LoginDto loginDto){
-        if(loginDto.getUserName().length() < 4 || loginDto.getUserName().length() > 20){
-            return BaseOutput.failure("用户名长度不能小于4位或大于20位!").setCode(ResultCode.PARAMS_ERROR);
+        if(loginDto.getUserName().length() < 2 || loginDto.getUserName().length() > 20){
+            return BaseOutput.failure("用户名长度不能小于2位或大于20位!").setCode(ResultCode.PARAMS_ERROR);
         }
-        if(loginDto.getPassword().length() < 6 || loginDto.getUserName().length() > 20){
+        if(loginDto.getPassword().length() < 6 || loginDto.getPassword().length() > 20){
             return BaseOutput.failure("密码长度不能小于6位或大于20位!").setCode(ResultCode.PARAMS_ERROR);
         }
         User record = DTOUtils.newDTO(User.class);
@@ -127,10 +127,10 @@ public class LoginServiceImpl implements LoginService {
     @Override
     public BaseOutput<LoginResult> login(LoginDto loginDto) {
         try {
-            if(loginDto.getUserName().length() < 4 || loginDto.getUserName().length() > 20){
-                return BaseOutput.failure("用户名长度不能小于4位或大于20位!").setCode(ResultCode.PARAMS_ERROR);
+            if(loginDto.getUserName().length() < 2 || loginDto.getUserName().length() > 20){
+                return BaseOutput.failure("用户名长度不能小于2位或大于20位!").setCode(ResultCode.PARAMS_ERROR);
             }
-            if(loginDto.getPassword().length() < 6 || loginDto.getUserName().length() > 20){
+            if(loginDto.getPassword().length() < 6 || loginDto.getPassword().length() > 20){
                 return BaseOutput.failure("密码长度不能小于6位或大于20位!").setCode(ResultCode.PARAMS_ERROR);
             }
             User record = DTOUtils.newDTO(User.class);
