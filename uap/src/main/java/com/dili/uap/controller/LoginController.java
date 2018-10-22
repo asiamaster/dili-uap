@@ -63,10 +63,7 @@ public class LoginController {
 	@ApiImplicitParams({
 			@ApiImplicitParam(name = "loginDto", paramType = "form", value = "用户信息", required = false, dataType = "string") })
 	@RequestMapping(value = "/getLogin.action", method = { RequestMethod.GET, RequestMethod.POST })
-	public String getLoginAction(@RequestParam("userName") String userName, @RequestParam("password") String password, ModelMap modelMap, HttpServletRequest request) {
-		LoginDto loginDto = DTOUtils.newDTO(LoginDto.class);
-		loginDto.setUserName(userName);
-		loginDto.setPassword(password);
+	public String getLoginAction(LoginDto loginDto, ModelMap modelMap, HttpServletRequest request) {
 		return loginAction(loginDto, modelMap, request);
 	}
     @ApiOperation("执行login请求，跳转到Main页面或者返回login页面")
