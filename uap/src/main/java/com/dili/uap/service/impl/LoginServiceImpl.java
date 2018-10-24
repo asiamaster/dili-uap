@@ -119,8 +119,11 @@ public class LoginServiceImpl implements LoginService {
         }
         //判断密码不正确，三次后锁定用户、锁定后的用户12小时后自动解锁
         if (!StringUtils.equals(user.getPassword(), this.encryptPwd(loginDto.getPassword()))) {
+            lockUser(user);
             return BaseOutput.failure("用户名或密码错误").setCode(ResultCode.NOT_AUTH_ERROR);
         }
+        //登录成功后清除锁定计时
+        clearUserLock(user.getId());
         return BaseOutput.success("登录成功");
     }
 
