@@ -301,6 +301,10 @@
                 $.messager.alert('警告', '请选中一条数据');
                 return;
             }
+            //在新增状态点删除，无效果
+            if(selected.id == 'temp'){
+                return;
+            }
             $.messager.confirm('确认', '您确认想要删除记录吗？', function (r) {
                 if (r) {
                     $.ajax({
@@ -334,7 +338,7 @@
             });
         },
         openInsert: function () {
-            if (!this.endEditing()) {
+            if (this.isEditing()) {
                 $.messager.alert('警告', '有数据正在编辑');
                 return;
             }
