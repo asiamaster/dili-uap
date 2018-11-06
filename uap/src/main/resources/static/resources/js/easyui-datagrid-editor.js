@@ -355,8 +355,8 @@
                         id: this.editId
                     }
                 });
-                this.element[this.options.target]('selectRow', this.editIndex);
-                this.element[this.options.target]('beginEdit', this.editIndex);
+                this.element.datagrid('selectRow', this.editIndex);
+                this.element.datagrid('beginEdit', this.editIndex);
             } else {
                 var childrens = this.element[this.options.target]('getChildren',node.id);
                 //如果该节点下存在子节点，则追加的编辑框，设置为在第一行，如果不存在，则默认也是在该节点下的第一行

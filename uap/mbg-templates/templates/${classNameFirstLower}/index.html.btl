@@ -111,7 +111,7 @@
         <div region="center" style="width:100%;" height="auto">
             <!-- =========================================================表格========================================================= -->
             <table class="easyui-datagrid" title="${className}列表" id="grid" fitColumns="true"
-                   pagination="true" pageSize="30" pageNumber="1" pagePosition="both" rownumbers="true" remoteSort="false"
+                   pagination="true" pageSize="30" pageNumber="1" pagePosition="top" rownumbers="true" remoteSort="false"
                    loadMsg="数据加载中..." singleSelect="true" method="post" multiSort="false" sortName="${firstField.javaProperty}"
                    align="center" fit="true" striped="true" toolbar="#toolbar" idField="id" data-options="onDblClickRow:openUpdate, onHeaderContextMenu:headerContextMenu">
                 <thead>
@@ -313,9 +313,9 @@
             var _url = null;
             //没有id就新增
             if(_formData.id == null || _formData.id==""){
-                _url = "\${contextPath}/${classNameFirstLower}/insert";
+                _url = "\${contextPath}/${classNameFirstLower}/insert.action";
             }else{//有id就修改
-                _url = "\${contextPath}/${classNameFirstLower}/update";
+                _url = "\${contextPath}/${classNameFirstLower}/update.action";
             }
             $.ajax({
                 type: "POST",
@@ -349,7 +349,7 @@
                 if (r){
                     $.ajax({
                         type: "POST",
-                        url: "\${contextPath}/${classNameFirstLower}/delete",
+                        url: "\${contextPath}/${classNameFirstLower}/delete.action",
                         data: {id:selected.id},
                         processData:true,
                         dataType: "json",
@@ -374,7 +374,7 @@
         function queryGrid() {
             var opts = $("#grid").datagrid("options");
             if (null == opts.url || "" == opts.url) {
-                opts.url = "\${contextPath}/${classNameFirstLower}/listPage";
+                opts.url = "\${contextPath}/${classNameFirstLower}/listPage.action";
             }
             if(!$('#form').form("validate")){
                 return;
