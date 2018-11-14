@@ -209,6 +209,7 @@ function renderMenuGrid(node, gridId) {
         }]]
         //columns 属性结束
     });
+    $("#"+gridId).datagrid('getPanel').removeClass('lines-both lines-no lines-right lines-bottom').addClass("lines-bottom");
 }
 
 /**
@@ -270,6 +271,7 @@ function renderResourceGrid(node, gridId) {
         }
         ]]
     });
+    $("#"+gridId).datagrid('getPanel').removeClass('lines-both lines-no lines-right lines-bottom').addClass("lines-bottom");
 }
 
 /**
@@ -332,6 +334,7 @@ function renderInternalLinksGrid(node, gridId) {
         }]]
         //columns 属性结束
     });
+    $("#"+gridId).datagrid('getPanel').removeClass('lines-both lines-no lines-right lines-bottom').addClass("lines-bottom");
 }
 
 /**

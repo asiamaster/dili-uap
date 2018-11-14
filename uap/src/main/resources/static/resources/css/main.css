@@ -48,12 +48,33 @@ h2 {
 }
 
 /* easyui基础字体设置 */
-/*更改表格标题文字大小*/
-.datagrid-header span {     font-size: 15px !important; }  .datagrid-header-row {     /* background-color: #e3e3e3; */     /* color: #111 */     Height: 30px; }
+/*  -----------表格 start------  */
+/*表格菜单行*/
+.datagrid .datagrid-pager {
+    background: #fff;
+}
+/*表格菜单行分页条字体*/
+.pagination-info{
+    font-size: 14px;
+}
 
-/*更改表格中单元格行间距*/
-#table .datagrid-btable tr{height: 60px;}
+/*表格边框*/
+.datagrid-header td, .datagrid-body td, .datagrid-footer td {
+    border-style: solid;
+    border-color: #ebeef5;
+}
+/*表格背景*/
+.datagrid-header, .datagrid-td-rownumber {
+    background: #fff;
+}
 
+/*表格表头列*/
+.datagrid-header td{
+    border-style: none;
+}
+/*更改表格表头标题文字大小*/
+.datagrid-header span {     font-size: 15px !important; font-weight: 700;}
+.datagrid-header-row {     /* background-color: #e3e3e3; */     /* color: #111 */     Height: 42px; }
 /*更改表格标题的行间距*/
 .panel-title {
     margin-top: 4px;
@@ -61,10 +82,38 @@ h2 {
     font-size: 15px;
     color: inherit;
 }
+
+/*表格行斑马纹*/
+/*.datagrid-row-alt {
+    background: rgba(245, 245, 245, 0.4);
+}*/
+/*表格行hover*/
+.datagrid-row-over,
+.datagrid-header td.datagrid-header-over {
+    background: #f2f2f2;
+    color: #0d7fe0;
+    cursor: default;
+}
+/*表格行高*/
+.datagrid-row {
+    height: 42px;
+}
+
+/*更改表格中单元格行间距*/
+#table .datagrid-btable tr{height: 60px;}
+
+/*  -----------表格 end ------  */
+
 /*更改datagrid中的数据*/
 .datagrid-cell{
     font-size: 14px;
 }
+.panel-header,
+.datagrid-toolbar, .datagrid-pager {
+    background: #fff;
+}
+
+
 /*更改treegrid的递归列*/
 .tree-title{
     font-size: 14px;

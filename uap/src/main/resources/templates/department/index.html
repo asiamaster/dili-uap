@@ -16,7 +16,7 @@
             <table class="easyui-treegrid" title="部门列表" noheader="true" id="grid" sortName="created" sortOrder="asc"
                    fitColumns="true" remoteSort="false" loadMsg="数据加载中..." singleSelect="true" method="post"
                    multiSort="true" border="false"
-                   align="center" fit="true" striped="true" toolbar="#toolbar" idField="id"
+                   align="center" fit="true" striped="false" toolbar="#toolbar" idField="id"
                    treeField="name" url="${contextPath!}/department/list.action"
                    data-options="loadFilter:treegridLoadFilter, _parentIdField:'parentId',onLoadSuccess:gridLoadSuccess">
                 <thead>

@@ -102,11 +102,9 @@
                 return true
             }
             var index = this.editId;
-
             if (this.options.target == 'datagrid') {
                 index = this.editIndex;
             }
-
             if (this.element[this.options.target]('validateRow', index)) {
                 this.element[this.options.target]('endEdit', index);
                 this.editId = undefined;
