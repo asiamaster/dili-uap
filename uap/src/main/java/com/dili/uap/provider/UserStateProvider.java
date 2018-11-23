@@ -28,7 +28,6 @@ public class UserStateProvider implements ValueProvider {
     private static final List<ValuePair<?>> BUFFER = new ArrayList<>();
 
     static {
-        BUFFER.add(new ValuePairImpl(EMPTY_ITEM_TEXT, null));
         BUFFER.addAll(Stream.of(UserState.values())
                 .map(e -> new ValuePairImpl<String>(e.getName(), e.getCode().toString()))
                 .collect(Collectors.toList()));

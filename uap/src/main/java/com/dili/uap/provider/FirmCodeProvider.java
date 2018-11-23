@@ -35,7 +35,6 @@ public class FirmCodeProvider extends BatchDisplayTextProviderAdaptor {
 		list.forEach(firm -> {
 			buffer.add(new ValuePairImpl<>(firm.getName(), firm.getCode()));
 		});
-		buffer.add(0, new ValuePairImpl<String>(ValueProvider.EMPTY_ITEM_TEXT, ""));
 		return buffer;
 	}
 

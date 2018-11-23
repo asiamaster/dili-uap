@@ -43,11 +43,10 @@ public class DataDictionaryValueProvider extends BatchDisplayTextProviderAdaptor
         }
 
         List<ValuePair<?>> valuePairs = Lists.newArrayList();
-        valuePairs.add(0, new ValuePairImpl(EMPTY_ITEM_TEXT, null));
 
         for (int i = 0; i < list.size(); i++) {
             DataDictionaryValue dataDictionaryValue = list.get(i);
-            valuePairs.add(i + 1, new ValuePairImpl(dataDictionaryValue.getName(), dataDictionaryValue.getCode()));
+            valuePairs.add(i, new ValuePairImpl(dataDictionaryValue.getName(), dataDictionaryValue.getCode()));
         }
         return valuePairs;
     }

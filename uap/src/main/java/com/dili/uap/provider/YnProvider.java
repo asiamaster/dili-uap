@@ -27,7 +27,6 @@ public class YnProvider implements ValueProvider {
     			//enum 转换为ValuePair
     			.map(e->new ValuePairImpl<String>(e.getName(), e.getCode().toString()))
     			.collect(Collectors.toList());
-    	BUFFER.add(0, new ValuePairImpl<String>(ValueProvider.EMPTY_ITEM_TEXT, ""));
     }
 
     @Override
