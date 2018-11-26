@@ -15,7 +15,7 @@
                         <tr>
                             <td style="padding: 5px;">
                             <input name="systemCode" id="systemCode" style="width: 100%" panelWidth="auto"  panelHeight="auto"  editable="false"  data-options="labelWidth:100,labelAlign:'right',label:'系统:', validType:'length[0,50]'"/></td>
-                             <#comboProvider _id="systemCode" _provider='systemProvider' _queryParams='{}'/>
+                             <#comboProvider _id="systemCode" _provider='systemProvider' _queryParams='{emptyText:"-- 全部 --"}'/>
                             </td>
                             <td style="padding: 5px;"><input class="easyui-textbox" name="likeName" id="likeName"
                                                              style="width: 100%"

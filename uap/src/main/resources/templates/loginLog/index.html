@@ -21,17 +21,17 @@
 
                             <td style="padding:5px;">
                                  <input name="systemCode" id="systemCode" style="width:100%;" panelWidth="auto" data-options="editable:false, labelAlign:'right'" panelHeight="auto" label="系统:"/>
-                                 <#comboProvider _id="systemCode" _provider='systemProvider' />
+                                 <#comboProvider _id="systemCode" _provider='systemProvider' _queryParams='{emptyText:"-- 全部 --"}'/>
                             </td>
                            
                
                             <td style="padding:5px;">
                                 <input name="type" id="type" style="width:100%;" editable="false" panelWidth="auto" panelHeight="auto" label="类型:" labelAlign="right" value="" />
-                                <#comboProvider _id="type" _provider='loginTypeProvider'/>
+                                <#comboProvider _id="type" _provider='loginTypeProvider' _queryParams='{emptyText:"-- 全部 --"}'/>
                             </td>
                             <td style="padding:5px;">
                                  <input name="success" id="success" style="width:100%;" editable="false" panelWidth="auto" panelHeight="auto" label="是否成功:" labelAlign="right" />
-                                <#comboProvider _id="success" _provider='ynProvider'/>
+                                <#comboProvider _id="success" _provider='ynProvider' _queryParams='{emptyText:"-- 全部 --"}'/>
                             </td>
                                      </tr>
                         <tr>

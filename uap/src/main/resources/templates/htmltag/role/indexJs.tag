@@ -66,10 +66,10 @@
         window.roleGrid = $('#roleGrid');
         var obj={};
         obj.code='';
-        obj.name='-- 请选择 --';
+        obj.name='-- 全部 --';
         //为了不改变原值，所以复制一遍数组
         var firmData = firms.slice();
-        //动态添加'请选择'
+        //动态添加'全部'
         firmData.unshift(obj);
         $("#firmCode").combobox("loadData", firmData);
         bindFormEvent("form", "roleName", queryGrid);

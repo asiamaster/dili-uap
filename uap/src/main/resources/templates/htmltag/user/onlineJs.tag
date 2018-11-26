@@ -39,7 +39,7 @@
          * 加载部门信息
          */
         <% if (has(isGroup) && isGroup){ %>
-            var obj={code:null,name:'-- 请选择 --'};
+            var obj={code:"",name:'-- 全部 --'};
             //为了不改变原值，所以复制一遍数组
             var firmData = firms.slice();
             //动态添加'请选择'

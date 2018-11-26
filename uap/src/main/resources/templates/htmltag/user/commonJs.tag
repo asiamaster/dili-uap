@@ -13,11 +13,11 @@
      * @param firmCode 市场code
      */
     function loadDepartments(firmCode,controlId) {
-        var obj = {id: '', name: '-- 请选择 --','parentId':null};
+        var obj = {id: '', name: '-- 全部 --','parentId':null};
         if (firmCode){
             $.post('${contextPath!}/department/listByCondition.action', {firmCode: firmCode}, function (ret) {
                 if (ret) {
-                    //动态添加'请选择'
+                    //动态添加'全部'
                     ret.unshift(obj);
                     $('#' + controlId).combotree("clear");
                     $('#' + controlId).combotree("loadData", ret);
@@ -37,7 +37,7 @@
      * @param firmCode 市场code
      */
     function loadRoles(firmCode) {
-        var obj = {id: null, roleName: '-- 请选择 --'};
+        var obj = {id: "", roleName: '-- 全部 --'};
         if (firmCode){
             var params = {sort:'frim_code',order:'desc'};
             if ("group" != firmCode) {
@@ -50,7 +50,7 @@
                             item.roleName = item.firmCode + "—" + item.roleName;
                         })
                     }
-                    //动态添加'请选择'
+                    //动态添加'全部'
                     ret.unshift(obj);
                     $('#roleId').combobox("clear");
                     $('#roleId').combobox("loadData", ret);

@@ -36,7 +36,7 @@
                             </td>
                             <td style="padding:5px;">
                                 <input class="easyui-combobox" name="state" id="state" style="width:92%;" data-options="labelAlign:'right',editable:false,labelWidth:60" panelHeight="auto" label="状态:"/>
-                                <#comboProvider _id="state" _provider='userStateProvider'/>
+                                <#comboProvider _id="state" _provider='userStateProvider' _queryParams='{emptyText:"-- 全部 --"}'/>
                             </td>
                             <td style="padding:5px;">
                                 <input class="easyui-textbox" name="keywords" id="keywords" style="width:95%" data-options="prompt:'用户账号/联系手机'" />
