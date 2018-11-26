@@ -108,7 +108,7 @@ h2 {
 .datagrid-cell{
     font-size: 14px;
 }
-.panel-header,
+/*.panel-header,*/
 .datagrid-toolbar, .datagrid-pager {
     background: #fff;
 }
