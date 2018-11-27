@@ -74,5 +74,6 @@
               	 return false;  
             }
         });
+        $('#grid').datagrid('getPanel').removeClass('lines-both lines-no lines-right lines-bottom').addClass("lines-bottom");
     });
 </script>
