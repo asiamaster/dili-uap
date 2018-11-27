@@ -19,6 +19,7 @@ import com.dili.uap.sdk.domain.Firm;
 import com.dili.uap.sdk.domain.User;
 import com.dili.uap.sdk.domain.UserDataAuth;
 import com.dili.uap.sdk.glossary.DataAuthType;
+import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.service.UserService;
 import com.dili.uap.utils.MD5Util;
 import com.github.pagehelper.Page;
@@ -296,6 +297,8 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
         if (StringUtils.isNotBlank(domain.getSort())) {
             domain.setSort(POJOUtils.humpToLineFast(domain.getSort()));
         }
+        String firmCode = SessionContext.getSessionContext().getUserTicket().getFirmCode();
+        domain.setFirmCode(firmCode);
         List<UserDto> users = getActualDao().selectForPage(domain);
         long total = users instanceof Page ? ((Page) users).getTotal() : (long) users.size();
         List results = useProvider ? ValueProviderUtils.buildDataByProvider(domain, users) : users;
