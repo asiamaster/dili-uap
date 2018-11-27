@@ -298,7 +298,9 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
             domain.setSort(POJOUtils.humpToLineFast(domain.getSort()));
         }
         String firmCode = SessionContext.getSessionContext().getUserTicket().getFirmCode();
-        domain.setFirmCode(firmCode);
+        if (!UapConstants.GROUP_CODE.equals(firmCode)) {
+            domain.setFirmCode(firmCode);
+        }
         List<UserDto> users = getActualDao().selectForPage(domain);
         long total = users instanceof Page ? ((Page) users).getTotal() : (long) users.size();
         List results = useProvider ? ValueProviderUtils.buildDataByProvider(domain, users) : users;

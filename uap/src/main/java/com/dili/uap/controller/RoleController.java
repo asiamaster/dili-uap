@@ -89,7 +89,9 @@ public class RoleController {
     @RequestMapping(value="/listPage.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody String listPage(Role role) throws Exception {
         String firmCode = SessionContext.getSessionContext().getUserTicket().getFirmCode();
-        role.setFirmCode(firmCode);
+        if (!UapConstants.GROUP_CODE.equals(firmCode)) {
+            role.setFirmCode(firmCode);
+        }
         return roleService.listEasyuiPageByExample(role, true).toString();
     }
 
