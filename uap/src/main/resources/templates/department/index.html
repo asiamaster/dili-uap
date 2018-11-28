@@ -62,13 +62,14 @@
                 <#comboProvider _id="firm" _provider='firmCodeProvider' />
                 <%}%>
                 <#resource code="insertDepartment">
-               			<a href="#" class="easyui-linkbutton" iconCls="icon-add" onclick="openInsert()" plain="true">新增</a>
+                    <a href="#" class="easyui-linkbutton" iconCls="icon-add" onclick="openInsert()" plain="true">新增</a>
                 </#resource>
                 <#resource code="updateDepartment">
-    					<a href="#" class="easyui-linkbutton" iconCls="icon-edit" onclick="openUpdate()" plain="true">修改</a>
-                 </#resource>
-                
-                <!--<a href="#" class="easyui-linkbutton" iconCls="icon-remove" onclick="del()" plain="true">删除</a>-->
+                    <a href="#" class="easyui-linkbutton" iconCls="icon-edit" onclick="openUpdate()" plain="true">修改</a>
+                </#resource>
+                <#resource code="deleteDepartment">
+                    <a href="#" class="easyui-linkbutton" iconCls="icon-remove" onclick="del()" plain="true">删除</a>
+                </#resource>
                 <a href="#" class="easyui-linkbutton" iconCls="icon-ok" id="btnSave" style="display: none" onclick="endEditing()" plain="true">保存</a>
                 <a href="#" id="btnCancel" class="easyui-linkbutton" iconCls="icon-clear" onclick="cancelEdit()" style="display: none" plain="true">取消</a>
             </div>
