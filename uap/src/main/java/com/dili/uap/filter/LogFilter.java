@@ -11,7 +11,7 @@ import java.io.IOException;
  * Created by asiam on 2017/4/20 0020.
  */
 //@Component("myFilter") //Component方式的myFilter配置的映射是/*
-@WebFilter(filterName="logFilter",urlPatterns="/*")
+//@WebFilter(filterName="logFilter",urlPatterns="/*")
 public class LogFilter implements Filter {
     /**
      *

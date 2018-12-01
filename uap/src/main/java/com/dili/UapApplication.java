@@ -27,7 +27,7 @@ import tk.mybatis.spring.annotation.MapperScan;
 //@EnableAutoConfiguration(exclude = { ThymeleafAutoConfiguration.class, VelocityAutoConfiguration.class })
 // @ImportResource(locations = "classpath:applicationContext.xml")
 @ComponentScan(basePackages = { "com.dili.ss", "com.dili.uap"})
-@ServletComponentScan(basePackages = {"com.dili.uap.filter"})
+//@ServletComponentScan(basePackages = {"com.dili.uap.filter"})
 // @EnableEncryptableProperties
 //@EncryptablePropertySource(name = "EncryptedProperties", value = "classpath:conf/security.properties")
 // @ServletComponentScan
