@@ -4,6 +4,7 @@ import com.dili.ss.retrofitful.annotation.RestfulScan;
 //import com.ulisesbocchio.jasyptspringboot.annotation.EncryptablePropertySource;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -26,6 +27,7 @@ import tk.mybatis.spring.annotation.MapperScan;
 //@EnableAutoConfiguration(exclude = { ThymeleafAutoConfiguration.class, VelocityAutoConfiguration.class })
 // @ImportResource(locations = "classpath:applicationContext.xml")
 @ComponentScan(basePackages = { "com.dili.ss", "com.dili.uap"})
+@ServletComponentScan(basePackages = {"com.dili.uap.filter"})
 // @EnableEncryptableProperties
 //@EncryptablePropertySource(name = "EncryptedProperties", value = "classpath:conf/security.properties")
 // @ServletComponentScan
