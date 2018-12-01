@@ -59,7 +59,7 @@ public class DataDictionaryServiceImpl extends BaseServiceImpl<DataDictionary, L
 			return BaseOutput.failure("相同编码已经存在");
 		}
 		this.insertSelective(t);
-		return BaseOutput.success("新增成功");
+		return BaseOutput.success("新增成功").setData(t);
 	}
 	@Override
 	public BaseOutput<Object> updateAfterCheck(DataDictionary t) {

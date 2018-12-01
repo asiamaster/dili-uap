@@ -100,7 +100,7 @@ public class MenuController {
             menu.mset(IDTO.NULL_VALUE_FIELD, "parent_id");
         }
         menuService.insertSelective(menu);
-        return BaseOutput.success("新增成功").setData(menu.getId());
+        return BaseOutput.success("新增成功").setData(menu);
     }
 
     @ApiOperation("修改Menu")
