@@ -30,17 +30,28 @@ public class InitListener implements ApplicationListener<ContextRefreshedEvent> 
 
 	@Override
 	public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
-		//根据系统配置设置登录超时时长，默认为30分钟
-		SystemConfig systemConfig = DTOUtils.newDTO(SystemConfig.class);
-		systemConfig.setSystemCode(UapSdkConstants.UAP_SYSTEM_CODE);
-		systemConfig.setCode(SessionConstants.SESSION_TIMEOUT_CONFIG_KEY);
-		BaseOutput<List<SystemConfig>> output = systemConfigRpc.list(systemConfig);
-		if(output.isSuccess()) {
-			List<SystemConfig> systemConfigs = output.getData();
-			if(CollectionUtils.isNotEmpty(systemConfigs)) {
-				SessionConstants.SESSION_TIMEOUT = Long.parseLong(systemConfigs.get(0).getValue()) * 60;
+		new Thread(){
+			@Override
+			public void run() {
+				try {
+					//启动三秒后再执行，保证sb容量启动完后执行
+					Thread.sleep(3000L);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				//根据系统配置设置登录超时时长，默认为30分钟
+				SystemConfig systemConfig = DTOUtils.newDTO(SystemConfig.class);
+				systemConfig.setSystemCode(UapSdkConstants.UAP_SYSTEM_CODE);
+				systemConfig.setCode(SessionConstants.SESSION_TIMEOUT_CONFIG_KEY);
+				BaseOutput<List<SystemConfig>> output = systemConfigRpc.list(systemConfig);
+				if(output.isSuccess()) {
+					List<SystemConfig> systemConfigs = output.getData();
+					if(CollectionUtils.isNotEmpty(systemConfigs)) {
+						SessionConstants.SESSION_TIMEOUT = Long.parseLong(systemConfigs.get(0).getValue()) * 60;
+					}
+				}
 			}
-		}
+		}.start();
 	}
 
 
