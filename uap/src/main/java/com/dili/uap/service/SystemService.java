@@ -37,4 +37,11 @@ public interface SystemService extends BaseService<System, Long> {
      * @return
      */
     List<System> listByUserId(Long userId);
+
+    /**
+     * 根据上下文中用户id查询其有权限的系统
+     * @param param 首页系统菜单栏menubutton标签参数
+     * @return
+     */
+    List<System> listByUserId(String param);
 }

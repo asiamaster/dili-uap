@@ -11,6 +11,8 @@ import com.dili.uap.sdk.domain.DataDictionary;
 import com.dili.uap.domain.Menu;
 import com.dili.uap.sdk.domain.System;
 import com.dili.uap.sdk.domain.SystemConfig;
+import com.dili.uap.sdk.domain.UserTicket;
+import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.service.SystemService;
 
 import java.util.Date;
@@ -135,6 +137,15 @@ public class SystemServiceImpl extends BaseServiceImpl<System, Long> implements 
 	@Override
 	public List<System> listByUserId(Long userId) {
 		return getActualDao().listByUserId(userId);
+	}
+
+	@Override
+	public List<System> listByUserId(String param) {
+		UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
+		if(userTicket == null){
+			return null;
+		}
+		return getActualDao().listByUserId(userTicket.getId());
 	}
 
 	/**

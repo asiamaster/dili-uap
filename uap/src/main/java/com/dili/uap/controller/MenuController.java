@@ -5,9 +5,11 @@ import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.dto.IDTO;
 import com.dili.uap.domain.Menu;
 import com.dili.uap.domain.Resource;
+import com.dili.uap.domain.dto.MenuCondition;
 import com.dili.uap.glossary.MenuType;
 import com.dili.uap.service.MenuService;
 import com.dili.uap.service.ResourceService;
+import com.google.common.collect.Lists;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -21,6 +23,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -48,6 +52,29 @@ public class MenuController {
     @ResponseBody
     public List<Map> listSystemMenu() {
         return this.menuService.listSystemMenu();
+    }
+
+    @RequestMapping(value = "/listMenus.action", method = { RequestMethod.GET, RequestMethod.POST })
+    @ResponseBody
+    public List<Map> listMenus(@RequestParam Long systemId) {
+        MenuCondition menu = DTOUtils.newDTO(MenuCondition.class);
+        menu.setSystemId(systemId);
+        menu.setTypes(Lists.newArrayList(MenuType.DIRECTORY.getCode(), MenuType.LINKS.getCode()));
+        List<Menu> menus = this.menuService.listByExample(menu);
+        if(CollectionUtils.isEmpty(menus)){
+            return Lists.newArrayList();
+        }
+        List<Map> menuMaps = new ArrayList<>(menus.size());
+        menus.forEach( item -> {
+            Map menuMap = DTOUtils.go(item);
+            Map<String, String> attr = new HashMap<>(3);
+            attr.put("type", item.getType().toString());
+            attr.put("systemId", item.getSystemId().toString());
+            attr.put("url", item.getUrl());
+            menuMap.put("attributes", attr);
+            menuMaps.add(menuMap);
+        });
+        return menuMaps;
     }
 
     @ApiOperation(value = "查询菜单列表", notes = "查询Menu，返回列表信息")
