@@ -239,7 +239,7 @@
     function editRoleMenuAndResource() {
         var selected = roleGrid.datagrid("getSelected");
         if (null == selected) {
-            $.messager.alert('警告', '请选中一条数据');
+            swal('警告','请选中一条数据', 'warning');
             return;
         }
         $('#roleMenuAndResourceDlg').dialog('open');
@@ -292,12 +292,12 @@
                 if (ret.success) {
                     $('#roleMenuAndResourceDlg').dialog('close');
                 } else {
-                    $.messager.alert('错误', ret.result);
+                    swal('错误',ret.result, 'error');
                 }
             },
             error: function () {
                 $("#saveRoleMenuAndResourceBtn").linkbutton("enable");
-                $.messager.alert('错误', '远程访问失败');
+                swal('错误', '远程访问失败', 'error');
             }
         });
     }
@@ -308,7 +308,7 @@
     function onUserList() {
         var selected = roleGrid.datagrid("getSelected");
         if (null == selected) {
-            $.messager.alert('警告', '请选中一条数据');
+            swal('警告','请选中一条数据', 'warning');
             return;
         }
         var opts = $('#userListGrid').datagrid("options");
@@ -342,36 +342,46 @@
      * 解除角色绑定
      */
     function unbindRoleUser() {
-
         //获取选择的角色信息
         var selectedRole = roleGrid.datagrid("getSelected");
         //选择的用户
         var selectedUser = $("#userListGrid").datagrid("getSelected");
         if (null == selectedUser) {
-            $.messager.alert('警告', '请选中一条数据');
+            swal('警告','请选中一条数据', 'warning');
             return;
         }
-        $.messager.confirm('确认', '您确认想要解绑该用户吗？', function (r) {
-            if (r) {
-                var index = $('#userListGrid').datagrid("getRowIndex", selectedUser);
-                $.ajax({
-                    type: "POST",
-                    url: "${contextPath!}/role/unbindRoleUser.action",
-                    data: {roleId: selectedRole.id, userId: selectedUser.id},
-                    dataType: "json",
-                    async: true,
-                    success: function (ret) {
-                        if (ret.success) {
-                            $('#userListGrid').datagrid("deleteRow", index);
-                        } else {
-                            $.messager.alert('错误', ret.result);
-                        }
-                    },
-                    error: function () {
-                        $.messager.alert('错误', '远程访问失败');
-                    }
-                });
+        swal({
+            title : '您确认想要解绑该用户吗？',
+            type : 'question',
+            showCancelButton : true,
+            confirmButtonColor : '#3085d6',
+            cancelButtonColor : '#d33',
+            confirmButtonText : '确定',
+            cancelButtonText : '取消',
+            confirmButtonClass : 'btn btn-success',
+            cancelButtonClass : 'btn btn-danger'
+        }).then(function(flag) {
+            if (flag.dismiss == 'cancel') {
+                return;
             }
+            var index = $('#userListGrid').datagrid("getRowIndex", selectedUser);
+            $.ajax({
+                type: "POST",
+                url: "${contextPath!}/role/unbindRoleUser.action",
+                data: {roleId: selectedRole.id, userId: selectedUser.id},
+                dataType: "json",
+                async: true,
+                success : function(data) {
+                    if (data.success) {
+                        $('#userListGrid').datagrid("deleteRow", index);
+                    } else {
+                        swal('错误', data.result, 'error');
+                    }
+                },
+                error : function() {
+                    swal('错误！', '远程访问失败', 'error');
+                }
+            });
         });
     }
 

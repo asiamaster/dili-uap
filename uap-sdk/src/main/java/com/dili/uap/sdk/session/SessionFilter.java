@@ -15,12 +15,14 @@ import com.dili.uap.sdk.rpc.MenuRpc;
 import com.dili.uap.sdk.rpc.SystemExceptionLogRpc;
 import com.dili.uap.sdk.util.WebContent;
 import com.google.common.collect.Lists;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.security.auth.login.LoginException;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
@@ -80,6 +82,19 @@ public class SessionFilter implements Filter {
             filter.doFilter(req, resp);
             return;
         }
+        WebContent.put(req);
+        WebContent.put(resp);
+        //如果作登录验证，则不进行其它权限验证
+        if(config.isLoginCheck()){
+            if (pc.getUser() == null) {
+                pc.noAccess();
+                systemExceptionLog(pc, new LoginException("用户未登录"));
+            }else {
+                filter.doFilter(req, resp);
+                SessionContext.remove();
+            }
+            return;
+        }
         proxyHandle(req, resp, filter);
     }
 
@@ -91,8 +106,6 @@ public class SessionFilter implements Filter {
      * @throws IOException
      */
     private void proxyHandle(HttpServletRequest request, HttpServletResponse response, FilterChain filter) throws IOException {
-        WebContent.put(request);
-        WebContent.put(response);
         PermissionContext pc = (PermissionContext) WebContent.get(SessionConstants.MANAGE_PERMISSION_CONTEXT);
         if (log.isDebugEnabled()) {
             log.debug("请求地址:" + pc.getUrl());
@@ -131,6 +144,12 @@ public class SessionFilter implements Filter {
         if(output.isSuccess()){
             Map<String, Object> menu1 = output.getData();
             if(menu1 == null || menu1.isEmpty()) {
+                SystemExceptionLog systemExceptionLog = DTOUtils.newDTO(SystemExceptionLog.class);
+                systemExceptionLog.setMsg(e.getMessage()+",url:" + pc.getUrl());
+                systemExceptionLog.setType(ExceptionType.NOT_AUTH_ERROR.getCode());
+                systemExceptionLog.setExceptionTime(new Date());
+                systemExceptionLog.setIp(pc.getReq().getRemoteAddr());
+                systemExceptionLogRpc.insert(systemExceptionLog);
                 return;
             }
             SystemExceptionLog systemExceptionLog = DTOUtils.newDTO(SystemExceptionLog.class);
@@ -176,9 +195,6 @@ public class SessionFilter implements Filter {
      * @param pc
      */
     private void checkUser(PermissionContext pc) {
-        if (pc.getSessionId() == null) {
-            throw new NotLoginException();
-        }
         UserTicket user = pc.getUser();
         if (user == null) {
             throw new NotLoginException();
@@ -187,10 +203,10 @@ public class SessionFilter implements Filter {
             return;
         }
         //检测授权
-        UserTicket auth = pc.getAuthorizer();
-        if(auth == null){
-            throw new NotAccessPermissionException();
-        }
+//        UserTicket auth = pc.getAuthorizer();
+//        if(auth == null){
+//            throw new NotAccessPermissionException();
+//        }
         throw new NotAccessPermissionException();
     }
 

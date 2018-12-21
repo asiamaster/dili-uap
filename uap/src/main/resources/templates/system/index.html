@@ -99,7 +99,7 @@
     <!-- 隐藏编辑框 -->
     <div id="dlg" class="easyui-dialog" resizable="false" constrain="true" shadow="true" draggable="false" title="系统信息" style="padding:20px" modal="true" border="thin" closed="true"
          data-options="
-				height: 500,
+				height: 540,
 				buttons: [{
 					text:'确认',
 					iconCls:'icon-ok',
@@ -177,7 +177,7 @@
         function openUpdate(){
             var selected = $("#grid").datagrid("getSelected");
             if (null == selected) {
-                $.messager.alert('警告','请选中一条数据');
+                swal('提示', '请选中一条数据', 'warning');
                 return;
             }
             $('#dlg').dialog('open');
@@ -214,11 +214,11 @@
                         $("#grid").datagrid("reload");
                         $('#dlg').dialog('close');
                     }else{
-                        $.messager.alert('错误',data.result);
+                        swal('错误！', data.result, 'error');
                     }
                 },
                 error: function(){
-                    $.messager.alert('错误','远程访问失败');
+                    swal('错误！', '远程访问失败', 'error');
                 }
             });
         }
@@ -227,34 +227,44 @@
         function del() {
             var selected = $("#grid").datagrid("getSelected");
             if (null == selected) {
-                $.messager.alert('警告','请选中一条数据');
+                swal('警告', '请选中一条数据', 'warning');
                 return;
             }
-            $.messager.confirm('确认','您确认想要删除记录吗？',function(r){
-                if (r){
-                    $.ajax({
-                        type: "POST",
-                        url: "${contextPath}/system/delete.action",
-                        data: {id:selected.id},
-                        processData:true,
-                        dataType: "json",
-                        async : true,
-                        success: function (data) {
-                            if(data.code=="200"){
-                                $("#grid").datagrid("reload");
-                                $('#dlg').dialog('close');
-                            }else{
-                                $.messager.alert('错误',data.result);
-                            }
-                        },
-                        error: function(){
-                            $.messager.alert('错误','远程访问失败');
-                        }
-                    });
+            swal({
+                title : '您确认想要删除记录吗？',
+                type : 'question',
+                showCancelButton : true,
+                confirmButtonColor : '#3085d6',
+                cancelButtonColor : '#d33',
+                confirmButtonText : '确定',
+                cancelButtonText : '取消',
+                confirmButtonClass : 'btn btn-success',
+                cancelButtonClass : 'btn btn-danger'
+            }).then(function(flag) {
+                if (flag.dismiss == 'cancel') {
+                    return;
                 }
+                $.ajax({
+                    type : "POST",
+                    url : "${contextPath}/system/delete.action",
+                    data : row,
+                    processData : true,
+                    dataType : "json",
+                    async : true,
+                    success : function(data) {
+                        if (data.success) {
+                            $("#grid").datagrid("reload");
+                        } else {
+                            swal('修改失败！', '', 'error');
+                        }
+                    },
+                    error : function() {
+                        swal('错误！', data.result, 'error');
+                    }
+                });
             });
-
         }
+
         //表格查询
         function queryGrid() {
             var opts = $("#grid").datagrid("options");

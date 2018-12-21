@@ -558,15 +558,15 @@ function dragMenu(target, source, point) {
                 async: false,
                 success: function (ret) {
                     if (ret.success) {
-                        $.messager.alert('成功', ret.result);
+                        swal('成功',ret.result, 'success');
                         flag = true;
                     } else {
-                        $.messager.alert('错误', ret.result);
+                        swal('错误',ret.result, 'error');
                         flag = false;
                     }
                 },
                 error: function () {
-                    $.messager.alert('错误', '远程访问失败');
+                    swal('错误', '远程访问失败', 'error');
                     flag = false;
                 }
             });

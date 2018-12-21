@@ -75,7 +75,7 @@ function openUpdateDdValue() {
 
 	var selected = ddValueGrid.datagrid("getSelected");
 	if (!selected) {
-		$.messager.alert('警告', '请选中一条数据');
+		swal('警告！','请选中一条数据', 'warning');
 		return;
 	}
 	var index = ddValueGrid.datagrid('getRowIndex', selected);
@@ -118,7 +118,7 @@ function insertOrUpdateDdValue(index, row, changes) {
             } else {
                 ddValueGrid.datagrid('deleteRow', index);
             }
-            $.messager.alert('提示', data.result);
+            swal('提示', data.result, 'error');
             return;
         }
 
@@ -132,40 +132,49 @@ function insertOrUpdateDdValue(index, row, changes) {
 
 // 根据主键删除
 function delDdValue() {
-	if (!ddValueGrid) {
-		return;
-	}
+    if (!ddValueGrid) {
+        return;
+    }
 
-	var selected = ddValueGrid.datagrid("getSelected");
-	if (null == selected) {
-		$.messager.alert('警告', '请选中一条数据');
-		return;
-	}
-	$.messager.confirm('确认', '您确认想要删除记录吗？', function(r) {
-				if (r) {
-					$.ajax({
-								type : "POST",
-								url : contextPath + '/dataDictionaryValue/delete.action',
-								data : {
-									id : selected.id
-								},
-								processData : true,
-								dataType : "json",
-								async : true,
-								success : function(data) {
-									if (data.code == "200") {
-										ddValueGrid.datagrid('deleteRow', ddValueGrid.datagrid('getRowIndex', selected));
-										$('#dlg').dialog('close');
-									} else {
-										$.messager.alert('错误', data.result);
-									}
-								},
-								error : function() {
-									$.messager.alert('错误', '远程访问失败');
-								}
-							});
-				}
-			});
+    var selected = ddValueGrid.datagrid("getSelected");
+    if (null == selected) {
+        swal('警告！','请选中一条数据', 'warning');
+        return;
+    }
+    swal({
+        title : '您确认想要删除记录吗？',
+        type : 'question',
+        showCancelButton : true,
+        confirmButtonColor : '#3085d6',
+        cancelButtonColor : '#d33',
+        confirmButtonText : '确定',
+        cancelButtonText : '取消',
+        confirmButtonClass : 'btn btn-success',
+        cancelButtonClass : 'btn btn-danger'
+    }).then(function(flag) {
+        if (flag.dismiss == 'cancel') {
+            return;
+        }
+        $.ajax({
+            type : "POST",
+            url : "${contextPath}/dataDictionaryValue/delete.action",
+            data : selected,
+            processData : true,
+            dataType : "json",
+            async : true,
+            success : function(data) {
+                if (data.success) {
+                    ddValueGrid.datagrid('deleteRow', ddValueGrid.datagrid('getRowIndex', selected));
+                    $('#dlg').dialog('close');
+                } else {
+                    swal('修改失败！', '', 'error');
+                }
+            },
+            error : function() {
+                swal('错误！', data.result, 'error');
+            }
+        });
+    });
 }
 
 // 表格查询

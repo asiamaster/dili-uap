@@ -82,12 +82,7 @@
 			<artifactId>commons-collections4</artifactId>
 			<version>4.1</version>
 		</dependency>
-		<!-- 内部包 -->
-		<dependency>
-			<groupId>com.dili</groupId>
-			<artifactId>uap-sdk</artifactId>
-			<version>1.1.0-SNAPSHOT</version>
-		</dependency>
+
 		<!-- 利刃框架引入 -->
 		<dependency>
 			<groupId>com.dili</groupId>
@@ -171,12 +166,18 @@
 		<!--</dependency>-->
 		<!-- admin server依赖 end -->
 
+		<!-- 内部包 -->
+		<dependency>
+			<groupId>com.dili</groupId>
+			<artifactId>uap-sdk</artifactId>
+			<version>1.2.0-SNAPSHOT</version>
+		</dependency>
 		<!-- 公共信息 -->
-		<!--<dependency>-->
-			<!--<groupId>com.dili</groupId>-->
-			<!--<artifactId>commons</artifactId>-->
-			<!--<version>1.0.4-SNAPSHOT</version>-->
-		<!--</dependency>-->
+		<dependency>
+			<groupId>com.dili</groupId>
+			<artifactId>commons</artifactId>
+			<version>1.0.5-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 
 

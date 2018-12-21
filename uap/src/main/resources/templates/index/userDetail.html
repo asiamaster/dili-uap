@@ -101,11 +101,11 @@
 					setUserInfo(data.data);
 				} else {
 					parent.closeTab("用户信息");
-					$.messager.alert('错误', data.result);
+                    swal('错误', data.result, 'error');
 				}
 			},
 			error : function() {
-				$.messager.alert('错误', '远程访问失败');
+                swal('错误', '远程访问失败', 'error');
 			}
 		});
 	});

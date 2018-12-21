@@ -1,7 +1,9 @@
 package com.dili.uap.sdk.session;
 
+import com.dili.uap.sdk.exception.NotLoginException;
 import com.dili.uap.sdk.util.ManageRedisUtil;
 import com.dili.uap.sdk.util.WebContent;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.PropertySource;
@@ -35,6 +37,11 @@ public class ManageConfig {
 	//排除列表
 //	@Value("#{'${manage.excludes}'.split(',')}")
 	private List<String> excludes;
+
+	//仅作登录验证
+	private List<String> loginChecks;
+
+
 	//是否必须在框架内
 //	@Value("${manage.mustIframe}")
 	private Boolean mustIframe = true;
@@ -73,6 +80,18 @@ public class ManageConfig {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * 检查是要作登录验证的.action请求，如果该请求url是需要作登录验证的，返回true
+	 * @return
+	 */
+	public boolean isLoginCheck(){
+		//如果没有登录请求，则无法取出url，不能进行验证
+		if(WebContent.getRequest() == null){
+			return false;
+		}
+		return urlFilter(loginChecks);
 	}
 
 	/**
@@ -142,5 +161,13 @@ public class ManageConfig {
 
 	public void setUserLimitOne(Boolean userLimitOne) {
 		this.userLimitOne = userLimitOne;
+	}
+
+	public List<String> getLoginChecks() {
+		return loginChecks;
+	}
+
+	public void setLoginChecks(List<String> loginChecks) {
+		this.loginChecks = loginChecks;
 	}
 }

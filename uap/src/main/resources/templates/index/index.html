@@ -255,7 +255,7 @@
                         window.location.href = "${contextPath}/login/index.html";
                     }
                 } else {
-                    $.messager.alert('提示','注销失败');
+                    swal('提示', '注销失败', 'error');
                 }
             });
         }
@@ -281,7 +281,7 @@
                     }
                 },
                 error : function() {
-                    $.messager.alert('错误', '远程访问失败');
+                    swal('错误', '远程访问失败', 'error');
                 }
             });
         }

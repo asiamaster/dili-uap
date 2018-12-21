@@ -39,36 +39,47 @@
     function doEnable(enable) {
         var selected = userGrid.datagrid("getSelected");
         if (null == selected) {
-            $.messager.alert('警告', '请选中一条数据');
+            swal('警告','请选中一条数据', 'warning');
             return;
         }
         var msg = (enable || 'true' == enable) ? '账号被启用后，将可继续在各系统使用，请确认是否启用' : '账号被禁用后，将不可再继续在各系统使用，请确认是否禁用';
         msg = msg + '[' + selected.userName + ']？';
-        $.messager.confirm('确认', msg, function (r) {
-            if (r) {
-                $.ajax({
-                    type: "POST",
-                    url: "${contextPath}/user/doEnable.action",
-                    data: {id: selected.id, enable: enable},
-                    processData: true,
-                    dataType: "json",
-                    async: true,
-                    success: function (ret) {
-                        if (ret.success) {
-                            userGrid.datagrid("reload");
-                            userGrid.datagrid("clearSelections");
-                            $('#stop_btn').linkbutton('disable');
-                            $('#play_btn').linkbutton('disable');
-                            $('#unlock_btn').linkbutton('disable');
-                        } else {
-                            $.messager.alert('错误', ret.result);
-                        }
-                    },
-                    error: function () {
-                        $.messager.alert('错误', '远程访问失败');
-                    }
-                });
+        swal({
+            title : msg,
+            type : 'question',
+            showCancelButton : true,
+            confirmButtonColor : '#3085d6',
+            cancelButtonColor : '#d33',
+            confirmButtonText : '确定',
+            cancelButtonText : '取消',
+            confirmButtonClass : 'btn btn-success',
+            cancelButtonClass : 'btn btn-danger'
+        }).then(function(flag) {
+            if (flag.dismiss == 'cancel') {
+                return;
             }
+            $.ajax({
+                type : "POST",
+                url : "${contextPath}/user/doEnable.action",
+                data : {id: selected.id, enable: enable},
+                processData : true,
+                dataType : "json",
+                async : true,
+                success : function(data) {
+                    if (data.success) {
+                        userGrid.datagrid("reload");
+                        userGrid.datagrid("clearSelections");
+                        $('#stop_btn').linkbutton('disable');
+                        $('#play_btn').linkbutton('disable');
+                        $('#unlock_btn').linkbutton('disable');
+                    } else {
+                        swal('错误', data.result, 'error');
+                    }
+                },
+                error : function() {
+                    swal('错误', '远程访问失败', 'error');
+                }
+            });
         });
     }
 
@@ -78,36 +89,47 @@
     function doUnlock() {
         var selected = userGrid.datagrid("getSelected");
         if (null == selected) {
-            $.messager.alert('警告', '请选中一条数据');
+            swal('警告', '请选中一条数据', 'warning');
             return;
         }
         var msg = '账号被解锁后，用户密码输入错误次数被清空，请确定是否解锁';
         msg = msg + '[' + selected.userName + ']？';
-        $.messager.confirm('确认', msg, function (r) {
-            if (r) {
-                $.ajax({
-                    type: "POST",
-                    url: "${contextPath}/user/unlock.action",
-                    data: {id: selected.id},
-                    processData: true,
-                    dataType: "json",
-                    async: true,
-                    success: function (ret) {
-                        if (ret.success) {
-                            userGrid.datagrid("reload");
-                            userGrid.datagrid("clearSelections");
-                            $('#stop_btn').linkbutton('disable');
-                            $('#play_btn').linkbutton('disable');
-                            $('#unlock_btn').linkbutton('disable');
-                        } else {
-                            $.messager.alert('错误', ret.result);
-                        }
-                    },
-                    error: function () {
-                        $.messager.alert('错误', '远程访问失败');
-                    }
-                });
+        swal({
+            title : msg,
+            type : 'question',
+            showCancelButton : true,
+            confirmButtonColor : '#3085d6',
+            cancelButtonColor : '#d33',
+            confirmButtonText : '确定',
+            cancelButtonText : '取消',
+            confirmButtonClass : 'btn btn-success',
+            cancelButtonClass : 'btn btn-danger'
+        }).then(function(flag) {
+            if (flag.dismiss == 'cancel') {
+                return;
             }
+            // var index = $('#userListGrid').datagrid("getRowIndex", selectedUser);
+            $.ajax({
+                type: "POST",
+                url: "${contextPath}/user/unlock.action",
+                data: {id: selected.id},
+                dataType: "json",
+                async: true,
+                success : function(data) {
+                    if (data.success) {
+                        userGrid.datagrid("reload");
+                        userGrid.datagrid("clearSelections");
+                        $('#stop_btn').linkbutton('disable');
+                        $('#play_btn').linkbutton('disable');
+                        $('#unlock_btn').linkbutton('disable');
+                    } else {
+                        swal('错误', data.result, 'error');
+                    }
+                },
+                error : function() {
+                    swal('错误！', '远程访问失败', 'error');
+                }
+            });
         });
     }
 
@@ -117,7 +139,7 @@
     function openDetail() {
         var selected = userGrid.datagrid("getSelected");
         if (null == selected) {
-            $.messager.alert('警告', '请选中一条数据');
+            swal('警告', '请选中一条数据', 'warning');
             return;
         }
         $('#viewDlg').dialog('open');
@@ -152,7 +174,7 @@
 
         var selected = userGrid.datagrid("getSelected");
         if (null == selected) {
-            $.messager.alert('警告', '请选中一条数据');
+            swal('警告', '请选中一条数据', 'warning');
             return;
         }
         $('#editDlg').dialog('open');
@@ -175,35 +197,46 @@
     function resetPass() {
         var selected = userGrid.datagrid("getSelected");
         if (null == selected) {
-            $.messager.alert('警告','请选中一条数据');
+            swal('警告', '请选中一条数据', 'warning');
             return;
         }
         var msg = '账号密码重置后将无法再通过旧密码登陆系统，请确认是否为用户[' + selected.userName + ']重置？';
-        $.messager.confirm('确认', msg, function (r) {
-            if (r) {
-                $.ajax({
-                    type: "POST",
-                    url: "${contextPath}/user/resetPass.action",
-                    data: {id: selected.id},
-                    processData: true,
-                    dataType: "json",
-                    async: true,
-                    success: function (ret) {
-                        if (ret.success) {
-                            userGrid.datagrid("reload");
-                            userGrid.datagrid("clearSelections");
-                            $('#stop_btn').linkbutton('disable');
-                            $('#play_btn').linkbutton('disable');
-                            $('#unlock_btn').linkbutton('disable');
-                        } else {
-                            $.messager.alert('错误', ret.result);
-                        }
-                    },
-                    error: function () {
-                        $.messager.alert('错误', '远程访问失败');
-                    }
-                });
+        swal({
+            title : msg,
+            type : 'question',
+            showCancelButton : true,
+            confirmButtonColor : '#3085d6',
+            cancelButtonColor : '#d33',
+            confirmButtonText : '确定',
+            cancelButtonText : '取消',
+            confirmButtonClass : 'btn btn-success',
+            cancelButtonClass : 'btn btn-danger'
+        }).then(function(flag) {
+            if (flag.dismiss == 'cancel') {
+                return;
             }
+            $.ajax({
+                type : "POST",
+                url : "${contextPath}/user/resetPass.action",
+                data : {id:selected.id},
+                processData : true,
+                dataType : "json",
+                async : true,
+                success : function(data) {
+                    if (data.success) {
+                        userGrid.datagrid("reload");
+                        userGrid.datagrid("clearSelections");
+                        $('#stop_btn').linkbutton('disable');
+                        $('#play_btn').linkbutton('disable');
+                        $('#unlock_btn').linkbutton('disable');
+                    } else {
+                        swal('错误', data.result, 'error');
+                    }
+                },
+                error : function() {
+                    swal('错误', '远程访问失败', 'error');
+                }
+            });
         });
     }
 
@@ -253,11 +286,11 @@
                     userGrid.datagrid("reload");
                     $('#editDlg').dialog('close');
                 }else{
-                    $.messager.alert('错误',ret.result);
+                    swal('错误', ret.result, 'error');
                 }
             },
             error: function(){
-                $.messager.alert('错误','远程访问失败');
+                swal('错误', '远程访问失败', 'error');
             }
         });
     }
@@ -266,30 +299,41 @@
     function del() {
         var selected = userGrid.datagrid("getSelected");
         if (null == selected) {
-            $.messager.alert('警告','请选中一条数据');
+            swal('警告', '请选中一条数据', 'warning');
             return;
         }
-        $.messager.confirm('确认','您确认想要删除记录吗？',function(r){
-            if (r){
-                $.ajax({
-                    type: "POST",
-                    url: "${contextPath}/user/delete.action",
-                    data: {id:selected.id},
-                    processData:true,
-                    dataType: "json",
-                    async : true,
-                    success: function (ret) {
-                        if(ret.success){
-                            userGrid.datagrid("reload");
-                        }else{
-                            $.messager.alert('错误',ret.result);
-                        }
-                    },
-                    error: function(){
-                        $.messager.alert('错误','远程访问失败');
-                    }
-                });
+        swal({
+            title : '您确认想要删除记录吗？',
+            type : 'question',
+            showCancelButton : true,
+            confirmButtonColor : '#3085d6',
+            cancelButtonColor : '#d33',
+            confirmButtonText : '确定',
+            cancelButtonText : '取消',
+            confirmButtonClass : 'btn btn-success',
+            cancelButtonClass : 'btn btn-danger'
+        }).then(function(flag) {
+            if (flag.dismiss == 'cancel') {
+                return;
             }
+            $.ajax({
+                type : "POST",
+                url : "${contextPath}/user/delete.action",
+                data : {id:selected.id},
+                processData : true,
+                dataType : "json",
+                async : true,
+                success : function(data) {
+                    if (data.success) {
+                        userGrid.datagrid("reload");
+                    } else {
+                        swal('错误', data.result, 'error');
+                    }
+                },
+                error : function() {
+                    swal('错误', '远程访问失败', 'error');
+                }
+            });
         });
     }
 
@@ -480,7 +524,7 @@
     function editUserRole() {
         var selected = userGrid.datagrid("getSelected");
         if (null == selected) {
-            $.messager.alert('警告', '请选中一条数据');
+            swal('警告', '请选中一条数据', 'warning');
             return;
         }
         $('#userRoleDlg').dialog('open');
@@ -515,11 +559,11 @@
                     $('#userRoleDlg').dialog('close');
                     userGrid.datagrid("load");
                 } else {
-                    $.messager.alert('错误', ret.result);
+                    swal('错误！', ret.result, 'error');
                 }
             },
             error: function () {
-                $.messager.alert('错误', '远程访问失败');
+                swal('错误！', '远程访问失败', 'error');
             }
         });
     }
@@ -530,7 +574,7 @@
     function editUserDataAuth() {
         var selected = userGrid.datagrid("getSelected");
         if (null == selected) {
-            $.messager.alert('警告', '请选中一条数据');
+            swal('警告', '请选中一条数据', 'warning');
             return;
         }
         $('#userDataDlg').dialog('open');
@@ -585,11 +629,11 @@
                 if (ret.success) {
                     $('#userDataDlg').dialog('close');
                 } else {
-                    $.messager.alert('错误', ret.result);
+                    swal('错误', ret.result, 'error');
                 }
             },
             error: function () {
-                $.messager.alert('错误', '远程访问失败');
+                swal('错误！', '远程访问失败', 'error');
             }
         });
     }

@@ -102,7 +102,7 @@
 	    	systemList=data;
 	    },
 	    error: function(){
-	       $.messager.alert('错误','远程访问失败');
+            swal('错误', '远程访问失败', 'error');
 	    }
 	});
 	//根据systemcode返回system name

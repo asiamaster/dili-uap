@@ -1,14 +1,14 @@
 package com.dili;
 
 import com.dili.ss.retrofitful.annotation.RestfulScan;
-//import com.ulisesbocchio.jasyptspringboot.annotation.EncryptablePropertySource;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import tk.mybatis.spring.annotation.MapperScan;
+
+//import com.ulisesbocchio.jasyptspringboot.annotation.EncryptablePropertySource;
 
 /**
  * 由MyBatis Generator工具自动生成
