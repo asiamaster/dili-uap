@@ -144,8 +144,8 @@
         <!-- 西方布局 当系统编码为UAP时(此时首页显示系统图标)，不显示-->
         <!-- ====================================================================================================================== -->
         <%if(system.code!=@com.dili.uap.constants.UapConstants.UAP_SYSTEM_CODE){%>
-        <div style="width: 230px;" height="100%" align="left" data-options="region:'west',title:'功能导航',split:true, hideCollapsedContent:false, expandMode:'dock'">
-            <div id="sm" class="easyui-sidemenu" data-options="onSelect:menuClickHandler, data:[], _idField:'id', _textField:'name', _parentIdField:'parent_id'"></div>
+        <div style="width: 156px;" height="100%" align="left" data-options="region:'west',title:'功能导航',split:true, hideCollapsedContent:false, expandMode:'dock'">
+            <div id="sm" class="easyui-sidemenu" width="150" data-options="onSelect:menuClickHandler, data:[], _idField:'id', _textField:'name', _parentIdField:'parent_id'"></div>
         </div>
         <%}%>
         <!-- ====================================================================================================================== -->
