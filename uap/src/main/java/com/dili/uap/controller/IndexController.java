@@ -29,7 +29,7 @@ import java.util.Map;
 public class IndexController {
 
 	//跳转到首页
-	public static final String INDEX_PATH = "index/index";
+	public static final String INDEX_PATH = "index/leftMenuIndex2";
 	//跳转到平台首页
 	public static final String PLATFORM_PATH = "index/platform";
 	//跳转到首页Controller

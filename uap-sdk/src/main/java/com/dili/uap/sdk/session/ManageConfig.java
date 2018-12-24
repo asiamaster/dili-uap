@@ -87,8 +87,8 @@ public class ManageConfig {
 	 * @return
 	 */
 	public boolean isLoginCheck(){
-		//如果没有登录请求，则无法取出url，不能进行验证
-		if(WebContent.getRequest() == null){
+		//如果没有登录请求，则无法取出url，不进行验证
+		if(WebContent.getRequest() == null || loginChecks == null){
 			return false;
 		}
 		return urlFilter(loginChecks);

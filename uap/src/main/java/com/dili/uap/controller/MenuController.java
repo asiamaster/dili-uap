@@ -67,14 +67,38 @@ public class MenuController {
         List<Map> menuMaps = new ArrayList<>(menus.size());
         menus.forEach( item -> {
             Map menuMap = DTOUtils.go(item);
-            Map<String, String> attr = new HashMap<>(3);
+            menuMap.put("iconCls", item.getIconCls());
+            menuMap.put("order", item.getOrderNumber());
+            if(item.getParentId()==null){
+                menuMap.put("state", "open");
+            }
+            Map<String, String> attr = new HashMap<>(6);
             attr.put("type", item.getType().toString());
             attr.put("systemId", item.getSystemId().toString());
             attr.put("url", item.getUrl());
             menuMap.put("attributes", attr);
             menuMaps.add(menuMap);
         });
-        return menuMaps;
+        menuMaps.sort((o1, o2) -> {
+            Object order1 = o1.get("order");
+            Object order2 = o2.get("order");
+            if(order1 == null && order2 == null){
+                return 0;
+            }
+            if(order1 == null){
+                return 1;
+            }
+            if(order2 == null){
+                return -1;
+            }
+            try {
+                return Integer.parseInt(order1.toString()) - Integer.parseInt(order2.toString());
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+                return 0;
+            }
+        });
+         return menuMaps;
     }
 
     @ApiOperation(value = "查询菜单列表", notes = "查询Menu，返回列表信息")

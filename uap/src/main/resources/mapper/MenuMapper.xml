@@ -119,6 +119,7 @@
         ,m.`name`
         ,m.`type`
         ,m.`system_id`
+        ,m.`order_number`
         from menu m order by m.order_number)
     union all
         select concat('sys_',s.id) as id
@@ -126,6 +127,7 @@
          ,s.name
          ,4 as 'type'
          ,s.id as system_id
+         ,null as order_number
           from `system` s
   </select>
 </mapper>
