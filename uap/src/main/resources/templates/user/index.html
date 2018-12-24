@@ -14,7 +14,7 @@
                         <tr>
                             <%if(isGroup){%>
                                 <td style="padding:5px;">
-                                    <input class="easyui-combobox" name="firmCode" id="firmCode" style="width:100%" data-options="label:'所属市场:',editable:false,labelAlign:'right',valueField:'code',textField:'name',
+                                    <input class="easyui-combobox" name="firmCode" id="firmCode" style="width:200px" data-options="label:'所属市场:',editable:false,labelAlign:'right',valueField:'code',textField:'name',
                                        onLoadSuccess:function(){
                                            loadDepartments('','departmentId');
                                            loadRoles('');
@@ -29,17 +29,17 @@
                                 </td>
                             <%}%>
                             <td style="padding:5px;">
-                                <input class="easyui-combotree" name="departmentId" id="departmentId" panelHeight="240%" panelWidth="auto" style="width:108%" data-options="label:'归属部门:',labelAlign:'right',editable:false,_idField:'id',_textField:'name',_parentIdField:'parentId',loadFilter:treeLoadFilter" />
+                                <input class="easyui-combotree" name="departmentId" id="departmentId" panelHeight="240%" panelWidth="auto" style="width:240px" data-options="label:'归属部门:',labelAlign:'right',editable:false,_idField:'id',_textField:'name',_parentIdField:'parentId',loadFilter:treeLoadFilter" />
                             </td>
                             <td style="padding:5px;">
-                                <input class="easyui-combobox" name="roleId" id="roleId" panelHeight="auto" style="width:103%" data-options="label:'角色类型:',labelAlign:'right',editable:false,valueField:'id',textField:'roleName'" />
+                                <input class="easyui-combobox" name="roleId" id="roleId" panelHeight="auto" style="width:250px" data-options="label:'角色类型:',labelAlign:'right',editable:false,valueField:'id',textField:'roleName'" />
                             </td>
                             <td style="padding:5px;">
-                                <input class="easyui-combobox" name="state" id="state" style="width:92%;" data-options="labelAlign:'right',editable:false,labelWidth:60" panelHeight="auto" label="状态:"/>
+                                <input class="easyui-combobox" name="state" id="state" style="width:160px" data-options="labelAlign:'right',editable:false,labelWidth:60" panelHeight="auto" label="状态:"/>
                                 <#comboProvider _id="state" _provider='userStateProvider' _queryParams='{emptyText:"-- 全部 --"}'/>
                             </td>
                             <td style="padding:5px;">
-                                <input class="easyui-textbox" name="keywords" id="keywords" style="width:95%" data-options="prompt:'用户账号/联系手机'" />
+                                <input class="easyui-textbox" name="keywords" id="keywords" style="width:160px" data-options="prompt:'用户账号/联系手机'" />
                             </td>
                             <td style="padding:5px;">
                                 <a href="#" class="easyui-linkbutton" iconCls="icon-search" id="queryBtn"
