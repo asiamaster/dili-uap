@@ -53,6 +53,14 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, Long> implements Menu
         return parentToChildren(menus);
     }
 
+    @Override
+    public List<Menu> listDirAndLinksByUserIdAndSystemId(Long userId, Long systemId){
+        Map param = Maps.newHashMap();
+        param.put("userId", userId);
+        param.put("systemId", systemId);
+        return menuMapper.listDirAndLinksByUserId(param);
+    }
+
     /**
      * id, parentId树型结构转children[]树型结构
      * @param list

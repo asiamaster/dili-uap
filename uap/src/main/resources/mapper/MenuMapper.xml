@@ -73,7 +73,12 @@
     and rm.role_id = ur.role_id
     and m.system_id = s.id
     and ur.user_id = #{userId}
-    and s.code=#{systemCode}
+    <if test="systemCode != null">
+      and s.code=#{systemCode}
+    </if>
+    <if test="systemId != null">
+      and s.id=#{systemId}
+    </if>
     and (m.`type` = 0 or m.`type` = 1)
     <if test="sort == null">
     order by m.order_number

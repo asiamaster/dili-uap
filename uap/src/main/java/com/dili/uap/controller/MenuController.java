@@ -5,8 +5,10 @@ import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.dto.IDTO;
 import com.dili.uap.domain.Menu;
 import com.dili.uap.domain.Resource;
-import com.dili.uap.domain.dto.MenuCondition;
 import com.dili.uap.glossary.MenuType;
+import com.dili.uap.sdk.domain.UserTicket;
+import com.dili.uap.sdk.exception.NotLoginException;
+import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.service.MenuService;
 import com.dili.uap.service.ResourceService;
 import com.google.common.collect.Lists;
@@ -57,10 +59,11 @@ public class MenuController {
     @RequestMapping(value = "/listMenus.action", method = { RequestMethod.GET, RequestMethod.POST })
     @ResponseBody
     public List<Map> listMenus(@RequestParam Long systemId) {
-        MenuCondition menu = DTOUtils.newDTO(MenuCondition.class);
-        menu.setSystemId(systemId);
-        menu.setTypes(Lists.newArrayList(MenuType.DIRECTORY.getCode(), MenuType.LINKS.getCode()));
-        List<Menu> menus = this.menuService.listByExample(menu);
+        UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
+        if(userTicket == null){
+            throw new NotLoginException();
+        }
+        List<Menu> menus = this.menuService.listDirAndLinksByUserIdAndSystemId(userTicket.getId(), systemId);
         if(CollectionUtils.isEmpty(menus)){
             return Lists.newArrayList();
         }

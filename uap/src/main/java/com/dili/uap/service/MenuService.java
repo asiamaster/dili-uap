@@ -27,6 +27,15 @@ public interface MenuService extends BaseService<Menu, Long> {
      */
     List<Map> listDirAndLinks(Long userId, String systemCode);
 
+
+    /**
+     * 根据用户id和系统id查询目录和链接菜单权限
+     * @param userId
+     * @param systemId
+     * @return
+     */
+    List<Menu> listDirAndLinksByUserIdAndSystemId(Long userId, Long systemId);
+
     /**
      * 根据id获取上级菜单
      * @param id

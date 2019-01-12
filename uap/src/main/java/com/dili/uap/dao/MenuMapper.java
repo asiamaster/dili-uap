@@ -17,7 +17,7 @@ public interface MenuMapper extends MyMapper<Menu> {
 
     /**
      * 根据用户id查询目录和链接菜单权限
-     * @param param key为userId和systemCode
+     * @param param key为userId、 systemId和systemCode
      * @return
      */
     List<Menu> listDirAndLinksByUserId(Map param);
