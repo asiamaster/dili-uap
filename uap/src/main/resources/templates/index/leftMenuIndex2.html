@@ -228,22 +228,17 @@
             if(item == null){
                 item = $(this).linkbutton("options");
             }
-            var title = item.text;
-            var url = item.indexUrl;
             if ("menu_logout" == item.id) {
                 logout();
                 return;
             }
+            if(item.indexUrl == null){
+                renderPage(item.text,item.url);
+                return;
+            }
+            var title = item.text;
+            var url = item.indexUrl;
             window.location.href='<#config name="uap.contextPath"/>/index/index.html?systemCode='+item.code;
-            // if(!url || null == url || url===""){
-            //     return;
-            // }
-            // //加载左侧菜单
-            // if(item.id.indexOf("menubutton_") != -1){
-            //     loadMenu(item.id.substring(11, item.id.length));
-            // }
-            // //渲染中间iframe
-            // renderPage(title,url);
         }
 
         //点击左侧菜单
@@ -337,8 +332,9 @@
                     $('#errorTxt').html('');
                 });
             <%}%>
-
+            <%if(system.code!=@com.dili.uap.constants.UapConstants.UAP_SYSTEM_CODE){%>
             loadMenu("${system.id}");
+            <%}%>
             renderPage("主页", "${system.indexUrl!"about:blank"}");
         });
     </script>
