@@ -266,6 +266,7 @@
         if(!$('#_form').form("validate")){
             return;
         }
+        $("#saveUser").linkbutton("disable");
         var _formData = removeKeyStartWith($("#_form").serializeObject(true),"_");
         var _url = null;
         //没有id就新增
@@ -282,6 +283,7 @@
             dataType: "json",
             async : true,
             success: function (ret) {
+                $("#saveUser").linkbutton("enable");
                 if(ret.success){
                     userGrid.datagrid("reload");
                     $('#editDlg').dialog('close');
@@ -290,6 +292,7 @@
                 }
             },
             error: function(){
+                $("#saveUser").linkbutton("enable");
                 swal('错误', '远程访问失败', 'error');
             }
         });
