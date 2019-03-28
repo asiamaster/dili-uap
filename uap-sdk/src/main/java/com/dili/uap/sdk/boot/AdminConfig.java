@@ -1,5 +1,6 @@
 package com.dili.uap.sdk.boot;
 
+import com.dili.ss.util.SystemConfigUtils;
 import com.dili.uap.sdk.exception.NotAccessPermissionException;
 import com.dili.uap.sdk.exception.NotLoginException;
 import org.springframework.context.annotation.Bean;
@@ -21,7 +22,7 @@ public class AdminConfig {
 	 * error.page.indexPage=http://crm.diligrp.com:8085/crm/index.html (返回首页地址)
 	 *
 	 */
-	@Bean
+	@Bean("uapSimpleMappingExceptionResolver")
 	public SimpleMappingExceptionResolver simpleMappingExceptionResolver(){
 		SimpleMappingExceptionResolver simpleMappingExceptionResolver = new SimpleMappingExceptionResolver();
 //		定义默认的异常处理页面
@@ -30,11 +31,11 @@ public class AdminConfig {
 		simpleMappingExceptionResolver.setExceptionAttribute("exception");
 //		定义需要特殊处理的异常，用类名或完全路径名作为key，异常页面名作为值
 		Properties mappings = new Properties();
-//		mappings.put("java.lang.RuntimeException", SystemConfigUtils.getProperty("error.page.default", "error/default"));
-//		mappings.put("java.lang.Exception", SystemConfigUtils.getProperty("error.page.default", "error/default"));
-//		mappings.put("java.lang.Throwable", SystemConfigUtils.getProperty("error.page.default", "error/default"));
-		mappings.put(NotLoginException.class.getName(), "/error/noAccess.do");
-		mappings.put(NotAccessPermissionException.class.getName(), "/error/noAccess.do");
+		mappings.put("java.lang.RuntimeException", SystemConfigUtils.getProperty("error.page.default", "error/default"));
+		mappings.put("java.lang.Exception", SystemConfigUtils.getProperty("error.page.default", "error/default"));
+		mappings.put("java.lang.Throwable", SystemConfigUtils.getProperty("error.page.default", "error/default"));
+		mappings.put(NotLoginException.class.getName(), "/error/noLogin");
+		mappings.put(NotAccessPermissionException.class.getName(), "/error/noLogin");
 		simpleMappingExceptionResolver.setExceptionMappings(mappings);
 		return simpleMappingExceptionResolver;
 	}

@@ -149,10 +149,10 @@ public class PermissionContext {
         try {
             String requestType = req.getHeader("X-Requested-With");
             if (requestType == null) {
-                sendRedirect("/noAccess.do");
+                sendRedirect("/error/noAccess.do");
                 return;
             }
-            String path = makePath("/noAccess.do");
+            String path = makePath("/error/noAccess.do");
             resp.setStatus(403);
             resp.addHeader("nonAccessable", path);
             resp.getWriter().write("nonAccessable");
