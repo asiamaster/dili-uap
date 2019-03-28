@@ -34,6 +34,7 @@ public class AdminConfig {
 		mappings.put("java.lang.RuntimeException", SystemConfigUtils.getProperty("error.page.default", "error/default"));
 		mappings.put("java.lang.Exception", SystemConfigUtils.getProperty("error.page.default", "error/default"));
 		mappings.put("java.lang.Throwable", SystemConfigUtils.getProperty("error.page.default", "error/default"));
+		//直接跳到/templates/error/noLogin.html
 		mappings.put(NotLoginException.class.getName(), "/error/noLogin");
 		mappings.put(NotAccessPermissionException.class.getName(), "/error/noLogin");
 		simpleMappingExceptionResolver.setExceptionMappings(mappings);
