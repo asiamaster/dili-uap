@@ -28,6 +28,7 @@
 			<groupId>com.dili</groupId>
 			<artifactId>sharp-sword</artifactId>
 			<version>${sharp-sword.version}</version>
+            <scope>provided</scope>
 		</dependency>
 
         <!-- 参数校验包 -->
