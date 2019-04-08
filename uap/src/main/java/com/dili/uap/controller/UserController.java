@@ -1,11 +1,14 @@
 package com.dili.uap.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.domain.EasyuiPageOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.dto.IDTO;
 import com.dili.ss.metadata.ValueProviderUtils;
+import com.dili.ss.util.AESUtil;
+import com.dili.uap.boot.RabbitConfiguration;
 import com.dili.uap.constants.UapConstants;
 import com.dili.uap.domain.DataAuthRef;
 import com.dili.uap.sdk.domain.UserDataAuth;
@@ -30,7 +33,9 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.annotation.Validated;
@@ -59,6 +64,10 @@ public class UserController {
 
     @Autowired
     private DataAuthSource dataAuthSource;
+    @Value("${aesKey:}")
+    private String aesKey;
+    @Autowired
+    private AmqpTemplate amqpTemplate;
 
     @Autowired
     private DataAuthRefService dataAuthRefService;
@@ -147,6 +156,9 @@ public class UserController {
     @RequestMapping(value = "/changePwd.action", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
     public BaseOutput changePwd(UserDto user) {
+        String json = JSON.toJSONString(user);
+        json = AESUtil.encrypt(json, aesKey);
+        amqpTemplate.convertAndSend(RabbitConfiguration.UAP_TOPIC_EXCHANGE, RabbitConfiguration.UAP_CHANGE_PASSWORD_KEY, json);
         Long userId = SessionContext.getSessionContext().getUserTicket().getId();
         return userService.changePwd(userId, user);
     }

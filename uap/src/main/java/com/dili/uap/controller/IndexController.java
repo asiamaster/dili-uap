@@ -4,7 +4,9 @@ import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.exception.AppException;
 import com.dili.uap.constants.UapConstants;
 import com.dili.uap.sdk.domain.System;
+import com.dili.uap.sdk.domain.User;
 import com.dili.uap.sdk.domain.UserTicket;
+import com.dili.uap.sdk.exception.NotLoginException;
 import com.dili.uap.sdk.redis.UserSystemRedis;
 import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.service.MenuService;
@@ -29,7 +31,7 @@ import java.util.Map;
 public class IndexController {
 
 	//跳转到首页
-	public static final String INDEX_PATH = "index/leftMenuIndex2";
+	public static final String INDEX_PATH = "index/leftMenuIndex";
 	//跳转到平台首页
 	public static final String PLATFORM_PATH = "index/platform";
 	//跳转到首页Controller
@@ -96,6 +98,12 @@ public class IndexController {
 		UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
 		if (userTicket != null) {
 			List<System> systems = systemService.listByUserId(userTicket.getId());
+			User user = userService.get(userTicket.getId());
+			if(user == null){
+				throw new NotLoginException("登录用户不存在");
+			}
+			modelMap.put("userName", user.getUserName());
+			modelMap.put("password", user.getPassword());
 			modelMap.put("systems", systems);
 			modelMap.put("userid", userTicket.getId());
 			modelMap.put("username", userTicket.getRealName());
