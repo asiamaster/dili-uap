@@ -64,10 +64,6 @@ public class UserController {
 
     @Autowired
     private DataAuthSource dataAuthSource;
-    @Value("${aesKey:}")
-    private String aesKey;
-    @Autowired
-    private AmqpTemplate amqpTemplate;
 
     @Autowired
     private DataAuthRefService dataAuthRefService;
@@ -156,9 +152,6 @@ public class UserController {
     @RequestMapping(value = "/changePwd.action", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
     public BaseOutput changePwd(UserDto user) {
-        String json = JSON.toJSONString(user);
-        json = AESUtil.encrypt(json, aesKey);
-        amqpTemplate.convertAndSend(RabbitConfiguration.UAP_TOPIC_EXCHANGE, RabbitConfiguration.UAP_CHANGE_PASSWORD_KEY, json);
         Long userId = SessionContext.getSessionContext().getUserTicket().getId();
         return userService.changePwd(userId, user);
     }

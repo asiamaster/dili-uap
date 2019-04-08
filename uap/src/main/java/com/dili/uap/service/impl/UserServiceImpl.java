@@ -1,12 +1,15 @@
 package com.dili.uap.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.dili.ss.base.BaseServiceImpl;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.domain.EasyuiPageOutput;
 import com.dili.ss.dto.DTO;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.metadata.ValueProviderUtils;
+import com.dili.ss.util.AESUtil;
 import com.dili.ss.util.POJOUtils;
+import com.dili.uap.boot.RabbitConfiguration;
 import com.dili.uap.constants.UapConstants;
 import com.dili.uap.dao.*;
 import com.dili.uap.domain.*;
@@ -28,7 +31,9 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -63,6 +68,10 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
     DepartmentMapper departmentMapper;
     @Autowired
     UserDataAuthMapper userDataAuthMapper;
+    @Autowired
+    private AmqpTemplate amqpTemplate;
+    @Value("${aesKey:}")
+    private String aesKey;
 
     @Override
     public void logout(String sessionId) {
@@ -115,6 +124,11 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
         // 加密并更新密码
         userInDB.setPassword(this.encryptPwd(user.getNewPassword()));
         this.updateExactSimple(userInDB);
+        //发送修改密码消息
+        user.setPassword(this.encryptPwd(user.getNewPassword()));
+        String json = JSON.toJSONString(user);
+        json = AESUtil.encrypt(json, aesKey);
+        amqpTemplate.convertAndSend(RabbitConfiguration.UAP_TOPIC_EXCHANGE, RabbitConfiguration.UAP_CHANGE_PASSWORD_KEY, json);
         return BaseOutput.success("修改密码成功");
     }
 
@@ -149,6 +163,12 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
             }
             user.setPassword(encryptPwd(UapConstants.DEFAULT_PASS));
             this.insertExactSimple(user);
+            User newUser = DTOUtils.newDTO(User.class);
+            newUser.setUserName(user.getUserName());
+            newUser.setPassword(user.getPassword());
+            String json = JSON.toJSONString(newUser);
+            json = AESUtil.encrypt(json, aesKey);
+            amqpTemplate.convertAndSend(RabbitConfiguration.UAP_TOPIC_EXCHANGE, RabbitConfiguration.UAP_ADD_USER_KEY, json);
         } else {
             if (CollectionUtils.isNotEmpty(userList)) {
                 //匹配是否有用户ID不等当前修改记录的用户
