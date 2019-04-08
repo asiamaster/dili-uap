@@ -126,6 +126,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
         this.updateExactSimple(userInDB);
         //发送修改密码消息
         user.setPassword(this.encryptPwd(user.getNewPassword()));
+        user.setUserName(userInDB.getUserName());
         String json = JSON.toJSONString(user);
         json = AESUtil.encrypt(json, aesKey);
         amqpTemplate.convertAndSend(RabbitConfiguration.UAP_TOPIC_EXCHANGE, RabbitConfiguration.UAP_CHANGE_PASSWORD_KEY, json);
