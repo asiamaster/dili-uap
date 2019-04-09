@@ -169,6 +169,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
             newUser.setPassword(user.getPassword());
             newUser.setRealName(user.getRealName());
             newUser.setEmail(user.getEmail());
+            newUser.setSerialNumber(user.getSerialNumber());
             newUser.setCellphone(user.getCellphone());
             String json = JSON.toJSONString(newUser);
             json = AESUtil.encrypt(json, aesKey);
