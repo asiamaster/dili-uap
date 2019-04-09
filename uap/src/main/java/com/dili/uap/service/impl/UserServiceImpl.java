@@ -167,6 +167,9 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
             User newUser = DTOUtils.newDTO(User.class);
             newUser.setUserName(user.getUserName());
             newUser.setPassword(user.getPassword());
+            newUser.setRealName(user.getRealName());
+            newUser.setEmail(user.getEmail());
+            newUser.setCellphone(user.getCellphone());
             String json = JSON.toJSONString(newUser);
             json = AESUtil.encrypt(json, aesKey);
             amqpTemplate.convertAndSend(RabbitConfiguration.UAP_TOPIC_EXCHANGE, RabbitConfiguration.UAP_ADD_USER_KEY, json);
