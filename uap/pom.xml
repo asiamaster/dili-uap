@@ -176,6 +176,12 @@
 			<!--<artifactId>spring-boot-starter-actuator</artifactId>-->
 		<!--</dependency>-->
 		<!-- admin server依赖 end -->
+		<!-- 解决Beetl模板热更新 -->
+		<!--<dependency>-->
+			<!--<groupId>org.springframework.boot</groupId>-->
+			<!--<artifactId>spring-boot-devtools</artifactId>-->
+			<!--<optional>true</optional> &lt;!&ndash;optional=true表示不传递依赖&ndash;&gt;-->
+		<!--</dependency>-->
 
 		<!-- 内部包 -->
 		<dependency>
@@ -187,7 +193,7 @@
 		<dependency>
 			<groupId>com.dili</groupId>
 			<artifactId>commons</artifactId>
-			<version>1.0.7-SNAPSHOT</version>
+			<version>1.0.9-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 
