@@ -310,7 +310,7 @@ public class LoginServiceImpl implements LoginService {
         // redis: sessionId - userID
         this.sessionRedisManager.setSessionUserIdKey(sessionId, user.getId().toString());
         // redis: sessionId - userName
-        this.sessionRedisManager.setSessionUserIdKey(sessionId, user.getUserName());
+        this.sessionRedisManager.setSessionUserNameKey(sessionId, user.getUserName());
         // redis: userID - sessionId
         this.sessionRedisManager.setUserIdSessionIdKey(user.getId().toString(), sessionId);
         LOG.debug("UserName: " + user.getUserName() + " | SessionId:" + sessionId + " | SessionData:" + sessionData);
