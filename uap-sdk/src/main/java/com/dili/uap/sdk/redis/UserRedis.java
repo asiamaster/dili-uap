@@ -91,4 +91,13 @@ public class UserRedis {
         return sessionRedisManager.getUserIdBySessionId(sessionId);
     }
 
+    /**
+     * 根据sessionId取用户名
+     * @param sessionId
+     * @return
+     */
+    public String getUserNameBySessionId(String sessionId){
+        return sessionRedisManager.getUserNameBySessionId(sessionId);
+    }
+
 }

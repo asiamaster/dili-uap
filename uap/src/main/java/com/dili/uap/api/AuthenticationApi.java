@@ -120,6 +120,22 @@ public class AuthenticationApi {
     }
 
     /**
+     * 根据sessionId取用户名
+     * @param json
+     * @return
+     */
+    @RequestMapping(value = "/getUserNameBySessionId.api", method = { RequestMethod.POST })
+    @ResponseBody
+    public BaseOutput getUserNameBySessionId(@RequestBody String json){
+        String sessionId = getSessionIdByJson(json);
+        if(StringUtils.isBlank(sessionId)){
+            return BaseOutput.failure("会话id不存在").setCode(ResultCode.PARAMS_ERROR);
+        }
+        String userName = userRedis.getUserNameBySessionId(sessionId);
+        return userName == null ? BaseOutput.failure("未登录").setCode(ResultCode.NOT_AUTH_ERROR) : BaseOutput.success(userName);
+    }
+
+    /**
      * 根据sessionId获取系统权限列表，如果未登录将返回空
      * @param json
      * @return

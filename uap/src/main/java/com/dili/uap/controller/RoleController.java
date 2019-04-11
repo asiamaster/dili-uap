@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import java.util.*;
+import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
 /**
@@ -87,12 +88,14 @@ public class RoleController {
 		@ApiImplicitParam(name="Role", paramType="form", value = "Role的form信息", required = false, dataType = "string")
 	})
     @RequestMapping(value="/listPage.action", method = {RequestMethod.GET, RequestMethod.POST})
-    public @ResponseBody String listPage(Role role) throws Exception {
+    public @ResponseBody Callable<String> listPage(Role role) throws Exception {
         String firmCode = SessionContext.getSessionContext().getUserTicket().getFirmCode();
         if (!UapConstants.GROUP_CODE.equals(firmCode)) {
             role.setFirmCode(firmCode);
         }
-        return roleService.listEasyuiPageByExample(role, true).toString();
+        return () -> {
+            return roleService.listEasyuiPageByExample(role, true).toString();
+        };
     }
 
     @ApiOperation("新增Role")

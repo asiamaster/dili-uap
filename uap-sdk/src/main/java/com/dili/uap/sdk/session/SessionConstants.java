@@ -34,6 +34,8 @@ public class SessionConstants {
     public static final String USER_RESOURCE_CODE_KEY ="manage:userResourceCode:userId:";
     // key:sessionId - value:userId
     public static final String SESSIONID_USERID_KEY = "manage:sessionIdUserId:sessionId:";
+    // key:sessionId - value:userName
+    public static final String SESSIONID_USERNAME_KEY = "manage:sessionIdUserName:sessionId:";
     // key:userId - value:sessionId
     public static final String USERID_SESSIONID_KEY = "manage:userIdSessionId:userId:";
 

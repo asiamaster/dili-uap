@@ -36,11 +36,25 @@ public interface SessionRedisManager {
     void setSessionUserIdKey(String sessionId, String userId);
 
     /**
+     * 缓存 SessionConstants.SESSIONID_USERID_KEY + sessionId: userName
+     * @param sessionId
+     * @param userName
+     */
+    void setSessionUserNameKey(String sessionId, String userName);
+
+    /**
      * 根据sessionId取用户id
      * @param sessionId
      * @return
      */
     String getUserIdBySessionId(String sessionId);
+
+    /**
+     * 根据sessionId取用户登录名
+     * @param sessionId
+     * @return
+     */
+    String getUserNameBySessionId(String sessionId);
 
     /**
      * 缓存 用户id:sessionId和用户信息的Map, key为sessionId和user

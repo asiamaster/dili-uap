@@ -112,9 +112,21 @@ public class SessionRedisManagerImpl implements SessionRedisManager {
 				SessionConstants.SESSION_TIMEOUT);
 	}
 
+	// sessionId - userName 操作 - START
+	@Override
+	public void setSessionUserNameKey(String sessionId, String userName) {
+		myRedisUtil.set(SessionConstants.SESSIONID_USERNAME_KEY + sessionId, userName,
+				SessionConstants.SESSION_TIMEOUT);
+	}
+
 	@Override
 	public String getUserIdBySessionId(String sessionId) {
 		return myRedisUtil.get(SessionConstants.SESSIONID_USERID_KEY + sessionId, String.class);
+	}
+
+	@Override
+	public String getUserNameBySessionId(String sessionId) {
+		return myRedisUtil.get(SessionConstants.SESSIONID_USERNAME_KEY + sessionId, String.class);
 	}
 
 	@Override
