@@ -56,11 +56,15 @@ function queryGrid(node) {
     if(nodeType == ${@com.dili.uap.glossary.MenuType.DIRECTORY.getCode()}
         || nodeType == ${@com.dili.uap.glossary.MenuType.SYSTEM.getCode()}){
         //上面板最大化，下面板最小化
-        $('#panel1').panel('maximize');
+        $('#centerNorthPanel').panel('maximize');
+        $("#eastPanel").panel("collapse");
+        $("#centerPanel").panel("maximize");
         queryGridByDir(node);
     }else{
         //恢复右边两个面板的大小
-        $('#panel1').panel('restore');
+        $('#centerNorthPanel').panel('restore');
+        $("#centerPanel").panel("restore");
+        $("#eastPanel").panel("expand");
         queryGridByLinks(node);
     }
 }
@@ -81,6 +85,7 @@ function queryGridByLinks(node) {
     bindEditResourceGrid(node);
     renderInternalLinksGrid(node, "grid2")
     bindInternalLinksGrid(node);
+    // renderResourceLinkGrid("grid3");
 }
 
 //可编辑表格的操作
@@ -212,6 +217,18 @@ function renderMenuGrid(node, gridId) {
     $("#"+gridId).datagrid('getPanel').removeClass('lines-both lines-no lines-right lines-bottom').addClass("lines-bottom");
 }
 
+/**
+ * 点击资源列表时，查询资源链接
+ */
+function clickResource(index, row) {
+    var opts = $("#grid3").datagrid("options");
+    if (null == opts.url || "" == opts.url) {
+        opts.url = "${contextPath}/resource/listResourceLink.action";
+    }
+    //渲染权限列表
+    $("#grid3").datagrid("load", bindGridMeta2Data("grid3", {resourceId:row.id }));
+    $("#grid3").datagrid('getPanel').removeClass('lines-both lines-no lines-right lines-bottom').addClass("lines-bottom");
+}
 /**
  * 渲染资源列表
  * @param node
@@ -404,6 +421,7 @@ function bindEditResourceGrid(node) {
         insertUrl: "${contextPath!}/resource/insert.action",
         updateUrl: "${contextPath!}/resource/update.action",
         deleteUrl: '${contextPath!}/resource/delete.action',
+        onClickRow: clickResource,
         onBeforeEdit: function () {
             $("#btnSave1").show();
             $("#btnCancel1").show();

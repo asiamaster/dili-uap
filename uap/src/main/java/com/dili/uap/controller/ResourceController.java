@@ -2,7 +2,10 @@ package com.dili.uap.controller;
 
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
+import com.dili.ss.metadata.ValueProviderUtils;
 import com.dili.uap.domain.Resource;
+import com.dili.uap.domain.ResourceLink;
+import com.dili.uap.service.ResourceLinkService;
 import com.dili.uap.service.ResourceService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -17,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 由MyBatis Generator工具自动生成
@@ -28,6 +32,8 @@ import java.util.List;
 public class ResourceController {
     @Autowired
     ResourceService resourceService;
+    @Autowired
+    ResourceLinkService resourceLinkService;
 
     @ApiOperation("跳转到Resource页面")
     @RequestMapping(value="/index.html", method = RequestMethod.GET)
@@ -49,6 +55,14 @@ public class ResourceController {
         return this.resourceService.listByExample(query);
     }
 
+    @ApiOperation(value = "查询资源列表", notes = "查询Menu，返回列表信息")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "menuId", paramType = "Long", value = "menuId", required = false, dataType = "Long") })
+    @RequestMapping(value = "/listResourceLink.action", method = { RequestMethod.GET, RequestMethod.POST })
+    public @ResponseBody List<Map> listResourceLink(ResourceLink resourceLink) throws Exception {
+        List<ResourceLink> resourceLinks = this.resourceLinkService.list(resourceLink);
+        return ValueProviderUtils.buildDataByProvider(resourceLink, resourceLinks);
+    }
 
     @ApiOperation("新增Resource")
     @ApiImplicitParams({
