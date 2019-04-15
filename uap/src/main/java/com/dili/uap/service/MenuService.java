@@ -1,7 +1,7 @@
 package com.dili.uap.service;
 
 import com.dili.ss.base.BaseService;
-import com.dili.uap.domain.Menu;
+import com.dili.uap.sdk.domain.Menu;
 
 import java.util.List;
 import java.util.Map;

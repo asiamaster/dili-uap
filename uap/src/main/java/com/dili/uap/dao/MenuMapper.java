@@ -1,7 +1,7 @@
 package com.dili.uap.dao;
 
 import com.dili.ss.base.MyMapper;
-import com.dili.uap.domain.Menu;
+import com.dili.uap.sdk.domain.Menu;
 
 import java.util.List;
 import java.util.Map;

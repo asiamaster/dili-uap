@@ -6,7 +6,7 @@ import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.dao.MenuMapper;
 import com.dili.uap.dao.ResourceMapper;
 import com.dili.uap.dao.RoleMenuMapper;
-import com.dili.uap.domain.Menu;
+import com.dili.uap.sdk.domain.Menu;
 import com.dili.uap.domain.Resource;
 import com.dili.uap.domain.RoleMenu;
 import com.dili.uap.domain.dto.MenuCondition;

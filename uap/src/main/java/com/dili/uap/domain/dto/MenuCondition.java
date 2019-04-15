@@ -4,7 +4,7 @@ import com.dili.ss.domain.annotation.Operator;
 import com.dili.ss.metadata.FieldEditor;
 import com.dili.ss.metadata.annotation.EditMode;
 import com.dili.ss.metadata.annotation.FieldDef;
-import com.dili.uap.domain.Menu;
+import com.dili.uap.sdk.domain.Menu;
 
 import javax.persistence.Column;
 import javax.persistence.Table;

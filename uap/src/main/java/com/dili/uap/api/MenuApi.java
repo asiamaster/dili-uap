@@ -1,7 +1,7 @@
 package com.dili.uap.api;
 
 import com.dili.ss.domain.BaseOutput;
-import com.dili.uap.domain.Menu;
+import com.dili.uap.sdk.domain.Menu;
 import com.dili.uap.service.MenuService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;

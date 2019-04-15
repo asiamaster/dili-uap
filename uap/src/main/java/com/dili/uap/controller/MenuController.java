@@ -3,7 +3,7 @@ package com.dili.uap.controller;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.dto.IDTO;
-import com.dili.uap.domain.Menu;
+import com.dili.uap.sdk.domain.Menu;
 import com.dili.uap.domain.Resource;
 import com.dili.uap.glossary.MenuType;
 import com.dili.uap.sdk.domain.UserTicket;

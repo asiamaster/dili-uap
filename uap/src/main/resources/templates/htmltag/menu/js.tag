@@ -43,6 +43,14 @@ function onSelectTree(node) {
     cancelEdit("grid1");
     cancelEdit("grid2");
     queryGrid(node);
+    //表格1的清空选择
+    $("#grid1").datagrid("clearSelections");
+    //此时表格2可能还没渲染，无法清空，所以要判断是否有class属性
+    if($("#grid2").attr("class") != null){
+        $("#grid2").datagrid("clearSelections");
+    }
+    //清空表格3的数据
+    $("#grid3").datagrid("loadData",[]);
 }
 
 /**
@@ -53,18 +61,20 @@ function onSelectTree(node) {
  */
 function queryGrid(node) {
     var nodeType = node.attributes.type;
+    //点击目录和系统
     if(nodeType == ${@com.dili.uap.glossary.MenuType.DIRECTORY.getCode()}
         || nodeType == ${@com.dili.uap.glossary.MenuType.SYSTEM.getCode()}){
-        //上面板最大化，下面板最小化
+        //东侧面板收缩
+        $("#layoutPanel").layout("collapse", "east");
+        //中北面板最大化
         $('#centerNorthPanel').panel('maximize');
-        $("#eastPanel").panel("collapse");
-        $("#centerPanel").panel("maximize");
         queryGridByDir(node);
-    }else{
-        //恢复右边两个面板的大小
+    }else{//点击链接
+        //东侧面板恢复
+        // $("#eastPanel").panel("expand");
+        $("#layoutPanel").layout("expand", "east");
+        //恢复中北子面板的大小
         $('#centerNorthPanel').panel('restore');
-        $("#centerPanel").panel("restore");
-        $("#eastPanel").panel("expand");
         queryGridByLinks(node);
     }
 }
@@ -113,6 +123,71 @@ function restore(gridId){
     $("#"+gridId).dataGridEditor().restore();
 }
 
+/**
+ * 添加资源链接关系
+ */
+function addResourceLink() {
+    var selected1 = $("#grid1").datagrid("getSelected");
+    if(selected1 == null){
+        swal('警告','请选中一条权限', 'warning');
+        return;
+    }
+    var selected2 = $("#grid2").datagrid("getSelected");
+    if(selected2 == null){
+        swal('警告','请选中一条内部链接', 'warning');
+        return;
+    }
+    var grid3Data = $("#grid3").datagrid("getData");
+    var rows = grid3Data.rows;
+    for(var row in rows){
+        if(rows[row]["$_resourceCode"] == selected1.code && rows[row]["$_menuId"] == selected2.id){
+            swal('错误', '已经绑定了资源链接', 'error');
+            return;
+        }
+    }
+    $.ajax({
+        type: "POST",
+        url: "${contextPath}/resource/addResourceLink.action",
+        data: {resourceCode: selected1.code, menuId: selected2.id},
+        processData: true,
+        dataType: "text",
+        async: false,
+        success: function (output) {
+            $("#grid3").datagrid("reload");
+        },
+        error: function () {
+            swal('错误', '远程访问失败', 'error');
+        }
+    });
+}
+
+/**
+ * 删除资源链接关系
+ */
+function deleteResourceLink() {
+    var selected3 = $("#grid3").datagrid("getSelected");
+    if(selected3 == null){
+        swal('警告','请选中一条资源链接', 'warning');
+        return;
+    }
+    <#swalConfirm swalTitle="您确认想要删除记录吗？">
+    $.ajax({
+        type: "POST",
+        url: "${contextPath}/resource/deleteResourceLink.action",
+        data: {id: selected3.id},
+        processData: true,
+        dataType: "json",
+        async: false,
+        success: function (output) {
+            $("#grid3").datagrid("clearSelections");
+            $("#grid3").datagrid("reload");
+        },
+        error: function () {
+            swal('错误', '远程访问失败', 'error');
+        }
+    });
+    </#swalConfirm>
+}
 
 // ======================  私有方法分割线  ======================
 
@@ -132,6 +207,7 @@ function renderMenuGrid(node, gridId) {
             menuId : node.id
         },
         columns : [[{
+            width:'0%',
             field : 'id',
             title : 'id',
             hidden : true
@@ -226,7 +302,7 @@ function clickResource(index, row) {
         opts.url = "${contextPath}/resource/listResourceLink.action";
     }
     //渲染权限列表
-    $("#grid3").datagrid("load", bindGridMeta2Data("grid3", {resourceId:row.id }));
+    $("#grid3").datagrid("load", bindGridMeta2Data("grid3", {resourceCode:row.code}));
     $("#grid3").datagrid('getPanel').removeClass('lines-both lines-no lines-right lines-bottom').addClass("lines-bottom");
 }
 /**
@@ -264,7 +340,7 @@ function renderResourceGrid(node, gridId) {
         }, {
             field : 'code',
             title : '权限代码',
-            width : '20%',
+            width : '25%',
             editor : {
                 type : 'textbox',
                 options : {
@@ -277,7 +353,7 @@ function renderResourceGrid(node, gridId) {
         }, {
             field : 'description',
             title : '描述',
-            width : '60%',
+            width : '55%',
             editor : {
                 type : 'textbox',
                 options : {
@@ -308,13 +384,14 @@ function renderInternalLinksGrid(node, gridId) {
             type : 2
         },
         columns : [[{
+            width: '0%',
             field : 'id',
             title : 'id',
             hidden : true
         },{
             field : 'name',
             title : '链接名称',
-            width : '15%',
+            width : '20%',
             editor : {
                 type : 'textbox',
                 options : {
@@ -327,7 +404,7 @@ function renderInternalLinksGrid(node, gridId) {
         }, {
             field : 'url',
             title : '内部链接地址',
-            width : '40%',
+            width : '50%',
             editor : {
                 type : 'textbox',
                 options : {
@@ -340,7 +417,7 @@ function renderInternalLinksGrid(node, gridId) {
         }, {
             field : 'description',
             title : '描述',
-            width : '40%',
+            width : '30%',
             editor : {
                 type : 'textbox',
                 options : {

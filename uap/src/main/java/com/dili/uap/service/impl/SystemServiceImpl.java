@@ -8,7 +8,7 @@ import com.dili.uap.dao.MenuMapper;
 import com.dili.uap.dao.SystemConfigMapper;
 import com.dili.uap.dao.SystemMapper;
 import com.dili.uap.sdk.domain.DataDictionary;
-import com.dili.uap.domain.Menu;
+import com.dili.uap.sdk.domain.Menu;
 import com.dili.uap.sdk.domain.System;
 import com.dili.uap.sdk.domain.SystemConfig;
 import com.dili.uap.sdk.domain.UserTicket;

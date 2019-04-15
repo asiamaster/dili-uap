@@ -5,12 +5,14 @@ import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.metadata.ValueProviderUtils;
 import com.dili.uap.domain.Resource;
 import com.dili.uap.domain.ResourceLink;
+import com.dili.uap.sdk.domain.Menu;
 import com.dili.uap.service.ResourceLinkService;
 import com.dili.uap.service.ResourceService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -55,6 +58,15 @@ public class ResourceController {
         return this.resourceService.listByExample(query);
     }
 
+    @RequestMapping(value = "/getName.action", method = { RequestMethod.GET, RequestMethod.POST })
+    public @ResponseBody String getName(Resource resource) {
+        List<Resource> resources = this.resourceService.list(resource);
+        if(CollectionUtils.isEmpty(resources)){
+            return null;
+        }
+        return resources.get(0).getName();
+    }
+
     @ApiOperation(value = "查询资源列表", notes = "查询Menu，返回列表信息")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "menuId", paramType = "Long", value = "menuId", required = false, dataType = "Long") })
@@ -62,6 +74,26 @@ public class ResourceController {
     public @ResponseBody List<Map> listResourceLink(ResourceLink resourceLink) throws Exception {
         List<ResourceLink> resourceLinks = this.resourceLinkService.list(resourceLink);
         return ValueProviderUtils.buildDataByProvider(resourceLink, resourceLinks);
+    }
+
+    @ApiOperation("新增ResourceLink")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name="Resource", paramType="form", value = "Resource的form信息", required = true, dataType = "string")
+    })
+    @RequestMapping(value="/addResourceLink.action", method = {RequestMethod.GET, RequestMethod.POST})
+    public @ResponseBody BaseOutput addResourceLink(ResourceLink resourceLink) {
+        resourceLinkService.insertSelective(resourceLink);
+        return BaseOutput.success("绑定资源链接成功").setData(resourceLink.getId());
+    }
+
+    @ApiOperation("删除ResourceLink")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name="Resource", paramType="form", value = "Resource的form信息", required = true, dataType = "string")
+    })
+    @RequestMapping(value="/deleteResourceLink.action", method = {RequestMethod.GET, RequestMethod.POST})
+    public @ResponseBody BaseOutput deleteResourceLink(@RequestParam Long id) {
+        resourceLinkService.delete(id);
+        return BaseOutput.success("删除资源链接成功");
     }
 
     @ApiOperation("新增Resource")

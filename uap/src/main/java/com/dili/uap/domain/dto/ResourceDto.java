@@ -17,4 +17,9 @@ public interface ResourceDto extends Resource {
     @Operator(Operator.IN)
     List<String> getIds();
     void setIds(List<String> ids);
+
+    @Column(name = "`code`")
+    @Operator(Operator.IN)
+    List<String> getCodes();
+    void setCodes(List<String> codes);
 }

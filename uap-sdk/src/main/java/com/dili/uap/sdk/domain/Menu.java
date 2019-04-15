@@ -101,4 +101,5 @@ public interface Menu extends IBaseDomain, IMybatisForceParams {
     String getIconCls();
 
     void setIconCls(String iconCls);
+
 }

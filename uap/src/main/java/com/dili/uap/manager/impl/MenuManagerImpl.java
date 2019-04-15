@@ -1,7 +1,7 @@
 package com.dili.uap.manager.impl;
 
 import com.dili.uap.dao.MenuMapper;
-import com.dili.uap.domain.Menu;
+import com.dili.uap.sdk.domain.Menu;
 import com.dili.uap.manager.MenuManager;
 import com.dili.uap.sdk.session.SessionConstants;
 import com.dili.uap.sdk.util.ManageRedisUtil;

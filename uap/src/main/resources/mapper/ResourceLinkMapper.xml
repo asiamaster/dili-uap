@@ -6,14 +6,14 @@
       WARNING - @mbg.generated
     -->
     <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="resource_code" jdbcType="VARCHAR" property="resourceCode" />
     <result column="menu_id" jdbcType="BIGINT" property="menuId" />
-    <result column="resource_id" jdbcType="BIGINT" property="resourceId" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--
       WARNING - @mbg.generated
     -->
-    id, menu_id, resource_id
+    id, resource_code, menu_id
   </sql>
   <select id="selectBy" parameterType="java.lang.Long" resultMap="BaseResultMap">
     <!--
@@ -30,11 +30,11 @@
     -->
     update resource_link
     <set>
+      <if test="resourceCode != null">
+        resource_code = #{resourceCode,jdbcType=VARCHAR},
+      </if>
       <if test="menuId != null">
         menu_id = #{menuId,jdbcType=BIGINT},
-      </if>
-      <if test="resourceId != null">
-        resource_id = #{resourceId,jdbcType=BIGINT},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
