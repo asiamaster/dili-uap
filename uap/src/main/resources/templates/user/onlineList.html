@@ -10,40 +10,38 @@
             <!-- =========================================================表单========================================================= -->
             <div class="easyui-panel" style="width:100%;" align="left" border="false">
                 <form id="form" class="easyui-form" method="post" fit="true">
-                    <table style="padding:10px;">
-                        <tr>
+                        <div class="search-wrap">
                             <%if(isGroup){%>
-                                <td style="padding:5px;">
-                                    <input class="easyui-combobox" name="firmCode" id="firmCode" style="width:100%" data-options="label:'所属市场:',editable:false,labelAlign:'right',valueField:'code',textField:'name',
-                                       onLoadSuccess:function(){
-                                           loadDepartments('','departmentId');
-                                           loadRoles('');
-                                       },onChange:function(newValue,oldValue){
-                                           loadDepartments(newValue,'departmentId');
-                                           loadRoles(newValue);
-                                       }" panelHeight="auto" />
-                                </td>
+                            <div class="search-item">
+                                <input class="easyui-combobox" name="firmCode" id="firmCode" style="width:100%" data-options="label:'所属市场:',editable:false,labelAlign:'right',valueField:'code',textField:'name',
+                                   onLoadSuccess:function(){
+                                       loadDepartments('','departmentId');
+                                       loadRoles('');
+                                   },onChange:function(newValue,oldValue){
+                                       loadDepartments(newValue,'departmentId');
+                                       loadRoles(newValue);
+                                   }" panelHeight="auto" />
+                            </div>
                             <%}else{%>
-                                <td>
-                                    <input type="hidden"  name="firmCode" id="firmCode" value="${firmCode}" style="width:100%"/>
-                                </td>
+                            <div class="search-item">
+                                <input type="hidden"  name="firmCode" id="firmCode" value="${firmCode}" style="width:100%"/>
+                            </div>
                             <%}%>
-                            <td style="padding:5px;">
-                                <input class="easyui-combotree" name="departmentId" id="departmentId" panelHeight="240%" panelWidth="auto" style="width:108%" data-options="label:'归属部门:',labelAlign:'right',editable:false,_idField:'id',_textField:'name',_parentIdField:'parentId',loadFilter:treeLoadFilter" />
-                            </td>
-                            <td>
+                            <div class="search-item">
+                                <input class="easyui-combotree" name="departmentId" id="departmentId" panelHeight="240%" panelWidth="auto" style="width:100%" data-options="label:'归属部门:',labelAlign:'right',editable:false,_idField:'id',_textField:'name',_parentIdField:'parentId',loadFilter:treeLoadFilter" />
+                            </div>
+                            <div class="search-item">
                                 <input class="easyui-textbox" name="userName" id="userName" style="width:100%" data-options="label:'用户名:',labelAlign:'right'" />
-                            </td>
-                            <td>
+                            </div>
+                            <div class="search-item">
                                 <input class="easyui-textbox" name="realName" id="realName" style="width:100%" data-options="label:'真实名:',labelAlign:'right'" />
-                            </td>
-                            <td style="padding:5px;">
+                            </div>
+                            <div class="search-wrap-btn">
                                 <a href="#" class="easyui-linkbutton" iconCls="icon-search" id="queryBtn"
                                    onclick="queryGrid()">查询</a> &nbsp;&nbsp;
                                 <a href="javascript:void(0)" class="easyui-linkbutton"  iconCls="icon-clear" onclick="clearForm()">清除</a>
-                            </td>
-                        </tr>
-                    </table>
+                            </div>
+                        </div>
                 </form>
             </div>
         </div>
