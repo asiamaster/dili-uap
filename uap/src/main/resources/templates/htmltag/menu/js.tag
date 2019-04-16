@@ -554,16 +554,16 @@ function bindInternalLinksGrid(node) {
         },
         onSaveSuccess: function (index, row, data) {
             //data就是新增后返回的id，没有返回id就是修改
-            if(data) {
-                //为菜单添加相应的节点
-                addMenuNode(row, 2);
-            }else{
-                updateMenuNode(row);
-            }
+            // if(data) {
+            //     //为菜单添加相应的节点
+            //     addMenuNode(row, 2);
+            // }else{
+            //     updateMenuNode(row);
+            // }
         },
         onDeleteSuccess: function (row, data) {
-            var node = $('#menuTree').tree('find', "menu_"+row.id);
-            $("#menuTree").tree("remove", node.target);
+            // var node = $('#menuTree').tree('find', "menu_"+row.id);
+            // $("#menuTree").tree("remove", node.target);
         },
         extendParams: function (row) {
             return {
