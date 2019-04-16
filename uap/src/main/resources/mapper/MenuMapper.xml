@@ -61,7 +61,15 @@
     where m.id = rm.menu_id
     and rm.role_id = ur.role_id
     and ur.user_id = #{userId}
-    order by m.order_number
+    union all
+    select DISTINCT
+    <include refid="column_List" />
+    from user_role ur, role_resource rr, resource_link rl, resource r, menu m
+    where ur.role_id = rr.role_id
+    and rr.resource_id = r.id
+    and r.code = rl.resource_code
+    and rl.menu_id = m.id
+    and ur.user_id = #{userId}
   </select>
 
   <!--根据用户id查询目录和链接菜单 -->
@@ -125,7 +133,7 @@
         ,m.`type`
         ,m.`system_id`
         ,m.`order_number`
-        from menu m order by m.order_number)
+        from menu m where `type` in( 0, 1) order by m.order_number)
     union all
         select concat('sys_',s.id) as id
             , null as parent_id
