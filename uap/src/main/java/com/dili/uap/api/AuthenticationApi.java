@@ -116,7 +116,7 @@ public class AuthenticationApi {
         LoginDto loginDto = DTOUtils.newDTO(LoginDto.class);
         loginDto.setUserName(jsonObject.getString("userName"));
         loginDto.setPassword(jsonObject.getString("password"));
-        return loginService.validate(loginDto);
+        return loginService.validateSaveSession(loginDto);
     }
 
     /**
