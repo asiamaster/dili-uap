@@ -22,20 +22,18 @@ import tk.mybatis.spring.annotation.MapperScan;
 //@EnableEurekaClient
 // =====================  Spring Boot  =====================
 // @EnableAspectJAutoProxy(proxyTargetClass = true)
-@SpringBootApplication
-@EnableTransactionManagement
 //@EnableAutoConfiguration(exclude = { ThymeleafAutoConfiguration.class, VelocityAutoConfiguration.class })
 // @ImportResource(locations = "classpath:applicationContext.xml")
-@ComponentScan(basePackages = { "com.dili.ss", "com.dili.uap"})
 //@ServletComponentScan(basePackages = {"com.dili.uap.filter"})
 // @EnableEncryptableProperties
 //@EncryptablePropertySource(name = "EncryptedProperties", value = "classpath:conf/security.properties")
 // @ServletComponentScan
-
-// =====================  Other  =====================
+// @EnableScheduling
+@SpringBootApplication
+@EnableTransactionManagement
+@ComponentScan(basePackages = { "com.dili.ss", "com.dili.uap"})
 @RestfulScan({"com.dili.uap.rpc", "com.dili.uap.sdk.rpc"})
 @MapperScan(basePackages = {"com.dili.uap.dao", "com.dili.ss.dao", "com.dili.ss.quartz.dao"})
-// @EnableScheduling
 /**
  * 除了内嵌容器的部署模式，Spring Boot也支持将应用部署至已有的Tomcat容器, 或JBoss, WebLogic等传统Java EE应用服务器。
  * 以Maven为例，首先需要将<packaging>从jar改成war，然后取消spring-boot-maven-plugin，然后修改Application.java

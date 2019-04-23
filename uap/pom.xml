@@ -58,7 +58,7 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<version>2.0.0.RELEASE</version>
+				<version>2.1.4.RELEASE</version>
 				<executions>
 					<execution>
 						<goals>
@@ -94,6 +94,12 @@
 			<groupId>com.belerweb</groupId>
 			<artifactId>pinyin4j</artifactId>
 			<version>2.5.1</version>
+		</dependency>
+		<!--quartz-->
+		<dependency>
+			<groupId>org.quartz-scheduler</groupId>
+			<artifactId>quartz</artifactId>
+			<version>2.3.0</version>
 		</dependency>
 
 		<dependency>
