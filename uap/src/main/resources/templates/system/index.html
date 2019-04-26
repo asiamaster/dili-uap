@@ -230,24 +230,11 @@
                 swal('警告', '请选中一条数据', 'warning');
                 return;
             }
-            swal({
-                title : '您确认想要删除记录吗？',
-                type : 'question',
-                showCancelButton : true,
-                confirmButtonColor : '#3085d6',
-                cancelButtonColor : '#d33',
-                confirmButtonText : '确定',
-                cancelButtonText : '取消',
-                confirmButtonClass : 'btn btn-success',
-                cancelButtonClass : 'btn btn-danger'
-            }).then(function(flag) {
-                if (flag.dismiss == 'cancel') {
-                    return;
-                }
+            <#swalConfirm swalTitle="您确认想要删除记录吗？">
                 $.ajax({
                     type : "POST",
                     url : "${contextPath}/system/delete.action",
-                    data : row,
+                    data : selected,
                     processData : true,
                     dataType : "json",
                     async : true,
@@ -255,14 +242,14 @@
                         if (data.success) {
                             $("#grid").datagrid("reload");
                         } else {
-                            swal('修改失败！', '', 'error');
+                            swal('删除失败！', data.result, 'error');
                         }
                     },
                     error : function() {
                         swal('错误！', data.result, 'error');
                     }
                 });
-            });
+            </#swalConfirm>
         }
 
         //表格查询

@@ -345,9 +345,9 @@ function renderResourceGrid(node, gridId) {
                 type : 'textbox',
                 options : {
                     required : true,
-                    validType : 'length[1, 20]',
+                    validType : 'length[1, 50]',
                     missingMessage : '请输入权限代码',
-                    invalidMessage : '权限代码必须是1-20个字符'
+                    invalidMessage : '权限代码必须是1-50个字符'
                 }
             }
         }, {
@@ -357,8 +357,8 @@ function renderResourceGrid(node, gridId) {
             editor : {
                 type : 'textbox',
                 options : {
-                    validType : 'length[0, 20]',
-                    invalidMessage : '描述必须小于20个字符'
+                    validType : 'length[0, 120]',
+                    invalidMessage : '描述必须小于120个字符'
                 }
             }
         }
