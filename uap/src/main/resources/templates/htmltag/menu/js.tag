@@ -128,12 +128,12 @@ function restore(gridId){
  */
 function addResourceLink() {
     var selected1 = $("#grid1").datagrid("getSelected");
-    if(selected1 == null){
+    if(selected1 == null || selected1.code == null){
         swal('警告','请选中一条权限', 'warning');
         return;
     }
     var selected2 = $("#grid2").datagrid("getSelected");
-    if(selected2 == null){
+    if(selected2 == null || selected2.id == null){
         swal('警告','请选中一条内部链接', 'warning');
         return;
     }
@@ -150,10 +150,10 @@ function addResourceLink() {
         url: "${contextPath}/resource/addResourceLink.action",
         data: {resourceCode: selected1.code, menuId: selected2.id},
         processData: true,
-        dataType: "text",
-        async: false,
+        dataType: "json",
+        async: true,
         success: function (output) {
-            $("#grid3").datagrid("reload");
+            $("#grid3").datagrid("load", bindGridMeta2Data("grid3", {resourceCode:selected1.code}));
         },
         error: function () {
             swal('错误', '远程访问失败', 'error');
@@ -180,7 +180,7 @@ function deleteResourceLink() {
         async: false,
         success: function (output) {
             $("#grid3").datagrid("clearSelections");
-            $("#grid3").datagrid("reload");
+            $("#grid3").datagrid("loadData",[]);
         },
         error: function () {
             swal('错误', '远程访问失败', 'error');
@@ -508,14 +508,20 @@ function bindEditResourceGrid(node) {
             $("#btnCancel1").hide();
         },
         onSaveSuccess: function (index, row, data) {
+            // $("#grid1").datagrid("clearSelections");
             //data就是新增后返回的id，没有返回id就是修改
-            // if(data) {
-            //     row.id=data;
-            //     $("#grid1").datagrid("updateRow",{
-            //         index: index,
-            //         row:row
-            //     });
-            // }
+            if(data) {
+                row.id=data;
+                // $("#grid1").datagrid("updateRow",{
+                //     index: index,
+                //     row:row
+                // });
+            }
+        },
+        onDeleteSuccess:function(){
+            $("#grid3").datagrid("loadData", { total: 0, rows: [] });
+            $("#grid3").datagrid("clearSelections");
+            $("#grid1").datagrid("clearSelections");
         },
         extendParams: function (row) {
             return {
@@ -554,6 +560,9 @@ function bindInternalLinksGrid(node) {
         },
         onSaveSuccess: function (index, row, data) {
             //data就是新增后返回的id，没有返回id就是修改
+            if(data) {
+                row.id = data.id;
+            }
             // if(data) {
             //     //为菜单添加相应的节点
             //     addMenuNode(row, 2);
@@ -562,6 +571,9 @@ function bindInternalLinksGrid(node) {
             // }
         },
         onDeleteSuccess: function (row, data) {
+            $("#grid3").datagrid("loadData", { total: 0, rows: [] });
+            $("#grid3").datagrid("clearSelections");
+            $("#grid2").datagrid("clearSelections");
             // var node = $('#menuTree').tree('find', "menu_"+row.id);
             // $("#menuTree").tree("remove", node.target);
         },

@@ -6,11 +6,13 @@ import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.dao.MenuMapper;
 import com.dili.uap.dao.ResourceMapper;
 import com.dili.uap.dao.RoleMenuMapper;
-import com.dili.uap.sdk.domain.Menu;
 import com.dili.uap.domain.Resource;
+import com.dili.uap.domain.ResourceLink;
 import com.dili.uap.domain.RoleMenu;
 import com.dili.uap.domain.dto.MenuCondition;
+import com.dili.uap.sdk.domain.Menu;
 import com.dili.uap.service.MenuService;
+import com.dili.uap.service.ResourceLinkService;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
@@ -34,6 +36,9 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, Long> implements Menu
 
     @Autowired
     private RoleMenuMapper roleMenuMapper;
+
+    @Autowired
+    private ResourceLinkService resourceLinkService;
 
     public MenuMapper getActualDao() {
         return (MenuMapper)getDao();
@@ -191,6 +196,10 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, Long> implements Menu
         roleMenuMapper.delete(roleMenu);
         //删除菜单
         delete(id);
+        //级联更新ResourceLink,先获取原始Menu
+        ResourceLink resourceLinkCondition = DTOUtils.newDTO(ResourceLink.class);
+        resourceLinkCondition.setMenuId(id);
+        resourceLinkService.deleteByExample(resourceLinkCondition);
         return null;
     }
 }

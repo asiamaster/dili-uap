@@ -5,7 +5,6 @@ import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.metadata.ValueProviderUtils;
 import com.dili.uap.domain.Resource;
 import com.dili.uap.domain.ResourceLink;
-import com.dili.uap.sdk.domain.Menu;
 import com.dili.uap.service.ResourceLinkService;
 import com.dili.uap.service.ResourceService;
 import io.swagger.annotations.Api;
@@ -21,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -82,8 +80,13 @@ public class ResourceController {
     })
     @RequestMapping(value="/addResourceLink.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody BaseOutput addResourceLink(ResourceLink resourceLink) {
-        resourceLinkService.insertSelective(resourceLink);
-        return BaseOutput.success("绑定资源链接成功").setData(resourceLink.getId());
+        List<ResourceLink> resourceLinks = resourceLinkService.list(resourceLink);
+        if(resourceLinks.isEmpty()) {
+            resourceLinkService.insertSelective(resourceLink);
+            return BaseOutput.success("绑定资源链接成功").setData(resourceLink.getId());
+        }else{
+            return BaseOutput.success("已经绑定资源链接").setData(resourceLink.getId());
+        }
     }
 
     @ApiOperation("删除ResourceLink")
@@ -98,8 +101,8 @@ public class ResourceController {
 
     @ApiOperation("新增Resource")
     @ApiImplicitParams({
-		@ApiImplicitParam(name="Resource", paramType="form", value = "Resource的form信息", required = true, dataType = "string")
-	})
+            @ApiImplicitParam(name="Resource", paramType="form", value = "Resource的form信息", required = true, dataType = "string")
+    })
     @RequestMapping(value="/insert.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody BaseOutput insert(Resource resource) {
         String menuId = resource.aget("menuId").toString();
@@ -113,8 +116,8 @@ public class ResourceController {
 
     @ApiOperation("修改Resource")
     @ApiImplicitParams({
-		@ApiImplicitParam(name="Resource", paramType="form", value = "Resource的form信息", required = true, dataType = "string")
-	})
+            @ApiImplicitParam(name="Resource", paramType="form", value = "Resource的form信息", required = true, dataType = "string")
+    })
     @RequestMapping(value="/update.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody BaseOutput update(Resource resource) {
         String menuId = resource.aget("menuId").toString();
@@ -122,17 +125,29 @@ public class ResourceController {
             //如果菜单树上点的节点是菜单， 需要设置当前节点的父节点
             resource.setMenuId(Long.parseLong(menuId.substring(5)));
         }
+        //级联更新ResourceLink,先获取原始ResourceCode
+        Resource resource1 = resourceService.get(resource.getId());
+        ResourceLink resourceLinkCondition = DTOUtils.newDTO(ResourceLink.class);
+        resourceLinkCondition.setResourceCode(resource1.getCode());
         resourceService.updateSelective(resource);
+        ResourceLink resourceLink = DTOUtils.newDTO(ResourceLink.class);
+        resourceLink.setResourceCode(resource.getCode());
+        resourceLinkService.updateSelectiveByExample(resourceLink, resourceLinkCondition);
         return BaseOutput.success("修改成功");
     }
 
     @ApiOperation("删除Resource")
     @ApiImplicitParams({
-		@ApiImplicitParam(name="id", paramType="form", value = "Resource的主键", required = true, dataType = "long")
-	})
+            @ApiImplicitParam(name="id", paramType="form", value = "Resource的主键", required = true, dataType = "long")
+    })
     @RequestMapping(value="/delete.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody BaseOutput delete(Long id) {
+        //级联更新ResourceLink,先获取原始ResourceCode
+        Resource resource = resourceService.get(id);
         resourceService.delete(id);
+        ResourceLink resourceLinkCondition = DTOUtils.newDTO(ResourceLink.class);
+        resourceLinkCondition.setResourceCode(resource.getCode());
+        resourceLinkService.deleteByExample(resourceLinkCondition);
         return BaseOutput.success("删除成功");
     }
 }
