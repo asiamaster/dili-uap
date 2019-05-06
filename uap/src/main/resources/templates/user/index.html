@@ -23,9 +23,7 @@
                                        }" panelHeight="auto" />
                                 </div>
                             <%}else{%>
-                                <div class="search-item">
-                                    <input type="hidden"  name="firmCode" id="firmCode" value="${firmCode}" style="width:100%"/>
-                                </div>
+                                <input type="hidden"  name="firmCode" id="firmCode" value="${firmCode}" style="width:100%"/>
                             <%}%>
                             <div class="search-item">
                                 <input class="easyui-combotree" name="departmentId" id="departmentId" panelHeight="240%" panelWidth="auto" style="width:100%" data-options="label:'归属部门:',labelAlign:'right',editable:false,_idField:'id',_textField:'name',_parentIdField:'parentId',loadFilter:treeLoadFilter" />
