@@ -17,10 +17,8 @@ import com.dili.uap.domain.dto.UserDataDto;
 import com.dili.uap.domain.dto.UserDto;
 import com.dili.uap.glossary.UserState;
 import com.dili.uap.manager.UserManager;
-import com.dili.uap.sdk.domain.Department;
+import com.dili.uap.sdk.domain.*;
 import com.dili.uap.sdk.domain.Firm;
-import com.dili.uap.sdk.domain.User;
-import com.dili.uap.sdk.domain.UserDataAuth;
 import com.dili.uap.sdk.glossary.DataAuthType;
 import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.service.UserService;
@@ -363,12 +361,24 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
         if (null == user) {
             return null;
         }
+        UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
+        if(userTicket == null){
+            return null;
+        }
         Map<String, Object> params = Maps.newHashMap();
-        params.put("userId", user.getId());
-        //预分配角色的用户，是否属于集团用户
-        if (!UapConstants.GROUP_CODE.equalsIgnoreCase(user.getFirmCode())) {
-            //不为集团用户的情况下，则需要根据集团过滤
-            params.put("firmCode", user.getFirmCode());
+        params.put("userId", userId);
+        // ===================================================
+        //原来UAP的需求是集团用户可以查询所有公司和部门，现在需要改为只有admin用户可以查询所有公司和部门
+        //普通用户只能查询自己有权限的公司和部门
+        // ===================================================
+//        //预分配角色的用户，是否属于集团用户
+//        if (!UapConstants.GROUP_CODE.equalsIgnoreCase(user.getFirmCode())) {
+//            //不为集团用户的情况下，则需要根据集团过滤
+//            params.put("firmCode", user.getFirmCode());
+//        }
+//        return getActualDao().selectUserDatas(params);
+        if(!user.getUserName().equalsIgnoreCase("admin")){
+            params.put("loginUserId", userTicket.getId());
         }
         return getActualDao().selectUserDatas(params);
     }

@@ -25,7 +25,8 @@ public interface UserMapper extends MyMapper<User> {
     List<UserDto> selectForPage(User user);
 
     /**
-     * 根据用户ID查询用户所拥有的数据权限
+     * 根据用户ID和登录用户id查询用户所拥有的数据权限
+     * 超级管理员不用传入loginUserId参数
      * @param params 查询参数(key:userId(用户ID)、firmCode(市场code))
      * @return
      */
