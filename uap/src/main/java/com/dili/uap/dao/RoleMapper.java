@@ -36,6 +36,12 @@ public interface RoleMapper extends MyMapper<Role> {
     List<SystemResourceDto> getRoleMenuAndResource();
 
     /**
+     * 加载用户有权限的菜单及资源信息
+     * @return
+     */
+    List<SystemResourceDto> getRoleMenuAndResourceByUserId(Long userId);
+
+    /**
      * 根据角色ID查询对应的菜单及资源信息
      * @param roleId 角色ID
      * @return

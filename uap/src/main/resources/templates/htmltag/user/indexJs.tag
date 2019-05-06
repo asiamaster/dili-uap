@@ -515,9 +515,6 @@
         if (null == opts.url || "" == opts.url) {
             opts.url = "${contextPath}/user/listPage.action";
         }
-        if(!$('#form').form("validate")){
-            return;
-        }
         userGrid.datagrid("load", bindGridMeta2Form("userGrid", "form"));
     }
 

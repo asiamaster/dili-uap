@@ -80,6 +80,27 @@
           ]]>
     </select>
 
+    <!-- 根据用户id查询菜单及资源信息 -->
+    <select id="getRoleMenuAndResourceByUserId" resultType="com.dili.uap.domain.dto.SystemResourceDto">
+        <![CDATA[
+          (SELECT m.id AS treeId,m.parent_id AS parentId,
+            m.system_id AS systemId,m.`name`,m.description,1 AS menu,m.type
+          FROM menu m, role_menu rm, user_role ur
+			 where m.id = rm.menu_id
+			 and rm.role_id = ur.role_id
+			 and m.`type` <=1
+			 and ur.user_id = #{userId}
+			 order by m.order_number asc)
+         UNION ALL
+			 SELECT
+              r.id AS treeId,r.menu_id AS parentId,NULL AS systemId,r.`name`,r.description,0 AS menu,'3' as type
+          FROM resource r, role_resource rr, user_role ur
+			 where r.id = rr.resource_id
+			 and rr.role_id = ur.role_id
+			 and ur.user_id = #{userId};
+          ]]>
+    </select>
+
     <!-- 根据角色ID查询对应的菜单及资源信息 -->
     <select id="getRoleMenuAndResourceByRoleId" parameterType="long" resultType="com.dili.uap.domain.dto.SystemResourceDto">
           SELECT

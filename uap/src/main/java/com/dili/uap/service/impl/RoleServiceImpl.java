@@ -10,6 +10,8 @@ import com.dili.uap.sdk.domain.System;
 import com.dili.uap.domain.dto.SystemResourceDto;
 import com.dili.uap.glossary.MenuType;
 import com.dili.uap.glossary.Yn;
+import com.dili.uap.sdk.domain.UserTicket;
+import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.service.RoleService;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -19,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -105,8 +108,18 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements Role
         if (CollectionUtils.isEmpty(systemList)){
             return null;
         }
+        UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
+        if(userTicket == null){
+            return new ArrayList<>(1);
+        }
         //加载所有的系统菜单-资源
-        List<SystemResourceDto> target = getActualDao().getRoleMenuAndResource();
+        List<SystemResourceDto> target;
+        //admin用户可以查看所有权限
+        if(userTicket.getUserName().equalsIgnoreCase("admin")) {
+            target = getActualDao().getRoleMenuAndResource();
+        }else{//非admin用户只能查看各自有权限的菜单和资源
+            target = getActualDao().getRoleMenuAndResourceByUserId(userTicket.getId());
+        }
         //根据角色ID加载对应的菜单-资源信息
         List<SystemResourceDto> checkedRoleList = getActualDao().getRoleMenuAndResourceByRoleId(roleId);
         //选中的角色信息
