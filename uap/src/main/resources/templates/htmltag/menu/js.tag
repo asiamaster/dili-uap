@@ -180,7 +180,7 @@ function deleteResourceLink() {
         async: false,
         success: function (output) {
             $("#grid3").datagrid("clearSelections");
-            $("#grid3").datagrid("loadData",[]);
+            $("#grid3").datagrid("reload");
         },
         error: function () {
             swal('错误', '远程访问失败', 'error');
