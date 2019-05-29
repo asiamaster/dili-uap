@@ -17,17 +17,18 @@
     <result column="created" jdbcType="TIMESTAMP" property="created" />
     <result column="modified" jdbcType="TIMESTAMP" property="modified" />
     <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="is_client" jdbcType="TINYINT" property="isClient" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--
       WARNING - @mbg.generated
     -->
-    id, parent_id, name, code, description, url, icon_url, firm_code, logo_url, created, 
+    id, parent_id, name, code, description, url, icon_url, firm_code, logo_url, created, ,is_client,
     modified, type
   </sql>
 
   <select id="listByUserId" parameterType="Long" resultMap="BaseResultMap">
-    select distinct s.id, s.code, s.name, s.url, s.icon_url, s.logo_url, s.type, s.order_number, s.index_url, s.description
+    select distinct s.id, s.code, s.name, s.url, s.icon_url, s.logo_url, s.type, s.order_number, s.index_url, s.description, s.is_client
     from system s, menu m, user_role ur, role_menu rm
     where m.system_id  = s.id
     and m.id = rm.menu_id

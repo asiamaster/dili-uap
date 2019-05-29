@@ -4,9 +4,7 @@ import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.retrofitful.annotation.POST;
 import com.dili.ss.retrofitful.annotation.Restful;
 import com.dili.ss.retrofitful.annotation.VOBody;
-import com.dili.ss.retrofitful.annotation.VOSingleParameter;
 import com.dili.uap.sdk.domain.Menu;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.Map;
@@ -18,7 +16,7 @@ import java.util.Map;
 public interface MenuRpc {
 
 	@POST("/menuApi/get.api")
-	BaseOutput<Menu> get(@VOSingleParameter Long id);
+	BaseOutput<Menu> get(@VOBody Long id);
 
 	@POST("/menuApi/list.api")
 	BaseOutput<List<Menu>> list(@VOBody Menu menu);
@@ -27,8 +25,8 @@ public interface MenuRpc {
 	BaseOutput<List<Menu>> listByExample(@VOBody Menu menu);
 
 	@POST("/menuApi/getParentMenusByUrl.api")
-	BaseOutput<List<Menu>> getParentMenusByUrl(@VOSingleParameter String url);
+	BaseOutput<List<Menu>> getParentMenusByUrl(@VOBody String url);
 
 	@POST("/menuApi/getMenuDetailByUrl.api")
-	BaseOutput<Map<String, Object>> getMenuDetailByUrl(@VOSingleParameter String url);
+	BaseOutput<Map<String, Object>> getMenuDetailByUrl(@VOBody String url);
 }

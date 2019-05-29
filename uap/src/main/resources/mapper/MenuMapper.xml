@@ -51,6 +51,7 @@
     ,m.modified
     ,m.icon_cls
     ,m.`type`
+    ,m.`shortcut`
   </sql>
 
   <!--根据用户id查询所有菜单 -->
@@ -61,6 +62,9 @@
     where m.id = rm.menu_id
     and rm.role_id = ur.role_id
     and ur.user_id = #{userId}
+    <if test="systemId != null">
+    and m.system_id = #{systemId}
+    </if>
     union all
     select DISTINCT
     <include refid="column_List" />
@@ -69,6 +73,9 @@
     and rr.resource_id = r.id
     and r.code = rl.resource_code
     and rl.menu_id = m.id
+    <if test="systemId != null">
+      and m.system_id = #{systemId}
+    </if>
     and ur.user_id = #{userId}
   </select>
 
@@ -118,6 +125,7 @@
       ,m.modified
       ,m.icon_cls
       ,m.`type`
+      ,m.`shortcut`
       ,s.code system_code
       ,s.name system_name
       ,s.`type`

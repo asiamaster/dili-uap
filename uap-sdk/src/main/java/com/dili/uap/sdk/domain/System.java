@@ -115,4 +115,11 @@ public interface System extends IBaseDomain,IMybatisForceParams {
     Integer getOrderNumber();
 
     void setOrderNumber(Integer orderNumber);
+
+    @Column(name = "`is_client`")
+    @FieldDef(label="是否C端")
+    @EditMode(editor = FieldEditor.Combo, required = false)
+    Integer getIsClient();
+    void setIsClient(Integer isClient);
+
 }

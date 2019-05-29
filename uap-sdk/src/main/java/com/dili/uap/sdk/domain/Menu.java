@@ -102,4 +102,8 @@ public interface Menu extends IBaseDomain, IMybatisForceParams {
 
     void setIconCls(String iconCls);
 
+    @Column(name = "`shortcut`")
+    @FieldDef(label="快捷菜单")
+    Integer getShortcut();
+    void setShortcut(Integer shortcut);
 }

@@ -214,7 +214,7 @@ function renderMenuGrid(node, gridId) {
         },{
             field : 'name',
             title : '菜单名称',
-            width : '10%',
+            width : '13%',
             editor : {
                 type : 'textbox',
                 options : {
@@ -227,7 +227,7 @@ function renderMenuGrid(node, gridId) {
         }, {
             field : 'type',
             title : '类型',
-            width : '10%',
+            width : '7%',
             formatter : function(value, row, index) {
                 if (value == 0) {
                     return '目录';
@@ -245,6 +245,7 @@ function renderMenuGrid(node, gridId) {
                     valueField : 'value',
                     textField : 'name',
                     editable : false,
+                    panelHeight:'auto',
                     data : [{
                         name : '目录',
                         value : 0
@@ -265,10 +266,10 @@ function renderMenuGrid(node, gridId) {
                     invalidMessage : '链接地址必须小于120个字符'
                 }
             }
-        }, {
+        },{
             field : 'description',
             title : '描述',
-            width : '40%',
+            width : '30%',
             editor : {
                 type : 'textbox',
                 options : {
@@ -277,9 +278,38 @@ function renderMenuGrid(node, gridId) {
                 }
             }
         }, {
+            field : 'shortcut',
+            title : '快捷菜单',
+            width : '9%',
+            formatter : function(value, row, index) {
+                if (value == 0) {
+                    return '否';
+                } else if (value == 1) {
+                    return '是';
+                }
+            },
+            editor : {
+                type : 'combobox',
+                options : {
+                    required : true,
+                    missingMessage : '请选择',
+                    valueField : 'value',
+                    textField : 'name',
+                    editable : false,
+                    panelHeight:'auto',
+                    data : [{
+                        name : '否',
+                        value : 0
+                    }, {
+                        name : '是',
+                        value : 1
+                    }]
+                }
+            }
+        }, {
             field : 'orderNumber',
             title : '排序号',
-            width : '5%',
+            width : '7%',
             editor : {
                 type : 'numberbox',
                 options : {
