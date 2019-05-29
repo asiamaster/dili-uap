@@ -14,7 +14,9 @@ import org.springframework.data.redis.core.BoundSetOperations;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -33,7 +35,9 @@ public class MenuManagerImpl implements MenuManager {
 	@Override
 	public void initUserMenuUrlsInRedis(Long userId) {
 		List<String> urls = new ArrayList<>();
-		List<Menu> menus = this.menuMapper.listByUserId(userId);
+		Map param = new HashMap<>();
+		param.put("userId", userId);
+		List<Menu> menus = this.menuMapper.listByUserAndSystemId(param);
 		if (CollectionUtils.isEmpty(menus)) {
 			return;
 		}

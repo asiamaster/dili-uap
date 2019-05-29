@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -159,7 +160,9 @@ public class AuthenticationApi {
     @RequestMapping(value = "/listMenus.api", method = { RequestMethod.POST })
     @ResponseBody
     public BaseOutput<List<Menu>> listMenus(@RequestBody String json){
-        String sessionId = getSessionIdByJson(json);
+        JSONObject jsonObject = JSONObject.parseObject(json);
+        String sessionId = jsonObject.getString("sessionId");
+        String systemId = jsonObject.getString("systemId");
         if(StringUtils.isBlank(sessionId)){
             return BaseOutput.failure("会话id不存在").setCode(ResultCode.PARAMS_ERROR);
         }
@@ -167,8 +170,10 @@ public class AuthenticationApi {
         if(userId == null){
             return BaseOutput.failure("用户未登录").setCode(ResultCode.NOT_AUTH_ERROR);
         }
-
-        return BaseOutput.success("调用成功").setData(this.menuMapper.listByUserId(userId));
+        Map param = new HashMap();
+        param.put("userId", userId);
+        param.put("systemId", systemId);
+        return BaseOutput.success("调用成功").setData(this.menuMapper.listByUserAndSystemId(param));
     }
 
     @ApiOperation("获取资源权限列表")

@@ -55,7 +55,7 @@
   </sql>
 
   <!--根据用户id查询所有菜单 -->
-  <select id="listByUserId" parameterType="Long" resultMap="BaseResultMap">
+  <select id="listByUserAndSystemId" parameterType="map" resultMap="BaseResultMap">
     SELECT DISTINCT
     <include refid="column_List" />
     from menu m, role_menu rm, user_role ur

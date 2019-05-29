@@ -10,10 +10,10 @@ public interface MenuMapper extends MyMapper<Menu> {
 
     /**
      * 根据用户id查询用户拥有的所有菜单权限
-     * @param userId
+     * @param param: userId和systemId
      * @return
      */
-    List<Menu> listByUserId(Long userId);
+    List<Menu> listByUserAndSystemId(Map param);
 
     /**
      * 根据用户id查询目录和链接菜单权限
