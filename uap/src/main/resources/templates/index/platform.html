@@ -9,9 +9,13 @@
         function toUrl(url){
             window.top.toUrl(url);
         }
-        function submitForm(url) {
-            document.getElementById("systemForm").action = url;
-            document.getElementById("systemForm").submit();
+        function submitForm(url, systemId, isClient) {
+            if(isClient){
+                callbackObj.showMenu(systemId);
+            }else{
+                document.getElementById("systemForm").action = url;
+                document.getElementById("systemForm").submit();
+            }
         }
     </script>
 </head>
@@ -74,11 +78,10 @@
         }
     %>
     <li class="sys-item">
-        <a href="#" onclick="submitForm('${system.url!}')">
+        <a href="#" onclick="submitForm('${system.url!}', '${system.id!}', ${system.isClient!0})">
             <p class="sys-pics"><img class="sys-pic" src="${system.iconUrl!}" alt="${system.description!}"></p>
             <p class="sys-title" title="${system.description!}"><span class="title-content">${system.name!}</span></p>
         </a>
-
     </li>
     <%}%>
     <form id="systemForm" action="" method="post" target="_top">
