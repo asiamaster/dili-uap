@@ -233,6 +233,11 @@
                 logout();
                 return;
             }
+            if(item.isClient == 1){
+                //菜单id需要去掉前面的menubutton_，共11位
+                callbackObj.showMenu(item.id.substr(11));
+                return;
+            }
             if(item.indexUrl == null){
                 renderPage(item.text,item.url);
                 return;
