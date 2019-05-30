@@ -11,7 +11,7 @@
         }
         function submitForm(url, systemId, isClient) {
             if(isClient){
-                callbackObj.showMenu(systemId);
+                top.callbackObj.showMenu(systemId);
             }else{
                 document.getElementById("systemForm").action = url;
                 document.getElementById("systemForm").submit();
