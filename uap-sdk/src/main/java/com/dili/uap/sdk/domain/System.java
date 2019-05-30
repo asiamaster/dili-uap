@@ -16,6 +16,7 @@ import java.util.Date;
  */
 @Table(name = "`system`")
 public interface System extends IBaseDomain,IMybatisForceParams {
+    long serialVersionUID = 19280089723497081L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "`id`")

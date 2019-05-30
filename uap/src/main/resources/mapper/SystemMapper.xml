@@ -23,7 +23,7 @@
     <!--
       WARNING - @mbg.generated
     -->
-    id, parent_id, name, code, description, url, icon_url, firm_code, logo_url, created, ,is_client,
+    id, parent_id, name, code, description, url, icon_url, firm_code, logo_url, created, is_client,
     modified, type
   </sql>
 
