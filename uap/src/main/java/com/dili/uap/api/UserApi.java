@@ -1,11 +1,13 @@
 package com.dili.uap.api;
 
 import com.dili.ss.domain.BaseOutput;
+import com.dili.ss.domain.PageOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.dao.DepartmentMapper;
 import com.dili.uap.domain.dto.UserDto;
 import com.dili.uap.sdk.domain.User;
 import com.dili.uap.service.UserService;
+import com.github.pagehelper.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -50,8 +52,15 @@ public class UserApi {
 
 	@ResponseBody
 	@RequestMapping(value = "/listByExample.api", method = { RequestMethod.GET, RequestMethod.POST })
-	public BaseOutput<User> listByExample(UserDto user) {
-		return BaseOutput.success().setData(this.userService.listByExample(user));
+	public PageOutput<List<User>> listByExample(UserDto user) {
+		List<User> users = this.userService.listByExample(user);
+		if(users instanceof Page) {
+			Page<User> page = (Page) users;
+			Long total = page.getTotal();
+			return PageOutput.success().setTotal(total.intValue()).setPage(page.getPageNum()).setPageSize(page.getPageSize()).setData(users);
+		}else{
+			return PageOutput.success().setTotal(users.size()).setPage(user.getPage()).setPageSize(user.getRows()).setData(users);
+		}
 	}
 
 	@ResponseBody
