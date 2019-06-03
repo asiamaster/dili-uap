@@ -52,7 +52,7 @@ public class UserApi {
 
 	@ResponseBody
 	@RequestMapping(value = "/listByExample.api", method = { RequestMethod.GET, RequestMethod.POST })
-	public PageOutput<List<User>> listByExample(UserDto user) {
+	public PageOutput<List<User>> listByExample(User user) {
 		List<User> users = this.userService.listByExample(user);
 		if(users instanceof Page) {
 			Page<User> page = (Page) users;
