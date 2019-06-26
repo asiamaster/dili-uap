@@ -75,6 +75,9 @@ public class IndexController {
 				return INDEX_PATH;
 			}
 			List<System> systems = userSystemRedis.getRedisUserSystems(userTicket.getId());
+			if(null == systems){
+				return LoginController.REDIRECT_INDEX_PAGE;
+			}
 			for(System system : systems){
 				if(systemCode.equals(system.getCode())){
 					modelMap.put("system", system);

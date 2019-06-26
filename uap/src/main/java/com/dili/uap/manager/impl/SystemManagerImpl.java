@@ -41,7 +41,7 @@ public class SystemManagerImpl implements SystemManager {
         this.redisUtils.remove(key);
 		BASE64Encoder enc=new BASE64Encoder();
 		//使用BASE64编码被序列化为byte[]的对象
-		this.redisUtils.set(key, enc.encodeBuffer(SerializeUtil.serialize(systems)));
+		this.redisUtils.set(key, enc.encodeBuffer(SerializeUtil.serialize(systems)), SessionConstants.SESSION_TIMEOUT);
     }
 
 }

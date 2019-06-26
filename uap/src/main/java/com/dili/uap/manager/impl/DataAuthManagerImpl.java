@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 数据权限redis管理器
@@ -42,6 +43,7 @@ public class DataAuthManagerImpl implements DataAuthManager {
 			return;
 		}
 		BoundSetOperations<String, Object> ops = this.redisUtil.getRedisTemplate().boundSetOps(key);
+		ops.expire(SessionConstants.SESSION_TIMEOUT, TimeUnit.SECONDS);
 		for (UserDataAuth dataAuth : userDataAuths) {
 			ops.add(JSON.toJSONString(dataAuth));
 		}

@@ -10,10 +10,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.BoundSetOperations;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -47,6 +49,8 @@ public class ResourceManagerImpl implements ResourceManager {
 		}
 		String key = SessionConstants.USER_RESOURCE_CODE_KEY + userId;
 		this.redisUtils.remove(key);
-		this.redisUtils.getRedisTemplate().boundSetOps(key).add(codes.toArray());
+		BoundSetOperations<String, Object> ops = this.redisUtils.getRedisTemplate().boundSetOps(key);
+		ops.expire(SessionConstants.SESSION_TIMEOUT, TimeUnit.SECONDS);
+		ops.add(codes.toArray());
 	}
 }

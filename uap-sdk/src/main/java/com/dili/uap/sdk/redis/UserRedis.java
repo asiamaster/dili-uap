@@ -52,11 +52,33 @@ public class UserRedis {
         if (StringUtils.isBlank(sessionData)) {
             return null;
         }
-        //推后SESSIONID_USERID_KEY+sessionId和SessionConstants.USERID_SESSIONID_KEY+userId
-        redisUtil.expire(SessionConstants.SESSIONID_USERID_KEY + sessionId, SessionConstants.SESSION_TIMEOUT, TimeUnit.SECONDS);
-        redisUtil.expire(SessionConstants.USERID_SESSIONID_KEY + getUserIdBySessionId(sessionId), SessionConstants.SESSION_TIMEOUT, TimeUnit.SECONDS);
+        //推迟redis session过期时间
+        defer(sessionId);
         DTO userDto = JSONObject.parseObject(String.valueOf(JSONObject.parseObject(sessionData).get(SessionConstants.LOGGED_USER)), DTO.class);
         return DTOUtils.proxy(userDto, UserTicket.class);
+    }
+
+    /**
+     * 推迟redis session过期时间
+     * @param sessionId
+     */
+    private void defer(String sessionId) {
+        //推后SessionConstants.SESSIONID_USERID_KEY + sessionId : userId : SessionConstants.SESSION_TIMEOUT
+        redisUtil.expire(SessionConstants.SESSIONID_USERID_KEY + sessionId, SessionConstants.SESSION_TIMEOUT, TimeUnit.SECONDS);
+        //先根据sessionId找到用户id
+        //SessionConstants.SESSIONID_USERID_KEY + sessionId : userId : SessionConstants.SESSION_TIMEOUT
+        String userId = getUserIdBySessionId(sessionId);
+        //再根据userId，推后sessionId
+        //推后SessionConstants.USERID_SESSIONID_KEY + userId : sessionId : SessionConstants.SESSION_TIMEOUT
+        redisUtil.expire(SessionConstants.USERID_SESSIONID_KEY + userId, SessionConstants.SESSION_TIMEOUT, TimeUnit.SECONDS);
+        //推后SessionConstants.USER_SYSTEM_KEY + userId : systems : SessionConstants.SESSION_TIMEOUT
+        redisUtil.expire(SessionConstants.USER_SYSTEM_KEY + userId, SessionConstants.SESSION_TIMEOUT, TimeUnit.SECONDS);
+        //推后SessionConstants.USER_MENU_URL_KEY + userId : menuUrls : SessionConstants.SESSION_TIMEOUT
+        redisUtil.expire(SessionConstants.USER_MENU_URL_KEY + userId, SessionConstants.SESSION_TIMEOUT, TimeUnit.SECONDS);
+        //推后SessionConstants.USER_RESOURCE_CODE_KEY + userId ： resourceCodes : SessionConstants.SESSION_TIMEOUT
+        redisUtil.expire(SessionConstants.USER_RESOURCE_CODE_KEY + userId, SessionConstants.SESSION_TIMEOUT, TimeUnit.SECONDS);
+        //推后SessionConstants.USER_DATA_AUTH_KEY + userId : userDataAuths : SessionConstants.SESSION_TIMEOUT
+        redisUtil.expire(SessionConstants.USER_DATA_AUTH_KEY + userId, SessionConstants.SESSION_TIMEOUT, TimeUnit.SECONDS);
     }
     
     /**

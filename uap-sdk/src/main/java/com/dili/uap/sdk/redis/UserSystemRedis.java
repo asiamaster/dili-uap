@@ -58,6 +58,9 @@ public class UserSystemRedis {
             //使用BASE64解码
             after =dec.decodeBuffer(mes);
             List systems = (List) SerializeUtil.unserialize(after);
+            if(systems == null){
+                return null;
+            }
             //由于反序列化出的对象无法迭代，所以重新放到新的List对象
             List<System> systemList = new ArrayList(systems.size());
             for(Object system : systems){

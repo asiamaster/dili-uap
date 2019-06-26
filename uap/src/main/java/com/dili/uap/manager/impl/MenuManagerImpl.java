@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -49,6 +50,7 @@ public class MenuManagerImpl implements MenuManager {
         String key = SessionConstants.USER_MENU_URL_KEY + userId;
         this.redisUtils.remove(key);
         BoundSetOperations<String, Object> ops = this.redisUtils.getRedisTemplate().boundSetOps(key);
+        ops.expire(SessionConstants.SESSION_TIMEOUT, TimeUnit.SECONDS);
         ops.add(urls.toArray());
     }
 

@@ -6,7 +6,6 @@
     <artifactId>uap-sdk</artifactId>
     <description>uap-sdk</description>
     <name>uap-sdk</name>
-    <version>2.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -18,7 +17,7 @@
         <artifactId>dili-uap</artifactId>
         <groupId>com.dili</groupId>
         <!--<version>1.0.0.RELEASE</version>-->
-        <version>2.0.0-SNAPSHOT</version>
+        <version>2.1.0-SNAPSHOT</version>
     </parent>
 
     <dependencies>

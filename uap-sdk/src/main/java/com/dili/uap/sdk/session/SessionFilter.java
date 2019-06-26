@@ -113,8 +113,9 @@ public class SessionFilter implements Filter {
         try {
             //iframe
             checkIframe(pc);
-            //登录
+            //登录鉴权
             checkUser(pc);
+            //设置导航面包屑到RequestAttribute
             setNavAttr(pc);
             filter.doFilter(request, response);
         } catch (RedirectException e) {
