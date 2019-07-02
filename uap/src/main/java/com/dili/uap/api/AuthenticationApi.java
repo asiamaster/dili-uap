@@ -6,18 +6,23 @@ import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.dao.MenuMapper;
 import com.dili.uap.dao.ResourceMapper;
-import com.dili.uap.sdk.domain.Menu;
+import com.dili.uap.domain.DataAuthRef;
 import com.dili.uap.domain.Resource;
 import com.dili.uap.domain.dto.LoginDto;
+import com.dili.uap.manager.DataAuthManager;
+import com.dili.uap.sdk.component.DataAuthSource;
+import com.dili.uap.sdk.domain.Menu;
 import com.dili.uap.sdk.domain.System;
 import com.dili.uap.sdk.redis.DataAuthRedis;
 import com.dili.uap.sdk.redis.UserRedis;
 import com.dili.uap.sdk.redis.UserSystemRedis;
+import com.dili.uap.service.DataAuthRefService;
 import com.dili.uap.service.LoginService;
 import com.dili.uap.service.UserService;
 import com.dili.uap.utils.WebUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -30,6 +35,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Created by asiam on 2018/6/7 0007.
@@ -59,6 +65,15 @@ public class AuthenticationApi {
 
     @Autowired
     private ResourceMapper resourceMapper;
+
+    @Autowired
+    private DataAuthManager dataAuthManager;
+
+    @Autowired
+    private DataAuthSource dataAuthSource;
+
+    @Autowired
+    private DataAuthRefService dataAuthRefService;
 
     @ApiOperation("统一授权登录")
     @RequestMapping(value = "/login.api", method = { RequestMethod.POST })
@@ -200,7 +215,9 @@ public class AuthenticationApi {
     @RequestMapping(value = "/listDataAuthes.api", method = { RequestMethod.POST })
     @ResponseBody
     public BaseOutput<List<Map>> listDataAuthes(@RequestBody String json){
-        String sessionId = getSessionIdByJson(json);
+        JSONObject jsonObject = JSONObject.parseObject(json);
+        String sessionId = jsonObject.getString("sessionId");
+        String refCode = jsonObject.getString("refCode");
         if(StringUtils.isBlank(sessionId)){
             return BaseOutput.failure("会话id不存在").setCode(ResultCode.PARAMS_ERROR);
         }
@@ -208,7 +225,43 @@ public class AuthenticationApi {
         if(userId == null){
             return BaseOutput.failure("用户未登录").setCode(ResultCode.NOT_AUTH_ERROR);
         }
-        return BaseOutput.success("调用成功").setData(dataAuthRedis.dataAuth(userId));
+        //返回UserDataAuth列表
+        return BaseOutput.success("调用成功").setData(dataAuthManager.listUserDataAuthesByRefCode(userId, refCode));
+    }
+
+    @ApiOperation("获取数据权限详情列表")
+    @RequestMapping(value = "/listDataAuthDetails.api", method = { RequestMethod.POST })
+    @ResponseBody
+    public BaseOutput<Map<String, Map>> listDataAuthDetails(@RequestBody String json){
+        JSONObject jsonObject = JSONObject.parseObject(json);
+        String sessionId = jsonObject.getString("sessionId");
+        String refCode = jsonObject.getString("refCode");
+        if(StringUtils.isBlank(sessionId)){
+            return BaseOutput.failure("会话id不存在").setCode(ResultCode.PARAMS_ERROR);
+        }
+        if(StringUtils.isBlank(refCode)){
+            return BaseOutput.failure("refCode不存在").setCode(ResultCode.PARAMS_ERROR);
+        }
+        Long userId = userRedis.getSessionUserId(sessionId);
+        if(userId == null){
+            return BaseOutput.failure("用户未登录").setCode(ResultCode.NOT_AUTH_ERROR);
+        }
+        //查询数据权限引用dataAuthRef
+        DataAuthRef dataAuthRef = DTOUtils.newDTO(DataAuthRef.class);
+        dataAuthRef.setCode(refCode);
+        List<DataAuthRef> dataAuthRefs = this.dataAuthRefService.list(dataAuthRef);
+        if(CollectionUtils.isEmpty(dataAuthRefs)){
+            return BaseOutput.failure("数据权限引用不存在");
+        }
+        //从Redis获取用户有权限的UserDataAuth列表
+        List<Map> userDataAuthes = this.dataAuthRedis.dataAuth(refCode, userId);
+        if(CollectionUtils.isEmpty(userDataAuthes)){
+            return BaseOutput.success("调用成功").setData(userDataAuthes);
+        }
+        List values = userDataAuthes.parallelStream().map(t -> t.get("value")).collect(Collectors.toList());
+        Map<String, Map> dataAuthMap = dataAuthSource.getDataAuthSourceServiceMap().get(dataAuthRefs.get(0).getSpringId()).bindDataAuthes(dataAuthRefs.get(0).getParam(), values);
+        //返回UserDataAuth列表
+        return BaseOutput.success("调用成功").setData(dataAuthMap);
     }
 
     /**

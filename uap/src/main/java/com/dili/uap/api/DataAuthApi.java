@@ -93,7 +93,7 @@ public class DataAuthApi {
             }
             refCode2values.get(uda.getRefCode()).add(uda.getValue());
         }
-//        Map key为value, 值为转义后的行数据
+//        Map key为数据权限id, 值为数据权限转义后的行数据
         List<Map<String, Map>> detailList = Lists.newArrayList();
         for(Map.Entry<String, List<String>> refCode2value : refCode2values.entrySet()){
             DataAuthRef dataAuthRef = DTOUtils.newDTO(DataAuthRef.class);

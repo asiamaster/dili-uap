@@ -1,7 +1,5 @@
 package com.dili.uap.sdk.service;
 
-import com.dili.uap.sdk.domain.UserDataAuth;
-
 import java.util.List;
 import java.util.Map;
 
@@ -13,17 +11,18 @@ import java.util.Map;
 public interface DataAuthSourceService {
 
     /**
-     * 获取数据来源
-     * @param param data_auth_ref表的param内容
+     * 获取数权限据来源
+     * 用于在用户管理界面展示所有数据权限
+     * @param param data_auth_ref表的param字段内容
      * @return
      */
     List listDataAuthes(String param);
 
     /**
      *  values 解析为指定的数据权限来源
-     * @param param     data_auth_ref表的param内容
-     * @param values    user_data_auth的value列表
-     * @return  Map key为value, 值为转义后的行数据
+     * @param param     data_auth_ref表的param字段内容
+     * @param values    user_data_auth的value字段列表
+     * @return  Map key为数据权限id, 值为数据权限转义后的行数据
      */
     Map<String, Map> bindDataAuthes(String param, List<String> values);
 

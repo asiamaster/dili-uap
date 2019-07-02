@@ -28,7 +28,7 @@ public class DataAuthRedis {
      * 根据userId和数据权限type获取数据权限详情列表
      * @param refCode data_auth_ref表的code字段
      * @param userId    用户id
-     * @return  UserDataAuth和DataSource关联数据 List<Map>
+     * @return  UserDataAuth列表
      */
     public List<Map> dataAuth(String refCode, Long userId) {
         BoundSetOperations<String, String> boundSetOperations = redisUtil.getRedisTemplate().boundSetOps (SessionConstants.USER_DATA_AUTH_KEY + userId);
@@ -40,7 +40,7 @@ public class DataAuthRedis {
         for(String dataAuthJson : boundSetOperations.members()) {
             JSONObject dataAuth = JSONObject.parseObject(dataAuthJson);
             if(dataAuth.get("refCode").equals(refCode)){
-                String value = dataAuth.getString("value");
+//                String value = dataAuth.getString("value");
                 dataAuthList.add(dataAuth);
             }
         }
