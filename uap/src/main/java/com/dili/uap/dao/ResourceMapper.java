@@ -16,4 +16,12 @@ public interface ResourceMapper extends MyMapper<Resource> {
      * @return
      */
     List<Resource> listByUserId(Long userId);
+
+    /**
+     * 根据用户id和系统id查询资源列表
+     * @param userId
+     * @param systemId
+     * @return
+     */
+    List<Resource> listByUserIdAndSystemId(Long userId, Long systemId);
 }

@@ -30,4 +30,17 @@
     and rr.resource_id = r.id
     and ur.user_id = #{userId}
   </select>
+
+  <select id="listByUserIdAndSystemId" resultMap="BaseResultMap">
+    SELECT
+    r.id, r.`code`, r.created, r.description, r.menu_id,
+    r.`name`
+    FROM
+    role_resource rr, resource r, user_role ur, menu m
+    where rr.role_id = ur.role_id
+    and rr.resource_id = r.id
+    and ur.user_id = #{arg0}
+    AND r.menu_id = m.id
+    AND m.system_id = ${arg1}
+  </select>
 </mapper>

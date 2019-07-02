@@ -180,7 +180,9 @@ public class AuthenticationApi {
     @RequestMapping(value = "/listResources.api", method = { RequestMethod.POST })
     @ResponseBody
     public BaseOutput<List<Resource>> listResources(@RequestBody String json){
-        String sessionId = getSessionIdByJson(json);
+        JSONObject jsonObject = JSONObject.parseObject(json);
+        String sessionId = jsonObject.getString("sessionId");
+        Long systemId = jsonObject.getLong("systemId");
         if(StringUtils.isBlank(sessionId)){
             return BaseOutput.failure("会话id不存在").setCode(ResultCode.PARAMS_ERROR);
         }
@@ -188,7 +190,10 @@ public class AuthenticationApi {
         if(userId == null){
             return BaseOutput.failure("用户未登录").setCode(ResultCode.NOT_AUTH_ERROR);
         }
-        return BaseOutput.success("调用成功").setData(this.resourceMapper.listByUserId(userId));
+        if(systemId == null){
+            return BaseOutput.success("调用成功").setData(this.resourceMapper.listByUserId(userId));
+        }
+        return BaseOutput.success("调用成功").setData(this.resourceMapper.listByUserIdAndSystemId(userId, systemId));
     }
 
     @ApiOperation("获取数据权限列表")
