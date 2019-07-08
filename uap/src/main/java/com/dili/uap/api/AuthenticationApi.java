@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.dili.ss.constant.ResultCode;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
+import com.dili.ss.util.RSAUtil;
 import com.dili.uap.dao.MenuMapper;
 import com.dili.uap.dao.ResourceMapper;
 import com.dili.uap.domain.DataAuthRef;
@@ -22,9 +23,11 @@ import com.dili.uap.service.UserService;
 import com.dili.uap.utils.WebUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -75,10 +78,24 @@ public class AuthenticationApi {
     @Autowired
     private DataAuthRefService dataAuthRefService;
 
+    @Value("${rsaPrivateKey:}")
+    private String rsaPrivateKey;
+
+    /**
+     * 统一授权登录，返回登录用户信息LoginResult
+     * @param json
+     * @param request
+     * @return
+     */
     @ApiOperation("统一授权登录")
     @RequestMapping(value = "/login.api", method = { RequestMethod.POST })
     @ResponseBody
     public BaseOutput login(@RequestBody String json, HttpServletRequest request){
+        try {
+            json = decryptRSA(json);
+        } catch (Exception e) {
+            return BaseOutput.failure(e.getMessage());
+        }
         JSONObject jsonObject = JSONObject.parseObject(json);
         LoginDto loginDto = DTOUtils.newDTO(LoginDto.class);
         loginDto.setUserName(jsonObject.getString("userName"));
@@ -91,6 +108,49 @@ public class AuthenticationApi {
         return loginService.login(loginDto);
     }
 
+    /**
+     * 用户登录验证，返回新的sessionId
+     * @param json
+     * @return
+     */
+    @ApiOperation("登录验证")
+    @RequestMapping(value = "/validate.api", method = { RequestMethod.POST })
+    @ResponseBody
+    public BaseOutput validate(@RequestBody String json) {
+        try {
+            json = decryptRSA(json);
+        } catch (Exception e) {
+            return BaseOutput.failure(e.getMessage());
+        }
+        JSONObject jsonObject = JSONObject.parseObject(json);
+        LoginDto loginDto = DTOUtils.newDTO(LoginDto.class);
+        loginDto.setUserName(jsonObject.getString("userName"));
+        loginDto.setPassword(jsonObject.getString("password"));
+        return loginService.validateSaveSession(loginDto);
+    }
+
+    /**
+     * 根据sessionId判断用户是否登录
+     * 无返回信息
+     * @param json
+     * @return
+     */
+    @ApiOperation("鉴权")
+    @RequestMapping(value = "/authentication.api", method = { RequestMethod.POST })
+    @ResponseBody
+    public BaseOutput authentication(@RequestBody String json){
+        try {
+            json = decryptRSA(json);
+        } catch (Exception e) {
+            return BaseOutput.failure(e.getMessage());
+        }
+        String sessionId = getSessionIdByJson(json);
+        if(StringUtils.isBlank(sessionId)){
+            return BaseOutput.failure("会话id不存在").setCode(ResultCode.PARAMS_ERROR);
+        }
+        return userRedis.getSessionUserId(sessionId) == null ? BaseOutput.failure("未登录").setCode(ResultCode.NOT_AUTH_ERROR) : BaseOutput.success("已登录");
+    }
+
     @ApiOperation("统一授权登出")
     @RequestMapping(value = "/loginout.api", method = { RequestMethod.POST })
     @ResponseBody
@@ -101,38 +161,6 @@ public class AuthenticationApi {
         }
         userService.logout(sessionId);
         return BaseOutput.success("登出成功");
-    }
-
-    /**
-     * 根据sessionId判断用户是否登录
-     * @param json
-     * @return
-     */
-    @ApiOperation("鉴权")
-    @RequestMapping(value = "/authentication.api", method = { RequestMethod.POST })
-    @ResponseBody
-    public BaseOutput authentication(@RequestBody String json){
-        String sessionId = getSessionIdByJson(json);
-        if(StringUtils.isBlank(sessionId)){
-            return BaseOutput.failure("会话id不存在").setCode(ResultCode.PARAMS_ERROR);
-        }
-        return userRedis.getSessionUserId(sessionId) == null ? BaseOutput.failure("未登录").setCode(ResultCode.NOT_AUTH_ERROR) : BaseOutput.success("已登录");
-    }
-
-    /**
-     * 用户登录验证
-     * @param json
-     * @return
-     */
-    @ApiOperation("登录验证")
-    @RequestMapping(value = "/validate.api", method = { RequestMethod.POST })
-    @ResponseBody
-    public BaseOutput validate(@RequestBody String json){
-        JSONObject jsonObject = JSONObject.parseObject(json);
-        LoginDto loginDto = DTOUtils.newDTO(LoginDto.class);
-        loginDto.setUserName(jsonObject.getString("userName"));
-        loginDto.setPassword(jsonObject.getString("password"));
-        return loginService.validateSaveSession(loginDto);
     }
 
     /**
@@ -272,5 +300,14 @@ public class AuthenticationApi {
     private String getSessionIdByJson(String json){
         JSONObject jsonObject = JSONObject.parseObject(json);
         return jsonObject.getString("sessionId");
+    }
+
+    /**
+     * RSA解密
+     * @param code
+     * @return
+     */
+    private String decryptRSA(String code) throws Exception {
+        return new String(RSAUtil.decryptByPrivateKey(Base64.decodeBase64(code), Base64.decodeBase64(rsaPrivateKey)));
     }
 }
