@@ -10,6 +10,7 @@ import com.dili.uap.dao.ResourceMapper;
 import com.dili.uap.domain.DataAuthRef;
 import com.dili.uap.domain.Resource;
 import com.dili.uap.domain.dto.LoginDto;
+import com.dili.uap.domain.dto.UserDto;
 import com.dili.uap.manager.DataAuthManager;
 import com.dili.uap.sdk.component.DataAuthSource;
 import com.dili.uap.sdk.domain.Menu;
@@ -17,6 +18,7 @@ import com.dili.uap.sdk.domain.System;
 import com.dili.uap.sdk.redis.DataAuthRedis;
 import com.dili.uap.sdk.redis.UserRedis;
 import com.dili.uap.sdk.redis.UserSystemRedis;
+import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.service.DataAuthRefService;
 import com.dili.uap.service.LoginService;
 import com.dili.uap.service.UserService;
@@ -290,6 +292,27 @@ public class AuthenticationApi {
         Map<String, Map> dataAuthMap = dataAuthSource.getDataAuthSourceServiceMap().get(dataAuthRefs.get(0).getSpringId()).bindDataAuthes(dataAuthRefs.get(0).getParam(), values);
         //返回UserDataAuth列表
         return BaseOutput.success("调用成功").setData(dataAuthMap);
+    }
+
+    @ApiOperation(value = "修改密码", notes = "修改密码")
+    @RequestMapping(value = "/changePwd.api", method = {RequestMethod.GET, RequestMethod.POST})
+    @ResponseBody
+    public BaseOutput changePwd(@RequestBody String json) {
+        JSONObject jsonObject = JSONObject.parseObject(json);
+        String sessionId = jsonObject.getString("sessionId");
+        String oldPassword = jsonObject.getString("oldPassword");
+        String newPassword = jsonObject.getString("newPassword");
+        String confirmPassword = jsonObject.getString("confirmPassword");
+        if(StringUtils.isBlank(sessionId)){
+            return BaseOutput.failure("会话id不存在").setCode(ResultCode.PARAMS_ERROR);
+        }
+        Long userId = userRedis.getSessionUserId(sessionId);
+        UserDto userDto = DTOUtils.newDTO(UserDto.class);
+        userDto.setId(userId);
+        userDto.setNewPassword(newPassword);
+        userDto.setConfirmPassword(confirmPassword);
+        userDto.setOldPassword(oldPassword);
+        return userService.changePwd(userId, userDto);
     }
 
     /**
