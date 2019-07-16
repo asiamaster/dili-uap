@@ -80,32 +80,24 @@
         , CASE WHEN d.parent_id is null THEN CONCAT('firm_',d.firm_code) ELSE d.parent_id END AS parentId
         , d.`name`
         , CASE WHEN ud.id IS NULL THEN FALSE ELSE TRUE END AS checked
-        FROM
         <if test="loginUserId == null">
-            department d
+            FROM department d
         </if>
         <if test="loginUserId != null">
-            (select d.* from department d  INNER JOIN user_data_auth ud ON d.id = ud.value and ud.ref_code='department' and ud.user_id = #{loginUserId}) d
+            FROM (SELECT de.* FROM department de inner join user_data_auth uda on de.id = uda.value WHERE uda.user_id=#{loginUserId} ) d
         </if>
-        LEFT JOIN user_data_auth ud
-        ON d.id = ud.value and ud.ref_code='department'
-        <if test="userId != null">
-            and ud.user_id = #{userId}
-        </if>
+        LEFT JOIN (SELECT u.* from user_data_auth u where u.user_id = #{userId} AND u.ref_code='department') ud
+        ON d.id = ud.value
         UNION ALL
         SELECT CONCAT('firm_',f.`code`) AS treeId, NULL AS parentId, f.`name`, CASE WHEN ud.id IS NULL THEN FALSE ELSE TRUE END AS checked
-        FROM
         <if test="loginUserId == null">
-            firm f
+            FROM firm f
         </if>
         <if test="loginUserId != null">
-            (select f.* from  firm f INNER JOIN user_data_auth ud ON f.code = ud.value and ud.ref_code='firm' and ud.user_id = #{loginUserId}) f
+            FROM (SELECT fi.id, fi.name, fi.parent_id, fi.code, fi.description FROM firm fi inner join user_data_auth uda on fi.code = uda.value WHERE uda.user_id=#{loginUserId} ) f
         </if>
-        LEFT JOIN user_data_auth ud
-        ON f.code = ud.value and ud.ref_code='firm'
-        <if test="userId != null">
-            and ud.user_id = #{userId}
-        </if>
+        LEFT JOIN (SELECT u.* from user_data_auth u where u.user_id = #{userId} AND u.ref_code='market') ud
+        ON f.code = ud.value
     </select>
 
 </mapper>

@@ -16,6 +16,7 @@ import com.dili.uap.domain.dto.UserDto;
 import com.dili.uap.sdk.component.DataAuthSource;
 import com.dili.uap.sdk.domain.Firm;
 import com.dili.uap.sdk.domain.User;
+import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.glossary.DataAuthType;
 import com.dili.uap.sdk.service.DataAuthSourceService;
 import com.dili.uap.sdk.session.SessionContext;
@@ -218,6 +219,10 @@ public class UserController {
     @RequestMapping(value = "/getUserData.action", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
     public BaseOutput<Map<String,Object>> getUserData(Long id){
+        UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
+        if(userTicket == null){
+            return BaseOutput.failure("用户未登录");
+        }
         BaseOutput<Map<String, Object>> output = BaseOutput.success();
         Map map = Maps.newHashMap();
         //获取数据权限的可选范围
