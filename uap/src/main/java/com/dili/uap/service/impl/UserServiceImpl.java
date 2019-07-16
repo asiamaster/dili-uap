@@ -21,6 +21,7 @@ import com.dili.uap.sdk.domain.*;
 import com.dili.uap.sdk.domain.Firm;
 import com.dili.uap.sdk.glossary.DataAuthType;
 import com.dili.uap.sdk.session.SessionContext;
+import com.dili.uap.service.UserDataAuthService;
 import com.dili.uap.service.UserService;
 import com.dili.uap.utils.MD5Util;
 import com.github.pagehelper.Page;
@@ -35,10 +36,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 由MyBatis Generator工具自动生成 This file was generated on 2018-05-18 10:46:46.
@@ -389,9 +387,16 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
         if (null == userId || null == dataRange) {
             return BaseOutput.failure("用户数据丢失");
         }
+        UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
+        if(userTicket == null){
+            return BaseOutput.failure("用户未登录");
+        }
         UserDataAuth userDataAuth = DTOUtils.newDTO(UserDataAuth.class);
         userDataAuth.setUserId(userId);
-        userDataAuthMapper.delete(userDataAuth);
+        Map param = new HashMap();
+        param.put("userId", userId);
+        param.put("loginUserId", userTicket.getId());
+        userDataAuthMapper.deleteUserDataAuth(param);
         List<UserDataAuth> saveDatas = Lists.newArrayList();
         //保存用户数据范围信息
         UserDataAuth ud = DTOUtils.newDTO(UserDataAuth.class);

@@ -17,6 +17,17 @@
         id, ref_code, user_id, value
     </sql>
 
+    <delete id="deleteUserDataAuth" parameterType="map">
+        DELETE FROM user_data_auth
+         WHERE `value` IN(
+         SELECT a.`value` FROM (
+         SELECT `value`
+         FROM user_data_auth
+         WHERE user_id=#{loginUserId}
+         ) a)
+         AND user_id=#{userId}
+    </delete>
+
     <!--&lt;!&ndash; 查询用户的数据权限列表 &ndash;&gt;-->
     <!--<select id="listUserDataAuth" parameterType="com.dili.uap.domain.UserDataAuth" resultMap="BaseResultMap">-->
         <!--SELECT-->
