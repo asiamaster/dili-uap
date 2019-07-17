@@ -119,8 +119,8 @@ public class LoginController {
 	@ApiOperation("执行logout请求，跳转login页面或者弹出错误")
 	@RequestMapping(value = "/logout.action", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public @ResponseBody BaseOutput logoutAction(String systemCode, @RequestParam(required = false) Long userId, HttpServletRequest request) {
-		this.userService.logout(WebContent.getPC().getSessionId());
 		UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
+		this.userService.logout(WebContent.getPC().getSessionId());
 		// 没有userId则取userTicket
 		userId = userId == null ? userTicket == null ? null : userTicket.getId() : userId;
 		// 如果有用户id，则记录登出日志
@@ -131,6 +131,7 @@ public class LoginController {
 			loginLog.setHost(request.getRemoteHost());
 			loginLog.setUserId(userId);
 			loginLog.setSystemCode(systemCode);
+			loginLog.setFirmCode(userTicket.getFirmCode());
 			loginService.logLogout(loginLog);
 		}
 		try {
