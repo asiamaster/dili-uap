@@ -153,6 +153,11 @@ function addResourceLink() {
         dataType: "json",
         async: true,
         success: function (output) {
+            //新加的resource可能没有为资源链接列表grid添加url，所以这里需要判断，并添加
+            var opts = $("#grid3").datagrid("options");
+            if (null == opts.url || "" == opts.url) {
+                opts.url = "${contextPath}/resource/listResourceLink.action";
+            }
             $("#grid3").datagrid("load", bindGridMeta2Data("grid3", {resourceCode:selected1.code}));
         },
         error: function () {
