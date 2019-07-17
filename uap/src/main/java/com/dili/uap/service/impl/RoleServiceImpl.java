@@ -21,9 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 由MyBatis Generator工具自动生成
@@ -56,10 +54,12 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements Role
         if (null != count && count >= 1L){
             return BaseOutput.failure("该角色下有关联用户，不能删除");
         }
+        Map param = new HashMap(1);
+        param.put("roleId", id);
         //删除对应的角色-菜单信息
-        getActualDao().deleteRoleMenuByRoleId(id);
+        getActualDao().deleteRoleMenuByRoleId(param);
         //删除对应的角色-资源信息
-        getActualDao().deleteRoleResourceByRoleId(id);
+        getActualDao().deleteRoleResourceByRoleId(param);
         //删除角色信息
         delete(id);
         return BaseOutput.success();
@@ -226,10 +226,14 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements Role
                 }
             }
         }
+        UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
+        Map param = new HashMap<>(2);
+        param.put("roleId", roleId);
+        param.put("loginUserId", userTicket.getId());
         //删除对应的角色-菜单信息
-        getActualDao().deleteRoleMenuByRoleId(roleId);
+        getActualDao().deleteRoleMenuByRoleId(param);
         //删除对应的角色-资源信息
-        getActualDao().deleteRoleResourceByRoleId(roleId);
+        getActualDao().deleteRoleResourceByRoleId(param);
         if (CollectionUtils.isNotEmpty(roleMenus)) {
             roleMenuMapper.insertList(roleMenus);
         }

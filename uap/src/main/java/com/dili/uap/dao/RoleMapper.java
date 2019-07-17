@@ -5,6 +5,7 @@ import com.dili.uap.domain.Role;
 import com.dili.uap.domain.dto.SystemResourceDto;
 
 import java.util.List;
+import java.util.Map;
 
 public interface RoleMapper extends MyMapper<Role> {
 
@@ -17,17 +18,16 @@ public interface RoleMapper extends MyMapper<Role> {
 
     /**
      * 根据角色ID删除角色-菜单信息
-     * @param roleId 角色ID
-     * @return 受影响行数
+     * @param param 角色ID和登录用户ID
      */
-    Integer deleteRoleMenuByRoleId(Long roleId);
+    void deleteRoleMenuByRoleId(Map param);
 
     /**
      * 根据角色ID删除角色-资源信息
-     * @param roleId 角色ID
+     * @param param 角色ID和登录用户ID
      * @return 受影响行数
      */
-    Integer deleteRoleResourceByRoleId(Long roleId);
+    void deleteRoleResourceByRoleId(Map param);
 
     /**
      * 加载所有的菜单及资源信息

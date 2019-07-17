@@ -58,13 +58,36 @@
     </select>
 
     <!-- 根据角色ID删除角色-菜单 信息 -->
-    <delete id="deleteRoleMenuByRoleId" parameterType="long">
-      delete from role_menu  where role_id=#{value}
+    <delete id="deleteRoleMenuByRoleId" parameterType="map">
+        delete from role_menu  where role_id=#{roleId}
+        <if test="loginUserId != null">
+        AND `menu_id` IN(
+        SELECT a.`menu_id` FROM (
+        SELECT m.id AS menu_id
+        FROM menu m, role_menu rm, user_role ur
+        where m.id = rm.menu_id
+        and rm.role_id = ur.role_id
+        <![CDATA[
+        and m.`type` <=1
+        ]]>
+        and ur.user_id = #{loginUserId}
+        ) a)
+        </if>
     </delete>
 
     <!-- 根据角色ID删除角色-资源 信息 -->
-    <delete id="deleteRoleResourceByRoleId" parameterType="long">
-      delete from role_resource where role_id=#{value}
+    <delete id="deleteRoleResourceByRoleId" parameterType="map">
+      delete from role_resource where role_id=#{roleId}
+        <if test="loginUserId != null">
+		AND `resource_id` IN(
+         SELECT a.`resource_id` FROM (
+         SELECT r.id AS resource_id
+          FROM resource r, role_resource rr, user_role ur
+			 where r.id = rr.resource_id
+			 and rr.role_id = ur.role_id
+			 and ur.user_id = #{loginUserId}
+         ) a)
+        </if>
     </delete>
 
     <!-- 查询所有的菜单及资源信息 -->
