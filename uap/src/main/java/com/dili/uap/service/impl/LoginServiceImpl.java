@@ -313,7 +313,7 @@ public class LoginServiceImpl implements LoginService {
 				loginLog.setSuccess(Yn.YES.getCode());
 				loginLog.setMsg("登出成功");
 				loginLog.setType(LoginType.LOGOUT.getCode());
-				loginLog.setLoginTime(new Date());
+//				loginLog.setLoginTime(new Date());
 				// 设置系统名称
 				if (StringUtils.isNotBlank(loginLog.getSystemCode()) && loginLog.getSystemName() == null) {
 					System system = DTOUtils.newDTO(System.class);
