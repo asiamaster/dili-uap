@@ -18,6 +18,7 @@ import com.google.common.collect.Sets;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,6 +35,8 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements Role
         return (RoleMapper)getDao();
     }
 
+    @Value("${uap.adminName:admin}")
+    private String adminName;
     @Autowired
     SystemMapper systemMapper;
     @Autowired
@@ -115,7 +118,7 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements Role
         //加载所有的系统菜单-资源
         List<SystemResourceDto> target;
         //admin用户可以查看所有权限
-        if(userTicket.getUserName().equalsIgnoreCase("admin")) {
+        if(userTicket.getUserName().equalsIgnoreCase(adminName)) {
             target = getActualDao().getRoleMenuAndResource();
         }else{//非admin用户只能查看各自有权限的菜单和资源
             target = getActualDao().getRoleMenuAndResourceByUserId(userTicket.getId());

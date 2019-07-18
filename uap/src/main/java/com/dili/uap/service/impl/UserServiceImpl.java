@@ -54,6 +54,8 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
         return (UserMapper) getDao();
     }
 
+    @Value("${uap.adminName:admin}")
+    private String adminName;
     @Autowired
     RoleMapper roleMapper;
     @Autowired
@@ -375,7 +377,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 //            params.put("firmCode", user.getFirmCode());
 //        }
 //        return getActualDao().selectUserDatas(params);
-        if(!user.getUserName().equalsIgnoreCase("admin")){
+        if(!user.getUserName().equalsIgnoreCase(adminName)){
             params.put("loginUserId", userTicket.getId());
         }
         return getActualDao().selectUserDatas(params);
