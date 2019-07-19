@@ -333,4 +333,30 @@ public class AuthenticationApi {
     private String decryptRSA(String code) throws Exception {
         return new String(RSAUtil.decryptByPrivateKey(Base64.decodeBase64(code), Base64.decodeBase64(rsaPrivateKey)));
     }
+
+    /**
+     * 登录密钥计算
+     * @param args
+     * @throws Exception
+     */
+//    public static void main(String[] args) throws Exception {
+//        //私钥
+//        String privateStr = "MIIBVAIBADANBgkqhkiG9w0BAQEFAASCAT4wggE6AgEAAkEAtmEBC5xciJySRAqchSYQR5tnEzsKO/dK0Fg1dVBKKPPwETD5HrQqcDPegRwoiZm8ASpVA2MKZd0iBHFU/M7wNQIDAQABAkEAtK25OWV4jqZ+iQXyNj6VVjtwjC6rXukIpwscOtKGBbalCLgRAs8Q0ZePqe9Duj3/vE8/ZZuTXjSlsJlVSCp/aQIhAPdo8I2aLJrkm/om/CtUHvlW1TCw14eP28zvChQzIx4zAiEAvLYMMVcHD7pe+Xj0hfnc+rmai/64zcjP4VpknqHI//cCIF8bRwWYE7eDU/ZokB1z2+hLme56vI+PHJZ9+Wjkc4aDAiBdJ0Rnir06n1ZIsdOK2yehQMOwfaH+OzWa2YM350cQSwIgOscoD26vCWCF3Q35Tn16RgRYSSyk28s+uqZs1Ld4PvU=";
+//        java.lang.System.out.println("java私钥:"+privateStr);
+//        byte[] privateBytes = Base64.decodeBase64(privateStr);
+//        //公钥
+//        String publicStr = "MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBALZhAQucXIickkQKnIUmEEebZxM7Cjv3StBYNXVQSijz8BEw+R60KnAz3oEcKImZvAEqVQNjCmXdIgRxVPzO8DUCAwEAAQ==";
+//        java.lang.System.out.println("java公钥:"+publicStr);
+//        byte[] publicBytes = Base64.decodeBase64(publicStr);
+//        String content = "{userName:\"jt_admin\", password:\"qwerpoiu181221\"}";
+//
+//        byte[] encryptByPublic = RSAUtil.encryptByPublicKey(content.getBytes(), publicBytes);
+//        java.lang.System.out.println("===========甲方使用公钥对数据进行加密==============");
+//        java.lang.System.out.println("加密后的数据：" + Base64.encodeBase64String(encryptByPublic));
+//        //加密后的数据：pDm5Ge+2N16d7PbyeucjK7QYq7bWWqbZ7WiIv6706gLwuwyG088/AMTlloeDihSkQkP4sRyxS0ivY9UACNVVdg==
+//        java.lang.System.out.println("===========乙方使用私钥对数据进行解密==============");
+//        //甲方使用私钥对数据进行解密
+//        byte[] decryptByPrivate = RSAUtil.decryptByPrivateKey(encryptByPublic, privateBytes);
+//        java.lang.System.out.println("乙方解密后的数据：" + new String(decryptByPrivate));
+//    }
 }
