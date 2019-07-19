@@ -348,7 +348,7 @@ public class AuthenticationApi {
 //        String publicStr = "MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBALZhAQucXIickkQKnIUmEEebZxM7Cjv3StBYNXVQSijz8BEw+R60KnAz3oEcKImZvAEqVQNjCmXdIgRxVPzO8DUCAwEAAQ==";
 //        java.lang.System.out.println("java公钥:"+publicStr);
 //        byte[] publicBytes = Base64.decodeBase64(publicStr);
-//        String content = "{userName:\"jt_admin\", password:\"qwerpoiu181221\"}";
+//        String content = "{userName:\"admin\", password:\"asdf1234\"}";
 //
 //        byte[] encryptByPublic = RSAUtil.encryptByPublicKey(content.getBytes(), publicBytes);
 //        java.lang.System.out.println("===========甲方使用公钥对数据进行加密==============");
