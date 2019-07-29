@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.dili.ss.constant.ResultCode;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
-import com.dili.ss.util.RSAUtil;
+import com.dili.ss.util.RSAUtils;
 import com.dili.uap.dao.MenuMapper;
 import com.dili.uap.dao.ResourceMapper;
 import com.dili.uap.domain.DataAuthRef;
@@ -18,6 +18,7 @@ import com.dili.uap.sdk.domain.System;
 import com.dili.uap.sdk.redis.DataAuthRedis;
 import com.dili.uap.sdk.redis.UserRedis;
 import com.dili.uap.sdk.redis.UserSystemRedis;
+import com.dili.uap.sdk.rpc.SystemConfigRpc;
 import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.service.DataAuthRefService;
 import com.dili.uap.service.LoginService;
@@ -83,6 +84,9 @@ public class AuthenticationApi {
     @Value("${rsaPrivateKey:}")
     private String rsaPrivateKey;
 
+    @Autowired
+    private SystemConfigRpc systemConfigRpc;
+
     /**
      * 统一授权登录，返回登录用户信息LoginResult
      * @param json
@@ -124,6 +128,8 @@ public class AuthenticationApi {
         } catch (Exception e) {
             return BaseOutput.failure(e.getMessage());
         }
+        BaseOutput output = systemConfigRpc.list(null);
+        java.lang.System.out.println(output);
         JSONObject jsonObject = JSONObject.parseObject(json);
         LoginDto loginDto = DTOUtils.newDTO(LoginDto.class);
         loginDto.setUserName(jsonObject.getString("userName"));
@@ -331,7 +337,7 @@ public class AuthenticationApi {
      * @return
      */
     private String decryptRSA(String code) throws Exception {
-        return new String(RSAUtil.decryptByPrivateKey(Base64.decodeBase64(code), Base64.decodeBase64(rsaPrivateKey)));
+        return new String(RSAUtils.decryptByPrivateKey(Base64.decodeBase64(code), Base64.decodeBase64(rsaPrivateKey)));
     }
 
     /**
@@ -339,24 +345,24 @@ public class AuthenticationApi {
      * @param args
      * @throws Exception
      */
-//    public static void main(String[] args) throws Exception {
-//        //私钥
-//        String privateStr = "MIIBVAIBADANBgkqhkiG9w0BAQEFAASCAT4wggE6AgEAAkEAtmEBC5xciJySRAqchSYQR5tnEzsKO/dK0Fg1dVBKKPPwETD5HrQqcDPegRwoiZm8ASpVA2MKZd0iBHFU/M7wNQIDAQABAkEAtK25OWV4jqZ+iQXyNj6VVjtwjC6rXukIpwscOtKGBbalCLgRAs8Q0ZePqe9Duj3/vE8/ZZuTXjSlsJlVSCp/aQIhAPdo8I2aLJrkm/om/CtUHvlW1TCw14eP28zvChQzIx4zAiEAvLYMMVcHD7pe+Xj0hfnc+rmai/64zcjP4VpknqHI//cCIF8bRwWYE7eDU/ZokB1z2+hLme56vI+PHJZ9+Wjkc4aDAiBdJ0Rnir06n1ZIsdOK2yehQMOwfaH+OzWa2YM350cQSwIgOscoD26vCWCF3Q35Tn16RgRYSSyk28s+uqZs1Ld4PvU=";
-//        java.lang.System.out.println("java私钥:"+privateStr);
-//        byte[] privateBytes = Base64.decodeBase64(privateStr);
-//        //公钥
-//        String publicStr = "MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBALZhAQucXIickkQKnIUmEEebZxM7Cjv3StBYNXVQSijz8BEw+R60KnAz3oEcKImZvAEqVQNjCmXdIgRxVPzO8DUCAwEAAQ==";
-//        java.lang.System.out.println("java公钥:"+publicStr);
-//        byte[] publicBytes = Base64.decodeBase64(publicStr);
-//        String content = "{userName:\"admin\", password:\"asdf1234\"}";
-//
-//        byte[] encryptByPublic = RSAUtil.encryptByPublicKey(content.getBytes(), publicBytes);
-//        java.lang.System.out.println("===========甲方使用公钥对数据进行加密==============");
-//        java.lang.System.out.println("加密后的数据：" + Base64.encodeBase64String(encryptByPublic));
-//        //加密后的数据：pDm5Ge+2N16d7PbyeucjK7QYq7bWWqbZ7WiIv6706gLwuwyG088/AMTlloeDihSkQkP4sRyxS0ivY9UACNVVdg==
-//        java.lang.System.out.println("===========乙方使用私钥对数据进行解密==============");
-//        //甲方使用私钥对数据进行解密
-//        byte[] decryptByPrivate = RSAUtil.decryptByPrivateKey(encryptByPublic, privateBytes);
-//        java.lang.System.out.println("乙方解密后的数据：" + new String(decryptByPrivate));
-//    }
+    public static void main1(String[] args) throws Exception {
+        //私钥
+        String privateStr = "MIIBVAIBADANBgkqhkiG9w0BAQEFAASCAT4wggE6AgEAAkEAtmEBC5xciJySRAqchSYQR5tnEzsKO/dK0Fg1dVBKKPPwETD5HrQqcDPegRwoiZm8ASpVA2MKZd0iBHFU/M7wNQIDAQABAkEAtK25OWV4jqZ+iQXyNj6VVjtwjC6rXukIpwscOtKGBbalCLgRAs8Q0ZePqe9Duj3/vE8/ZZuTXjSlsJlVSCp/aQIhAPdo8I2aLJrkm/om/CtUHvlW1TCw14eP28zvChQzIx4zAiEAvLYMMVcHD7pe+Xj0hfnc+rmai/64zcjP4VpknqHI//cCIF8bRwWYE7eDU/ZokB1z2+hLme56vI+PHJZ9+Wjkc4aDAiBdJ0Rnir06n1ZIsdOK2yehQMOwfaH+OzWa2YM350cQSwIgOscoD26vCWCF3Q35Tn16RgRYSSyk28s+uqZs1Ld4PvU=";
+        java.lang.System.out.println("java私钥:"+privateStr);
+        byte[] privateBytes = Base64.decodeBase64(privateStr);
+        //公钥
+        String publicStr = "MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBALZhAQucXIickkQKnIUmEEebZxM7Cjv3StBYNXVQSijz8BEw+R60KnAz3oEcKImZvAEqVQNjCmXdIgRxVPzO8DUCAwEAAQ==";
+        java.lang.System.out.println("java公钥:"+publicStr);
+        byte[] publicBytes = Base64.decodeBase64(publicStr);
+        String content = "{userName:\"jt_test\", password:\"asdf12345\"}";
+
+        byte[] encryptByPublic = RSAUtils.encryptByPublicKey(content.getBytes(), publicBytes);
+        java.lang.System.out.println("===========甲方使用公钥对数据进行加密==============");
+        java.lang.System.out.println("加密后的数据：" + Base64.encodeBase64String(encryptByPublic));
+        //加密后的数据：pDm5Ge+2N16d7PbyeucjK7QYq7bWWqbZ7WiIv6706gLwuwyG088/AMTlloeDihSkQkP4sRyxS0ivY9UACNVVdg==
+        java.lang.System.out.println("===========乙方使用私钥对数据进行解密==============");
+        //甲方使用私钥对数据进行解密
+        byte[] decryptByPrivate = RSAUtils.decryptByPrivateKey(encryptByPublic, privateBytes);
+        java.lang.System.out.println("乙方解密后的数据：" + new String(decryptByPrivate));
+    }
 }

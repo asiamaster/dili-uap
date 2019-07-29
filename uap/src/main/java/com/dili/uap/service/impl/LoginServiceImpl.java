@@ -249,7 +249,7 @@ public class LoginServiceImpl implements LoginService {
 			if (loginDto.getUserId() != null) {
 				logLogin(loginDto, false, e.getMessage());
 			}
-			return BaseOutput.failure("登录失败").setResult("登录失败，参数不正确");
+			return BaseOutput.failure("登录失败").setMessage("登录失败，参数不正确");
 		}
 	}
 
@@ -257,7 +257,7 @@ public class LoginServiceImpl implements LoginService {
 	public BaseOutput<Boolean> loginAndTag(LoginDto loginDto) {
 		BaseOutput<LoginResult> output = this.login(loginDto);
 		if (!output.isSuccess()) {
-			return BaseOutput.failure(output.getResult()).setCode(output.getCode()).setData(false);
+			return BaseOutput.failure(output.getMessage()).setCode(output.getCode()).setData(false);
 		}
 		makeCookieTag(output.getData().getUser(), output.getData().getSessionId());
 		return BaseOutput.success("登录成功");

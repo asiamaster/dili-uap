@@ -7,7 +7,7 @@ import com.dili.ss.domain.EasyuiPageOutput;
 import com.dili.ss.dto.DTO;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.metadata.ValueProviderUtils;
-import com.dili.ss.util.AESUtil;
+import com.dili.ss.util.AESUtils;
 import com.dili.ss.util.POJOUtils;
 import com.dili.uap.boot.RabbitConfiguration;
 import com.dili.uap.constants.UapConstants;
@@ -126,7 +126,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
         user.setPassword(this.encryptPwd(user.getNewPassword()));
         user.setUserName(userInDB.getUserName());
         String json = JSON.toJSONString(user);
-        json = AESUtil.encrypt(json, aesKey);
+        json = AESUtils.encrypt(json, aesKey);
         amqpTemplate.convertAndSend(RabbitConfiguration.UAP_TOPIC_EXCHANGE, RabbitConfiguration.UAP_CHANGE_PASSWORD_KEY, json);
         return BaseOutput.success("修改密码成功");
     }
@@ -170,7 +170,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
             newUser.setSerialNumber(user.getSerialNumber());
             newUser.setCellphone(user.getCellphone());
             String json = JSON.toJSONString(newUser);
-            json = AESUtil.encrypt(json, aesKey);
+            json = AESUtils.encrypt(json, aesKey);
             amqpTemplate.convertAndSend(RabbitConfiguration.UAP_TOPIC_EXCHANGE, RabbitConfiguration.UAP_ADD_USER_KEY, json);
         } else {
             if (CollectionUtils.isNotEmpty(userList)) {

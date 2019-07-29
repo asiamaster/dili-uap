@@ -89,7 +89,7 @@ public class LoginController {
 			// 登录失败后跳到登录页
 			if (!output.isSuccess()) {
 				// 登录失败放入登录结果信息
-				modelMap.put("msg", output.getResult());
+				modelMap.put("msg", output.getMessage());
 				return INDEX_PATH;
 			}
 		}
@@ -108,7 +108,7 @@ public class LoginController {
 			// 登录失败后跳到登录页
 			if (!output.isSuccess()) {
 				// 登录失败放入登录结果信息
-				modelMap.put("msg", output.getResult());
+				modelMap.put("msg", output.getMessage());
 				return INDEX_PATH;
 			}
 		}
