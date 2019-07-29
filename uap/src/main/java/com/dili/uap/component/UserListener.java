@@ -1,6 +1,6 @@
 package com.dili.uap.component;
 
-import com.dili.ss.util.AESUtil;
+import com.dili.ss.util.AESUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;
@@ -25,7 +25,7 @@ public class UserListener {
     public void addUserTask(Message message) throws Exception {
         logger.info("收到消息: " + message);
         String data = new String(message.getBody(), "UTF-8");
-        String json = AESUtil.decrypt(data, aesKey);
+        String json = AESUtils.decrypt(data, aesKey);
         try {
             logger.info("消息解密: " + json);
         } catch (Exception e) {
@@ -37,7 +37,7 @@ public class UserListener {
     public void changePasswordTask(Message message) throws Exception {
         logger.info("收到消息: " + message);
         String data = new String(message.getBody(), "UTF-8");
-        String json = AESUtil.decrypt(data, aesKey);
+        String json = AESUtils.decrypt(data, aesKey);
         try {
             logger.info("消息解密: " + json);
         } catch (Exception e) {

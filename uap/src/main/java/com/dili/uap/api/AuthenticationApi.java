@@ -342,6 +342,7 @@ public class AuthenticationApi {
 
     /**
      * 登录密钥计算
+     * admin:asdf1234 -> PgSgiZ4DO+JLkNRapTG1aMu3b9s47DiNFOhnF0a0OrpQmDip51uVTG7HKUg9EsFP3VLvPeAhUKhw/irwOB38/Q==
      * @param args
      * @throws Exception
      */
@@ -354,7 +355,7 @@ public class AuthenticationApi {
         String publicStr = "MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBALZhAQucXIickkQKnIUmEEebZxM7Cjv3StBYNXVQSijz8BEw+R60KnAz3oEcKImZvAEqVQNjCmXdIgRxVPzO8DUCAwEAAQ==";
         java.lang.System.out.println("java公钥:"+publicStr);
         byte[] publicBytes = Base64.decodeBase64(publicStr);
-        String content = "{userName:\"jt_test\", password:\"asdf12345\"}";
+        String content = "{userName:\"admin\", password:\"asdf1234\"}";
 
         byte[] encryptByPublic = RSAUtils.encryptByPublicKey(content.getBytes(), publicBytes);
         java.lang.System.out.println("===========甲方使用公钥对数据进行加密==============");
