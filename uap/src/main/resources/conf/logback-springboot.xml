@@ -90,7 +90,7 @@
     <springProfile name="pre">
         <appender name="appender" class="ch.qos.logback.core.ConsoleAppender">
             <encoder>
-                <pattern>${PATTERN}</pattern>
+                <pattern>[uap-pre]%-12(%d{yyyy-MM-dd HH:mm:ss.SSS}) |-%-5level [%thread] %c [%L] -| %msg%n</pattern>
             </encoder>
         </appender>
         <!-- 按照每天生成日志文件 -->
@@ -119,7 +119,7 @@
     <springProfile name="prod">
         <appender name="appender" class="ch.qos.logback.core.ConsoleAppender">
             <encoder>
-                <pattern>${PATTERN}</pattern>
+                <pattern>[uap-prod]%-12(%d{yyyy-MM-dd HH:mm:ss.SSS}) |-%-5level [%thread] %c [%L] -| %msg%n</pattern>
             </encoder>
         </appender>
         <!-- 按照每天生成日志文件 -->
