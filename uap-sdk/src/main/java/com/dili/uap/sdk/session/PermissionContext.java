@@ -1,6 +1,8 @@
 package com.dili.uap.sdk.session;
 
 
+import com.alibaba.fastjson.JSON;
+import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.util.SpringUtil;
 import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.redis.DataAuthRedis;
@@ -170,10 +172,8 @@ public class PermissionContext {
             sendRedirect("/error/noAccess.do");
             return;
         }
-        String path = makePath("/error/noAccess.do");
-        resp.addHeader("noAccess", path);
-        resp.setStatus(401);
-        resp.getWriter().write("noAccess");
+        resp.setContentType("application/json;charset=UTF-8");
+        resp.getWriter().write(JSON.toJSONString(BaseOutput.failure("用户未登录").setCode("401")));
         resp.flushBuffer();
     }
 

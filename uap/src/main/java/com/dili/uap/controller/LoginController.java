@@ -120,19 +120,21 @@ public class LoginController {
 	@RequestMapping(value = "/logout.action", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public @ResponseBody BaseOutput logoutAction(String systemCode, @RequestParam(required = false) Long userId, HttpServletRequest request) {
 		UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
-		this.userService.logout(WebContent.getPC().getSessionId());
-		// 没有userId则取userTicket
-		userId = userId == null ? userTicket == null ? null : userTicket.getId() : userId;
-		// 如果有用户id，则记录登出日志
-		if (userId != null) {
-			LoginLog loginLog = DTOUtils.newDTO(LoginLog.class);
-			// 设置ip和hosts,用于记录登录日志
-			loginLog.setIp(WebUtil.getRemoteIP(request));
-			loginLog.setHost(request.getRemoteHost());
-			loginLog.setUserId(userId);
-			loginLog.setSystemCode(systemCode);
-			loginLog.setFirmCode(userTicket.getFirmCode());
-			loginService.logLogout(loginLog);
+		if(userTicket != null) {
+			this.userService.logout(WebContent.getPC().getSessionId());
+			// 没有userId则取userTicket
+			userId = userId == null ? userTicket == null ? null : userTicket.getId() : userId;
+			// 如果有用户id，则记录登出日志
+			if (userId != null) {
+				LoginLog loginLog = DTOUtils.newDTO(LoginLog.class);
+				// 设置ip和hosts,用于记录登录日志
+				loginLog.setIp(WebUtil.getRemoteIP(request));
+				loginLog.setHost(request.getRemoteHost());
+				loginLog.setUserId(userId);
+				loginLog.setSystemCode(systemCode);
+				loginLog.setFirmCode(userTicket.getFirmCode());
+				loginService.logLogout(loginLog);
+			}
 		}
 		try {
 			WebContent.setCookie(SessionConstants.COOKIE_SESSION_ID, null);

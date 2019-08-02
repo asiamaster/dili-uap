@@ -330,7 +330,7 @@
                     if (data.success) {
                         userGrid.datagrid("reload");
                     } else {
-                        swal('错误', data.result, 'error');
+                        swal('错误', data.message, 'error');
                     }
                 },
                 error : function() {

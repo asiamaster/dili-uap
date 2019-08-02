@@ -15,7 +15,6 @@ import com.dili.uap.sdk.rpc.MenuRpc;
 import com.dili.uap.sdk.rpc.SystemExceptionLogRpc;
 import com.dili.uap.sdk.util.WebContent;
 import com.google.common.collect.Lists;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -121,8 +120,8 @@ public class SessionFilter implements Filter {
         } catch (RedirectException e) {
             pc.sendRedirect(e.getPath());
         } catch (NotLoginException e) {
-            pc.noAccess();
             systemExceptionLog(pc, e);
+            pc.noAccess();
         } catch (NotAccessPermissionException e) {
             if (log.isInfoEnabled()) {
                 log.info("用户{Session:" + pc.getSessionId() + ", userId:" + pc.getUserId() + "}没有访问" + pc.getUrl() + "权限！");
