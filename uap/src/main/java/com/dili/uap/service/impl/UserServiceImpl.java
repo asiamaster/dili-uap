@@ -4,10 +4,10 @@ import com.alibaba.fastjson.JSON;
 import com.dili.ss.base.BaseServiceImpl;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.domain.EasyuiPageOutput;
-import com.dili.ss.dto.DTO;
-import com.dili.ss.dto.DTOUtils;
+import com.dili.ss.dto.*;
 import com.dili.ss.metadata.ValueProviderUtils;
 import com.dili.ss.util.AESUtils;
+import com.dili.ss.util.BeanConver;
 import com.dili.ss.util.POJOUtils;
 import com.dili.uap.boot.RabbitConfiguration;
 import com.dili.uap.constants.UapConstants;
@@ -27,14 +27,18 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import javassist.CtClass;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.reflections.Reflections;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.System;
+import java.lang.reflect.Method;
 import java.util.*;
 
 /**
@@ -137,7 +141,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
             user.setUserName(user.getUserName().toLowerCase());
         }
         //验证邮箱是否重复
-        User query = DTOUtils.newDTO(User.class);
+        User query = DTOUtils.newInstance(User.class);
         query.setEmail(user.getEmail());
         List<User> userList = getActualDao().select(query);
         //用户新增
@@ -161,7 +165,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
             }
             user.setPassword(encryptPwd(UapConstants.DEFAULT_PASS));
             this.insertExactSimple(user);
-            User newUser = DTOUtils.newDTO(User.class);
+            User newUser = DTOUtils.newInstance(User.class);
             newUser.setUserName(user.getUserName());
             newUser.setPassword(user.getPassword());
             newUser.setRealName(user.getRealName());
@@ -189,7 +193,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
                     return BaseOutput.failure("手机号码已存在");
                 }
             }
-            User update = DTOUtils.as(user, User.class);
+            User update = DTOUtils.asInstance(user, User.class);
             DTO go = DTOUtils.go(update);
             go.remove("userName");
             go.remove("password");
@@ -204,7 +208,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
     @Override
     @Transactional(rollbackFor = Exception.class)
     public BaseOutput resetPass(Long userId) {
-        User user = DTOUtils.newDTO(User.class);
+        User user = DTOUtils.newInstance(User.class);
         user.setId(userId);
         user.setPassword(encryptPwd(UapConstants.DEFAULT_PASS));
         user.setState(UserState.INACTIVE.getCode());
@@ -214,7 +218,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 
     @Override
     public BaseOutput upateEnable(Long userId, Boolean enable) {
-        User user = DTOUtils.newDTO(User.class);
+        User user = DTOUtils.newInstance(User.class);
         user.setId(userId);
         if (enable) {
             user.setState(UserState.NORMAL.getCode());
@@ -243,11 +247,11 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
             firmList = firmMapper.selectAll();
         } else {
             //根据用户查询该用户对应的市场的角色信息
-            Role roleQuery = DTOUtils.newDTO(Role.class);
+            Role roleQuery = DTOUtils.newInstance(Role.class);
             roleQuery.setFirmCode(user.getFirmCode());
             roleList = roleMapper.select(roleQuery);
             //查询对应的市场信息
-            Firm firmQuery = DTOUtils.newDTO(Firm.class);
+            Firm firmQuery = DTOUtils.newInstance(Firm.class);
             firmQuery.setCode(user.getFirmCode());
             firmList = firmMapper.select(firmQuery);
         }
@@ -260,7 +264,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
              * 末级节点，设置为open状态
              */
             roleList.stream().forEach(role -> {
-                UserDataDto dto = DTOUtils.newDTO(UserDataDto.class);
+                UserDataDto dto = DTOUtils.newInstance(UserDataDto.class);
                 dto.setName(role.getRoleName());
                 dto.setParentId(UapConstants.FIRM_PREFIX + role.getFirmCode());
                 dto.setTreeId(String.valueOf(role.getId()));
@@ -272,7 +276,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
                 userRoleDtos.add(dto);
             });
             firmList.stream().forEach(firm -> {
-                UserDataDto dto = DTOUtils.newDTO(UserDataDto.class);
+                UserDataDto dto = DTOUtils.newInstance(UserDataDto.class);
                 dto.setName(firm.getName());
                 dto.setTreeId(UapConstants.FIRM_PREFIX + firm.getCode());
                 dto.setParentId("");
@@ -289,7 +293,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
         if (null == userId) {
             return BaseOutput.failure("用户数据丢失");
         }
-        UserRole userRole = DTOUtils.newDTO(UserRole.class);
+        UserRole userRole = DTOUtils.newInstance(UserRole.class);
         userRole.setUserId(userId);
         userRoleMapper.delete(userRole);
         //需要保存的用户角色信息
@@ -297,7 +301,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
             List<UserRole> saveDatas = Lists.newArrayList();
             for (String id : roleIds) {
                 if (!id.startsWith(UapConstants.FIRM_PREFIX)) {
-                    UserRole ur = DTOUtils.newDTO(UserRole.class);
+                    UserRole ur = DTOUtils.newInstance(UserRole.class);
                     ur.setUserId(userId);
                     ur.setRoleId(Long.valueOf(id));
                     saveDatas.add(ur);
@@ -310,6 +314,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
         }
         return BaseOutput.success("操作成功");
     }
+
 
     @Override
     public EasyuiPageOutput listEasyuiPage(User domain, boolean useProvider) throws Exception {
@@ -343,7 +348,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
         }
 
         if (StringUtils.isNotBlank(user.getFirmCode())) {
-            Firm firmConditon = DTOUtils.newDTO(Firm.class);
+            Firm firmConditon = DTOUtils.newInstance(Firm.class);
             firmConditon.setCode(user.getFirmCode());
             Firm firm = this.firmMapper.selectOne(firmConditon);
             if (firm != null) {
@@ -392,15 +397,13 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
         if(userTicket == null){
             return BaseOutput.failure("用户未登录");
         }
-        UserDataAuth userDataAuth = DTOUtils.newDTO(UserDataAuth.class);
-        userDataAuth.setUserId(userId);
         Map param = new HashMap();
         param.put("userId", userId);
         param.put("loginUserId", userTicket.getId());
         userDataAuthMapper.deleteUserDataAuth(param);
         List<UserDataAuth> saveDatas = Lists.newArrayList();
         //保存用户数据范围信息
-        UserDataAuth ud = DTOUtils.newDTO(UserDataAuth.class);
+        UserDataAuth ud = DTOUtils.newInstance(UserDataAuth.class);
         ud.setUserId(userId);
         ud.setValue(String.valueOf(dataRange));
         ud.setRefCode(DataAuthType.DATA_RANGE.getCode());
@@ -408,7 +411,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
         //需要保存的用户部门和市场信息
         if (null != dataIds && dataIds.length > 0) {
             for (String id : dataIds) {
-                ud = DTOUtils.newDTO(UserDataAuth.class);
+                ud = DTOUtils.newInstance(UserDataAuth.class);
                 ud.setUserId(userId);
                 if (id.startsWith(UapConstants.FIRM_PREFIX)) {
                     ud.setRefCode(DataAuthType.MARKET.getCode());
@@ -431,7 +434,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
     @Transactional(rollbackFor = Exception.class)
     public BaseOutput unlock(Long userId) {
         //解锁-设置状态为已启用
-        User user = DTOUtils.newDTO(User.class);
+        User user = DTOUtils.newInstance(User.class);
         user.setId(userId);
         user.setState(UserState.NORMAL.getCode());
         this.updateSelective(user);
@@ -458,11 +461,11 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
     @Transactional(rollbackFor = Exception.class)
     public int delete(Long id) {
         //删除用户数据权限关系
-        UserDataAuth userDataAuth = DTOUtils.newDTO(UserDataAuth.class);
+        UserDataAuth userDataAuth = DTOUtils.newInstance(UserDataAuth.class);
         userDataAuth.setUserId(id);
         userDataAuthMapper.delete(userDataAuth);
         //删除用户-角色关系
-        UserRole userRole = DTOUtils.newDTO(UserRole.class);
+        UserRole userRole = DTOUtils.newInstance(UserRole.class);
         userRole.setUserId(id);
         userRoleMapper.delete(userRole);
         //删除用户本身

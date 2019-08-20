@@ -65,7 +65,7 @@ public class IndexController {
 			String systemCode = request.getParameter("systemCode") == null ? UapConstants.UAP_SYSTEM_CODE : request.getParameter("systemCode");
 			modelMap.put("systemCode", systemCode);
 			if(systemCode.equals(UapConstants.UAP_SYSTEM_CODE)){
-				System condition = DTOUtils.newDTO(System.class);
+				System condition = DTOUtils.newInstance(System.class);
 				condition.setCode(UapConstants.UAP_SYSTEM_CODE);
 				List<System> uap = systemService.listByExample(condition);
 				if(CollectionUtils.isEmpty(uap)){

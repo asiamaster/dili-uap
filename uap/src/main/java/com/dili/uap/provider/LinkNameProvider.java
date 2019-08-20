@@ -32,7 +32,7 @@ public class LinkNameProvider extends BatchDisplayTextProviderSupport {
 
     @Override
     protected BatchProviderMeta getBatchProviderMeta(Map metaMap) {
-        BatchProviderMeta batchProviderMeta = DTOUtils.newDTO(BatchProviderMeta.class);
+        BatchProviderMeta batchProviderMeta = DTOUtils.newInstance(BatchProviderMeta.class);
         //设置主DTO和关联DTO需要转义的字段名，这里直接取resource表的name属性
         batchProviderMeta.setEscapeFiled("name");
         //忽略大小写关联
@@ -50,7 +50,7 @@ public class LinkNameProvider extends BatchDisplayTextProviderSupport {
         for(String relationId : relationIds){
             ids.add(Long.parseLong(relationId));
         }
-        MenuCondition menuCondition = DTOUtils.newDTO(MenuCondition.class);
+        MenuCondition menuCondition = DTOUtils.newInstance(MenuCondition.class);
         menuCondition.setIds(ids);
         return menuService.listByExample(menuCondition);
     }

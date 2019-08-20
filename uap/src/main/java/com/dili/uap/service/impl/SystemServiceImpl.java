@@ -41,7 +41,7 @@ public class SystemServiceImpl extends BaseServiceImpl<System, Long> implements 
 	public BaseOutput<Object> insertAfterCheck(System system) {
 		
 		//根据名称和系统查询
-		System systemNameCondition = DTOUtils.newDTO(System.class);
+		System systemNameCondition = DTOUtils.newInstance(System.class);
 		systemNameCondition.setName(system.getName());
 //		systemNameCondition.setFirmCode(system.getFirmCode());
 
@@ -50,7 +50,7 @@ public class SystemServiceImpl extends BaseServiceImpl<System, Long> implements 
 			return BaseOutput.failure("存在相同名称的系统");
 		}
 		//根据编码和系统查询
-		System systemCodeCondition = DTOUtils.newDTO(System.class);
+		System systemCodeCondition = DTOUtils.newInstance(System.class);
 		systemCodeCondition.setCode(system.getCode());
 //		systemCodeCondition.setFirmCode(system.getFirmCode());
 		
@@ -71,7 +71,7 @@ public class SystemServiceImpl extends BaseServiceImpl<System, Long> implements 
 	public BaseOutput<Object> updateAfterCheck(System system) {
 		
 		//根据名称和系统查询
-		System systemNameCondition = DTOUtils.newDTO(System.class);
+		System systemNameCondition = DTOUtils.newInstance(System.class);
 		systemNameCondition.setName(system.getName());
 //		systemNameCondition.setFirmCode(system.getFirmCode());
 
@@ -80,7 +80,7 @@ public class SystemServiceImpl extends BaseServiceImpl<System, Long> implements 
 			return BaseOutput.failure("存在相同名称的系统");
 		}
 		//根据编码和系统查询
-		System systemCodeCondition = DTOUtils.newDTO(System.class);
+		System systemCodeCondition = DTOUtils.newInstance(System.class);
 		systemCodeCondition.setCode(system.getCode());
 //		systemCodeCondition.setFirmCode(system.getFirmCode());
 		
@@ -154,7 +154,7 @@ public class SystemServiceImpl extends BaseServiceImpl<System, Long> implements 
 	 * @return
 	 */
 	private boolean hasDataDictionary(System system) {
-		DataDictionary dataDictionaryCondition = DTOUtils.newDTO(DataDictionary.class);
+		DataDictionary dataDictionaryCondition = DTOUtils.newInstance(DataDictionary.class);
 		dataDictionaryCondition.setSystemCode(system.getCode());
 		return this.dataDictionaryMapper.selectCount(dataDictionaryCondition) > 0;
 	}
@@ -164,7 +164,7 @@ public class SystemServiceImpl extends BaseServiceImpl<System, Long> implements 
 	 * @return
 	 */
 	private boolean hasSystemConfig(System system) {
-		SystemConfig systemConfigCondition = DTOUtils.newDTO(SystemConfig.class);
+		SystemConfig systemConfigCondition = DTOUtils.newInstance(SystemConfig.class);
 		systemConfigCondition.setSystemCode(system.getCode());
 		return this.systemConfigMapper.selectCount(systemConfigCondition) > 0;
 	}
@@ -174,7 +174,7 @@ public class SystemServiceImpl extends BaseServiceImpl<System, Long> implements 
 	 * @return
 	 */
 	private boolean hasMenu(System system) {
-		Menu menuCondition = DTOUtils.newDTO(Menu.class);
+		Menu menuCondition = DTOUtils.newInstance(Menu.class);
 		menuCondition.setSystemId(system.getId());
 		return this.menuMapper.selectCount(menuCondition) > 0;
 	}

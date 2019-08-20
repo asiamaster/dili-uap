@@ -108,7 +108,7 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, Long> implements Menu
             return null;
         }
         String[] parentIdArr = parentIds.split(",");
-        MenuCondition menuCondition = DTOUtils.newDTO(MenuCondition.class);
+        MenuCondition menuCondition = DTOUtils.newInstance(MenuCondition.class);
         //递归查出来的父id需要反转
         List ids = Arrays.asList(parentIdArr);
         Collections.reverse(ids);
@@ -129,7 +129,7 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, Long> implements Menu
 
     @Override
     public List<Menu> getParentMenusByUrl(String url){
-        Menu menu = DTOUtils.newDTO(Menu.class);
+        Menu menu = DTOUtils.newInstance(Menu.class);
         menu.setUrl(url);
         List<Menu> menus = getActualDao().select(menu);
         if(menus == null || menus.isEmpty()){
@@ -177,13 +177,13 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, Long> implements Menu
 
     @Override
     public String deleteMenu(Long id) {
-        Menu menu = DTOUtils.newDTO(Menu.class);
+        Menu menu = DTOUtils.newInstance(Menu.class);
         menu.setParentId(id);
         List children = getActualDao().select(menu);
         if(!children.isEmpty()){
             return "菜单下有子菜单，无法删除";
         }
-        Resource resource = DTOUtils.newDTO(Resource.class);
+        Resource resource = DTOUtils.newInstance(Resource.class);
         resource.setMenuId(id);
         List resources = resourceMapper.select(resource);
         if(!resources.isEmpty()){
@@ -191,13 +191,13 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, Long> implements Menu
         }
 
         //删除菜单角色关系
-        RoleMenu roleMenu = DTOUtils.newDTO(RoleMenu.class);
+        RoleMenu roleMenu = DTOUtils.newInstance(RoleMenu.class);
         roleMenu.setMenuId(id);
         roleMenuMapper.delete(roleMenu);
         //删除菜单
         delete(id);
         //级联更新ResourceLink,先获取原始Menu
-        ResourceLink resourceLinkCondition = DTOUtils.newDTO(ResourceLink.class);
+        ResourceLink resourceLinkCondition = DTOUtils.newInstance(ResourceLink.class);
         resourceLinkCondition.setMenuId(id);
         resourceLinkService.deleteByExample(resourceLinkCondition);
         return null;

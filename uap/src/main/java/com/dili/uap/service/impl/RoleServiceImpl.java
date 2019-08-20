@@ -5,11 +5,14 @@ import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.constants.UapConstants;
 import com.dili.uap.dao.*;
-import com.dili.uap.domain.*;
-import com.dili.uap.sdk.domain.System;
+import com.dili.uap.domain.Role;
+import com.dili.uap.domain.RoleMenu;
+import com.dili.uap.domain.RoleResource;
+import com.dili.uap.domain.UserRole;
 import com.dili.uap.domain.dto.SystemResourceDto;
 import com.dili.uap.glossary.MenuType;
 import com.dili.uap.glossary.Yn;
+import com.dili.uap.sdk.domain.System;
 import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.service.RoleService;
@@ -72,7 +75,7 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements Role
     @Transactional(rollbackFor = Exception.class)
     public BaseOutput save(Role role) {
         //检查同一市场内，名称是否重复
-        Role query = DTOUtils.newDTO(Role.class);
+        Role query = DTOUtils.newInstance(Role.class);
         query.setRoleName(role.getRoleName());
         query.setFirmCode(role.getFirmCode());
         List<Role> roles = this.list(query);
@@ -185,7 +188,7 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements Role
          */
         systemList.stream().forEach(s -> {
             if (hasMenu.contains(s.getId())){
-                SystemResourceDto dto = DTOUtils.newDTO(SystemResourceDto.class);
+                SystemResourceDto dto = DTOUtils.newInstance(SystemResourceDto.class);
                 dto.setTreeId(UapConstants.SYSTEM_PREFIX + s.getId());
                 dto.setName(s.getName());
                 dto.setDescription(s.getDescription());
@@ -215,14 +218,14 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements Role
             for (String id : resourceIds) {
                 //如果是菜单关系，则组装角色-菜单信息
                 if (id.startsWith(UapConstants.MENU_PREFIX)) {
-                    RoleMenu roleMenu = DTOUtils.newDTO(RoleMenu.class);
+                    RoleMenu roleMenu = DTOUtils.newInstance(RoleMenu.class);
                     roleMenu.setMenuId(Long.valueOf(id.replace(UapConstants.MENU_PREFIX, "")));
                     roleMenu.setRoleId(roleId);
                     roleMenus.add(roleMenu);
                 }
                 //如果是资源关系，则组装角色-资源信息
                 if (id.startsWith(UapConstants.RESOURCE_PREFIX)) {
-                    RoleResource roleResource = DTOUtils.newDTO(RoleResource.class);
+                    RoleResource roleResource = DTOUtils.newInstance(RoleResource.class);
                     roleResource.setResourceId(Long.valueOf(id.replace(UapConstants.RESOURCE_PREFIX, "")));
                     roleResource.setRoleId(roleId);
                     roleResources.add(roleResource);
@@ -251,7 +254,7 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements Role
         if (null == roleId || null == userId) {
             return BaseOutput.failure("参数错误");
         }
-        UserRole ur = DTOUtils.newDTO(UserRole.class);
+        UserRole ur = DTOUtils.newInstance(UserRole.class);
         ur.setRoleId(roleId);
         ur.setUserId(userId);
         List<UserRole> userRoles = userRoleMapper.select(ur);

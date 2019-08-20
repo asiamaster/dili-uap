@@ -304,10 +304,10 @@ function renderMenuGrid(node, gridId) {
                     panelHeight:'auto',
                     data : [{
                         name : '否',
-                        value : 0
+                        value : "0"
                     }, {
                         name : '是',
-                        value : 1
+                        value : "1"
                     }]
                 }
             }

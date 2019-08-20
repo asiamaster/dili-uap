@@ -44,7 +44,7 @@ public class SystemProvider implements ValueProvider {
 		System system = systemService.list(null).stream()
 				.filter(f -> f.getId().equals(systemId))
 				.findFirst()
-				.orElse(DTOUtils.newDTO(System.class));
+				.orElse(DTOUtils.newInstance(System.class));
 		return system.getName();
 	}
 

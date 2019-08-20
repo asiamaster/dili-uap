@@ -31,7 +31,7 @@ public class MarketSourceService implements DataAuthSourceService {
         Map<String, Map> retMap = new HashMap<>();
         for(String value : values){
             Map<String, Object> valueMap = new HashedMap();
-            Firm firm = DTOUtils.newDTO(Firm.class);
+            Firm firm = DTOUtils.newInstance(Firm.class);
             firm.setCode(value);
             firm = firmMapper.selectOne(firm);
             if(firm == null){

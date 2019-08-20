@@ -70,7 +70,7 @@ public class UserController {
         String firmCode = SessionContext.getSessionContext().getUserTicket().getFirmCode();
         //用户是否属于集团
         Boolean isGroup = false;
-        Firm query = DTOUtils.newDTO(Firm.class);
+        Firm query = DTOUtils.newInstance(Firm.class);
         if (UapConstants.GROUP_CODE.equals(firmCode)) {
             isGroup = true;
         } else {
@@ -221,7 +221,7 @@ public class UserController {
         BaseOutput<Map<String, Object>> output = BaseOutput.success();
         Map map = Maps.newHashMap();
         //获取数据权限的可选范围
-        DataAuthRef dataAuthRef = DTOUtils.newDTO(DataAuthRef.class);
+        DataAuthRef dataAuthRef = DTOUtils.newInstance(DataAuthRef.class);
         dataAuthRef.setCode(DataAuthType.DATA_RANGE.getCode());
         List<DataAuthRef> dataAuthRefs = dataAuthRefService.list(dataAuthRef);
 
@@ -230,7 +230,7 @@ public class UserController {
         //获取用户的数据权限
         map.put("userDatas", userService.getUserDataAuthForTree(id));
         //查询当前用户所属的权限范围
-        UserDataAuth userDataAuth = DTOUtils.newDTO(UserDataAuth.class);
+        UserDataAuth userDataAuth = DTOUtils.newInstance(UserDataAuth.class);
         userDataAuth.setUserId(id);
         userDataAuth.setRefCode(DataAuthType.DATA_RANGE.getCode());
         List<UserDataAuth> userDataAuths = userDataAuthService.list(userDataAuth);
@@ -268,7 +268,7 @@ public class UserController {
         String firmCode = SessionContext.getSessionContext().getUserTicket().getFirmCode();
         //用户是否属于集团
         Boolean isGroup = false;
-        Firm query = DTOUtils.newDTO(Firm.class);
+        Firm query = DTOUtils.newInstance(Firm.class);
         if (UapConstants.GROUP_CODE.equals(firmCode)) {
             isGroup = true;
         } else {

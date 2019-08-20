@@ -52,7 +52,7 @@ public class RoleController {
         String firmCode = SessionContext.getSessionContext().getUserTicket().getFirmCode();
         //用户是否属于集团
         Boolean isGroup = false;
-        Firm query = DTOUtils.newDTO(Firm.class);
+        Firm query = DTOUtils.newInstance(Firm.class);
         if (UapConstants.GROUP_CODE.equals(firmCode)) {
             isGroup = true;
         } else {
@@ -123,7 +123,7 @@ public class RoleController {
         if (StringUtils.isNotBlank(validator)){
             return BaseOutput.failure(validator);
         }
-        Role updateRole = DTOUtils.newDTO(Role.class);
+        Role updateRole = DTOUtils.newInstance(Role.class);
         updateRole.setId(role.getId());
         updateRole.setDescription(role.getDescription());
         updateRole.setRoleName(role.getRoleName());

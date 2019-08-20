@@ -34,7 +34,7 @@ public class DepartmentProvider extends BatchDisplayTextProviderAdaptor {
 
     @Override
     protected List getFkList(List<String> ids, Map map) {
-        DepartmentDto departmentDto = DTOUtils.newDTO(DepartmentDto.class);
+        DepartmentDto departmentDto = DTOUtils.newInstance(DepartmentDto.class);
         departmentDto.setIds(ids);
         return departmentService.list(departmentDto);
     }

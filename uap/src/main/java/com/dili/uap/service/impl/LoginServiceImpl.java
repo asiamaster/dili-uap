@@ -106,7 +106,7 @@ public class LoginServiceImpl implements LoginService {
 		if (loginDto.getPassword().length() < 6 || loginDto.getPassword().length() > 20) {
 			return BaseOutput.failure("密码长度不能小于6位或大于20位!").setCode(ResultCode.PARAMS_ERROR);
 		}
-		User record = DTOUtils.newDTO(User.class);
+		User record = DTOUtils.newInstance(User.class);
 		record.setUserName(loginDto.getUserName());
 		User user = this.userMapper.selectOne(record);
 		if (user == null) {
@@ -137,7 +137,7 @@ public class LoginServiceImpl implements LoginService {
 		if (loginDto.getPassword().length() < 6 || loginDto.getPassword().length() > 20) {
 			return BaseOutput.failure("密码长度不能小于6位或大于20位!").setCode(ResultCode.PARAMS_ERROR);
 		}
-		User record = DTOUtils.newDTO(User.class);
+		User record = DTOUtils.newInstance(User.class);
 		record.setUserName(loginDto.getUserName());
 		User user = this.userMapper.selectOne(record);
 		if (user == null) {
@@ -184,7 +184,7 @@ public class LoginServiceImpl implements LoginService {
 			if (loginDto.getPassword().length() < 6 || loginDto.getPassword().length() > 20) {
 				return BaseOutput.failure("密码长度不能小于6位或大于20位!").setCode(ResultCode.PARAMS_ERROR);
 			}
-			User record = DTOUtils.newDTO(User.class);
+			User record = DTOUtils.newInstance(User.class);
 			record.setUserName(loginDto.getUserName());
 			User user = this.userMapper.selectOne(record);
 			if (user == null) {
@@ -237,7 +237,7 @@ public class LoginServiceImpl implements LoginService {
 			// 缓存用户相关信息到Redis
 			makeRedisTag(user, sessionId);
 			// 构建返回的登录信息
-			LoginResult loginResult = DTOUtils.newDTO(LoginResult.class);
+			LoginResult loginResult = DTOUtils.newInstance(LoginResult.class);
 			// 返回用户信息需要屏蔽用户的密码
 			user.setPassword(null);
 			loginResult.setUser(user);
@@ -269,7 +269,7 @@ public class LoginServiceImpl implements LoginService {
 		if (StringUtils.isBlank(userId)) {
 			return BaseOutput.failure("用户未登录！");
 		}
-		User record = DTOUtils.newDTO(User.class);
+		User record = DTOUtils.newInstance(User.class);
 		record.setId(Long.valueOf(userId));
 		User user = this.userMapper.selectOne(record);
 		makeCookieTag(user, sessionId);
@@ -292,7 +292,7 @@ public class LoginServiceImpl implements LoginService {
 				loginLog.setType(LoginType.LOGIN.getCode());
 				// 设置系统名称
 				if (StringUtils.isNotBlank(loginLog.getSystemCode())) {
-					System system = DTOUtils.newDTO(System.class);
+					System system = DTOUtils.newInstance(System.class);
 					system.setCode(loginDto.getSystemCode());
 					List<System> systemList = systemService.listByExample(system);
 					loginLog.setSystemName(systemList.isEmpty() ? loginDto.getSystemCode() : systemList.get(0).getName());
@@ -316,7 +316,7 @@ public class LoginServiceImpl implements LoginService {
 //				loginLog.setLoginTime(new Date());
 				// 设置系统名称
 				if (StringUtils.isNotBlank(loginLog.getSystemCode()) && loginLog.getSystemName() == null) {
-					System system = DTOUtils.newDTO(System.class);
+					System system = DTOUtils.newInstance(System.class);
 					system.setCode(loginLog.getSystemCode());
 					List<System> systemList = systemService.listByExample(system);
 					loginLog.setSystemName(systemList.isEmpty() ? loginLog.getSystemCode() : systemList.get(0).getName());
@@ -433,7 +433,7 @@ public class LoginServiceImpl implements LoginService {
 		}
 		ops.leftPush(String.valueOf(java.lang.System.currentTimeMillis()));
 		// 查询系统配置的密码错误锁定次数
-		SystemConfig systemConfigCondition = DTOUtils.newDTO(SystemConfig.class);
+		SystemConfig systemConfigCondition = DTOUtils.newInstance(SystemConfig.class);
 		systemConfigCondition.setCode(UapConstants.LOGIN_FAILED_TIMES);
 		systemConfigCondition.setSystemCode(UapConstants.UAP_SYSTEM_CODE);
 		SystemConfig systemConfig = systemConfigMapper.selectOne(systemConfigCondition);
@@ -447,7 +447,7 @@ public class LoginServiceImpl implements LoginService {
 		}
 		// 如果当前用户不是锁定状态，则进行锁定
 		if (!user.getState().equals(UserState.LOCKED.getCode())) {
-			User updateUser = DTOUtils.newDTO(User.class);
+			User updateUser = DTOUtils.newInstance(User.class);
 			updateUser.setId(user.getId());
 			updateUser.setLocked(new Date());
 			updateUser.setState(UserState.LOCKED.getCode());

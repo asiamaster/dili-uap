@@ -40,7 +40,7 @@ public class ResourceNameProvider extends BatchDisplayTextProviderSupport {
 			getQueryParams().clear();
 			setQueryParams(JSONObject.parseObject(queryParams.toString()));
 		}
-		Resource resource = DTOUtils.newDTO(Resource.class);
+		Resource resource = DTOUtils.newInstance(Resource.class);
 		Object menuId = getQueryParams().get("menuId");
 		if(menuId == null || !menuId.toString().startsWith("menu_")){
 			return null;
@@ -54,7 +54,7 @@ public class ResourceNameProvider extends BatchDisplayTextProviderSupport {
 
 	@Override
 	protected BatchProviderMeta getBatchProviderMeta(Map metaMap) {
-		BatchProviderMeta batchProviderMeta = DTOUtils.newDTO(BatchProviderMeta.class);
+		BatchProviderMeta batchProviderMeta = DTOUtils.newInstance(BatchProviderMeta.class);
 		//设置主DTO和关联DTO需要转义的字段名，这里直接取resource表的name属性
 		Map<String, String> map = Maps.newHashMap();
 		map.put(metaMap.get(FIELD_KEY).toString(), "name");
@@ -71,7 +71,7 @@ public class ResourceNameProvider extends BatchDisplayTextProviderSupport {
 
 	@Override
 	protected List getFkList(List<String> relationIds, Map metaMap) {
-		ResourceDto resourceDto = DTOUtils.newDTO(ResourceDto.class);
+		ResourceDto resourceDto = DTOUtils.newInstance(ResourceDto.class);
 		resourceDto.setCodes(relationIds);
 		return resourceService.listByExample(resourceDto);
 	}

@@ -47,7 +47,7 @@ public class ResourceController {
             @ApiImplicitParam(name = "menuId", paramType = "Long", value = "menuId", required = false, dataType = "Long") })
     @RequestMapping(value = "/list.action", method = { RequestMethod.GET, RequestMethod.POST })
     public @ResponseBody List<Resource> list(@RequestParam String menuId) {
-        Resource query = DTOUtils.newDTO(Resource.class);
+        Resource query = DTOUtils.newInstance(Resource.class);
         if(menuId.startsWith("menu_")){
             query.setMenuId(Long.parseLong(menuId.substring(5)));
         }
@@ -127,10 +127,10 @@ public class ResourceController {
         }
         //级联更新ResourceLink,先获取原始ResourceCode
         Resource resource1 = resourceService.get(resource.getId());
-        ResourceLink resourceLinkCondition = DTOUtils.newDTO(ResourceLink.class);
+        ResourceLink resourceLinkCondition = DTOUtils.newInstance(ResourceLink.class);
         resourceLinkCondition.setResourceCode(resource1.getCode());
         resourceService.updateSelective(resource);
-        ResourceLink resourceLink = DTOUtils.newDTO(ResourceLink.class);
+        ResourceLink resourceLink = DTOUtils.newInstance(ResourceLink.class);
         resourceLink.setResourceCode(resource.getCode());
         resourceLinkService.updateSelectiveByExample(resourceLink, resourceLinkCondition);
         return BaseOutput.success("修改成功");
@@ -145,7 +145,7 @@ public class ResourceController {
         //级联更新ResourceLink,先获取原始ResourceCode
         Resource resource = resourceService.get(id);
         resourceService.delete(id);
-        ResourceLink resourceLinkCondition = DTOUtils.newDTO(ResourceLink.class);
+        ResourceLink resourceLinkCondition = DTOUtils.newInstance(ResourceLink.class);
         resourceLinkCondition.setResourceCode(resource.getCode());
         resourceLinkService.deleteByExample(resourceLinkCondition);
         return BaseOutput.success("删除成功");

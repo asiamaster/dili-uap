@@ -35,7 +35,7 @@ public class FirmApi {
 	@ResponseBody
 	@RequestMapping(value = "/getByCode.api", method = { RequestMethod.GET, RequestMethod.POST })
 	public BaseOutput<Firm> getByCode(@RequestBody String code) {
-		Firm firm  = DTOUtils.newDTO(Firm.class);
+		Firm firm  = DTOUtils.newInstance(Firm.class);
 		firm.setCode(code);
 		List<Firm> firms = firmService.list(firm);
 		if(firms == null || firms.isEmpty()){

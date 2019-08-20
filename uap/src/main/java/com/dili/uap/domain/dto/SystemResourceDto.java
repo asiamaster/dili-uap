@@ -53,7 +53,7 @@ public interface SystemResourceDto extends IBaseDomain {
      * @return
      */
     Integer getMenu();
-    void setMenu(Long menu);
+    void setMenu(Integer menu);
 
     /**
      * 节点状态，'open' 或 'closed'，如果为'closed'的时候，将不自动展开该节点。

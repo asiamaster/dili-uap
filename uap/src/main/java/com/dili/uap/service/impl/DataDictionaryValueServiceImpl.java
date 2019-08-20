@@ -37,7 +37,7 @@ public class DataDictionaryValueServiceImpl extends BaseServiceImpl<DataDictiona
 		if(StringUtils.isBlank(t.getDdCode())){
 			return BaseOutput.failure("系统编码不能为空");
 		}
-		DataDictionaryValue condition=DTOUtils.newDTO(DataDictionaryValue.class);
+		DataDictionaryValue condition=DTOUtils.newInstance(DataDictionaryValue.class);
 		condition.setCode(StringUtils.trim(t.getCode()));
 		condition.setDdCode(StringUtils.trim(t.getDdCode()));
 		int size=this.list(condition).size();
@@ -55,7 +55,7 @@ public class DataDictionaryValueServiceImpl extends BaseServiceImpl<DataDictiona
 		if(StringUtils.isBlank(t.getDdCode())){
 			return BaseOutput.failure("系统编码不能为空");
 		}
-		DataDictionaryValue condition=DTOUtils.newDTO(DataDictionaryValue.class);
+		DataDictionaryValue condition=DTOUtils.newInstance(DataDictionaryValue.class);
 		condition.setCode(StringUtils.trim(t.getCode()));
 		condition.setDdCode(StringUtils.trim(t.getDdCode()));
 		boolean exists=this.list(condition).stream().anyMatch((d)->!d.getId().equals(t.getId()));

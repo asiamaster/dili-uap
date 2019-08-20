@@ -31,7 +31,7 @@ public class DataDictionaryServiceImpl extends BaseServiceImpl<DataDictionary, L
     	
     	//根据code删除数据字典的值
     	if(dataDictionary!=null&&dataDictionary.getCode()!=null) {
-    		DataDictionaryValue condition=DTOUtils.newDTO(DataDictionaryValue.class);
+    		DataDictionaryValue condition=DTOUtils.newInstance(DataDictionaryValue.class);
     		condition.setDdCode(dataDictionary.getCode());
     		int count=this.dataDictionaryValueMapper.selectCount(condition);
     		if(count>0) {
@@ -51,7 +51,7 @@ public class DataDictionaryServiceImpl extends BaseServiceImpl<DataDictionary, L
 		if(StringUtils.isBlank(t.getSystemCode())){
 			return BaseOutput.failure("系统编码不能为空");
 		}
-		DataDictionary condition=DTOUtils.newDTO(DataDictionary.class);
+		DataDictionary condition=DTOUtils.newInstance(DataDictionary.class);
 		condition.setCode(StringUtils.trim(t.getCode()));
 		condition.setSystemCode(StringUtils.trim(t.getSystemCode()));
 		int size=this.list(condition).size();
@@ -69,7 +69,7 @@ public class DataDictionaryServiceImpl extends BaseServiceImpl<DataDictionary, L
 		if(StringUtils.isBlank(t.getSystemCode())){
 			return BaseOutput.failure("系统编码不能为空");
 		}
-		DataDictionary condition=DTOUtils.newDTO(DataDictionary.class);
+		DataDictionary condition=DTOUtils.newInstance(DataDictionary.class);
 		condition.setCode(StringUtils.trim(t.getCode()));
 		condition.setSystemCode(StringUtils.trim(t.getSystemCode()));
 		boolean exists=this.list(condition).stream().anyMatch((d)->!d.getId().equals(t.getId()));

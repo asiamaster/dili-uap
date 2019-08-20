@@ -66,7 +66,7 @@ public class UserApi {
 	@ResponseBody
 	@RequestMapping(value = "/listUserByIds.api", method = { RequestMethod.GET, RequestMethod.POST })
 	public BaseOutput<List<User>> listUserByIds(@RequestBody List<String> ids){
-		UserDto user = DTOUtils.newDTO(UserDto.class);
+		UserDto user = DTOUtils.newInstance(UserDto.class);
 		user.setIds(ids);
 		return BaseOutput.success().setData(userService.listByExample(user));
 	}

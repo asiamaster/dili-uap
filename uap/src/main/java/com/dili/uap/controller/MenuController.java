@@ -109,7 +109,7 @@ public class MenuController {
             @ApiImplicitParam(name = "menuId", paramType = "Long", value = "menuId", required = false, dataType = "Long") })
     @RequestMapping(value = "/list.action", method = { RequestMethod.GET, RequestMethod.POST })
     public @ResponseBody List<Menu> list(@RequestParam String menuId) {
-        Menu query = DTOUtils.newDTO(Menu.class);
+        Menu query = DTOUtils.newInstance(Menu.class);
         if(menuId.startsWith("menu_")){
             query.setParentId(Long.parseLong(menuId.substring(5)));
         }else if(menuId.startsWith("sys_")){
@@ -126,7 +126,7 @@ public class MenuController {
             @ApiImplicitParam(name = "menuId", paramType = "String", value = "menuId", required = false, dataType = "String")})
     @RequestMapping(value = "/listInternalLinks.action", method = { RequestMethod.GET, RequestMethod.POST })
     public @ResponseBody List<Menu> listInternalLinks(@RequestParam String menuId) {
-        Menu query = DTOUtils.newDTO(Menu.class);
+        Menu query = DTOUtils.newInstance(Menu.class);
         if(menuId.startsWith("menu_")){
             query.setParentId(Long.parseLong(menuId.substring(5)));
         }else if(menuId.startsWith("sys_")){
@@ -171,13 +171,13 @@ public class MenuController {
         Menu oldMenu = menuService.get(menu.getId());
         //如果修改了菜单类型，需要判断菜单下面不能有子菜单或资源
         if(!oldMenu.getType().equals(menu.getType())) {
-            Menu condition = DTOUtils.newDTO(Menu.class);
+            Menu condition = DTOUtils.newInstance(Menu.class);
             condition.setParentId(menu.getId());
             List children = menuService.list(condition);
             if (!CollectionUtils.isEmpty(children)) {
                 return BaseOutput.failure("菜单有子节点，不允许修改类型");
             }
-            Resource resouce = DTOUtils.newDTO(Resource.class);
+            Resource resouce = DTOUtils.newInstance(Resource.class);
             resouce.setMenuId(menu.getId());
             List<Resource> resources = resourceService.list(resouce);
             if (!CollectionUtils.isEmpty(resources)) {

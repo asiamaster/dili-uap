@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface UserDto extends User{
 
-    String getOldPassword();
+    default String getOldPassword(){return "123456";};
     void setOldPassword(String oldPassword);
     
     String getNewPassword();

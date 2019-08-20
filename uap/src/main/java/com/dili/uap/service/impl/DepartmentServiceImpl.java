@@ -33,7 +33,7 @@ public class DepartmentServiceImpl extends BaseServiceImpl<Department, Long> imp
     @Override
     @Transactional
     public BaseOutput<Department> insertAfterCheck(Department department) {
-        Department record = DTOUtils.newDTO(Department.class);
+        Department record = DTOUtils.newInstance(Department.class);
         record.setName(department.getName());
         record.setFirmCode(department.getFirmCode());
         int count = this.getActualDao().selectCount(record);
@@ -56,7 +56,7 @@ public class DepartmentServiceImpl extends BaseServiceImpl<Department, Long> imp
     @Override
     @Transactional
     public BaseOutput<Department> updateAfterCheck(Department department) {
-        Department record = DTOUtils.newDTO(Department.class);
+        Department record = DTOUtils.newInstance(Department.class);
         record.setName(department.getName());
         record.setFirmCode(department.getFirmCode());
         Department oldDept = this.getActualDao().selectOne(record);
@@ -84,7 +84,7 @@ public class DepartmentServiceImpl extends BaseServiceImpl<Department, Long> imp
      */
     private String buildErrorMessage(Department department) {
 		String firmName = "";
-		Firm condition = DTOUtils.newDTO(Firm.class);
+		Firm condition = DTOUtils.newInstance(Firm.class);
 		condition.setCode(department.getFirmCode());
 		
 		Firm firm = firmMapper.selectOne(condition);

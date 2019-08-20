@@ -65,7 +65,7 @@ public class LoginController {
 	@ApiImplicitParams({ @ApiImplicitParam(name = "loginDto", paramType = "form", value = "用户信息", required = false, dataType = "string") })
 	@RequestMapping(value = "/getLogin.action", method = { RequestMethod.GET, RequestMethod.POST })
 	public String getLoginAction(@RequestParam("userName") String userName, @RequestParam("password") String password, ModelMap modelMap, HttpServletRequest request) {
-		LoginDto loginDto = DTOUtils.newDTO(LoginDto.class);
+		LoginDto loginDto = DTOUtils.newInstance(LoginDto.class);
 		loginDto.setUserName(userName);
 		loginDto.setPassword(password);
 		return loginAction(loginDto, modelMap, request);
@@ -126,7 +126,7 @@ public class LoginController {
 			userId = userId == null ? userTicket == null ? null : userTicket.getId() : userId;
 			// 如果有用户id，则记录登出日志
 			if (userId != null) {
-				LoginLog loginLog = DTOUtils.newDTO(LoginLog.class);
+				LoginLog loginLog = DTOUtils.newInstance(LoginLog.class);
 				// 设置ip和hosts,用于记录登录日志
 				loginLog.setIp(WebUtil.getRemoteIP(request));
 				loginLog.setHost(request.getRemoteHost());

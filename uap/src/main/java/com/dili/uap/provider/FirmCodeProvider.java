@@ -41,7 +41,7 @@ public class FirmCodeProvider extends BatchDisplayTextProviderAdaptor {
 
 	@Override
 	protected List getFkList(List<String> relationIds, Map metaMap) {
-		FirmQueryDto firmQueryDto = DTOUtils.newDTO(FirmQueryDto.class);
+		FirmQueryDto firmQueryDto = DTOUtils.newInstance(FirmQueryDto.class);
 		firmQueryDto.setCodes(relationIds);
 		return firmService.list(firmQueryDto);
 	}

@@ -150,7 +150,11 @@
 			<groupId>org.reflections</groupId>
 			<artifactId>reflections</artifactId>
 			<version>0.9.11</version>
-
+		</dependency>
+		<dependency>
+			<groupId>org.ehcache</groupId>
+			<artifactId>sizeof</artifactId>
+			<version>0.3.0</version>
 		</dependency>
 	</dependencies>
 

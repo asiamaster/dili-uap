@@ -33,7 +33,7 @@ public class DataAuthRefApi {
 	@ResponseBody
 	@RequestMapping(value = "/listSourcesByCode.api", method = { RequestMethod.GET, RequestMethod.POST })
 	public BaseOutput<List> listSourcesByCode(@RequestBody String refCode) {
-		DataAuthRef dataAuthRef  = DTOUtils.newDTO(DataAuthRef.class);
+		DataAuthRef dataAuthRef  = DTOUtils.newInstance(DataAuthRef.class);
 		dataAuthRef.setCode(refCode);
 		List<DataAuthRef> dataAuthRefs = dataAuthRefService.list(dataAuthRef);
 		if(dataAuthRefs == null || dataAuthRefs.isEmpty()){

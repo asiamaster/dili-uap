@@ -43,7 +43,7 @@ public class SystemConfigApi {
 		if (StringUtils.isBlank(code)){
 			return BaseOutput.success();
 		}
-		SystemConfig query = DTOUtils.newDTO(SystemConfig.class);
+		SystemConfig query = DTOUtils.newInstance(SystemConfig.class);
 		query.setCode(code);
 		return BaseOutput.success().setData(this.systemConfigService.list(query).stream().findFirst().orElseGet(() -> {
 			return null;

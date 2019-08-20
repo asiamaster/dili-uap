@@ -134,7 +134,7 @@ public class DepartmentController {
         if (id.startsWith("department_")) {
             id = id.replace("department_", "");
         }
-        Department department = DTOUtils.newDTO(Department.class);
+        Department department = DTOUtils.newInstance(Department.class);
         department.setParentId(Long.valueOf(id));
         List<Department> departments = departmentService.list(department);
         if(!CollectionUtils.isEmpty(departments)){

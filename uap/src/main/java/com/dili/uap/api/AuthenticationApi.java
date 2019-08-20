@@ -103,7 +103,7 @@ public class AuthenticationApi {
             return BaseOutput.failure(e.getMessage());
         }
         JSONObject jsonObject = JSONObject.parseObject(json);
-        LoginDto loginDto = DTOUtils.newDTO(LoginDto.class);
+        LoginDto loginDto = DTOUtils.newInstance(LoginDto.class);
         loginDto.setUserName(jsonObject.getString("userName"));
         loginDto.setPassword(jsonObject.getString("password"));
         //设置登录后需要返回的上一页URL,用于记录登录地址到Cookie
@@ -131,7 +131,7 @@ public class AuthenticationApi {
         BaseOutput output = systemConfigRpc.list(null);
         java.lang.System.out.println(output);
         JSONObject jsonObject = JSONObject.parseObject(json);
-        LoginDto loginDto = DTOUtils.newDTO(LoginDto.class);
+        LoginDto loginDto = DTOUtils.newInstance(LoginDto.class);
         loginDto.setUserName(jsonObject.getString("userName"));
         loginDto.setPassword(jsonObject.getString("password"));
         return loginService.validateSaveSession(loginDto);
@@ -283,7 +283,7 @@ public class AuthenticationApi {
             return BaseOutput.failure("用户未登录").setCode(ResultCode.NOT_AUTH_ERROR);
         }
         //查询数据权限引用dataAuthRef
-        DataAuthRef dataAuthRef = DTOUtils.newDTO(DataAuthRef.class);
+        DataAuthRef dataAuthRef = DTOUtils.newInstance(DataAuthRef.class);
         dataAuthRef.setCode(refCode);
         List<DataAuthRef> dataAuthRefs = this.dataAuthRefService.list(dataAuthRef);
         if(CollectionUtils.isEmpty(dataAuthRefs)){
@@ -313,7 +313,7 @@ public class AuthenticationApi {
             return BaseOutput.failure("会话id不存在").setCode(ResultCode.PARAMS_ERROR);
         }
         Long userId = userRedis.getSessionUserId(sessionId);
-        UserDto userDto = DTOUtils.newDTO(UserDto.class);
+        UserDto userDto = DTOUtils.newInstance(UserDto.class);
         userDto.setId(userId);
         userDto.setNewPassword(newPassword);
         userDto.setConfirmPassword(confirmPassword);

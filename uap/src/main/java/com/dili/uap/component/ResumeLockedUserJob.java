@@ -52,7 +52,7 @@ public class ResumeLockedUserJob implements ApplicationListener<ContextRefreshed
 	 * 恢复锁定用户
 	 */
 	private void resumeLockedUser(){
-		User user = DTOUtils.newDTO(User.class);
+		User user = DTOUtils.newInstance(User.class);
 		user.setState(UserState.LOCKED.getCode());
 		List<User> lockedUsers = userService.listByExample(user);
 		if(lockedUsers.isEmpty()){
@@ -60,7 +60,7 @@ public class ResumeLockedUserJob implements ApplicationListener<ContextRefreshed
 		}
 		Long now = System.currentTimeMillis();
 		//查询锁定用户恢复时长
-		SystemConfig systemConfigCondition = DTOUtils.newDTO(SystemConfig.class);
+		SystemConfig systemConfigCondition = DTOUtils.newInstance(SystemConfig.class);
 		systemConfigCondition.setCode(UapConstants.RESUME_DURATION);
         systemConfigCondition.setSystemCode(UapConstants.UAP_SYSTEM_CODE);
 		SystemConfig systemConfig = systemConfigMapper.selectOne(systemConfigCondition);

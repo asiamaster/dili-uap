@@ -33,7 +33,7 @@ public class DataAuthManagerImpl implements DataAuthManager {
 
 	@Override
 	public void initUserDataAuthesInRedis(Long userId) {
-		UserDataAuth userDataAuth = DTOUtils.newDTO(UserDataAuth.class);
+		UserDataAuth userDataAuth = DTOUtils.newInstance(UserDataAuth.class);
 		userDataAuth.setUserId(userId);
 		//查询数据权限，需要合并下面的部门数据权限列表
 		List<UserDataAuth> userDataAuths = this.userDataAuthMapper.select(userDataAuth);
@@ -51,7 +51,7 @@ public class DataAuthManagerImpl implements DataAuthManager {
 
 	@Override
 	public List<UserDataAuth> listUserDataAuthesByRefCode(Long userId, String refCode) {
-		UserDataAuth userDataAuth = DTOUtils.newDTO(UserDataAuth.class);
+		UserDataAuth userDataAuth = DTOUtils.newInstance(UserDataAuth.class);
 		userDataAuth.setUserId(userId);
 		userDataAuth.setRefCode(refCode);
 		return this.userDataAuthMapper.select(userDataAuth);
@@ -59,7 +59,7 @@ public class DataAuthManagerImpl implements DataAuthManager {
 
 	@Override
 	public List<UserDataAuth> listUserDataAuthes(Long userId) {
-		UserDataAuth userDataAuth = DTOUtils.newDTO(UserDataAuth.class);
+		UserDataAuth userDataAuth = DTOUtils.newInstance(UserDataAuth.class);
 		userDataAuth.setUserId(userId);
 		return this.userDataAuthMapper.select(userDataAuth);
 	}

@@ -25,7 +25,7 @@ public class InitListener implements ApplicationListener<ContextRefreshedEvent> 
 	@Override
 	public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
 		//根据系统配置设置登录超时时长，默认为30分钟
-		SystemConfig systemConfig = DTOUtils.newDTO(SystemConfig.class);
+		SystemConfig systemConfig = DTOUtils.newInstance(SystemConfig.class);
 		systemConfig.setSystemCode(UapConstants.UAP_SYSTEM_CODE);
 		systemConfig.setCode(SessionConstants.SESSION_TIMEOUT_CONFIG_KEY);
 		systemConfig = systemConfigMapper.selectOne(systemConfig);

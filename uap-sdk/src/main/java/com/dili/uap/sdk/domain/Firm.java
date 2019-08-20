@@ -7,6 +7,7 @@ import com.dili.ss.metadata.annotation.FieldDef;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 由MyBatis Generator工具自动生成
@@ -65,4 +66,13 @@ public interface Firm extends IBaseDomain {
     Date getModified();
 
     void setModified(Date modified);
+
+    List<String> getNames();
+    void setNames(List<String> names);
+
+    List<User> getUsers();
+    void setUsers(List<User> users);
+
+    User getUser();
+    void setUser(User user);
 }
