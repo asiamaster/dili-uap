@@ -8,12 +8,15 @@ import com.dili.uap.sdk.domain.User;
 import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.exception.NotLoginException;
 import com.dili.uap.sdk.redis.UserSystemRedis;
+import com.dili.uap.sdk.session.SessionConstants;
 import com.dili.uap.sdk.session.SessionContext;
+import com.dili.uap.sdk.util.WebContent;
 import com.dili.uap.service.MenuService;
 import com.dili.uap.service.SystemService;
 import com.dili.uap.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -97,7 +100,7 @@ public class IndexController {
 
 	@ApiOperation("跳转到平台页面")
 	@RequestMapping(value = "/platform.html", method = RequestMethod.GET)
-	public String platform(ModelMap modelMap) {
+	public String platform(ModelMap modelMap, HttpServletRequest req) {
 		UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
 		if (userTicket != null) {
 			List<System> systems = systemService.listByUserId(userTicket.getId());
@@ -105,6 +108,7 @@ public class IndexController {
 			if(user == null){
 				throw new NotLoginException("登录用户不存在");
 			}
+			modelMap.put("sessionId", getSessionId(req));
 			modelMap.put("userName", user.getUserName());
 			modelMap.put("password", user.getPassword());
 			modelMap.put("systems", systems);
@@ -115,6 +119,21 @@ public class IndexController {
 		} else {
 			return LoginController.REDIRECT_INDEX_PAGE;
 		}
+	}
+
+	public String getSessionId(HttpServletRequest req) {
+		String sessionId = null;
+			//首先读取链接中的session
+			sessionId = req.getParameter(SessionConstants.SESSION_ID);
+			if(StringUtils.isBlank(sessionId)) {
+				sessionId = req.getHeader(SessionConstants.SESSION_ID);
+			}
+			if (StringUtils.isNotBlank(sessionId)) {
+				WebContent.setCookie(SessionConstants.SESSION_ID, sessionId);
+			} else {
+				sessionId = WebContent.getCookieVal(SessionConstants.SESSION_ID);
+			}
+		return sessionId;
 	}
 
 	@ApiOperation("跳转到功能列表页面")
