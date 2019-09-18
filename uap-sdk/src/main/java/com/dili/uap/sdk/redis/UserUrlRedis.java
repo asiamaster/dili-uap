@@ -1,8 +1,8 @@
 package com.dili.uap.sdk.redis;
 
+import com.dili.ss.redis.service.RedisUtil;
 import com.dili.uap.sdk.exception.ParameterException;
 import com.dili.uap.sdk.session.SessionConstants;
-import com.dili.uap.sdk.util.ManageRedisUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ public class UserUrlRedis {
     private static final Logger log = LoggerFactory.getLogger(UserUrlRedis.class);
 
     @Autowired
-    private ManageRedisUtil redisUtil;
+    private RedisUtil redisUtil;
 
     /**
      * 根据用户ID判断访问url的权限

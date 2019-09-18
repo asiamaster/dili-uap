@@ -2,11 +2,11 @@ package com.dili.uap.manager.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.dili.ss.dto.DTOUtils;
+import com.dili.ss.redis.service.RedisUtil;
 import com.dili.uap.dao.UserDataAuthMapper;
-import com.dili.uap.sdk.domain.UserDataAuth;
 import com.dili.uap.manager.DataAuthManager;
+import com.dili.uap.sdk.domain.UserDataAuth;
 import com.dili.uap.sdk.session.SessionConstants;
-import com.dili.uap.sdk.util.ManageRedisUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +29,7 @@ public class DataAuthManagerImpl implements DataAuthManager {
 	private UserDataAuthMapper userDataAuthMapper;
 
 	@Autowired
-	private ManageRedisUtil redisUtil;
+	private RedisUtil redisUtil;
 
 	@Override
 	public void initUserDataAuthesInRedis(Long userId) {

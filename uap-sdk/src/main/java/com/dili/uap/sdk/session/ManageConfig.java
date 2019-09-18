@@ -1,6 +1,6 @@
 package com.dili.uap.sdk.session;
 
-import com.dili.uap.sdk.util.ManageRedisUtil;
+import com.dili.ss.redis.service.RedisUtil;
 import com.dili.uap.sdk.util.WebContent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -47,7 +47,7 @@ public class ManageConfig {
 	private Boolean userLimitOne = false;
 
 	@Autowired
-	private ManageRedisUtil redisUtil;
+	private RedisUtil redisUtil;
 
 	/**
 	 * 是否包含
@@ -113,7 +113,7 @@ public class ManageConfig {
 		return domain;
 	}
 
-	public ManageRedisUtil getRedisUtil() {
+	public RedisUtil getRedisUtil() {
 		return redisUtil;
 	}
 

@@ -4,24 +4,23 @@ import com.alibaba.fastjson.JSON;
 import com.dili.ss.constant.ResultCode;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
+import com.dili.ss.redis.service.RedisUtil;
 import com.dili.uap.constants.UapConstants;
 import com.dili.uap.dao.SystemConfigMapper;
 import com.dili.uap.dao.UserMapper;
 import com.dili.uap.domain.LoginLog;
-import com.dili.uap.sdk.domain.System;
-import com.dili.uap.sdk.domain.SystemConfig;
-import com.dili.uap.sdk.domain.User;
 import com.dili.uap.domain.dto.LoginDto;
 import com.dili.uap.domain.dto.LoginResult;
 import com.dili.uap.glossary.LoginType;
 import com.dili.uap.glossary.UserState;
 import com.dili.uap.glossary.Yn;
 import com.dili.uap.manager.*;
+import com.dili.uap.sdk.domain.System;
+import com.dili.uap.sdk.domain.SystemConfig;
+import com.dili.uap.sdk.domain.User;
 import com.dili.uap.sdk.manager.SessionRedisManager;
 import com.dili.uap.sdk.session.ManageConfig;
 import com.dili.uap.sdk.session.SessionConstants;
-import com.dili.uap.sdk.session.SessionContext;
-import com.dili.uap.sdk.util.ManageRedisUtil;
 import com.dili.uap.sdk.util.WebContent;
 import com.dili.uap.service.LoginLogService;
 import com.dili.uap.service.LoginService;
@@ -63,7 +62,7 @@ public class LoginServiceImpl implements LoginService {
 	private Integer pwdErrorCount;
 
 	@Autowired
-	private ManageRedisUtil redisUtil;
+	private RedisUtil redisUtil;
 
 	@Autowired
 	private MenuManager menuManager;

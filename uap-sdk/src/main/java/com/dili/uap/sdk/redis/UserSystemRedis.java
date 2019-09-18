@@ -1,10 +1,10 @@
 package com.dili.uap.sdk.redis;
 
 import com.dili.ss.dto.DTOUtils;
+import com.dili.ss.redis.service.RedisUtil;
 import com.dili.uap.sdk.domain.System;
 import com.dili.uap.sdk.exception.ParameterException;
 import com.dili.uap.sdk.session.SessionConstants;
-import com.dili.uap.sdk.util.ManageRedisUtil;
 import com.dili.uap.sdk.util.SerializeUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -26,7 +26,7 @@ public class UserSystemRedis {
     private static final Logger log = LoggerFactory.getLogger(UserSystemRedis.class);
 
     @Autowired
-    private ManageRedisUtil redisUtil;
+    private RedisUtil redisUtil;
 
     /**
      * 根据用户ID判断访问系统的权限

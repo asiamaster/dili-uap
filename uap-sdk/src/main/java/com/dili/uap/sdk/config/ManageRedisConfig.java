@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,19 +29,19 @@ import java.time.Duration;
  * @author asiamastor
  */
 
-@Configuration("manageRedisConfig")
-//@ConfigurationProperties(prefix = "manage.redis",locations = {"classpath:conf/manage-${spring.profiles.active}.properties"})
-@ConfigurationProperties(prefix = "manage.redis")
-@PropertySource({"classpath:conf/manage-${spring.profiles.active}.properties"})
+//@Configuration("manageRedisConfig")
+////@ConfigurationProperties(prefix = "manage.redis",locations = {"classpath:conf/manage-${spring.profiles.active}.properties"})
+//@ConfigurationProperties(prefix = "manage.redis")
+//@PropertySource({"classpath:conf/manage-${spring.profiles.active}.properties"})
 public class ManageRedisConfig {
 
 //    @Value("${manage.redis.host}")
     private String host;
 //    @Value("${manage.redis.port}")
     private Integer port = 6379;
-
+    private String password;
     private Integer database = 0;
-    @Bean("manageJedisConnectionFactory")
+    @Bean("manageRedisConnectionFactory")
     public JedisConnectionFactory redisConnectionFactory() {
 //        JedisConnectionFactory redisConnectionFactory = new JedisConnectionFactory();
 //        // Defaults
@@ -51,8 +52,8 @@ public class ManageRedisConfig {
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration ();
         redisStandaloneConfiguration.setHostName(host);
         redisStandaloneConfiguration.setPort(port);
+        redisStandaloneConfiguration.setPassword(password);
         redisStandaloneConfiguration.setDatabase(database);
-//        redisStandaloneConfiguration.setPassword(password);
 
         JedisClientConfiguration.JedisClientConfigurationBuilder jedisClientConfiguration = JedisClientConfiguration.builder();
         jedisClientConfiguration.connectTimeout(Duration.ofMillis(3000));//  connection timeout
@@ -74,7 +75,7 @@ public class ManageRedisConfig {
      * @return
      */
     @Bean("manageRedisTemplate")
-    public RedisTemplate<String, String> redisTemplate(@Qualifier("manageJedisConnectionFactory") RedisConnectionFactory redisConnectionFactory) {
+    public RedisTemplate<String, String> redisTemplate(@Qualifier("manageRedisConnectionFactory") RedisConnectionFactory redisConnectionFactory) {
         RedisTemplate<String, String> redisTemplate = new RedisTemplate<String, String>();
         redisTemplate.setConnectionFactory(redisConnectionFactory);
         //key序列化方式;（不然会出现乱码;）,但是如果方法上有Long等非String类型的话，会报类型转换错误；
@@ -111,6 +112,14 @@ public class ManageRedisConfig {
 
     public void setPort(Integer port) {
         this.port = port;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public Integer getDatabase() {

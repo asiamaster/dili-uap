@@ -3,10 +3,10 @@ package com.dili.uap.sdk.redis;
 import com.alibaba.fastjson.JSONObject;
 import com.dili.ss.dto.DTO;
 import com.dili.ss.dto.DTOUtils;
+import com.dili.ss.redis.service.RedisUtil;
 import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.manager.SessionRedisManager;
 import com.dili.uap.sdk.session.SessionConstants;
-import com.dili.uap.sdk.util.ManageRedisUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 public class UserRedis {
 
     @Autowired
-    private ManageRedisUtil redisUtil;
+    private RedisUtil redisUtil;
 
     @Autowired
     private SessionRedisManager sessionRedisManager;
