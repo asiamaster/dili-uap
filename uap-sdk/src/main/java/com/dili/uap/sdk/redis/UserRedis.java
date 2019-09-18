@@ -1,8 +1,6 @@
 package com.dili.uap.sdk.redis;
 
 import com.alibaba.fastjson.JSONObject;
-import com.dili.ss.dto.DTO;
-import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.redis.service.RedisUtil;
 import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.manager.SessionRedisManager;
@@ -54,8 +52,13 @@ public class UserRedis {
         }
         //推迟redis session过期时间
         defer(sessionId);
-        DTO userDto = JSONObject.parseObject(String.valueOf(JSONObject.parseObject(sessionData).get(SessionConstants.LOGGED_USER)), DTO.class);
-        return DTOUtils.proxy(userDto, UserTicket.class);
+//        DTO userDto = JSONObject.parseObject(JSONObject.parseObject(sessionData).get(SessionConstants.LOGGED_USER).toString(), DTO.class);
+//        return DTOUtils.proxyInstance(userDto, UserTicket.class);
+        //直接返回FastJSON的JDK代理对象
+        UserTicket userTicket = JSONObject.parseObject(JSONObject.parseObject(sessionData).get(SessionConstants.LOGGED_USER).toString(), UserTicket.class);
+//        DTOUtils.bean2Instance(userTicket, UserTicket.class);
+        return userTicket;
+
     }
 
     /**
