@@ -1,6 +1,6 @@
 package com.dili.uap.sdk.boot;
 
-import com.dili.ss.util.SystemConfigUtils;
+import com.dili.ss.util.SpringUtil;
 import com.dili.uap.sdk.exception.NotAccessPermissionException;
 import com.dili.uap.sdk.exception.NotLoginException;
 import org.springframework.context.annotation.Bean;
@@ -31,9 +31,9 @@ public class AdminConfig {
 		simpleMappingExceptionResolver.setExceptionAttribute("exception");
 //		定义需要特殊处理的异常，用类名或完全路径名作为key，异常页面名作为值
 		Properties mappings = new Properties();
-		mappings.put("java.lang.RuntimeException", SystemConfigUtils.getProperty("error.page.default", "error/default"));
-		mappings.put("java.lang.Exception", SystemConfigUtils.getProperty("error.page.default", "error/default"));
-		mappings.put("java.lang.Throwable", SystemConfigUtils.getProperty("error.page.default", "error/default"));
+		mappings.put("java.lang.RuntimeException", SpringUtil.getProperty("error.page.default", "error/default"));
+		mappings.put("java.lang.Exception", SpringUtil.getProperty("error.page.default", "error/default"));
+		mappings.put("java.lang.Throwable", SpringUtil.getProperty("error.page.default", "error/default"));
 		//直接跳到/templates/error/noLogin.html
 		mappings.put(NotLoginException.class.getName(), "/error/noLogin");
 		mappings.put(NotAccessPermissionException.class.getName(), "/error/noLogin");

@@ -41,7 +41,7 @@ public interface RoleService extends BaseService<Role, Long> {
      * @param resourceIds 资源ID集
      * @return
      */
-    BaseOutput saveRoleMenuAndResource(Long roleId,String resourceIds[]);
+    BaseOutput saveRoleMenuAndResource(Long roleId,String[] resourceIds);
 
     /**
      * 解绑角色下的用户

@@ -52,7 +52,7 @@ public class PropertiesConfig {
 		ppc.setIgnoreResourceNotFound(true);
 		ppc.setEnvironment(env);
 		ppc.setTrimValues(true);
-		Resource applicationClassPathResource = new ClassPathResource("application.properties"); // your file
+		Resource applicationClassPathResource = new ClassPathResource("application.properties");
 		Properties result = new Properties();
 		PropertiesLoaderUtils.fillProperties(result, applicationClassPathResource);
 		String active = result.getProperty("spring.profiles.active");

@@ -221,7 +221,7 @@ public class AuthenticationApi {
         if(userId == null){
             return BaseOutput.failure("用户未登录").setCode(ResultCode.NOT_AUTH_ERROR);
         }
-        Map param = new HashMap();
+        Map param = new HashMap(2);
         param.put("userId", userId);
         param.put("systemId", systemId);
         return BaseOutput.success("调用成功").setData(this.menuMapper.listByUserAndSystemId(param));

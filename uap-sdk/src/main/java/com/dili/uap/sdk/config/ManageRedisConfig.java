@@ -56,7 +56,8 @@ public class ManageRedisConfig {
         redisStandaloneConfiguration.setDatabase(database);
 
         JedisClientConfiguration.JedisClientConfigurationBuilder jedisClientConfiguration = JedisClientConfiguration.builder();
-        jedisClientConfiguration.connectTimeout(Duration.ofMillis(3000));//  connection timeout
+        //  connection timeout
+        jedisClientConfiguration.connectTimeout(Duration.ofMillis(3000));
         JedisConnectionFactory factory = new JedisConnectionFactory(redisStandaloneConfiguration,
                 jedisClientConfiguration.build());
         return factory;

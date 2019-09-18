@@ -19,7 +19,8 @@ public class SessionConstants {
     public static final String SESSION_TIMEOUT_CONFIG_KEY = "loginTimeout";
     // sessionId - SessionData的Redis 过期时间(秒)
     // sessionId - userId和UserIdSessionData的Redis 过期时间(秒)
-    public static Long SESSION_TIMEOUT = 60 * 30L;  // 30分钟
+    // 30分钟
+    public static Long SESSION_TIMEOUT = 60 * 30L;
     // sessionId - userId和UserIdSessionData的Redis 过期时间(秒)
 //    public static Long SESSIONID_USERID_TIMEOUT = 60 * 60 * 24L;
 

@@ -196,7 +196,7 @@ public class UserController {
     })
     @RequestMapping(value = "/saveUserRoles.action", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
-    public BaseOutput saveUserRoles(Long userId,String roleIds[]){
+    public BaseOutput saveUserRoles(Long userId,String[] roleIds){
         return userService.saveUserRoles(userId,roleIds);
     }
 
@@ -248,7 +248,7 @@ public class UserController {
     })
     @RequestMapping(value = "/saveUserDatas.action", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
-    public BaseOutput saveUserDatas(Long userId,String dataIds[],Long dataRange){
+    public BaseOutput saveUserDatas(Long userId,String[] dataIds,Long dataRange){
         return userService.saveUserDatas(userId,dataIds,dataRange);
     }
 

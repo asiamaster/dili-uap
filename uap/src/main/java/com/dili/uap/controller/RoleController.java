@@ -153,7 +153,7 @@ public class RoleController {
      * @return
      */
     @RequestMapping(value = "/saveRoleMenuAndResource.action", method = { RequestMethod.GET, RequestMethod.POST })
-    public @ResponseBody BaseOutput saveRoleMenuAndResource(Long roleId,String resourceIds[]) {
+    public @ResponseBody BaseOutput saveRoleMenuAndResource(Long roleId,String[] resourceIds) {
         return roleService.saveRoleMenuAndResource(roleId,resourceIds);
     }
 

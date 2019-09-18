@@ -1,6 +1,7 @@
 package com.dili.uap.glossary;
 
 /**
+ * 数据范围
  * Created by asiam on 2018/7/9 0009.
  */
 public enum DataRange {
