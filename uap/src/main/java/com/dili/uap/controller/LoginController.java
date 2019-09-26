@@ -55,12 +55,25 @@ public class LoginController {
 	// 跳转到登录页Controller
 	public static final String REDIRECT_INDEX_PAGE = "redirect:/login/index.html";
 
+	/**
+	 * 跳转到Login页面
+	 * @param modelMap
+	 * @return
+	 */
 	@ApiOperation("跳转到Login页面")
 	@RequestMapping(value = "/index.html", method = RequestMethod.GET)
 	public String index(ModelMap modelMap) {
 		return INDEX_PATH;
 	}
 
+	/**
+	 * 执行login请求，跳转到Main页面或者返回login页面
+	 * @param userName
+	 * @param password
+	 * @param modelMap
+	 * @param request
+	 * @return
+	 */
 	@ApiOperation("执行login请求，跳转到Main页面或者返回login页面")
 	@ApiImplicitParams({ @ApiImplicitParam(name = "loginDto", paramType = "form", value = "用户信息", required = false, dataType = "string") })
 	@RequestMapping(value = "/getLogin.action", method = { RequestMethod.GET, RequestMethod.POST })
@@ -71,6 +84,13 @@ public class LoginController {
 		return loginAction(loginDto, modelMap, request);
 	}
 
+	/**
+	 * 执行login请求，跳转到Main页面或者返回login页面
+	 * @param loginDto
+	 * @param modelMap
+	 * @param request
+	 * @return
+	 */
 	@ApiOperation("执行login请求，跳转到Main页面或者返回login页面")
 	@ApiImplicitParams({ @ApiImplicitParam(name = "loginDto", paramType = "form", value = "用户信息", required = false, dataType = "string") })
 	@RequestMapping(value = "/login.action", method = { RequestMethod.GET, RequestMethod.POST })
@@ -97,6 +117,13 @@ public class LoginController {
 		return IndexController.REDIRECT_INDEX_PAGE;
 	}
 
+	/**
+	 * 根据sessionId登录
+	 * @param sessionId
+	 * @param modelMap
+	 * @param request
+	 * @return
+	 */
 	@RequestMapping(value = "/loginBySession.action", method = { RequestMethod.GET, RequestMethod.POST })
 	public String loginBySessionAction(String sessionId, ModelMap modelMap, HttpServletRequest request) {
 		// 如果有登录用户名和密码，并且登录系统是UAP，则跳到平台首页，并加载登录数据
@@ -116,6 +143,13 @@ public class LoginController {
 		return IndexController.REDIRECT_INDEX_PAGE;
 	}
 
+	/**
+	 * 执行logout请求，跳转login页面或者弹出错误
+	 * @param systemCode
+	 * @param userId
+	 * @param request
+	 * @return
+	 */
 	@ApiOperation("执行logout请求，跳转login页面或者弹出错误")
 	@RequestMapping(value = "/logout.action", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public @ResponseBody BaseOutput logoutAction(String systemCode, @RequestParam(required = false) Long userId, HttpServletRequest request) {
@@ -144,6 +178,11 @@ public class LoginController {
 		return BaseOutput.success();
 	}
 
+	/**
+	 * 跳转到登录页面
+	 * @param modelMap
+	 * @return
+	 */
 	@ApiOperation("跳转到登录页面")
 	@RequestMapping(value = "/toLogin.html", method = RequestMethod.GET)
 	public String toLogin(ModelMap modelMap) {

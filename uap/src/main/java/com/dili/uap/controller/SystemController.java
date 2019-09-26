@@ -27,12 +27,22 @@ public class SystemController {
     @Autowired
     SystemService systemService;
 
+    /**
+     * 跳转到System页面
+     * @param modelMap
+     * @return
+     */
     @ApiOperation("跳转到System页面")
     @RequestMapping(value="/index.html", method = RequestMethod.GET)
     public String index(ModelMap modelMap) {
         return "system/index";
     }
 
+    /**
+     * 查询System
+     * @param system
+     * @return
+     */
     @ApiOperation(value="查询System", notes = "查询System，返回列表信息")
     @ApiImplicitParams({
 		@ApiImplicitParam(name="System", paramType="form", value = "System的form信息", required = false, dataType = "string")
@@ -42,6 +52,12 @@ public class SystemController {
         return systemService.list(system);
     }
 
+    /**
+     * 分页查询System
+     * @param system
+     * @return
+     * @throws Exception
+     */
     @ApiOperation(value="分页查询System", notes = "分页查询System，返回easyui分页信息")
     @ApiImplicitParams({
 		@ApiImplicitParam(name="System", paramType="form", value = "System的form信息", required = false, dataType = "string")
@@ -51,6 +67,11 @@ public class SystemController {
         return systemService.listEasyuiPageByExample(system, true).toString();
     }
 
+    /**
+     * 新增System
+     * @param system
+     * @return
+     */
     @ApiOperation("新增System")
     @ApiImplicitParams({
 		@ApiImplicitParam(name="System", paramType="form", value = "System的form信息", required = true, dataType = "string")
@@ -60,6 +81,11 @@ public class SystemController {
        return systemService.insertAfterCheck(system);
     }
 
+    /**
+     * 修改System
+     * @param system
+     * @return
+     */
     @ApiOperation("修改System")
     @ApiImplicitParams({
 		@ApiImplicitParam(name="System", paramType="form", value = "System的form信息", required = true, dataType = "string")
@@ -69,6 +95,11 @@ public class SystemController {
     	return systemService.updateAfterCheck(system);
     }
 
+    /**
+     * 删除System
+     * @param id
+     * @return
+     */
     @ApiOperation("删除System")
     @ApiImplicitParams({
 		@ApiImplicitParam(name="id", paramType="form", value = "System的主键", required = true, dataType = "long")
@@ -76,6 +107,5 @@ public class SystemController {
     @RequestMapping(value="/delete.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody BaseOutput delete(Long id) {
        return systemService.deleteAfterCheck(id);
-        
     }
 }

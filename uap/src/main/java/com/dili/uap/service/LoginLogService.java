@@ -10,7 +10,13 @@ import com.dili.uap.domain.dto.LoginLogDto;
  * This file was generated on 2018-05-28 11:33:04.
  */
 public interface LoginLogService extends BaseService<LoginLog, Long> {
-	
-	
+
+	/**
+	 * 查询登录日志
+	 * @param loginLog
+	 * @param useProvider
+	 * @return
+	 * @throws Exception
+	 */
 	EasyuiPageOutput findByLoginLogDto(LoginLogDto loginLog,boolean useProvider) throws Exception;
 }

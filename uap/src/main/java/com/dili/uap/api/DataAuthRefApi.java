@@ -30,6 +30,11 @@ public class DataAuthRefApi {
 	@Autowired
 	private DataAuthSource dataAuthSource;
 
+	/**
+	 * 根据编码查询资源
+	 * @param refCode
+	 * @return
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/listSourcesByCode.api", method = { RequestMethod.GET, RequestMethod.POST })
 	public BaseOutput<List> listSourcesByCode(@RequestBody String refCode) {

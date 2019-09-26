@@ -34,6 +34,11 @@ public class UserApi {
 	@Autowired
     DepartmentMapper departmentMapper;
 
+	/**
+	 * 查询User实体接口
+	 * @param id
+	 * @return
+	 */
 	@ApiOperation(value = "查询User实体接口", notes = "根据id查询User接口，返回User实体")
 	@ApiImplicitParams({ @ApiImplicitParam(name = "id", value = "User的id", required = true, dataType = "long") })
 	@RequestMapping(value = "/get.api", method = { RequestMethod.GET, RequestMethod.POST })
@@ -42,6 +47,11 @@ public class UserApi {
 		return BaseOutput.success().setData(userService.get(id));
 	}
 
+	/**
+	 * 查询User列表接口
+	 * @param user
+	 * @return
+	 */
 	@ApiOperation(value = "查询User列表接口", notes = "查询User列表接口，返回列表信息")
 	@ApiImplicitParams({ @ApiImplicitParam(name = "User", paramType = "form", value = "User的form信息", required = false, dataType = "string") })
 	@RequestMapping(value = "/list.api", method = { RequestMethod.GET, RequestMethod.POST })
@@ -50,6 +60,11 @@ public class UserApi {
 		return BaseOutput.success().setData(userService.list(user));
 	}
 
+	/**
+	 * 查询用户
+	 * @param user
+	 * @return
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/listByExample.api", method = { RequestMethod.GET, RequestMethod.POST })
 	public PageOutput<List<User>> listByExample(User user) {
@@ -63,6 +78,11 @@ public class UserApi {
 		}
 	}
 
+	/**
+	 * 根据ids查询用户
+	 * @param ids
+	 * @return
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/listUserByIds.api", method = { RequestMethod.GET, RequestMethod.POST })
 	public BaseOutput<List<User>> listUserByIds(@RequestBody List<String> ids){

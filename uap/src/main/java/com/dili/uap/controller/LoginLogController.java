@@ -1,9 +1,14 @@
 package com.dili.uap.controller;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.dili.ss.domain.BaseOutput;
+import com.dili.ss.domain.EasyuiPageOutput;
+import com.dili.uap.domain.LoginLog;
+import com.dili.uap.domain.dto.LoginLogDto;
+import com.dili.uap.service.LoginLogService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -11,17 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.alibaba.fastjson.JSONObject;
-import com.dili.ss.domain.BaseOutput;
-import com.dili.ss.domain.EasyuiPageOutput;
-import com.dili.uap.domain.LoginLog;
-import com.dili.uap.domain.dto.LoginLogDto;
-import com.dili.uap.service.LoginLogService;
-
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import java.util.List;
 
 /**
  * 由MyBatis Generator工具自动生成
@@ -34,12 +29,22 @@ public class LoginLogController {
     @Autowired
     LoginLogService loginLogService;
 
+    /**
+     * 跳转到LoginLog页面
+     * @param modelMap
+     * @return
+     */
     @ApiOperation("跳转到LoginLog页面")
     @RequestMapping(value="/index.html", method = RequestMethod.GET)
     public String index(ModelMap modelMap) {
         return "loginLog/index";
     }
 
+    /**
+     * 查询LoginLog
+     * @param loginLog
+     * @return
+     */
     @ApiOperation(value="查询LoginLog", notes = "查询LoginLog，返回列表信息")
     @ApiImplicitParams({
 		@ApiImplicitParam(name="LoginLog", paramType="form", value = "LoginLog的form信息", required = false, dataType = "string")
@@ -49,6 +54,12 @@ public class LoginLogController {
         return loginLogService.list(loginLog);
     }
 
+    /**
+     * 分页查询LoginLog
+     * @param loginLog
+     * @return
+     * @throws Exception
+     */
     @ApiOperation(value="分页查询LoginLog", notes = "分页查询LoginLog，返回easyui分页信息")
     @ApiImplicitParams({
 		@ApiImplicitParam(name="LoginLog", paramType="form", value = "LoginLog的form信息", required = false, dataType = "string")
@@ -59,6 +70,11 @@ public class LoginLogController {
         return output.toString();
     }
 
+    /**
+     * 新增LoginLog
+     * @param loginLog
+     * @return
+     */
     @ApiOperation("新增LoginLog")
     @ApiImplicitParams({
 		@ApiImplicitParam(name="LoginLog", paramType="form", value = "LoginLog的form信息", required = true, dataType = "string")
@@ -69,6 +85,11 @@ public class LoginLogController {
         return BaseOutput.success("新增成功");
     }
 
+    /**
+     * 修改LoginLog
+     * @param loginLog
+     * @return
+     */
     @ApiOperation("修改LoginLog")
     @ApiImplicitParams({
 		@ApiImplicitParam(name="LoginLog", paramType="form", value = "LoginLog的form信息", required = true, dataType = "string")
@@ -79,6 +100,11 @@ public class LoginLogController {
         return BaseOutput.success("修改成功");
     }
 
+    /**
+     * 删除LoginLog
+     * @param id
+     * @return
+     */
     @ApiOperation("删除LoginLog")
     @ApiImplicitParams({
 		@ApiImplicitParam(name="id", paramType="form", value = "LoginLog的主键", required = true, dataType = "long")
@@ -88,17 +114,5 @@ public class LoginLogController {
         loginLogService.delete(id);
         return BaseOutput.success("删除成功");
     }
-    private Map<Object, Object> getLoginLogMetadata(){
-		Map<Object, Object> metadata = new HashMap<>();
 
-		metadata.put("firmCode", getDDProvider());
-		return metadata;
-	}
-	//获取数据字典提供者
-	private JSONObject getDDProvider(){
-		JSONObject dataDictionaryValueProvider = new JSONObject();
-		dataDictionaryValueProvider.put("provider", "firmProvider");
-		dataDictionaryValueProvider.put("queryParams", "{}");
-		return dataDictionaryValueProvider;
-	}
 }

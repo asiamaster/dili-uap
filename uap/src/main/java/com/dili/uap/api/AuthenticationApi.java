@@ -159,6 +159,12 @@ public class AuthenticationApi {
         return userRedis.getSessionUserId(sessionId) == null ? BaseOutput.failure("未登录").setCode(ResultCode.NOT_AUTH_ERROR) : BaseOutput.success("已登录");
     }
 
+    /**
+     * 统一授权登出
+     * @param json
+     * @param request
+     * @return
+     */
     @ApiOperation("统一授权登出")
     @RequestMapping(value = "/loginout.api", method = { RequestMethod.POST })
     @ResponseBody
@@ -207,6 +213,11 @@ public class AuthenticationApi {
         return BaseOutput.success("调用成功").setData(userSystemRedis.getRedisUserSystems(userId));
     }
 
+    /**
+     * 获取菜单权限列表
+     * @param json
+     * @return
+     */
     @ApiOperation("获取菜单权限列表")
     @RequestMapping(value = "/listMenus.api", method = { RequestMethod.POST })
     @ResponseBody
@@ -227,6 +238,11 @@ public class AuthenticationApi {
         return BaseOutput.success("调用成功").setData(this.menuMapper.listByUserAndSystemId(param));
     }
 
+    /**
+     * 获取资源权限列表
+     * @param json
+     * @return
+     */
     @ApiOperation("获取资源权限列表")
     @RequestMapping(value = "/listResources.api", method = { RequestMethod.POST })
     @ResponseBody
@@ -247,6 +263,11 @@ public class AuthenticationApi {
         return BaseOutput.success("调用成功").setData(this.resourceMapper.listByUserIdAndSystemId(userId, systemId));
     }
 
+    /**
+     * 获取数据权限列表
+     * @param json
+     * @return
+     */
     @ApiOperation("获取数据权限列表")
     @RequestMapping(value = "/listDataAuthes.api", method = { RequestMethod.POST })
     @ResponseBody
@@ -265,6 +286,11 @@ public class AuthenticationApi {
         return BaseOutput.success("调用成功").setData(dataAuthManager.listUserDataAuthesByRefCode(userId, refCode));
     }
 
+    /**
+     * 获取数据权限详情列表
+     * @param json
+     * @return
+     */
     @ApiOperation("获取数据权限详情列表")
     @RequestMapping(value = "/listDataAuthDetails.api", method = { RequestMethod.POST })
     @ResponseBody
@@ -300,6 +326,11 @@ public class AuthenticationApi {
         return BaseOutput.success("调用成功").setData(dataAuthMap);
     }
 
+    /**
+     * 修改密码
+     * @param json
+     * @return
+     */
     @ApiOperation(value = "修改密码", notes = "修改密码")
     @RequestMapping(value = "/changePwd.api", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody

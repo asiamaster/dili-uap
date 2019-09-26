@@ -25,18 +25,33 @@ public class SystemConfigApi {
 	@Autowired
 	private SystemConfigService systemConfigService;
 
+	/**
+	 * 查询系统配置
+	 * @param systemConfig
+	 * @return
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/list.api", method = { RequestMethod.POST })
 	public BaseOutput<List<SystemConfig>> list(SystemConfig systemConfig) {
 		return BaseOutput.success().setData(this.systemConfigService.listByExample(systemConfig));
 	}
 
+	/**
+	 * 保存系统配置
+	 * @param systemConfig
+	 * @return
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/saveOrUpdate.api", method = { RequestMethod.POST })
 	public BaseOutput saveOrUpdate(SystemConfig systemConfig) {
 		return BaseOutput.success().setData(this.systemConfigService.saveOrUpdate(systemConfig));
 	}
 
+	/**
+	 * 根据编译获取系统配置
+	 * @param code
+	 * @return
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/getByCode.api", method = { RequestMethod.POST })
 	public BaseOutput<SystemConfig> getByCode(@RequestBody String code) {

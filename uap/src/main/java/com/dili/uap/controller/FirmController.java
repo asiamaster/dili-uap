@@ -31,12 +31,22 @@ public class FirmController {
     @Autowired
     FirmService firmService;
 
+    /**
+     * 跳转到Firm页面
+     * @param modelMap
+     * @return
+     */
     @ApiOperation("跳转到Firm页面")
     @RequestMapping(value="/index.html", method = RequestMethod.GET)
     public String index(ModelMap modelMap) {
         return "firm/index";
     }
 
+    /**
+     * 查询Firm
+     * @param firm
+     * @return
+     */
     @ApiOperation(value="查询Firm", notes = "查询Firm，返回列表信息")
     @ApiImplicitParams({
 		@ApiImplicitParam(name="Firm", paramType="form", value = "Firm的form信息", required = false, dataType = "string")
@@ -46,6 +56,12 @@ public class FirmController {
         return firm;
     }
 
+    /**
+     * 分页查询Firm
+     * @param firm
+     * @return
+     * @throws Exception
+     */
     @ApiOperation(value="分页查询Firm", notes = "分页查询Firm，返回easyui分页信息")
     @ApiImplicitParams({
 		@ApiImplicitParam(name="Firm", paramType="form", value = "Firm的form信息", required = false, dataType = "string")
@@ -55,6 +71,11 @@ public class FirmController {
         return firmService.listEasyuiPageByExample(firm, true).toString();
     }
 
+    /**
+     * 新增Firm
+     * @param firm
+     * @return
+     */
     @ApiOperation("新增Firm")
     @ApiImplicitParams({
 		@ApiImplicitParam(name="Firm", paramType="form", value = "Firm的form信息", required = true, dataType = "string")
@@ -65,6 +86,11 @@ public class FirmController {
         return BaseOutput.success("新增成功");
     }
 
+    /**
+     * 修改Firm
+     * @param firm
+     * @return
+     */
     @ApiOperation("修改Firm")
     @ApiImplicitParams({
 		@ApiImplicitParam(name="Firm", paramType="form", value = "Firm的form信息", required = true, dataType = "string")
@@ -75,6 +101,11 @@ public class FirmController {
         return BaseOutput.success("修改成功");
     }
 
+    /**
+     * 删除Firm
+     * @param id
+     * @return
+     */
     @ApiOperation("删除Firm")
     @ApiImplicitParams({
 		@ApiImplicitParam(name="id", paramType="form", value = "Firm的主键", required = true, dataType = "long")

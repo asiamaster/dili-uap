@@ -25,12 +25,23 @@ public class DataDictionaryValueController {
     @Autowired
     DataDictionaryValueService dataDictionaryValueService;
 
+    /**
+     * 跳转到DataDictionaryValue页面
+     * @param modelMap
+     * @return
+     */
     @ApiOperation("跳转到DataDictionaryValue页面")
     @RequestMapping(value = "/index.html", method = RequestMethod.GET)
     public String index(ModelMap modelMap) {
         return "dataDictionaryValue/index";
     }
 
+    /**
+     * 查询DataDictionaryValue
+     * @param dataDictionaryValue
+     * @param map
+     * @return
+     */
     @ApiOperation(value = "查询DataDictionaryValue", notes = "查询DataDictionaryValue，返回列表信息")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "DataDictionaryValue", paramType = "form", value = "DataDictionaryValue的form信息", required = false, dataType = "string")})
@@ -40,6 +51,12 @@ public class DataDictionaryValueController {
         return "dataDictionaryValue/list";
     }
 
+    /**
+     * 分页查询DataDictionaryValue
+     * @param dataDictionaryValue
+     * @return
+     * @throws Exception
+     */
     @ApiOperation(value = "分页查询DataDictionaryValue", notes = "分页查询DataDictionaryValue，返回easyui分页信息")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "DataDictionaryValue", paramType = "form", value = "DataDictionaryValue的form信息", required = false, dataType = "string")
@@ -50,6 +67,11 @@ public class DataDictionaryValueController {
         return dataDictionaryValueService.listEasyuiPageByExample(dataDictionaryValue, true).toString();
     }
 
+    /**
+     * 新增DataDictionaryValue
+     * @param dataDictionaryValue
+     * @return
+     */
     @ApiOperation("新增DataDictionaryValue")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "DataDictionaryValue", paramType = "form", value = "DataDictionaryValue的form信息", required = true, dataType = "string")
@@ -60,6 +82,11 @@ public class DataDictionaryValueController {
     	return dataDictionaryValueService.insertAfterCheck(dataDictionaryValue);
     }
 
+    /**
+     * 修改DataDictionaryValue
+     * @param dataDictionaryValue
+     * @return
+     */
     @ApiOperation("修改DataDictionaryValue")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "DataDictionaryValue", paramType = "form", value = "DataDictionaryValue的form信息", required = true, dataType = "string")
@@ -70,6 +97,11 @@ public class DataDictionaryValueController {
         return dataDictionaryValueService.updateAfterCheck(dataDictionaryValue);
     }
 
+    /**
+     * 删除DataDictionaryValue
+     * @param id
+     * @return
+     */
     @ApiOperation("删除DataDictionaryValue")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", paramType = "form", value = "DataDictionaryValue的主键", required = true, dataType = "long")

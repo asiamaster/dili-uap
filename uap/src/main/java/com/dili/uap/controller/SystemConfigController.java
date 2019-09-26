@@ -28,12 +28,22 @@ public class SystemConfigController {
     @Autowired
     SystemConfigService systemConfigService;
 
+    /**
+     * 跳转到SystemConfig页面
+     * @param modelMap
+     * @return
+     */
     @ApiOperation("跳转到SystemConfig页面")
     @RequestMapping(value="/index.html", method = RequestMethod.GET)
     public String index(ModelMap modelMap) {
         return "systemConfig/index";
     }
 
+    /**
+     * 查询SystemConfig
+     * @param systemConfig
+     * @return
+     */
     @ApiOperation(value="查询SystemConfig", notes = "查询SystemConfig，返回列表信息")
     @ApiImplicitParams({
 		@ApiImplicitParam(name="SystemConfig", paramType="form", value = "SystemConfig的form信息", required = false, dataType = "string")
@@ -43,6 +53,12 @@ public class SystemConfigController {
         return systemConfigService.list(systemConfig);
     }
 
+    /**
+     * 分页查询SystemConfig
+     * @param systemConfig
+     * @return
+     * @throws Exception
+     */
     @ApiOperation(value="分页查询SystemConfig", notes = "分页查询SystemConfig，返回easyui分页信息")
     @ApiImplicitParams({
 		@ApiImplicitParam(name="SystemConfig", paramType="form", value = "SystemConfig的form信息", required = false, dataType = "string")
@@ -52,6 +68,11 @@ public class SystemConfigController {
         return systemConfigService.listEasyuiPageByExample(systemConfig, true).toString();
     }
 
+    /**
+     * 新增SystemConfig
+     * @param systemConfig
+     * @return
+     */
     @ApiOperation("新增SystemConfig")
     @ApiImplicitParams({
 		@ApiImplicitParam(name="SystemConfig", paramType="form", value = "SystemConfig的form信息", required = true, dataType = "string")
@@ -62,6 +83,11 @@ public class SystemConfigController {
         return BaseOutput.success("新增成功").setData(systemConfig);
     }
 
+    /**
+     * 修改SystemConfig
+     * @param systemConfig
+     * @return
+     */
     @ApiOperation("修改SystemConfig")
     @ApiImplicitParams({
 		@ApiImplicitParam(name="SystemConfig", paramType="form", value = "SystemConfig的form信息", required = true, dataType = "string")
@@ -72,6 +98,11 @@ public class SystemConfigController {
         return BaseOutput.success("修改成功").setData(systemConfig);
     }
 
+    /**
+     * 删除SystemConfig
+     * @param id
+     * @return
+     */
     @ApiOperation("删除SystemConfig")
     @ApiImplicitParams({
 		@ApiImplicitParam(name="id", paramType="form", value = "SystemConfig的主键", required = true, dataType = "long")

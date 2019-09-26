@@ -42,6 +42,11 @@ public class DataAuthApi {
     @Autowired
     private DataAuthRefService dataAuthRefService;
 
+    /**
+     * 根据条件查询用户数据权限表信息
+     * @param userDataAuth
+     * @return
+     */
     @ApiOperation(value = "根据条件查询用户数据权限表信息")
     @ApiImplicitParams({ @ApiImplicitParam(name = "UserDataAuth", value = "UserDataAuth", required = true, dataType = "UserDataAuth") })
     @RequestMapping(value = "/listUserDataAuth.api", method = { RequestMethod.POST })
@@ -53,6 +58,11 @@ public class DataAuthApi {
         return BaseOutput.success().setData(userDataAuthService.listByExample(userDataAuth));
     }
 
+    /**
+     * 根据条件查询用户数据权限value列表
+     * @param userDataAuth
+     * @return
+     */
     @ApiOperation(value = "根据条件查询用户数据权限value列表")
     @ApiImplicitParams({ @ApiImplicitParam(name = "UserDataAuth", value = "UserDataAuth", required = true, dataType = "UserDataAuth") })
     @RequestMapping(value = "/listUserDataAuthValues.api", method = { RequestMethod.POST })
@@ -70,7 +80,7 @@ public class DataAuthApi {
     }
 
     /**
-     *
+     * 根据条件查询用户数据权限
      * @param userDataAuth
      * @return  Map key为value, 值为转义后的行数据
      */

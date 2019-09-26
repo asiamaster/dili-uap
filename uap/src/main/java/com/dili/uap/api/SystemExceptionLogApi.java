@@ -23,6 +23,11 @@ public class SystemExceptionLogApi {
 	@Autowired
 	private SystemExceptionLogService systemExceptionLogService;
 
+	/**
+	 * 新增DataAuth
+	 * @param systemExceptionLog
+	 * @return
+	 */
 	@ApiOperation("新增DataAuth")
 	@ApiImplicitParams({ @ApiImplicitParam(name = "SystemExceptionLog", paramType = "form", value = "SystemExceptionLog的form信息", required = true, dataType = "SystemExceptionLog") })
 	@RequestMapping(value = "/insert.api", method = { RequestMethod.POST })

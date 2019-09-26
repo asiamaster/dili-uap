@@ -16,7 +16,12 @@ public interface LoginService {
      * @return
      */
     BaseOutput<String> validate(LoginDto loginDto);
-    
+
+    /**
+     * 验证用户名和密码
+     * @param loginDto
+     * @return
+     */
     BaseOutput<String> validateSaveSession(LoginDto loginDto);
 
     /**
@@ -40,5 +45,10 @@ public interface LoginService {
      */
     void logLogout(LoginLog loginLog);
 
+    /**
+     * 根据sessionId登录
+     * @param sessionId
+     * @return
+     */
 	BaseOutput<Boolean> loginBySession(String sessionId);
 }

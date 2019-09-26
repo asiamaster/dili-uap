@@ -142,7 +142,7 @@
 		</dependency>
 		<dependency>
 			<groupId>com.dili</groupId>
-			<artifactId>ss-uid</artifactId>
+			<artifactId>ss-processor</artifactId>
 			<version>${sharp-sword.version}</version>
 		</dependency>
 		<!-- 公共信息 -->

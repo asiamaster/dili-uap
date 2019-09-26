@@ -27,12 +27,22 @@ public class SystemExceptionLogController{
     @Autowired
     SystemExceptionLogService systemExceptionLogService;
 
+    /**
+     * 跳转到SystemExceptionLog页面
+     * @param modelMap
+     * @return
+     */
     @ApiOperation("跳转到SystemExceptionLog页面")
     @RequestMapping(value="/index.html", method = RequestMethod.GET)
     public String index(ModelMap modelMap) {
         return "systemExceptionLog/index";
     }
 
+    /**
+     * 查询SystemExceptionLog
+     * @param systemExceptionLog
+     * @return
+     */
     @ApiOperation(value="查询SystemExceptionLog", notes = "查询SystemExceptionLog，返回列表信息")
     @ApiImplicitParams({
 		@ApiImplicitParam(name="SystemExceptionLog", paramType="form", value = "SystemExceptionLog的form信息", required = false, dataType = "string")
@@ -42,6 +52,12 @@ public class SystemExceptionLogController{
         return systemExceptionLogService.list(systemExceptionLog);
     }
 
+    /**
+     * 分页查询SystemExceptionLog
+     * @param systemExceptionLog
+     * @return
+     * @throws Exception
+     */
     @ApiOperation(value="分页查询SystemExceptionLog", notes = "分页查询SystemExceptionLog，返回easyui分页信息")
     @ApiImplicitParams({
 		@ApiImplicitParam(name="SystemExceptionLog", paramType="form", value = "SystemExceptionLog的form信息", required = false, dataType = "string")
@@ -51,6 +67,11 @@ public class SystemExceptionLogController{
         return systemExceptionLogService.listEasyuiPageByExample(systemExceptionLog, true).toString();
     }
 
+    /**
+     * 新增SystemExceptionLog
+     * @param systemExceptionLog
+     * @return
+     */
     @ApiOperation("新增SystemExceptionLog")
     @ApiImplicitParams({
 		@ApiImplicitParam(name="SystemExceptionLog", paramType="form", value = "SystemExceptionLog的form信息", required = true, dataType = "string")
@@ -61,6 +82,11 @@ public class SystemExceptionLogController{
         return BaseOutput.success("新增成功");
     }
 
+    /**
+     * 修改SystemExceptionLog
+     * @param systemExceptionLog
+     * @return
+     */
     @ApiOperation("修改SystemExceptionLog")
     @ApiImplicitParams({
 		@ApiImplicitParam(name="SystemExceptionLog", paramType="form", value = "SystemExceptionLog的form信息", required = true, dataType = "string")
@@ -71,6 +97,11 @@ public class SystemExceptionLogController{
         return BaseOutput.success("修改成功");
     }
 
+    /**
+     * 删除SystemExceptionLog
+     * @param id
+     * @return
+     */
     @ApiOperation("删除SystemExceptionLog")
     @ApiImplicitParams({
 		@ApiImplicitParam(name="id", paramType="form", value = "SystemExceptionLog的主键", required = true, dataType = "long")

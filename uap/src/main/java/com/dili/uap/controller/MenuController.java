@@ -44,18 +44,32 @@ public class MenuController {
     @Autowired
     private ResourceService resourceService;
 
+    /**
+     * 跳转到Menu页面
+     * @param modelMap
+     * @return
+     */
     @ApiOperation("跳转到Menu页面")
     @RequestMapping(value="/index.html", method = RequestMethod.GET)
     public String index(ModelMap modelMap) {
         return "menu/index";
     }
 
+    /**
+     * 查询系统菜单
+     * @return
+     */
     @RequestMapping(value = "/listSystemMenu.action", method = { RequestMethod.GET, RequestMethod.POST })
     @ResponseBody
     public List<Map> listSystemMenu() {
         return this.menuService.listSystemMenu();
     }
 
+    /**
+     * 查询菜单列表
+     * @param systemId
+     * @return
+     */
     @RequestMapping(value = "/listMenus.action", method = { RequestMethod.GET, RequestMethod.POST })
     @ResponseBody
     public List<Map> listMenus(@RequestParam Long systemId) {
@@ -104,6 +118,11 @@ public class MenuController {
          return menuMaps;
     }
 
+    /**
+     * 查询菜单列表
+     * @param menuId
+     * @return
+     */
     @ApiOperation(value = "查询菜单列表", notes = "查询Menu，返回列表信息")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "menuId", paramType = "Long", value = "menuId", required = false, dataType = "Long") })
@@ -121,6 +140,11 @@ public class MenuController {
         return this.menuService.listByExample(query);
     }
 
+    /**
+     * 查询内部链接列表
+     * @param menuId
+     * @return
+     */
     @ApiOperation(value = "查询内部链接列表", notes = "查询内部链接，返回列表信息")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "menuId", paramType = "String", value = "menuId", required = false, dataType = "String")})
@@ -139,6 +163,11 @@ public class MenuController {
         return this.menuService.listByExample(query);
     }
 
+    /**
+     * 新增Menu
+     * @param menu
+     * @return
+     */
     @ApiOperation("新增Menu")
     @ApiImplicitParams({
             @ApiImplicitParam(name="Menu", paramType="form", value = "Menu的form信息", required = true, dataType = "string")
@@ -157,6 +186,11 @@ public class MenuController {
         return BaseOutput.success("新增成功").setData(menu);
     }
 
+    /**
+     * 修改Menu
+     * @param menu
+     * @return
+     */
     @ApiOperation("修改Menu")
     @ApiImplicitParams({
             @ApiImplicitParam(name="Menu", paramType="form", value = "Menu的form信息", required = true, dataType = "string")
@@ -188,6 +222,11 @@ public class MenuController {
         return BaseOutput.success("修改成功");
     }
 
+    /**
+     * 删除Menu
+     * @param id
+     * @return
+     */
     @ApiOperation("删除Menu")
     @ApiImplicitParams({
             @ApiImplicitParam(name="id", paramType="form", value = "Menu的主键", required = true, dataType = "long")

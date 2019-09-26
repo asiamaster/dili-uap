@@ -24,6 +24,11 @@ public class DataDictionaryApi {
 	@Autowired
 	DataDictionaryValueService dataDictionaryValueService;
 
+	/**
+	 * 查询数据字典
+	 * @param dataDictionaryValue
+	 * @return
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/list.api", method = { RequestMethod.GET, RequestMethod.POST })
 	public BaseOutput<List<DataDictionaryValue>> list(DataDictionaryValue dataDictionaryValue) {

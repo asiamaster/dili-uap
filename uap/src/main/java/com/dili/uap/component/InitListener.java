@@ -18,7 +18,6 @@ import org.springframework.stereotype.Component;
 public class InitListener implements ApplicationListener<ContextRefreshedEvent> {
 
 //	private static final Logger LOGGER = LoggerFactory.getLogger(InitListener.class);
-
 	@Autowired
 	private SystemConfigMapper systemConfigMapper;
 

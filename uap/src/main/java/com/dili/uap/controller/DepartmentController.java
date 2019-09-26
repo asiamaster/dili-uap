@@ -41,6 +41,11 @@ public class DepartmentController {
     @Autowired
     FirmService firmService;
 
+    /**
+     * 跳转到Department页面
+     * @param modelMap
+     * @return
+     */
     @ApiOperation("跳转到Department页面")
     @RequestMapping(value = "/index.html", method = RequestMethod.GET)
     public String index(ModelMap modelMap) {
@@ -52,6 +57,11 @@ public class DepartmentController {
         return "department/index";
     }
 
+    /**
+     * 查询Department
+     * @param department
+     * @return
+     */
     @ApiOperation(value = "查询Department", notes = "查询Department，返回列表信息")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Department", paramType = "form", value = "Department的form信息", required = false, dataType = "string")
@@ -87,6 +97,12 @@ public class DepartmentController {
 //        return list;
     }
 
+    /**
+     * 分页查询Department
+     * @param department
+     * @return
+     * @throws Exception
+     */
     @ApiOperation(value = "分页查询Department", notes = "分页查询Department，返回easyui分页信息")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Department", paramType = "form", value = "Department的form信息", required = false, dataType = "string")
@@ -97,6 +113,11 @@ public class DepartmentController {
         return departmentService.listEasyuiPageByExample(department, true).toString();
     }
 
+    /**
+     * 新增Department
+     * @param department
+     * @return
+     */
     @ApiOperation("新增Department")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Department", paramType = "form", value = "Department的form信息", required = true, dataType = "string")
@@ -109,6 +130,11 @@ public class DepartmentController {
          return this.resetIdAndParentId(out);
     }
 
+    /**
+     * 修改Department
+     * @param department
+     * @return
+     */
     @ApiOperation("修改Department")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Department", paramType = "form", value = "Department的form信息", required = true, dataType = "string")
@@ -121,6 +147,11 @@ public class DepartmentController {
     	return this.resetIdAndParentId(out);
     }
 
+    /**
+     * 删除Department
+     * @param id
+     * @return
+     */
     @ApiOperation("删除Department")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", paramType = "form", value = "Department的主键", required = true, dataType = "long")
@@ -144,12 +175,18 @@ public class DepartmentController {
         return BaseOutput.success("删除成功");
     }
 
+    /**
+     * 根据市场code查询Department
+     * @param department
+     * @return
+     */
     @ApiOperation(value = "根据市场code查询Department", notes = "查询Department，返回列表信息")
     @RequestMapping(value = "/listByCondition.action", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
     public List<Department> listByCondition(Department department) {
         return departmentService.list(department);
     }
+
     /**
      * 将id以及parentid的前辍去掉
      * @param department
@@ -175,10 +212,10 @@ public class DepartmentController {
     }
     /**
      * 在返回数据前加上id以及parentId的前辍
-     * @param department
+     * @param out
      * @return
      */
-    private BaseOutput<?> resetIdAndParentId(BaseOutput<Department>out) {
+    private BaseOutput<?> resetIdAndParentId(BaseOutput<Department> out) {
 		if (!out.isSuccess()) {
 			return out;
 		}

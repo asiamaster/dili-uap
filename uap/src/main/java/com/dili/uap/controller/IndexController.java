@@ -28,6 +28,9 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 首页控制器
+ */
 @Api("/index")
 @Controller
 @RequestMapping("/index")
@@ -55,6 +58,12 @@ public class IndexController {
 	@Autowired
 	private MenuService menuService;
 
+	/**
+	 * 跳转到权限主页面
+	 * @param modelMap
+	 * @param request
+	 * @return
+	 */
 	@ApiOperation("跳转到权限主页面")
 	@RequestMapping(value = "/index.html", method = { RequestMethod.GET, RequestMethod.POST })
 	public String index(ModelMap modelMap, HttpServletRequest request) {
@@ -97,7 +106,12 @@ public class IndexController {
 		}
 	}
 
-
+	/**
+	 * 跳转到平台页面
+	 * @param modelMap
+	 * @param req
+	 * @return
+	 */
 	@ApiOperation("跳转到平台页面")
 	@RequestMapping(value = "/platform.html", method = RequestMethod.GET)
 	public String platform(ModelMap modelMap, HttpServletRequest req) {
@@ -121,6 +135,11 @@ public class IndexController {
 		}
 	}
 
+	/**
+	 * 获取sessionId
+	 * @param req
+	 * @return
+	 */
 	public String getSessionId(HttpServletRequest req) {
 		String sessionId = null;
 			//首先读取链接中的session
@@ -136,6 +155,12 @@ public class IndexController {
 		return sessionId;
 	}
 
+	/**
+	 * 跳转到功能列表页面
+	 * @param systemCode
+	 * @param modelMap
+	 * @return
+	 */
 	@ApiOperation("跳转到功能列表页面")
 	@RequestMapping(value = "/featureList.html", method = RequestMethod.GET)
 	public String featureList(String systemCode, ModelMap modelMap){
@@ -146,6 +171,11 @@ public class IndexController {
 		return "index/featureList";
 	}
 
+	/**
+	 * 跳转到园区管理首页
+	 * @param modelMap
+	 * @return
+	 */
 	@ApiOperation("跳转到园区管理首页")
 	@RequestMapping(value = "/parkIndex.html", method = RequestMethod.GET)
 	public String parkIndex(ModelMap modelMap) {
@@ -166,13 +196,22 @@ public class IndexController {
 		return false;
 	}
 
-
+	/**
+	 * 跳转到个人信息页面
+	 * @param modelMap
+	 * @return
+	 */
 	@ApiOperation("跳转到个人信息页面")
 	@RequestMapping(value = "/userDetail.html", method = RequestMethod.GET)
 	public String userDetail(ModelMap modelMap) {
 		return USERDETAIL_PATH;
 	}
 
+	/**
+	 * 跳转到修改密码页面
+	 * @param modelMap
+	 * @return
+	 */
 	@ApiOperation("跳转到修改密码页面")
 	@RequestMapping(value = "/changePwd.html", method = RequestMethod.GET)
 	public String changePwd(ModelMap modelMap) {

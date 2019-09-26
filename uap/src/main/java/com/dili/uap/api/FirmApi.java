@@ -26,12 +26,22 @@ public class FirmApi {
 	@Autowired
 	FirmService firmService;
 
+	/**
+	 * 查询公司
+	 * @param firm
+	 * @return
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/listByExample.api", method = { RequestMethod.GET, RequestMethod.POST })
 	public BaseOutput<List<Firm>> listByExample(FirmDto firm) {
 		return BaseOutput.success().setData(firmService.listByExample(firm));
 	}
 
+	/**
+	 * 根据编码查询公司
+	 * @param code
+	 * @return
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/getByCode.api", method = { RequestMethod.GET, RequestMethod.POST })
 	public BaseOutput<Firm> getByCode(@RequestBody String code) {

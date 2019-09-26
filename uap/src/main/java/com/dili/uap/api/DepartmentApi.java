@@ -24,6 +24,11 @@ public class DepartmentApi {
 	@Autowired
     DepartmentService departmentService;
 
+	/**
+	 * 根据id查询部门
+	 * @param id
+	 * @return
+	 */
 	@ApiOperation(value = "查询Department实体接口", notes = "根据id查询Department接口，返回Department实体")
 	@ApiImplicitParams({ @ApiImplicitParam(name = "id", value = "Department的id", required = true, dataType = "long") })
 	@RequestMapping(value = "/get.api", method = { RequestMethod.POST })
@@ -31,6 +36,11 @@ public class DepartmentApi {
 		return BaseOutput.success().setData(departmentService.get(id));
 	}
 
+	/**
+	 * 查询部门
+	 * @param department
+	 * @return
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/listByExample.api", method = { RequestMethod.GET, RequestMethod.POST })
 	public BaseOutput<Department> listByExample(@RequestBody(required = false) Department department) {

@@ -32,12 +32,22 @@ public class DataDictionaryController {
     @Autowired
     SystemProvider systemProvider;
 
+    /**
+     * 跳转到DataDictionary页面
+     * @param modelMap
+     * @return
+     */
     @ApiOperation("跳转到DataDictionary页面")
     @RequestMapping(value = "/index.html", method = RequestMethod.GET)
     public String index(ModelMap modelMap) {
         return "dataDictionary/index";
     }
 
+    /**
+     * 查询DataDictionary
+     * @param dataDictionary
+     * @return
+     */
     @ApiOperation(value = "查询DataDictionary", notes = "查询DataDictionary，返回列表信息")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "DataDictionary", paramType = "form", value = "DataDictionary的form信息", required = false, dataType = "string")
@@ -48,6 +58,11 @@ public class DataDictionaryController {
         return dataDictionaryService.list(dataDictionary);
     }
 
+    /**
+     * 分页查询DataDictionary
+     * @param dataDictionary
+     * @return
+     */
     @ApiOperation(value = "分页查询DataDictionary", notes = "分页查询DataDictionary，返回easyui分页信息")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "DataDictionary", paramType = "form", value = "DataDictionary的form信息", required = false, dataType = "string")
@@ -63,6 +78,11 @@ public class DataDictionaryController {
         return null;
     }
 
+    /**
+     * 新增DataDictionary
+     * @param dataDictionary
+     * @return
+     */
     @ApiOperation("新增DataDictionary")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "DataDictionary", paramType = "form", value = "DataDictionary的form信息", required = true, dataType = "string")
@@ -73,6 +93,11 @@ public class DataDictionaryController {
     	 return  dataDictionaryService.insertAfterCheck(dataDictionary);
     }
 
+    /**
+     * 修改DataDictionary
+     * @param dataDictionary
+     * @return
+     */
     @ApiOperation("修改DataDictionary")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "DataDictionary", paramType = "form", value = "DataDictionary的form信息", required = true, dataType = "string")
@@ -83,6 +108,11 @@ public class DataDictionaryController {
        return dataDictionaryService.updateAfterCheck(dataDictionary);
     }
 
+    /**
+     * 删除DataDictionary
+     * @param id
+     * @return
+     */
     @ApiOperation("删除DataDictionary")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", paramType = "form", value = "DataDictionary的主键", required = true, dataType = "long")
@@ -92,6 +122,11 @@ public class DataDictionaryController {
     BaseOutput delete(Long id) {
     	return dataDictionaryService.deleteAfterCheck(id);
     }
+
+    /**
+     * 系统列表查询
+     * @return
+     */
     @RequestMapping(value = "/systemList.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody
     Object systemList() {

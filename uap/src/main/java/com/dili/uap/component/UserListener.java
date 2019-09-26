@@ -21,6 +21,11 @@ public class UserListener {
     @Value("${aesKey:}")
     private String aesKey;
 
+    /**
+     * 接收添加用户消息的任务
+     * @param message
+     * @throws Exception
+     */
     @RabbitListener(queues = "#{rabbitConfiguration.UAP_ADD_USER_QUEUE}")
     public void addUserTask(Message message) throws Exception {
         logger.info("收到消息: " + message);
@@ -33,6 +38,11 @@ public class UserListener {
         }
     }
 
+    /**
+     * 接收修改密码消息的任务
+     * @param message
+     * @throws Exception
+     */
     @RabbitListener(queues = "#{rabbitConfiguration.UAP_CHANGE_PASSWORD_QUEUE}")
     public void changePasswordTask(Message message) throws Exception {
         logger.info("收到消息: " + message);

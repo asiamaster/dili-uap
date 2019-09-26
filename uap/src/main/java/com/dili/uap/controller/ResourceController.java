@@ -36,12 +36,22 @@ public class ResourceController {
     @Autowired
     ResourceLinkService resourceLinkService;
 
+    /**
+     * 跳转到Resource页面
+     * @param modelMap
+     * @return
+     */
     @ApiOperation("跳转到Resource页面")
     @RequestMapping(value="/index.html", method = RequestMethod.GET)
     public String index(ModelMap modelMap) {
         return "resource/index";
     }
 
+    /**
+     * 查询资源列表
+     * @param menuId
+     * @return
+     */
     @ApiOperation(value = "查询资源列表", notes = "查询Menu，返回列表信息")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "menuId", paramType = "Long", value = "menuId", required = false, dataType = "Long") })
@@ -56,6 +66,11 @@ public class ResourceController {
         return this.resourceService.listByExample(query);
     }
 
+    /**
+     * 查询资源名称
+     * @param resource
+     * @return
+     */
     @RequestMapping(value = "/getName.action", method = { RequestMethod.GET, RequestMethod.POST })
     public @ResponseBody String getName(Resource resource) {
         List<Resource> resources = this.resourceService.list(resource);
@@ -65,6 +80,12 @@ public class ResourceController {
         return resources.get(0).getName();
     }
 
+    /**
+     * 查询资源列表
+     * @param resourceLink
+     * @return
+     * @throws Exception
+     */
     @ApiOperation(value = "查询资源列表", notes = "查询Menu，返回列表信息")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "menuId", paramType = "Long", value = "menuId", required = false, dataType = "Long") })
@@ -74,6 +95,11 @@ public class ResourceController {
         return ValueProviderUtils.buildDataByProvider(resourceLink, resourceLinks);
     }
 
+    /**
+     * 新增ResourceLink
+     * @param resourceLink
+     * @return
+     */
     @ApiOperation("新增ResourceLink")
     @ApiImplicitParams({
             @ApiImplicitParam(name="Resource", paramType="form", value = "Resource的form信息", required = true, dataType = "string")
@@ -89,6 +115,11 @@ public class ResourceController {
         }
     }
 
+    /**
+     * 删除ResourceLink
+     * @param id
+     * @return
+     */
     @ApiOperation("删除ResourceLink")
     @ApiImplicitParams({
             @ApiImplicitParam(name="Resource", paramType="form", value = "Resource的form信息", required = true, dataType = "string")
@@ -99,6 +130,11 @@ public class ResourceController {
         return BaseOutput.success("删除资源链接成功");
     }
 
+    /**
+     * 新增Resource
+     * @param resource
+     * @return
+     */
     @ApiOperation("新增Resource")
     @ApiImplicitParams({
             @ApiImplicitParam(name="Resource", paramType="form", value = "Resource的form信息", required = true, dataType = "string")
@@ -114,6 +150,11 @@ public class ResourceController {
         return BaseOutput.success("新增成功").setData(resource.getId());
     }
 
+    /**
+     * 修改Resource
+     * @param resource
+     * @return
+     */
     @ApiOperation("修改Resource")
     @ApiImplicitParams({
             @ApiImplicitParam(name="Resource", paramType="form", value = "Resource的form信息", required = true, dataType = "string")
@@ -136,6 +177,11 @@ public class ResourceController {
         return BaseOutput.success("修改成功");
     }
 
+    /**
+     * 删除Resource
+     * @param id
+     * @return
+     */
     @ApiOperation("删除Resource")
     @ApiImplicitParams({
             @ApiImplicitParam(name="id", paramType="form", value = "Resource的主键", required = true, dataType = "long")

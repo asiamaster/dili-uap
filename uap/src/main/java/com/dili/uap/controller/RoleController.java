@@ -46,6 +46,11 @@ public class RoleController {
     @Resource
     private FirmService firmService;
 
+    /**
+     * 跳转到Role页面
+     * @param modelMap
+     * @return
+     */
     @ApiOperation("跳转到Role页面")
     @RequestMapping(value="/index.html", method = RequestMethod.GET)
     public String index(ModelMap modelMap) {
@@ -64,6 +69,12 @@ public class RoleController {
         return "role/index";
     }
 
+    /**
+     * 查询Role
+     * @param role
+     * @return
+     * @throws Exception
+     */
     @ApiOperation(value="查询Role", notes = "查询Role，返回列表信息")
     @ApiImplicitParams({
 		@ApiImplicitParam(name="Role", paramType="form", value = "Role的form信息", required = false, dataType = "string")
@@ -83,6 +94,12 @@ public class RoleController {
         return JSONObject.toJSONString(list);
     }
 
+    /**
+     * 分页查询Role
+     * @param role
+     * @return
+     * @throws Exception
+     */
     @ApiOperation(value="分页查询Role", notes = "分页查询Role，返回easyui分页信息")
     @ApiImplicitParams({
 		@ApiImplicitParam(name="Role", paramType="form", value = "Role的form信息", required = false, dataType = "string")
@@ -98,6 +115,11 @@ public class RoleController {
         };
     }
 
+    /**
+     * 新增Role
+     * @param role
+     * @return
+     */
     @ApiOperation("新增Role")
     @ApiImplicitParams({
 		@ApiImplicitParam(name="Role", paramType="form", value = "Role的form信息", required = true, dataType = "string")
@@ -113,6 +135,11 @@ public class RoleController {
         return roleService.save(role).setData(role);
     }
 
+    /**
+     * 修改Role
+     * @param role
+     * @return
+     */
     @ApiOperation("修改Role")
     @ApiImplicitParams({
 		@ApiImplicitParam(name="Role", paramType="form", value = "Role的form信息", required = true, dataType = "string")
@@ -131,6 +158,11 @@ public class RoleController {
         return roleService.save(updateRole).setData(updateRole);
     }
 
+    /**
+     * 删除Role
+     * @param id
+     * @return
+     */
     @ApiOperation("删除Role")
     @ApiImplicitParams({
 		@ApiImplicitParam(name="id", paramType="form", value = "Role的主键", required = true, dataType = "long")
@@ -140,6 +172,11 @@ public class RoleController {
         return roleService.del(id);
     }
 
+    /**
+     * 查询角色菜单资源
+     * @param roleId
+     * @return
+     */
     @RequestMapping(value = "/getRoleMenuAndResource.action", method = { RequestMethod.GET, RequestMethod.POST })
     public @ResponseBody String getRoleMenuAndResource(Long roleId) {
         List<SystemResourceDto> list = roleService.getRoleMenuAndResource(roleId);
@@ -157,6 +194,12 @@ public class RoleController {
         return roleService.saveRoleMenuAndResource(roleId,resourceIds);
     }
 
+    /**
+     * 解绑Role和User
+     * @param roleId
+     * @param userId
+     * @return
+     */
     @ApiOperation("解绑Role和User")
     @RequestMapping(value = "/unbindRoleUser.action", method = { RequestMethod.GET, RequestMethod.POST })
     public @ResponseBody BaseOutput unbindRoleUser(Long roleId,Long userId) {
