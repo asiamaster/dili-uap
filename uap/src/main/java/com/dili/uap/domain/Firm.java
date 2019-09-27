@@ -13,7 +13,7 @@ import javax.persistence.Id;
 
 /**
  * 由MyBatis Generator工具自动生成
- * 
+ *
  * This file was generated on 2019-04-09 15:09:45.
  */
 @Table(name = "`firm`")
