@@ -1,8 +1,8 @@
 package com.dili.uap.sdk.redis;
 
-import com.dili.ss.redis.service.RedisUtil;
 import com.dili.uap.sdk.exception.ParameterException;
 import com.dili.uap.sdk.session.SessionConstants;
+import com.dili.uap.sdk.util.ManageRedisUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ public class UserResourceRedis {
     private static final Logger log = LoggerFactory.getLogger(UserResourceRedis.class);
 
     @Autowired
-    private RedisUtil redisUtil;
+    private ManageRedisUtil redisUtil;
 
     /**
      * 从redis根据用户id判断是否有resourceCode的访问权限

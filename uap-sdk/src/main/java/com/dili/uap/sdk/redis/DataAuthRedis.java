@@ -1,9 +1,9 @@
 package com.dili.uap.sdk.redis;
 
 import com.alibaba.fastjson.JSONObject;
-import com.dili.ss.redis.service.RedisUtil;
 import com.dili.uap.sdk.rpc.DataAuthRefRpc;
 import com.dili.uap.sdk.session.SessionConstants;
+import com.dili.uap.sdk.util.ManageRedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundSetOperations;
 import org.springframework.stereotype.Service;
@@ -19,7 +19,7 @@ import java.util.Map;
 @Service
 public class DataAuthRedis {
     @Autowired
-    private RedisUtil redisUtil;
+    private ManageRedisUtil redisUtil;
 
     @Autowired
     private DataAuthRefRpc dataAuthRefRpc;

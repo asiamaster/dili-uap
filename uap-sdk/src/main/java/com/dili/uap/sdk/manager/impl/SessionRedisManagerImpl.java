@@ -1,8 +1,8 @@
 package com.dili.uap.sdk.manager.impl;
 
-import com.dili.ss.redis.service.RedisUtil;
 import com.dili.uap.sdk.manager.SessionRedisManager;
 import com.dili.uap.sdk.session.SessionConstants;
+import com.dili.uap.sdk.util.ManageRedisUtil;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundSetOperations;
@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 public class SessionRedisManagerImpl implements SessionRedisManager {
 
 	@Autowired
-	private RedisUtil myRedisUtil;
+	private ManageRedisUtil myRedisUtil;
 
 	@Override
 	public void setUserIdSessionIdKey(String userId, String sessionId) {

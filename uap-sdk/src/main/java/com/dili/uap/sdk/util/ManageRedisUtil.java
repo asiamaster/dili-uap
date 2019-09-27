@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
  *
  */
 @SuppressWarnings("unchecked")
-//@Component
+@Component
 public class ManageRedisUtil {
 
     @Resource(name="manageRedisTemplate")
