@@ -448,8 +448,6 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
             return new EasyuiPageOutput(0, Lists.newArrayList());
         }
         user.setIds(onlineUserIds);
-        //将默认值置空
-        user.setOldPassword(null);
         return super.listEasyuiPageByExample(user, true);
     }
 
