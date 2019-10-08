@@ -15,7 +15,7 @@
     <parent>
         <artifactId>dili-uap</artifactId>
         <groupId>com.dili</groupId>
-        <version>2.4.0-SNAPSHOT</version>
+        <version>2.4.1-SNAPSHOT</version>
     </parent>
 
     <dependencies>
@@ -44,11 +44,11 @@
             <!--</exclusions>-->
 
         <!--swagger -->
-        <dependency>
-            <groupId>io.swagger</groupId>
-            <artifactId>swagger-annotations</artifactId>
-            <version>1.5.3</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>io.swagger</groupId>-->
+<!--            <artifactId>swagger-annotations</artifactId>-->
+<!--            <version>1.5.3</version>-->
+<!--        </dependency>-->
 
         <!-- mariadb -->
         <!--<dependency>-->
