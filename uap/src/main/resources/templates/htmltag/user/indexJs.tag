@@ -267,7 +267,7 @@
             return;
         }
         $("#saveUser").linkbutton("disable");
-        var _formData = removeKeyStartWith($("#_form").serializeObject(true),"_");
+        var _formData = removeKeyStartWith($("#_form").serializeObject(),"_");
         var _url = null;
         //没有id就新增
         if(_formData.id == null || _formData.id==""){
