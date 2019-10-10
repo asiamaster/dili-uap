@@ -222,7 +222,6 @@ public class DepartmentController {
 		Department department = out.getData();
 		String id = department.getId().toString();
 		department.aset("id", "department_" + id);
-
 		if (department.getParentId() != null) {
 			department.aset("parentId", "department_" + department.getParentId());
 		} else {
