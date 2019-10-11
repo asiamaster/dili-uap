@@ -21,6 +21,7 @@ import com.dili.uap.sdk.domain.User;
 import com.dili.uap.sdk.manager.SessionRedisManager;
 import com.dili.uap.sdk.session.ManageConfig;
 import com.dili.uap.sdk.session.SessionConstants;
+import com.dili.uap.sdk.util.ManageRedisUtil;
 import com.dili.uap.sdk.util.WebContent;
 import com.dili.uap.service.LoginLogService;
 import com.dili.uap.service.LoginService;
@@ -62,7 +63,7 @@ public class LoginServiceImpl implements LoginService {
 	private Integer pwdErrorCount;
 
 	@Autowired
-	private RedisUtil redisUtil;
+	private ManageRedisUtil redisUtil;
 
 	@Autowired
 	private MenuManager menuManager;
@@ -211,6 +212,8 @@ public class LoginServiceImpl implements LoginService {
 				logLogin(loginDto, false, "用户名或密码错误");
 				return BaseOutput.failure("用户名或密码错误").setCode(ResultCode.NOT_AUTH_ERROR);
 			}
+			redisUtil.set("he", 12);
+			java.lang.System.out.println(redisUtil.get("he"));
 			// 登录成功后清除锁定计时
 			clearUserLock(user.getId());
 			// 加载用户系统

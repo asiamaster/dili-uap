@@ -1,10 +1,10 @@
 package com.dili.uap.manager.impl;
 
-import com.dili.ss.redis.service.RedisUtil;
 import com.dili.uap.dao.ResourceMapper;
 import com.dili.uap.domain.Resource;
 import com.dili.uap.manager.ResourceManager;
 import com.dili.uap.sdk.session.SessionConstants;
+import com.dili.uap.sdk.util.ManageRedisUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -30,7 +30,7 @@ public class ResourceManagerImpl implements ResourceManager {
 	private ResourceMapper resourceMapper;
 
 	@Autowired
-	private RedisUtil redisUtils;
+	private ManageRedisUtil redisUtils;
 
 	@Override
 	public void initUserResourceCodeInRedis(Long userId) {

@@ -1,10 +1,10 @@
 package com.dili.uap.manager.impl;
 
-import com.dili.ss.redis.service.RedisUtil;
 import com.dili.uap.manager.UserManager;
 import com.dili.uap.sdk.manager.SessionRedisManager;
 import com.dili.uap.sdk.redis.UserRedis;
 import com.dili.uap.sdk.session.SessionConstants;
+import com.dili.uap.sdk.util.ManageRedisUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ public class UserManagerImpl implements UserManager {
 	private final static Logger LOG = LoggerFactory.getLogger(UserManagerImpl.class);
 
 	@Autowired
-	private RedisUtil redisUtil;
+	private ManageRedisUtil redisUtil;
 	@Autowired
 	private UserRedis userRedis;
 	@Autowired

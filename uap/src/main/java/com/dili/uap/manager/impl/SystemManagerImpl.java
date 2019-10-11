@@ -1,10 +1,10 @@
 package com.dili.uap.manager.impl;
 
-import com.dili.ss.redis.service.RedisUtil;
 import com.dili.uap.dao.SystemMapper;
 import com.dili.uap.manager.SystemManager;
 import com.dili.uap.sdk.domain.System;
 import com.dili.uap.sdk.session.SessionConstants;
+import com.dili.uap.sdk.util.ManageRedisUtil;
 import com.dili.uap.sdk.util.SerializeUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -29,7 +29,7 @@ public class SystemManagerImpl implements SystemManager {
 	private SystemMapper systemMapper;
 
 	@Autowired
-	private RedisUtil redisUtils;
+	private ManageRedisUtil redisUtils;
 
 	@Override
 	public void initUserSystemInRedis(Long userId) {

@@ -1,10 +1,10 @@
 package com.dili.uap.manager.impl;
 
-import com.dili.ss.redis.service.RedisUtil;
 import com.dili.uap.dao.MenuMapper;
 import com.dili.uap.manager.MenuManager;
 import com.dili.uap.sdk.domain.Menu;
 import com.dili.uap.sdk.session.SessionConstants;
+import com.dili.uap.sdk.util.ManageRedisUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -31,7 +31,7 @@ public class MenuManagerImpl implements MenuManager {
 	private MenuMapper menuMapper;
 
 	@Autowired
-	private RedisUtil redisUtils;
+	private ManageRedisUtil redisUtils;
 
 	@Override
 	public void initUserMenuUrlsInRedis(Long userId) {

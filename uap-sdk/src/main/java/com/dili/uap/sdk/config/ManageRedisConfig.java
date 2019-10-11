@@ -55,8 +55,8 @@ public class ManageRedisConfig {
     //连接池中的最小空闲连接 默认 0
     private int minIdle = 0;
 
-    @Bean("manageRedisConnectionFactory")
-    public LettuceConnectionFactory lettuceConnectionFactory() {
+//    @Bean("manageRedisConnectionFactory")
+    private LettuceConnectionFactory getLettuceConnectionFactory() {
         /* ========= 基本配置 ========= */
         RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration();
         configuration.setHostName(host);
@@ -80,7 +80,7 @@ public class ManageRedisConfig {
         lettucePoolingClientConfigurationBuilder.commandTimeout(Duration.ofMillis(timeout));
         lettucePoolingClientConfigurationBuilder.shutdownTimeout(Duration.ofMillis(shutdownTimeout));
         LettuceConnectionFactory lettuceConnectionFactory = new LettuceConnectionFactory(configuration, lettucePoolingClientConfigurationBuilder.build());
-//        lettuceConnectionFactory.afterPropertiesSet();
+        lettuceConnectionFactory.afterPropertiesSet();
         return lettuceConnectionFactory;
     }
 
@@ -126,7 +126,9 @@ public class ManageRedisConfig {
      * @return
      */
     @Bean("manageRedisTemplate")
-    public RedisTemplate<String, String> redisTemplate(@Qualifier("manageRedisConnectionFactory") LettuceConnectionFactory factory) {
+//    public RedisTemplate<String, String> redisTemplate(@Qualifier("manageRedisConnectionFactory") LettuceConnectionFactory factory) {
+    public RedisTemplate<String, String> redisTemplate() {
+        LettuceConnectionFactory factory = getLettuceConnectionFactory();
         //创建Redis缓存操作助手RedisTemplate对象
         StringRedisTemplate template = new StringRedisTemplate();
         template.setConnectionFactory(factory);
