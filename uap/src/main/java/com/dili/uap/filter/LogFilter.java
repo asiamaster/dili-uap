@@ -3,7 +3,6 @@ package com.dili.uap.filter;
 import org.apache.catalina.connector.RequestFacade;
 
 import javax.servlet.*;
-import javax.servlet.annotation.WebFilter;
 import java.io.IOException;
 
 /**

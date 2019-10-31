@@ -1,7 +1,6 @@
 package com.dili.uap.domain.dto;
 
 import com.dili.ss.dto.IBaseDomain;
-import com.dili.uap.domain.UserRole;
 
 /**
  * <B>Description</B>

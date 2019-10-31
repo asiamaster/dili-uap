@@ -1,7 +1,20 @@
 package com.dili.uap.controller;
 
-import javax.servlet.http.HttpServletRequest;
-
+import com.dili.ss.domain.BaseOutput;
+import com.dili.ss.dto.DTOUtils;
+import com.dili.uap.domain.LoginLog;
+import com.dili.uap.domain.dto.LoginDto;
+import com.dili.uap.sdk.domain.UserTicket;
+import com.dili.uap.sdk.session.SessionConstants;
+import com.dili.uap.sdk.session.SessionContext;
+import com.dili.uap.sdk.util.WebContent;
+import com.dili.uap.service.LoginService;
+import com.dili.uap.service.UserService;
+import com.dili.uap.utils.WebUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,22 +27,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.dili.ss.domain.BaseOutput;
-import com.dili.ss.dto.DTOUtils;
-import com.dili.uap.domain.LoginLog;
-import com.dili.uap.domain.dto.LoginDto;
-import com.dili.uap.sdk.domain.UserTicket;
-import com.dili.uap.sdk.session.SessionConstants;
-import com.dili.uap.sdk.session.SessionContext;
-import com.dili.uap.sdk.util.WebContent;
-import com.dili.uap.service.LoginService;
-import com.dili.uap.service.UserService;
-import com.dili.uap.utils.WebUtil;
-
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 登录控制器

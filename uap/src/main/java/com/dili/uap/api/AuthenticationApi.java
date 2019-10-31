@@ -19,7 +19,6 @@ import com.dili.uap.sdk.redis.DataAuthRedis;
 import com.dili.uap.sdk.redis.UserRedis;
 import com.dili.uap.sdk.redis.UserSystemRedis;
 import com.dili.uap.sdk.rpc.SystemConfigRpc;
-import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.service.DataAuthRefService;
 import com.dili.uap.service.LoginService;
 import com.dili.uap.service.UserService;

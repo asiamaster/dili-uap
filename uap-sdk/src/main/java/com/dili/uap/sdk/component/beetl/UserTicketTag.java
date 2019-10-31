@@ -6,7 +6,6 @@ import org.beetl.core.Tag;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.Map;
 
 /**

@@ -1,8 +1,8 @@
 package com.dili.uap.controller;
 
 import com.dili.ss.domain.BaseOutput;
-import com.dili.uap.sdk.domain.SystemConfig;
 import com.dili.uap.domain.dto.SystemConfigDto;
+import com.dili.uap.sdk.domain.SystemConfig;
 import com.dili.uap.service.SystemConfigService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;

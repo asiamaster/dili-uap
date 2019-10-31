@@ -6,7 +6,6 @@ import com.dili.ss.metadata.FieldMeta;
 import com.dili.ss.metadata.ValuePair;
 import com.dili.ss.metadata.provider.BatchDisplayTextProviderSupport;
 import com.dili.uap.domain.dto.MenuCondition;
-import com.dili.uap.domain.dto.ResourceDto;
 import com.dili.uap.service.MenuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

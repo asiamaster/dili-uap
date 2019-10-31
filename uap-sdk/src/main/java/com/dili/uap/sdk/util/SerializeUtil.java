@@ -1,11 +1,9 @@
 package com.dili.uap.sdk.util;
 
-import com.dili.ss.dto.DTOUtils;
-import com.dili.uap.sdk.domain.System;
-
-import java.io.*;
-import java.math.BigInteger;
-import java.nio.charset.Charset;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 /**
  * 对象序列化工具
