@@ -1,18 +1,12 @@
 package com.dili.uap.provider;
 
 import com.dili.ss.dto.DTOUtils;
-import com.dili.ss.metadata.ValuePair;
-import com.dili.ss.metadata.ValuePairImpl;
 import com.dili.ss.metadata.provider.BatchDisplayTextProviderAdaptor;
-import com.dili.uap.sdk.domain.Department;
-import com.dili.uap.sdk.domain.Firm;
 import com.dili.uap.domain.dto.DepartmentDto;
-import com.dili.uap.domain.dto.FirmQueryDto;
 import com.dili.uap.service.DepartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
