@@ -232,7 +232,7 @@ function renderMenuGrid(node, gridId) {
         }, {
             field : 'type',
             title : '类型',
-            width : '7%',
+            width : '6%',
             formatter : function(value, row, index) {
                 if (value == 0) {
                     return '目录';
@@ -263,7 +263,7 @@ function renderMenuGrid(node, gridId) {
         }, {
             field : 'url',
             title : '菜单链接地址',
-            width : '35%',
+            width : '30%',
             editor : {
                 type : 'textbox',
                 options : {
@@ -274,7 +274,7 @@ function renderMenuGrid(node, gridId) {
         },{
             field : 'description',
             title : '描述',
-            width : '30%',
+            width : '38%',
             editor : {
                 type : 'textbox',
                 options : {
@@ -285,7 +285,7 @@ function renderMenuGrid(node, gridId) {
         }, {
             field : 'shortcut',
             title : '快捷菜单',
-            width : '9%',
+            width : '7%',
             formatter : function(value, row, index) {
                 if (value == 0) {
                     return '否';
@@ -426,7 +426,7 @@ function renderInternalLinksGrid(node, gridId) {
         },{
             field : 'name',
             title : '链接名称',
-            width : '20%',
+            width : '15%',
             editor : {
                 type : 'textbox',
                 options : {
@@ -439,7 +439,7 @@ function renderInternalLinksGrid(node, gridId) {
         }, {
             field : 'url',
             title : '内部链接地址',
-            width : '50%',
+            width : '43%',
             editor : {
                 type : 'textbox',
                 options : {
@@ -452,7 +452,7 @@ function renderInternalLinksGrid(node, gridId) {
         }, {
             field : 'description',
             title : '描述',
-            width : '30%',
+            width : '42%',
             editor : {
                 type : 'textbox',
                 options : {
