@@ -7,7 +7,6 @@ import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.dto.IDTO;
 import com.dili.ss.metadata.ValueProviderUtils;
 import com.dili.uap.constants.UapConstants;
-import com.dili.uap.domain.CustomizeBeanImpl;
 import com.dili.uap.domain.DataAuthRef;
 import com.dili.uap.domain.dto.UserDto;
 import com.dili.uap.sdk.component.DataAuthSource;
@@ -198,63 +197,63 @@ public class UserController {
         return userService.listEasyuiPage(user, true).toString();
     }
 
-    /**
-     * 栈对象测试1
-     */
-    private void testStack1() {
-        for (int i = 0; i < 100_000_000; i++) {
-            CustomizeBeanImpl customizeBean = new CustomizeBeanImpl();
-            customizeBean.setId(1L);
-            customizeBean.setName("自定义Bean");
-        }
-    }
-
-    /**
-     * 栈对象测试2
-     */
-    private void testStack2() {
-        for (int i = 0; i < 100_000_000; i++) {
-            CustomizeBeanImpl customizeBean = new CustomizeBeanImpl();
-            customizeBean.setId((long)i);
-            customizeBean.setName("自定义Bean");
-        }
-    }
-
-    /**
-     * 栈对象测试3
-     */
-    private void testStack3() {
-        for (int i = 0; i < 1_000_000; i++) {
-            for(int j=0; j<100; j++) {
-                CustomizeBeanImpl customizeBean = new CustomizeBeanImpl();
-                customizeBean.setId((long) j);
-                customizeBean.setName("自定义Bean");
-            }
-        }
-    }
-
-    /**
-     * TLAB测试
-     * @return
-     */
-    private void testTlab1() {
-        final int size = 5_000_000;
-        Object[] objects = new Object[size];
-        for (int c = 0; c < size; c++) {
-            objects[c] = new CustomizeBeanImpl();
-        }
-//        return objects;
-    }
-
-    /**
-     * TLAB测试2
-     */
-    private void testTlab2() {
-        for (int i = 0; i < 5_000_000; i++) {
-            Object[] objects = new Object[1];
-            objects[0] = new CustomizeBeanImpl();
-        }
-    }
+//    /**
+//     * 栈对象测试1
+//     */
+//    private void testStack1() {
+//        for (int i = 0; i < 100_000_000; i++) {
+//            CustomizeBeanImpl customizeBean = new CustomizeBeanImpl();
+//            customizeBean.setId(1L);
+//            customizeBean.setName("自定义Bean");
+//        }
+//    }
+//
+//    /**
+//     * 栈对象测试2
+//     */
+//    private void testStack2() {
+//        for (int i = 0; i < 100_000_000; i++) {
+//            CustomizeBeanImpl customizeBean = new CustomizeBeanImpl();
+//            customizeBean.setId((long)i);
+//            customizeBean.setName("自定义Bean");
+//        }
+//    }
+//
+//    /**
+//     * 栈对象测试3
+//     */
+//    private void testStack3() {
+//        for (int i = 0; i < 1_000_000; i++) {
+//            for(int j=0; j<100; j++) {
+//                CustomizeBeanImpl customizeBean = new CustomizeBeanImpl();
+//                customizeBean.setId((long) j);
+//                customizeBean.setName("自定义Bean");
+//            }
+//        }
+//    }
+//
+//    /**
+//     * TLAB测试
+//     * @return
+//     */
+//    private void testTlab1() {
+//        final int size = 5_000_000;
+//        Object[] objects = new Object[size];
+//        for (int c = 0; c < size; c++) {
+//            objects[c] = new CustomizeBeanImpl();
+//        }
+////        return objects;
+//    }
+//
+//    /**
+//     * TLAB测试2
+//     */
+//    private void testTlab2() {
+//        for (int i = 0; i < 5_000_000; i++) {
+//            Object[] objects = new Object[1];
+//            objects[0] = new CustomizeBeanImpl();
+//        }
+//    }
 
     /**
      * 新增User
