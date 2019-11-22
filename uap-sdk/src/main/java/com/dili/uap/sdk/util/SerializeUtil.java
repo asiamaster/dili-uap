@@ -41,16 +41,16 @@ public class SerializeUtil {
     }
 
 //    public static void main(String[] args) throws Exception {
-//        System system = DTOUtils.newDTO(System.class);
+//        Systems system = DTOUtils.newDTO(Systems.class);
 //        system.setId(1L);
 //        system.setName("系统");
 //        byte[] b= serialize(system);
 //        String s = byteArrayToHexStr(b);
 //        byte[] c = hexStrToByteArray(s);
 //        String s2 = byteArrayToHexStr(c);
-//        java.lang.System.out.println(s.equals(s2));
-//        java.lang.System.out.println(b.equals(c));
-////        java.lang.System.out.println(((System)unserialize(getByteArray(s))).getName());
+//        java.lang.Systems.out.println(s.equals(s2));
+//        java.lang.Systems.out.println(b.equals(c));
+////        java.lang.Systems.out.println(((Systems)unserialize(getByteArray(s))).getName());
 //    }
 
     public static String byteArrayToHexStr(byte[] byteArray) {

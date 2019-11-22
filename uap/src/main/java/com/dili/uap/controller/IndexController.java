@@ -3,7 +3,7 @@ package com.dili.uap.controller;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.exception.AppException;
 import com.dili.uap.constants.UapConstants;
-import com.dili.uap.sdk.domain.System;
+import com.dili.uap.sdk.domain.Systems;
 import com.dili.uap.sdk.domain.User;
 import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.exception.NotLoginException;
@@ -77,20 +77,20 @@ public class IndexController {
 			String systemCode = request.getParameter("systemCode") == null ? UapConstants.UAP_SYSTEM_CODE : request.getParameter("systemCode");
 			modelMap.put("systemCode", systemCode);
 			if(systemCode.equals(UapConstants.UAP_SYSTEM_CODE)){
-				System condition = DTOUtils.newInstance(System.class);
+				Systems condition = DTOUtils.newInstance(Systems.class);
 				condition.setCode(UapConstants.UAP_SYSTEM_CODE);
-				List<System> uap = systemService.listByExample(condition);
+				List<Systems> uap = systemService.listByExample(condition);
 				if(CollectionUtils.isEmpty(uap)){
 					throw new AppException("未配置统一权限系统");
 				}
-				modelMap.put("system", DTOUtils.as(uap.get(0), System.class));
+				modelMap.put("system", DTOUtils.as(uap.get(0), Systems.class));
 				return INDEX_PATH;
 			}
-			List<System> systems = userSystemRedis.getRedisUserSystems(userTicket.getId());
+			List<Systems> systems = userSystemRedis.getRedisUserSystems(userTicket.getId());
 			if(null == systems){
 				return LoginController.REDIRECT_INDEX_PAGE;
 			}
-			for(System system : systems){
+			for(Systems system : systems){
 				if(systemCode.equals(system.getCode())){
 					modelMap.put("system", system);
 					break;
@@ -117,7 +117,7 @@ public class IndexController {
 	public String platform(ModelMap modelMap, HttpServletRequest req) {
 		UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
 		if (userTicket != null) {
-			List<System> systems = systemService.listByUserId(userTicket.getId());
+			List<Systems> systems = systemService.listByUserId(userTicket.getId());
 			User user = userService.get(userTicket.getId());
 			if(user == null){
 				throw new NotLoginException("登录用户不存在");
@@ -187,8 +187,8 @@ public class IndexController {
 	 * @param systems
 	 * @return
 	 */
-	private boolean containsUap(List<System> systems){
-		for(System system : systems){
+	private boolean containsUap(List<Systems> systems){
+		for(Systems system : systems){
 			if(UapConstants.UAP_SYSTEM_CODE.equals(system.getCode())){
 				return true;
 			}

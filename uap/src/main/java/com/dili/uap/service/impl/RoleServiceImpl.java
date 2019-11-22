@@ -12,7 +12,7 @@ import com.dili.uap.domain.UserRole;
 import com.dili.uap.domain.dto.SystemResourceDto;
 import com.dili.uap.glossary.MenuType;
 import com.dili.uap.glossary.Yn;
-import com.dili.uap.sdk.domain.System;
+import com.dili.uap.sdk.domain.Systems;
 import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.service.RoleService;
@@ -110,7 +110,7 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements Role
     @Override
     public List<SystemResourceDto> getRoleMenuAndResource(Long roleId) {
         //检索所以的系统信息
-        List<System> systemList = systemMapper.selectAll();
+        List<Systems> systemList = systemMapper.selectAll();
         if (CollectionUtils.isEmpty(systemList)){
             return null;
         }

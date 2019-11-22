@@ -14,7 +14,7 @@ import com.dili.uap.domain.dto.UserDto;
 import com.dili.uap.manager.DataAuthManager;
 import com.dili.uap.sdk.component.DataAuthSource;
 import com.dili.uap.sdk.domain.Menu;
-import com.dili.uap.sdk.domain.System;
+import com.dili.uap.sdk.domain.Systems;
 import com.dili.uap.sdk.redis.DataAuthRedis;
 import com.dili.uap.sdk.redis.UserRedis;
 import com.dili.uap.sdk.redis.UserSystemRedis;
@@ -200,7 +200,7 @@ public class AuthenticationApi {
     @ApiOperation("获取系统权限列表")
     @RequestMapping(value = "/listSystems.api", method = { RequestMethod.POST })
     @ResponseBody
-    public BaseOutput<List<System>> listSystems(@RequestBody String json){
+    public BaseOutput<List<Systems>> listSystems(@RequestBody String json){
         String sessionId = getSessionIdByJson(json);
         if(StringUtils.isBlank(sessionId)){
             return BaseOutput.failure("会话id不存在").setCode(ResultCode.PARAMS_ERROR);

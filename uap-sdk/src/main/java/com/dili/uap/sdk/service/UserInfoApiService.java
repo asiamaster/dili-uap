@@ -160,7 +160,7 @@ public class UserInfoApiService extends AbstractApiService {
 //        map.put("txt", "a");
 //        List<UserTicket> list = u.getUsers(map);
 //        for (UserTicket ut : list) {
-//            System.out.println(ut);
+//            Systems.out.println(ut);
 //        }
 //    }
 

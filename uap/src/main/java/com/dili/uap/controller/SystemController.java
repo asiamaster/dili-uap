@@ -1,7 +1,7 @@
 package com.dili.uap.controller;
 
 import com.dili.ss.domain.BaseOutput;
-import com.dili.uap.sdk.domain.System;
+import com.dili.uap.sdk.domain.Systems;
 import com.dili.uap.domain.dto.SystemDto;
 import com.dili.uap.service.SystemService;
 import io.swagger.annotations.Api;
@@ -45,10 +45,10 @@ public class SystemController {
      */
     @ApiOperation(value="查询System", notes = "查询System，返回列表信息")
     @ApiImplicitParams({
-		@ApiImplicitParam(name="System", paramType="form", value = "System的form信息", required = false, dataType = "string")
+		@ApiImplicitParam(name="Systems", paramType="form", value = "System的form信息", required = false, dataType = "string")
 	})
     @RequestMapping(value="/list", method = {RequestMethod.GET, RequestMethod.POST})
-    public @ResponseBody List<System> list(System system) {
+    public @ResponseBody List<Systems> list(Systems system) {
         return systemService.list(system);
     }
 
@@ -60,7 +60,7 @@ public class SystemController {
      */
     @ApiOperation(value="分页查询System", notes = "分页查询System，返回easyui分页信息")
     @ApiImplicitParams({
-		@ApiImplicitParam(name="System", paramType="form", value = "System的form信息", required = false, dataType = "string")
+		@ApiImplicitParam(name="Systems", paramType="form", value = "System的form信息", required = false, dataType = "string")
 	})
     @RequestMapping(value="/listPage.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody String listPage(SystemDto system) throws Exception {
@@ -74,10 +74,10 @@ public class SystemController {
      */
     @ApiOperation("新增System")
     @ApiImplicitParams({
-		@ApiImplicitParam(name="System", paramType="form", value = "System的form信息", required = true, dataType = "string")
+		@ApiImplicitParam(name="Systems", paramType="form", value = "System的form信息", required = true, dataType = "string")
 	})
     @RequestMapping(value="/insert.action", method = {RequestMethod.GET, RequestMethod.POST})
-    public @ResponseBody BaseOutput insert(System system) {
+    public @ResponseBody BaseOutput insert(Systems system) {
        return systemService.insertAfterCheck(system);
     }
 
@@ -88,10 +88,10 @@ public class SystemController {
      */
     @ApiOperation("修改System")
     @ApiImplicitParams({
-		@ApiImplicitParam(name="System", paramType="form", value = "System的form信息", required = true, dataType = "string")
+		@ApiImplicitParam(name="Systems", paramType="form", value = "System的form信息", required = true, dataType = "string")
 	})
     @RequestMapping(value="/update.action", method = {RequestMethod.GET, RequestMethod.POST})
-    public @ResponseBody BaseOutput update(System system) {
+    public @ResponseBody BaseOutput update(Systems system) {
     	return systemService.updateAfterCheck(system);
     }
 

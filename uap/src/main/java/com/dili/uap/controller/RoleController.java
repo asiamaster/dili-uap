@@ -8,10 +8,12 @@ import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.dto.IDTO;
 import com.dili.ss.metadata.ValueProvider;
 import com.dili.ss.metadata.ValueProviderUtils;
+import com.dili.uap.boot.DroolsFactory;
 import com.dili.uap.constants.UapConstants;
-import com.dili.uap.sdk.domain.Firm;
+import com.dili.uap.domain.CustomizeBeanImpl;
 import com.dili.uap.domain.Role;
 import com.dili.uap.domain.dto.SystemResourceDto;
+import com.dili.uap.sdk.domain.Firm;
 import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.service.FirmService;
 import com.dili.uap.service.RoleService;
@@ -20,6 +22,11 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
+import org.drools.decisiontable.SpreadsheetCompiler;
+import org.kie.api.KieBase;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.FactHandle;
+import org.kie.internal.io.ResourceFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -29,6 +36,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
@@ -53,7 +63,7 @@ public class RoleController {
      */
     @ApiOperation("跳转到Role页面")
     @RequestMapping(value="/index.html", method = RequestMethod.GET)
-    public String index(ModelMap modelMap) {
+    public String index(ModelMap modelMap) throws FileNotFoundException {
         String firmCode = SessionContext.getSessionContext().getUserTicket().getFirmCode();
         //用户是否属于集团
         Boolean isGroup = false;
@@ -66,6 +76,31 @@ public class RoleController {
         modelMap.put("firms", JSONArray.toJSONString(firmService.list(query)));
         modelMap.put("isGroup", isGroup);
         modelMap.put("firmCode",firmCode);
+
+        //excel文件解析成drools的需要的格式
+        SpreadsheetCompiler compiler = new SpreadsheetCompiler();
+        //classpath读取
+        org.kie.api.io.Resource resource = ResourceFactory.newClassPathResource("rules/dtable/dtable-test.xlsx");
+        //文件路径读取
+//            InputStream inputStream = new FileInputStream("d:/dtable-test.xls");
+//            org.kie.api.io.Resource resource = ResourceFactory.newInputStreamResource(inputStream, "UTF-8");
+        //最终得到规则文件drl的字符串
+        String rules = compiler.compile(resource, "dtable-sheet");
+        System.out.println(rules);
+        KieBase kieBase = DroolsFactory.getChargingRulesKieBase();
+//        if(null == kieBase) {
+            kieBase = DroolsFactory.deploy(DroolsFactory.CHARGING_RULES, rules);
+//        }
+        KieSession kieSession = kieBase.newKieSession();
+        CustomizeBeanImpl customizeBean = new CustomizeBeanImpl();
+        customizeBean.setId(1L);
+        customizeBean.setName("master");
+        customizeBean.setResult(false);
+        customizeBean.setAge(37);
+        FactHandle factHandle = kieSession.insert(customizeBean);
+        kieSession.fireAllRules();
+        kieSession.delete(factHandle);
+        kieSession.dispose();
         return "role/index";
     }
 

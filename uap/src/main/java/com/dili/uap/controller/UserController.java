@@ -6,7 +6,9 @@ import com.dili.ss.domain.EasyuiPageOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.dto.IDTO;
 import com.dili.ss.metadata.ValueProviderUtils;
+import com.dili.uap.boot.DroolsFactory;
 import com.dili.uap.constants.UapConstants;
+import com.dili.uap.domain.CustomizeBeanImpl;
 import com.dili.uap.domain.DataAuthRef;
 import com.dili.uap.domain.dto.UserDto;
 import com.dili.uap.sdk.component.DataAuthSource;
@@ -31,6 +33,9 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.FactHandle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -84,6 +89,14 @@ public class UserController {
         modelMap.put("firms", JSONArray.toJSONString(firmService.list(query)));
         modelMap.put("isGroup", isGroup);
         modelMap.put("firmCode",firmCode);
+//        List users = new ArrayList<>(10000000);
+//        for(int i=0; i<1_000_000;i++){
+//            CustomizeBeanImpl customizeBean = new CustomizeBeanImpl();
+//            customizeBean.setId(3L);
+//            customizeBean.setName("自定义Bean");
+//            users.add(customizeBean);
+//        }
+//        System.out.println(users.size());
         return "user/index";
     }
 
@@ -115,7 +128,136 @@ public class UserController {
     @RequestMapping(value = "/listPage.action", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
     public String listPage(UserDto user) throws Exception {
+//        long start = Systems.currentTimeMillis();
+//        testStack1();
+//        long end = Systems.currentTimeMillis();
+//        System.out.println("1亿次Stack测试消耗1:"+ (end-start)+"ms");
+//        testStack2();
+//        System.out.println("1亿次Stack测试消耗2:"+ (Systems.currentTimeMillis()-end)+"ms");
+//        end = Systems.currentTimeMillis();
+//        testStack3();
+//        System.out.println("1亿次Stack测试消耗3:"+ (Systems.currentTimeMillis()-end)+"ms");
+//        end = Systems.currentTimeMillis();
+//        testTlab1();
+//        System.out.println("TLAB测试1消耗:"+ (Systems.currentTimeMillis()-end)+"ms");
+//        end = Systems.currentTimeMillis();
+//        testTlab2();
+//        System.out.println("TLAB测试2消耗:"+ (Systems.currentTimeMillis()-end)+"ms");
+
+        //easy rules测试代码
+//        Rule rule = new MVELRule()
+//                .name("myRule")
+//                .description("myRuleDescription")
+//                .priority(3)
+//                .when("customizeBean.id==1")
+//                .then("map.put(\"retVal\", userService.listEasyuiPage(user, true).toString());");
+//        Rules rules = new Rules();
+//        rules.register(rule);
+//
+//        Facts facts = new Facts();
+//        CustomizeBeanImpl customizeBean = new CustomizeBeanImpl();
+//        customizeBean.setId(1L);
+//        customizeBean.setName("customizeBean");
+//        facts.put("customizeBean", customizeBean);
+//        facts.put("user", user);
+//        facts.put("userService", userService);
+//        Map map = new HashMap(1);
+//        facts.put("map", map);
+//        RulesEngineParameters parameters = new RulesEngineParameters().skipOnFirstAppliedRule(true);
+//        RulesEngine rulesEngine = new DefaultRulesEngine(parameters);
+//        rulesEngine.fire(rules, facts);
+
+        //硬编码规则测试代码
+//        KieSession kieSession = kieContainer.newKieSession("test3");
+//        kieSession = kieContainer.getKieBase("rules").newKieSession();
+//        CustomizeBeanImpl customizeBean = new CustomizeBeanImpl();
+//        customizeBean.setId(1L);
+//        customizeBean.setName("customizeBean");
+//        customizeBean.setResult(false);
+//        kieSession.insert(customizeBean);
+//        int ruleFiredCount = kieSession.fireAllRules();
+//        Collection c = kieSession.getObjects(new ObjectFilter() {
+//            @Override
+//            public boolean accept(Object object) {
+////                System.out.println("aaaaaaaaaaaaaaaaa:"+object);
+//                return true;
+//            }
+//        });
+//        System.out.println(c);
+//        System.out.println("触发了" + ruleFiredCount + "条规则");
+//        if(customizeBean.getResult()){
+//            System.out.println("规则校验通过");
+//        }
+
+
+//        KieSession kieSession = DroolsFactory.getChargingRulesKieBase().newKieSession();
+//        CustomizeBeanImpl customizeBean = new CustomizeBeanImpl();
+//        customizeBean.setId(1L);
+//        customizeBean.setName("customizeBean");
+//        customizeBean.setResult(false);
+//        FactHandle factHandle = kieSession.insert(customizeBean);
+//        kieSession.fireAllRules();
+//        kieSession.delete(factHandle);
+//        kieSession.dispose();
         return userService.listEasyuiPage(user, true).toString();
+    }
+
+    /**
+     * 栈对象测试1
+     */
+    private void testStack1() {
+        for (int i = 0; i < 100_000_000; i++) {
+            CustomizeBeanImpl customizeBean = new CustomizeBeanImpl();
+            customizeBean.setId(1L);
+            customizeBean.setName("自定义Bean");
+        }
+    }
+
+    /**
+     * 栈对象测试2
+     */
+    private void testStack2() {
+        for (int i = 0; i < 100_000_000; i++) {
+            CustomizeBeanImpl customizeBean = new CustomizeBeanImpl();
+            customizeBean.setId((long)i);
+            customizeBean.setName("自定义Bean");
+        }
+    }
+
+    /**
+     * 栈对象测试3
+     */
+    private void testStack3() {
+        for (int i = 0; i < 1_000_000; i++) {
+            for(int j=0; j<100; j++) {
+                CustomizeBeanImpl customizeBean = new CustomizeBeanImpl();
+                customizeBean.setId((long) j);
+                customizeBean.setName("自定义Bean");
+            }
+        }
+    }
+
+    /**
+     * TLAB测试
+     * @return
+     */
+    private void testTlab1() {
+        final int size = 5_000_000;
+        Object[] objects = new Object[size];
+        for (int c = 0; c < size; c++) {
+            objects[c] = new CustomizeBeanImpl();
+        }
+//        return objects;
+    }
+
+    /**
+     * TLAB测试2
+     */
+    private void testTlab2() {
+        for (int i = 0; i < 5_000_000; i++) {
+            Object[] objects = new Object[1];
+            objects[0] = new CustomizeBeanImpl();
+        }
     }
 
     /**

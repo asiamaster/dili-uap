@@ -1,7 +1,7 @@
 package com.dili.uap.sdk.redis;
 
 import com.dili.ss.dto.DTOUtils;
-import com.dili.uap.sdk.domain.System;
+import com.dili.uap.sdk.domain.Systems;
 import com.dili.uap.sdk.exception.ParameterException;
 import com.dili.uap.sdk.session.SessionConstants;
 import com.dili.uap.sdk.util.ManageRedisUtil;
@@ -47,7 +47,7 @@ public class UserSystemRedis {
      * @param userId
      * @return
      */
-    public List<System> getRedisUserSystems(Long userId){
+    public List<Systems> getRedisUserSystems(Long userId){
         String mes = (String)this.redisUtil.get(SessionConstants.USER_SYSTEM_KEY + userId.toString());
         if(StringUtils.isBlank(mes)){
             return new ArrayList<>();
@@ -62,9 +62,9 @@ public class UserSystemRedis {
                 return null;
             }
             //由于反序列化出的对象无法迭代，所以重新放到新的List对象
-            List<System> systemList = new ArrayList(systems.size());
+            List<Systems> systemList = new ArrayList(systems.size());
             for(Object system : systems){
-                systemList.add(DTOUtils.as(system, System.class));
+                systemList.add(DTOUtils.as(system, Systems.class));
             }
             return systemList;
         } catch (IOException e) {
@@ -81,8 +81,8 @@ public class UserSystemRedis {
      * @return
      */
     private boolean checkRedisUserSystemByCode(Long userId, String systemCode) {
-        List<System> systems = getRedisUserSystems(userId);
-        for(System system : systems){
+        List<Systems> systems = getRedisUserSystems(userId);
+        for(Systems system : systems){
             if(system.getCode().equals(systemCode)){
                 return true;
             }

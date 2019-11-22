@@ -2,7 +2,7 @@ package com.dili.uap.manager.impl;
 
 import com.dili.uap.dao.SystemMapper;
 import com.dili.uap.manager.SystemManager;
-import com.dili.uap.sdk.domain.System;
+import com.dili.uap.sdk.domain.Systems;
 import com.dili.uap.sdk.session.SessionConstants;
 import com.dili.uap.sdk.util.ManageRedisUtil;
 import com.dili.uap.sdk.util.SerializeUtil;
@@ -33,7 +33,7 @@ public class SystemManagerImpl implements SystemManager {
 
 	@Override
 	public void initUserSystemInRedis(Long userId) {
-		List<System> systems = this.systemMapper.listByUserId(userId);
+		List<Systems> systems = this.systemMapper.listByUserId(userId);
 		if (CollectionUtils.isEmpty(systems)) {
 			return;
 		}

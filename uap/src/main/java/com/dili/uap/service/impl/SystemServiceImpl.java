@@ -7,11 +7,8 @@ import com.dili.uap.dao.DataDictionaryMapper;
 import com.dili.uap.dao.MenuMapper;
 import com.dili.uap.dao.SystemConfigMapper;
 import com.dili.uap.dao.SystemMapper;
-import com.dili.uap.sdk.domain.DataDictionary;
-import com.dili.uap.sdk.domain.Menu;
-import com.dili.uap.sdk.domain.System;
-import com.dili.uap.sdk.domain.SystemConfig;
-import com.dili.uap.sdk.domain.UserTicket;
+import com.dili.uap.sdk.domain.*;
+import com.dili.uap.sdk.domain.Systems;
 import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.service.SystemService;
 
@@ -26,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
  * 由MyBatis Generator工具自动生成 This file was generated on 2018-05-22 16:24:56.
  */
 @Service
-public class SystemServiceImpl extends BaseServiceImpl<System, Long> implements SystemService {
+public class SystemServiceImpl extends BaseServiceImpl<Systems, Long> implements SystemService {
 
 	@Autowired DataDictionaryMapper dataDictionaryMapper;
 	@Autowired SystemConfigMapper systemConfigMapper;
@@ -38,10 +35,10 @@ public class SystemServiceImpl extends BaseServiceImpl<System, Long> implements 
 
 	@Override
 	@Transactional
-	public BaseOutput<Object> insertAfterCheck(System system) {
+	public BaseOutput<Object> insertAfterCheck(Systems system) {
 		
 		//根据名称和系统查询
-		System systemNameCondition = DTOUtils.newInstance(System.class);
+		Systems systemNameCondition = DTOUtils.newInstance(Systems.class);
 		systemNameCondition.setName(system.getName());
 //		systemNameCondition.setFirmCode(system.getFirmCode());
 
@@ -50,7 +47,7 @@ public class SystemServiceImpl extends BaseServiceImpl<System, Long> implements 
 			return BaseOutput.failure("存在相同名称的系统");
 		}
 		//根据编码和系统查询
-		System systemCodeCondition = DTOUtils.newInstance(System.class);
+		Systems systemCodeCondition = DTOUtils.newInstance(Systems.class);
 		systemCodeCondition.setCode(system.getCode());
 //		systemCodeCondition.setFirmCode(system.getFirmCode());
 		
@@ -68,30 +65,30 @@ public class SystemServiceImpl extends BaseServiceImpl<System, Long> implements 
 
 	@Override
 	@Transactional
-	public BaseOutput<Object> updateAfterCheck(System system) {
+	public BaseOutput<Object> updateAfterCheck(Systems system) {
 		
 		//根据名称和系统查询
-		System systemNameCondition = DTOUtils.newInstance(System.class);
+		Systems systemNameCondition = DTOUtils.newInstance(Systems.class);
 		systemNameCondition.setName(system.getName());
 //		systemNameCondition.setFirmCode(system.getFirmCode());
 
-		System systemWithSameName = this.getActualDao().selectOne(systemNameCondition);
+		Systems systemWithSameName = this.getActualDao().selectOne(systemNameCondition);
 		if (systemWithSameName != null && !systemWithSameName.getId().equals(system.getId())) {
 			return BaseOutput.failure("存在相同名称的系统");
 		}
 		//根据编码和系统查询
-		System systemCodeCondition = DTOUtils.newInstance(System.class);
+		Systems systemCodeCondition = DTOUtils.newInstance(Systems.class);
 		systemCodeCondition.setCode(system.getCode());
 //		systemCodeCondition.setFirmCode(system.getFirmCode());
 		
-		System systemWithSameCode = this.getActualDao().selectOne(systemCodeCondition);
+		Systems systemWithSameCode = this.getActualDao().selectOne(systemCodeCondition);
 		if (systemWithSameCode != null && !systemWithSameCode.getId().equals(system.getId())) {
 			return BaseOutput.failure("存在相同编码的系统");
 		}
 
 		
 		//修改了code的时候要对关联的其他表(基于code关联)数据进行判断
-		System systemInDB = this.get(system.getId());
+		Systems systemInDB = this.get(system.getId());
 		if (systemInDB != null && !system.getCode().equals(system.getCode())) {
 
 			if (this.hasDataDictionary(system)) {
@@ -116,7 +113,7 @@ public class SystemServiceImpl extends BaseServiceImpl<System, Long> implements 
 	public BaseOutput<Object> deleteAfterCheck(Long id) {
 		
 		
-		System system=this.get(id);
+		Systems system=this.get(id);
 		if (system != null) {
 			if (this.hasDataDictionary(system)) {
 				return BaseOutput.failure("系统关联了[数据字典]，不能删除");
@@ -135,12 +132,12 @@ public class SystemServiceImpl extends BaseServiceImpl<System, Long> implements 
 	}
 
 	@Override
-	public List<System> listByUserId(Long userId) {
+	public List<Systems> listByUserId(Long userId) {
 		return getActualDao().listByUserId(userId);
 	}
 
 	@Override
-	public List<System> listByUserId(String param) {
+	public List<Systems> listByUserId(String param) {
 		UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
 		if(userTicket == null){
 			return null;
@@ -153,7 +150,7 @@ public class SystemServiceImpl extends BaseServiceImpl<System, Long> implements 
 	 * @param system
 	 * @return
 	 */
-	private boolean hasDataDictionary(System system) {
+	private boolean hasDataDictionary(Systems system) {
 		DataDictionary dataDictionaryCondition = DTOUtils.newInstance(DataDictionary.class);
 		dataDictionaryCondition.setSystemCode(system.getCode());
 		return this.dataDictionaryMapper.selectCount(dataDictionaryCondition) > 0;
@@ -163,7 +160,7 @@ public class SystemServiceImpl extends BaseServiceImpl<System, Long> implements 
 	 * @param system
 	 * @return
 	 */
-	private boolean hasSystemConfig(System system) {
+	private boolean hasSystemConfig(Systems system) {
 		SystemConfig systemConfigCondition = DTOUtils.newInstance(SystemConfig.class);
 		systemConfigCondition.setSystemCode(system.getCode());
 		return this.systemConfigMapper.selectCount(systemConfigCondition) > 0;
@@ -173,7 +170,7 @@ public class SystemServiceImpl extends BaseServiceImpl<System, Long> implements 
 	 * @param system
 	 * @return
 	 */
-	private boolean hasMenu(System system) {
+	private boolean hasMenu(Systems system) {
 		Menu menuCondition = DTOUtils.newInstance(Menu.class);
 		menuCondition.setSystemId(system.getId());
 		return this.menuMapper.selectCount(menuCondition) > 0;

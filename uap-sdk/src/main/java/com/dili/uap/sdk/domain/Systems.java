@@ -14,8 +14,8 @@ import java.util.Date;
  * 
  * This file was generated on 2018-05-22 16:24:56.
  */
-@Table(name = "`system`")
-public interface System extends IBaseDomain,IMybatisForceParams {
+@Table(name = "`systems`")
+public interface Systems extends IBaseDomain,IMybatisForceParams {
     long serialVersionUID = 19280089723497081L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

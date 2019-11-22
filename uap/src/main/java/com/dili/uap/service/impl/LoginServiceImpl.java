@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.dili.ss.constant.ResultCode;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
-import com.dili.ss.redis.service.RedisUtil;
 import com.dili.uap.constants.UapConstants;
 import com.dili.uap.dao.SystemConfigMapper;
 import com.dili.uap.dao.UserMapper;
@@ -15,7 +14,7 @@ import com.dili.uap.glossary.LoginType;
 import com.dili.uap.glossary.UserState;
 import com.dili.uap.glossary.Yn;
 import com.dili.uap.manager.*;
-import com.dili.uap.sdk.domain.System;
+import com.dili.uap.sdk.domain.Systems;
 import com.dili.uap.sdk.domain.SystemConfig;
 import com.dili.uap.sdk.domain.User;
 import com.dili.uap.sdk.manager.SessionRedisManager;
@@ -294,9 +293,9 @@ public class LoginServiceImpl implements LoginService {
 				loginLog.setType(LoginType.LOGIN.getCode());
 				// 设置系统名称
 				if (StringUtils.isNotBlank(loginLog.getSystemCode())) {
-					System system = DTOUtils.newInstance(System.class);
+					Systems system = DTOUtils.newInstance(Systems.class);
 					system.setCode(loginDto.getSystemCode());
-					List<System> systemList = systemService.listByExample(system);
+					List<Systems> systemList = systemService.listByExample(system);
 					loginLog.setSystemName(systemList.isEmpty() ? loginDto.getSystemCode() : systemList.get(0).getName());
 				}
 				loginLogService.insertSelective(loginLog);
@@ -318,9 +317,9 @@ public class LoginServiceImpl implements LoginService {
 //				loginLog.setLoginTime(new Date());
 				// 设置系统名称
 				if (StringUtils.isNotBlank(loginLog.getSystemCode()) && loginLog.getSystemName() == null) {
-					System system = DTOUtils.newInstance(System.class);
+					Systems system = DTOUtils.newInstance(Systems.class);
 					system.setCode(loginLog.getSystemCode());
-					List<System> systemList = systemService.listByExample(system);
+					List<Systems> systemList = systemService.listByExample(system);
 					loginLog.setSystemName(systemList.isEmpty() ? loginLog.getSystemCode() : systemList.get(0).getName());
 				}
 				loginLogService.insertSelective(loginLog);

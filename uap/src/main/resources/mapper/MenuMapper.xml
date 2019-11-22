@@ -83,7 +83,7 @@
   <select id="listDirAndLinksByUserId" parameterType="map" resultMap="BaseResultMap">
     SELECT DISTINCT
     <include refid="column_List" />
-    from menu m, role_menu rm, user_role ur, `system` s
+    from menu m, role_menu rm, user_role ur, `systems` s
     where m.id = rm.menu_id
     and rm.role_id = ur.role_id
     and m.system_id = s.id
@@ -129,7 +129,7 @@
       ,s.code system_code
       ,s.name system_name
       ,s.`type`
-      from menu m, `system` s where m.system_id = s.id
+      from menu m, `systems` s where m.system_id = s.id
       and m.url=#{url}
   </select>
 
@@ -149,6 +149,6 @@
          ,4 as 'type'
          ,s.id as system_id
          ,null as order_number
-          from `system` s
+          from `systems` s
   </select>
 </mapper>
