@@ -9,7 +9,7 @@ import com.dili.ss.dto.IDTO;
 import com.dili.ss.metadata.ValueProvider;
 import com.dili.ss.metadata.ValueProviderUtils;
 import com.dili.uap.constants.UapConstants;
-import com.dili.uap.domain.Role;
+import com.dili.uap.sdk.domain.Role;
 import com.dili.uap.domain.dto.SystemResourceDto;
 import com.dili.uap.sdk.domain.Firm;
 import com.dili.uap.sdk.session.SessionContext;

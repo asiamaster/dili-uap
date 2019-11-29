@@ -2,7 +2,7 @@ package com.dili.uap.service;
 
 import com.dili.ss.base.BaseService;
 import com.dili.ss.domain.BaseOutput;
-import com.dili.uap.domain.Role;
+import com.dili.uap.sdk.domain.Role;
 import com.dili.uap.domain.dto.SystemResourceDto;
 
 import java.util.List;
@@ -52,9 +52,16 @@ public interface RoleService extends BaseService<Role, Long> {
     BaseOutput unbindRoleUser(Long roleId,Long userId);
 
     /**
-     * 获取用户拥有的所有角色信息
+     * 获取用户id查询拥有的所有角色信息
      * @param userId 用户ID
      * @return  角色信息
      */
     List<Role> listByUserId(Long userId);
+
+    /**
+     * 根据用户名获取用户所属角色信息
+     * @param userName 用户名
+     * @return  角色信息
+     */
+    List<Role> listByUserName(String userName);
 }

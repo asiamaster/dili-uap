@@ -1,7 +1,7 @@
 package com.dili.uap.dao;
 
 import com.dili.ss.base.MyMapper;
-import com.dili.uap.domain.Role;
+import com.dili.uap.sdk.domain.Role;
 import com.dili.uap.domain.dto.SystemResourceDto;
 
 import java.util.List;
@@ -49,10 +49,18 @@ public interface RoleMapper extends MyMapper<Role> {
     List<SystemResourceDto> getRoleMenuAndResourceByRoleId(Long roleId);
 
     /**
-     * 根据用户获取用户所属角色信息
+     * 根据用户id获取用户所属角色信息
      * @param userId 用户ID
      * @return  角色信息
      */
     List<Role> listByUserId(Long userId);
+
+    /**
+     * 根据用户名获取用户所属角色信息
+     * @param userName 用户名
+     * @return  角色信息
+     */
+    List<Role> listByUserName(String userName);
+
 
 }

@@ -5,13 +5,13 @@ import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.constants.UapConstants;
 import com.dili.uap.dao.*;
-import com.dili.uap.domain.Role;
 import com.dili.uap.domain.RoleMenu;
 import com.dili.uap.domain.RoleResource;
 import com.dili.uap.domain.UserRole;
 import com.dili.uap.domain.dto.SystemResourceDto;
 import com.dili.uap.glossary.MenuType;
 import com.dili.uap.glossary.Yn;
+import com.dili.uap.sdk.domain.Role;
 import com.dili.uap.sdk.domain.Systems;
 import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.session.SessionContext;
@@ -266,4 +266,10 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements Role
     public List<Role> listByUserId(Long userId) {
         return getActualDao().listByUserId(userId);
     }
+
+    @Override
+    public List<Role> listByUserName(String userName) {
+        return getActualDao().listByUserName(userName);
+    }
+
 }

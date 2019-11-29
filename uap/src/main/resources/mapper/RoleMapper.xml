@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.dili.uap.dao.RoleMapper">
-    <resultMap id="BaseResultMap" type="com.dili.uap.domain.Role">
+    <resultMap id="BaseResultMap" type="com.dili.uap.sdk.domain.Role">
         <!--
           WARNING - @mbg.generated
         -->
@@ -27,7 +27,7 @@
         from role
         where id = #{id,jdbcType=BIGINT}
     </select>
-    <update id="updateBy" parameterType="com.dili.uap.domain.Role">
+    <update id="updateBy" parameterType="com.dili.uap.sdk.domain.Role">
         <!--
           WARNING - @mbg.generated
         -->
@@ -138,9 +138,17 @@
                 role_resource rr where role_id=#{value}
     </select>
 
-    <!-- 根据用户获取用户所属角色信息 -->
+    <!-- 根据用户id获取用户所属角色信息 -->
     <select id="listByUserId" parameterType="java.lang.Long" resultMap="BaseResultMap">
           select r.* from user_role ur LEFT JOIN role r on ur.role_id=r.id where ur.user_id = #{userId}
     </select>
 
+    <!-- 根据用户名获取用户所属角色信息 -->
+    <select id="listByUserName" parameterType="java.lang.String" resultMap="BaseResultMap">
+          select r.* ser u
+            where ur.role_id=r.
+            from user_role ur, role r, uid
+            AND ur.user_id = u.id
+            AND u.user_name = #{userName}
+    </select>
 </mapper>

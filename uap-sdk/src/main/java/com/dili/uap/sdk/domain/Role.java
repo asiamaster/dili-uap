@@ -1,4 +1,4 @@
-package com.dili.uap.domain;
+package com.dili.uap.sdk.domain;
 
 import com.dili.ss.domain.annotation.Like;
 import com.dili.ss.dto.IBaseDomain;

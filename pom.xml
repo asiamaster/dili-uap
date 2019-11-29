@@ -6,7 +6,7 @@
 	<groupId>com.dili</groupId>
 	<artifactId>dili-uap</artifactId>
 	<name>dili-uap</name>
-	<version>2.4.3-SNAPSHOT</version>
+	<version>2.4.4-SNAPSHOT</version>
 	<description>uap项目</description>
 	<packaging>pom</packaging>
 
