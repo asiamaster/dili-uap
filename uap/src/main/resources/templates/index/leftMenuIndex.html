@@ -108,7 +108,7 @@
         <table width="99.9%" style="padding: 0px; margin:0px;border-spacing: 0; border: 1px;" >
             <tr>
                 <td class="home" style="padding-left: 30px;width: 60px;padding-right: 20px;"><a href="${contextPath}/index/index.html" class="homeA"></a></td>
-                <td class="logo" style="width: 230px;"><a href="${system.url!}"><img  src="${system.logoUrl!(contextPath+"/resources/images/icon/uni-logo.png")}" alt=""><span>&nbsp;&nbsp;${system.name!}</span></a></td>
+                <td class="logo" style="width: 230px;"><a href="${system.url!}"><img  src="<%if(isEmpty(system.logoUrl)){%>${contextPath}/resources/images/icon/uni-logo.png<%}else{%>${system.logoUrl}<%}%>" alt=""><span>&nbsp;&nbsp;${system.name!}</span></a></td>
                 <td >
                     <#menubuttonSwiper _divId="mainMenu" _panelAlign="center" _service="systemServiceImpl" _method="listByUserId" _queryParams="${userid}" _menuWidth="145" _menuHeight="40"
                     _textField="name" _idField="id" _parentIdField="parentId" plain="true" hasDownArrow="false" itemWidth="122" itemHeight="40" minWidth="50"
