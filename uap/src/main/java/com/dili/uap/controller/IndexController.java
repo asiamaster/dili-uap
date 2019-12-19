@@ -8,6 +8,7 @@ import com.dili.uap.sdk.domain.User;
 import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.exception.NotLoginException;
 import com.dili.uap.sdk.redis.UserSystemRedis;
+import com.dili.uap.sdk.redis.UserUrlRedis;
 import com.dili.uap.sdk.session.SessionConstants;
 import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.sdk.util.WebContent;
@@ -58,6 +59,9 @@ public class IndexController {
 	@Autowired
 	private MenuService menuService;
 
+	@Autowired
+	private UserUrlRedis userResRedis;
+
 	/**
 	 * 跳转到权限主页面
 	 * @param modelMap
@@ -84,6 +88,11 @@ public class IndexController {
 					throw new AppException("未配置统一权限系统");
 				}
 				modelMap.put("system", DTOUtils.as(uap.get(0), Systems.class));
+				//如果用户有任务中心的权限，则显示任务导航
+				String taskCenterUrl = "http://bpmc.diligrp.com:8617/task/taskCenter.html";
+				if(userResRedis.checkUserMenuUrlRight(userTicket.getId(), taskCenterUrl)){
+					modelMap.put("taskCenterUrl", taskCenterUrl);
+				}
 				return INDEX_PATH;
 			}
 			List<Systems> systems = userSystemRedis.getRedisUserSystems(userTicket.getId());
@@ -99,6 +108,11 @@ public class IndexController {
 			//没有系统权限，则弹回登录页
 			if(!modelMap.containsKey("system")){
 				return LoginController.REDIRECT_INDEX_PAGE;
+			}
+			//如果用户有任务中心的权限，则显示任务导航
+			String taskCenterUrl = "http://bpmc.diligrp.com:8617/task/taskCenter.html";
+			if(userResRedis.checkUserMenuUrlRight(userTicket.getId(), taskCenterUrl)){
+				modelMap.put("taskCenterUrl", taskCenterUrl);
 			}
 			return INDEX_PATH;
 		} else {
