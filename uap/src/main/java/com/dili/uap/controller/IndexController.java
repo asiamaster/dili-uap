@@ -36,7 +36,6 @@ import java.util.Map;
 @Controller
 @RequestMapping("/index")
 public class IndexController {
-
 	//跳转到首页
 	public static final String INDEX_PATH = "index/leftMenuIndex";
 	//跳转到平台首页
