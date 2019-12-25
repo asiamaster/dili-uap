@@ -27,6 +27,12 @@ public class SystemApi {
 	@Autowired
 	private SystemService systemService;
 
+	/**
+	 * 系统查询api
+	 * 
+	 * @param systems 查询参数
+	 * @return 结果集
+	 */
 	@RequestMapping("/list.api")
 	public BaseOutput<List<Systems>> list(SystemDto systems) {
 		List<Systems> list = this.systemService.listByExample(systems);
