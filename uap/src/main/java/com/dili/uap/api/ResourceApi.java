@@ -14,7 +14,7 @@ import com.dili.ss.domain.BaseOutput;
 import com.dili.uap.domain.Resource;
 import com.dili.uap.service.ResourceService;
 
-@Api("/resource")
+@Api("/resourceApi")
 @Controller
 @RequestMapping("/resourceApi")
 public class ResourceApi {

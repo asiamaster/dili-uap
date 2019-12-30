@@ -36,9 +36,16 @@ public interface DataDictionaryValueService extends BaseService<DataDictionaryVa
 	 */
 	public BaseOutput<Object> updateAfterCheck(DataDictionaryValue t) ;
 	
-	
+	/** 根据字典Code与系统Code值查询数据字典集合
+	 * @param code
+	 * @param systemCode
+	 * @return
+	 */
 	public DataDictionaryDto findByCode(String code, String systemCode);
-
+	/** 添加数据字典以及对应集合值
+	 * @param DataDictionaryDto
+	 * @return
+	 */
 	public BaseOutput<Object> insertDataDictionaryDto(DataDictionaryDto dataDictionaryDto);
 
 
