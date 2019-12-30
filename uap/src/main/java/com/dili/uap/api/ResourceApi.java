@@ -20,7 +20,11 @@ import com.dili.uap.service.ResourceService;
 public class ResourceApi {
 	@Autowired
 	private ResourceService resourceService;
-	
+	/**
+	 * 查询权限信息名称集合
+	 * @param userId
+	 * @return
+	 */
 	@RequestMapping(value = "/listResourceCodeByUserId.api")
     @ResponseBody
     public BaseOutput<List<String>> listResourceCodeByUserId(@RequestBody Long userId) {

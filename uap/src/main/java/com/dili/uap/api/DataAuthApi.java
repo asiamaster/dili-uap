@@ -140,7 +140,11 @@ public class DataAuthApi {
     }
 
     
-    
+    /**
+     * 添加用户数据权限
+     * @param json 包含reCode,value,userId
+     * @return 
+     */
 	@ApiOperation("添加用户数据权")
 	@ApiImplicitParams({ @ApiImplicitParam(name = "id", paramType = "form", value = "DataAuth的主键", required = true, dataType = "long") })
 	@ResponseBody
@@ -160,7 +164,13 @@ public class DataAuthApi {
 		userDataAuthService.insertSelective(userDataAuth);
 		return BaseOutput.success("添加用户数据权成功");
 	}
-
+	/**
+     * 删除用户数据权限
+     * @param json 包含reCode,value,userId
+     * @return 
+     */
+	@ApiOperation("删除用户数据权")
+	@ApiImplicitParams({ @ApiImplicitParam(name = "id", paramType = "form", value = "DataAuth的主键", required = true, dataType = "long") })
 	@ResponseBody
 	@RequestMapping(value = "/deleteUserDataAuth.api", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public BaseOutput<Object> deleteUserDataAuth(@RequestBody String json) {

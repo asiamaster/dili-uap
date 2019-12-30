@@ -42,9 +42,9 @@ public class DataDictionaryApi {
 	}
 	
 	/**
-	 * 查询数据字典值
+	 * 查询数据字典与值的集合
 	 * @param dataDictionaryValue
-	 * @return
+	 * @return DataDictionaryDto
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/findByCode.api", method = { RequestMethod.GET, RequestMethod.POST })
@@ -54,8 +54,8 @@ public class DataDictionaryApi {
 	}
 	/**
 	 * 查询数据字典集合
-	 * @param dataDictionaryValue
-	 * @return
+	 * @param dataDictionary
+	 * @return List<DataDictionary>
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/listDataDictionary.api", method = { RequestMethod.GET, RequestMethod.POST })
@@ -63,9 +63,9 @@ public class DataDictionaryApi {
 		return BaseOutput.success().setData(this.dataDictionaryService.listByExample(dataDictionary));
 	}
 	/**
-	 * 添加数据字典值
-	 * @param dataDictionaryValue
-	 * @return
+	 * 添加数据字典与值的集合
+	 * @param dataDictionaryDto
+	 * @return 
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/insertDataDictionaryDto.api", method = { RequestMethod.GET, RequestMethod.POST })

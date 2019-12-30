@@ -92,13 +92,21 @@ public class UserApi {
 		user.setIds(ids);
 		return BaseOutput.success().setData(userService.listByExample(user));
 	}
-	
+	/**
+	 * 根据角色roleId查询用户集合
+	 * @param roleId
+	 * @return
+	 */
 	@RequestMapping(value = "listUserByRoleId.api")
 	@ResponseBody
 	public BaseOutput<List<User>> listUserByRoleId(@RequestBody Long roleId) {
 		return BaseOutput.success().setData(userService.findUserByRole(roleId));
 	}
-	
+	/**
+	 * 根据部门，角色以及用户信息查询用户集合
+	 * @param userDepartmentRoleQuery
+	 * @return
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/findUserContainDepartmentAndRole.api", method = { RequestMethod.GET, RequestMethod.POST })
 	public BaseOutput<List<UserDepartmentRole>> findUserContainDepartmentAndRole(@RequestBody UserDepartmentRoleQuery query) {
