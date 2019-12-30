@@ -20,15 +20,4 @@ public interface DataDictionaryDto extends DataDictionary{
 
 		public void setDataDictionaryValues(List<DataDictionaryValue> dataDictionaryValues);
 
-		public default DataDictionaryValue getCodeByName(String name) {
-			if (CollectionUtils.isEmpty(this.getDataDictionaryValues())) {
-				return null;
-			}
-			for (DataDictionaryValue dataDictionaryValue : this.getDataDictionaryValues()) {
-				if (dataDictionaryValue.getCode().equals(name)) {
-					return dataDictionaryValue;
-				}
-			}
-			return null;
-		}
 }
