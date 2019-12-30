@@ -1,6 +1,7 @@
 package com.dili.uap.api;
 
 import com.dili.ss.domain.BaseOutput;
+import com.dili.ss.retrofitful.annotation.POST;
 import com.dili.uap.sdk.domain.Department;
 import com.dili.uap.service.DepartmentService;
 import io.swagger.annotations.Api;
@@ -72,5 +73,16 @@ public class DepartmentApi {
 	@RequestMapping(value = "/listByDepartment.api", method = { RequestMethod.GET, RequestMethod.POST })
 	public BaseOutput<List<Department>> listByDepartment(@RequestBody(required = false) Department department) {
 		return BaseOutput.success().setData(this.departmentService.listByExample(department));
+	}
+	
+	/**
+	 * 根据userID查询所在部门列表
+	 * @param userId
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/findByUserId.api", method = { RequestMethod.GET, RequestMethod.POST })
+	public BaseOutput<List<Department>> findByUserId(@RequestBody Long userId) {
+		return BaseOutput.success().setData(this.departmentService.findByUserId(userId));
 	}
 }

@@ -104,4 +104,9 @@ public class DepartmentServiceImpl extends BaseServiceImpl<Department, Long> imp
 	public Department getDepartment(Department department) {
 		return this.getActualDao().selectOne(department);
 	}
+
+	@Override
+	public List<Department> findByUserId(Long userId) {
+		return this.getActualDao().findByUserId(userId);
+	}
 }

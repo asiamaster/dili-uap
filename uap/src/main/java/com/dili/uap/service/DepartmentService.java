@@ -42,4 +42,7 @@ public interface DepartmentService extends BaseService<Department, Long> {
      * @return
      */
     Department getDepartment(Department department);
+
+
+	List<Department> findByUserId(Long userId);
 }

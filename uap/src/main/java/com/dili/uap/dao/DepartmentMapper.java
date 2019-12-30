@@ -14,4 +14,6 @@ public interface DepartmentMapper extends MyMapper<Department> {
      * @return
      */
     List<Map> listDepartments(Department department);
+
+	List<Department> findByUserId(Long userId);
 }

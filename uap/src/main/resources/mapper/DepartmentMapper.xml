@@ -58,5 +58,13 @@
             </if>
         </if>
     </select>
-
+	<select id="findByUserId" parameterType="Long" resultMap="BaseResultMap">
+		<!-- WARNING - @mbg.generated -->
+		select
+		<include refid="Join_Column_List" />
+		from department d inner join `user` u on d.id =
+		u.department_id
+		where
+		u.id = #{userId}
+	</select>
 </mapper>
