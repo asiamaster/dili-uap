@@ -4,6 +4,8 @@ import com.dili.ss.base.BaseService;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.domain.EasyuiPageOutput;
 import com.dili.uap.domain.dto.UserDataDto;
+import com.dili.uap.domain.dto.UserDepartmentRole;
+import com.dili.uap.domain.dto.UserDepartmentRoleQuery;
 import com.dili.uap.domain.dto.UserDto;
 import com.dili.uap.sdk.domain.User;
 
@@ -117,5 +119,7 @@ public interface UserService extends BaseService<User, Long> {
      * @return
      */
     BaseOutput forcedOffline(Long userId);
+
+	List<UserDepartmentRole> findUserContainDepartmentAndRole(UserDepartmentRoleQuery query);
 
 }

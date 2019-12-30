@@ -35,4 +35,11 @@ public interface DepartmentService extends BaseService<Department, Long> {
      * @return
      */
     List<Map> listDepartments(Department department);
+    
+    /**
+     * 查询单个部门
+     * @param department
+     * @return
+     */
+    Department getDepartment(Department department);
 }

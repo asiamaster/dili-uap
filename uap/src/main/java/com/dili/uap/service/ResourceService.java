@@ -1,5 +1,7 @@
 package com.dili.uap.service;
 
+import java.util.List;
+
 import com.dili.ss.base.BaseService;
 import com.dili.uap.domain.Resource;
 
@@ -8,4 +10,6 @@ import com.dili.uap.domain.Resource;
  * This file was generated on 2018-05-21 16:46:27.
  */
 public interface ResourceService extends BaseService<Resource, Long> {
+
+	List<String> listResourceCodeByUserId(Long userId);
 }

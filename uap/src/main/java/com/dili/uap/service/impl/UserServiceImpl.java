@@ -14,6 +14,8 @@ import com.dili.uap.constants.UapConstants;
 import com.dili.uap.dao.*;
 import com.dili.uap.domain.UserRole;
 import com.dili.uap.domain.dto.UserDataDto;
+import com.dili.uap.domain.dto.UserDepartmentRole;
+import com.dili.uap.domain.dto.UserDepartmentRoleQuery;
 import com.dili.uap.domain.dto.UserDto;
 import com.dili.uap.glossary.UserState;
 import com.dili.uap.manager.UserManager;
@@ -474,4 +476,19 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
     private String encryptPwd(String passwd) {
         return md5Util.getMD5ofStr(passwd).substring(6, 24);
     }
+
+	@Override
+	public List<UserDepartmentRole> findUserContainDepartmentAndRole(UserDepartmentRoleQuery query) {
+		if (query.getDepartmentId() != null && query.getDepartmentId() > 0) {
+			Department newDTO = DTOUtils.newDTO(Department.class);
+			newDTO.setParentId(query.getDepartmentId());
+			List<Department> depts = this.departmentMapper.selectByExample(newDTO);
+			if (CollectionUtils.isNotEmpty(depts)) {
+				List<Long> ids = new ArrayList<>(depts.size());
+				depts.forEach(d -> ids.add(d.getId()));
+				query.setDepartmentIds(ids);
+			}
+		}
+		return this.getActualDao().findUserContainDepartmentAndRole(query);
+	}
 }

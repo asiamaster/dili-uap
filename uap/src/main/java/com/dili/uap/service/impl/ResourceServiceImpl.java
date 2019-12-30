@@ -4,6 +4,9 @@ import com.dili.ss.base.BaseServiceImpl;
 import com.dili.uap.dao.ResourceMapper;
 import com.dili.uap.domain.Resource;
 import com.dili.uap.service.ResourceService;
+
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 /**
@@ -16,4 +19,9 @@ public class ResourceServiceImpl extends BaseServiceImpl<Resource, Long> impleme
     public ResourceMapper getActualDao() {
         return (ResourceMapper)getDao();
     }
+
+	@Override
+	public List<String> listResourceCodeByUserId(Long userId) {
+		return this.getActualDao().findResourceCodeByUserId(userId);
+	}
 }

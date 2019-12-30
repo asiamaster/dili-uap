@@ -3,6 +3,8 @@ package com.dili.uap.dao;
 import com.dili.ss.base.MyMapper;
 import com.dili.uap.sdk.domain.User;
 import com.dili.uap.domain.dto.UserDataDto;
+import com.dili.uap.domain.dto.UserDepartmentRole;
+import com.dili.uap.domain.dto.UserDepartmentRoleQuery;
 import com.dili.uap.domain.dto.UserDto;
 
 import java.util.List;
@@ -31,4 +33,6 @@ public interface UserMapper extends MyMapper<User> {
      * @return
      */
     List<UserDataDto> selectUserDatas(Map<String,Object> params);
+
+	List<UserDepartmentRole> findUserContainDepartmentAndRole(UserDepartmentRoleQuery query);
 }

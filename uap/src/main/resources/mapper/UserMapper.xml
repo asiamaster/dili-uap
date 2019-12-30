@@ -99,5 +99,74 @@
         LEFT JOIN (SELECT u.* from user_data_auth u where u.user_id = #{userId} AND u.ref_code='market') ud
         ON f.code = ud.value
     </select>
+    
+    
+    <resultMap id="UDRResultMap"
+		type="com.dili.uap.domain.dto.UserDepartmentRole">
+		 <id column="id" jdbcType="BIGINT" property="id" />
+	    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+	    <result column="password" jdbcType="VARCHAR" property="password" />
+	    <result column="firm_code" jdbcType="VARCHAR" property="firmCode" />
+	    <result column="department_id" jdbcType="BIGINT" property="departmentId" />
+	    <result column="position" jdbcType="VARCHAR" property="position" />
+	    <result column="card_number" jdbcType="VARCHAR" property="cardNumber" />
+	    <result column="locked" jdbcType="TIMESTAMP" property="locked" />
+	    <result column="created" jdbcType="TIMESTAMP" property="created" />
+	    <result column="modified" jdbcType="TIMESTAMP" property="modified" />
+	    <result column="state" jdbcType="INTEGER" property="state" />
+	    <result column="real_name" jdbcType="VARCHAR" property="realName" />
+	    <result column="serial_number" jdbcType="VARCHAR" property="serialNumber" />
+	    <result column="cellphone" jdbcType="VARCHAR" property="cellphone" />
+	    <result column="email" jdbcType="VARCHAR" property="email" />
+		<association javaType="com.dili.uap.sdk.domain.Department"
+			property="department">
+			<result column="department_id" property="id" />
+			<result column="department_name" property="name" />
+			<result column="code" property="code" />
+		</association>
+		<collection column="id" property="roles"
+			select="com.dili.uap.dao.RoleMapper.findByUserId" />
+	</resultMap>
+	
+	<select id="findUserContainDepartmentAndRole"
+		parameterType="com.dili.uap.domain.dto.UserDepartmentRoleQuery"
+		resultMap="UDRResultMap">
+		SELECT DISTINCT
+		u.id,
+		u.real_name,
+		u.user_name,
+		u.cellphone,
+		u.email,
+		u.department_id,
+		d.`name` AS department_name,
+		d.`code`,
+		r.id AS role_id,
+		r.role_name
+		FROM
+		`user` u
+		LEFT JOIN department d ON u.department_id =
+		d.id
+		LEFT JOIN
+		user_role ur ON ur.user_id = u.id
+		LEFT JOIN role r ON r.id
+		= ur.role_id
+		WHERE (yn = 1 OR yn IS NULL)
+		<if test="userId != null">
+			AND u.id = #{userId}
+		</if>
+		<if test="realName != null">
+			AND u.real_name like <![CDATA[concat('%',#{realName},'%')]]>
+		</if>
+		<if test="departmentIds != null and departmentIds.size > 0">
+			AND u.department_id IN
+			<foreach close=")" collection="departmentIds" item="deptId"
+				open="(" separator=",">
+				#{deptId}
+			</foreach>
+		</if>
+		<if test="roleId != null">
+			AND dr.role_id = #{roleId}
+		</if>
+	</select>
 
 </mapper>

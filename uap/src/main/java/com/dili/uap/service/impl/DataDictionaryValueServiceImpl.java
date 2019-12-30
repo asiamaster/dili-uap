@@ -3,14 +3,24 @@ package com.dili.uap.service.impl;
 import com.dili.ss.base.BaseServiceImpl;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
+import com.dili.uap.dao.DataDictionaryMapper;
 import com.dili.uap.dao.DataDictionaryValueMapper;
+import com.dili.uap.domain.dto.DataDictionaryDto;
+import com.dili.uap.sdk.domain.DataDictionary;
 import com.dili.uap.sdk.domain.DataDictionaryValue;
 import com.dili.uap.service.DataDictionaryValueService;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import javax.management.RuntimeErrorException;
 
 /**
  * 由MyBatis Generator工具自动生成
@@ -24,6 +34,8 @@ public class DataDictionaryValueServiceImpl extends BaseServiceImpl<DataDictiona
         return (DataDictionaryValueMapper) getDao();
     }
 
+    @Autowired
+    private DataDictionaryMapper dataDictionaryMapper;
     @Override
     public List<DataDictionaryValue> listDictionaryValueByCode(String code) {
         return null;
@@ -65,4 +77,53 @@ public class DataDictionaryValueServiceImpl extends BaseServiceImpl<DataDictiona
 		this.updateSelective(t);
 		return BaseOutput.success("修改成功");
 	}
+
+	@Override
+	public DataDictionaryDto findByCode(String code,String systemCode) {	
+		DataDictionary record = DTOUtils.newDTO(DataDictionary.class);
+		record.setCode(code);
+		record.setSystemCode(systemCode);
+		DataDictionary model = this.dataDictionaryMapper.selectOne(record);
+		if (model == null) {
+			return null;
+		}
+		DataDictionaryValue valueRecord = DTOUtils.newDTO(DataDictionaryValue.class);
+		valueRecord.setDdCode(model.getCode());
+		List<DataDictionaryValue> values = this.getActualDao().select(valueRecord);
+		DataDictionaryDto dto = DTOUtils.as(model, DataDictionaryDto.class);
+		if (CollectionUtils.isNotEmpty(values)) {
+			List<DataDictionaryValue> dtos = new ArrayList<>(values.size());
+			for (DataDictionaryValue value : values) {
+				dtos.add(value);
+			}
+			dto.setDataDictionaryValues(dtos);
+		}
+		return dto;
+	}
+	@Override
+	@Transactional
+	public BaseOutput<Object> insertDataDictionaryDto(DataDictionaryDto dataDictionaryDto) {
+		try {
+			DataDictionary dataDictionary = DTOUtils.as(dataDictionaryDto, DataDictionary.class);
+			int insert = this.dataDictionaryMapper.insert(dataDictionary);
+			if(insert==0) {
+				throw new RuntimeException("添加失败");
+			}
+			List<DataDictionaryValue> deDataDictionaryValues = dataDictionaryDto.getDataDictionaryValues();
+			for (DataDictionaryValue dataDictionaryValue : deDataDictionaryValues) {
+				int insertValue = this.getActualDao().insert(dataDictionaryValue);
+				if(insertValue==0) {
+					throw new RuntimeException("添加失败");
+				}
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+			return BaseOutput.failure(e.getMessage());
+		}
+		
+		return BaseOutput.success("添加成功");
+	}
+
 }

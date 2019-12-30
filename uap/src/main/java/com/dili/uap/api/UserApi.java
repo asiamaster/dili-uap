@@ -4,6 +4,8 @@ import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.domain.PageOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.dao.DepartmentMapper;
+import com.dili.uap.domain.dto.UserDepartmentRole;
+import com.dili.uap.domain.dto.UserDepartmentRoleQuery;
 import com.dili.uap.domain.dto.UserDto;
 import com.dili.uap.sdk.domain.User;
 import com.dili.uap.service.UserService;
@@ -89,6 +91,19 @@ public class UserApi {
 		UserDto user = DTOUtils.newInstance(UserDto.class);
 		user.setIds(ids);
 		return BaseOutput.success().setData(userService.listByExample(user));
+	}
+	
+	@RequestMapping(value = "listUserByRoleId.api")
+	@ResponseBody
+	public BaseOutput<List<User>> listUserByRoleId(@RequestBody Long roleId) {
+		return BaseOutput.success().setData(userService.findUserByRole(roleId));
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/findUserContainDepartmentAndRole.api", method = { RequestMethod.GET, RequestMethod.POST })
+	public BaseOutput<List<UserDepartmentRole>> findUserContainDepartmentAndRole(@RequestBody UserDepartmentRoleQuery query) {
+		List<UserDepartmentRole> list = this.userService.findUserContainDepartmentAndRole(query);
+		return BaseOutput.success().setData(list);
 	}
 
 }

@@ -7,6 +7,9 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -44,6 +47,30 @@ public class DepartmentApi {
 	@ResponseBody
 	@RequestMapping(value = "/listByExample.api", method = { RequestMethod.GET, RequestMethod.POST })
 	public BaseOutput<Department> listByExample(@RequestBody(required = false) Department department) {
+		return BaseOutput.success().setData(this.departmentService.listByExample(department));
+	}
+	
+	
+	/**
+	 * 查询单个部门
+	 * @param department
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/listByOne.api", method = { RequestMethod.GET, RequestMethod.POST })
+	public BaseOutput<Department> listByOne(@RequestBody(required = false) Department department) {
+		return BaseOutput.success().setData(this.departmentService.getDepartment(department));
+	}
+	
+	
+	/**
+	 * 查询部门列表
+	 * @param department
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/listByDepartment.api", method = { RequestMethod.GET, RequestMethod.POST })
+	public BaseOutput<List<Department>> listByDepartment(@RequestBody(required = false) Department department) {
 		return BaseOutput.success().setData(this.departmentService.listByExample(department));
 	}
 }

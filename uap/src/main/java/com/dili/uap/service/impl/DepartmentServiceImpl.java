@@ -99,4 +99,9 @@ public class DepartmentServiceImpl extends BaseServiceImpl<Department, Long> imp
 		return sb.toString();
     	
     }
+
+	@Override
+	public Department getDepartment(Department department) {
+		return this.getActualDao().selectOne(department);
+	}
 }

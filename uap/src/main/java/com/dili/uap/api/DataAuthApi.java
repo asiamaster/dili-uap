@@ -1,5 +1,7 @@
 package com.dili.uap.api;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.domain.DataAuthRef;
@@ -13,9 +15,13 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+
+import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -40,7 +46,19 @@ public class DataAuthApi {
 
     @Autowired
     private DataAuthRefService dataAuthRefService;
-
+    
+    /**
+     * 根据条件查询用户数据权限value列表
+     * @param userDataAuth
+     * @return
+     */
+    @ApiOperation(value = "根据条件查询数据类型列表")
+    @RequestMapping(value = "/listDataAuths.api", method = { RequestMethod.POST })
+    @ResponseBody
+    public BaseOutput<List<DataAuthRef>> listDataAuths(DataAuthRef dataAuthRef) {
+        List<DataAuthRef> dataAuthRefList = dataAuthRefService.listByExample(dataAuthRef);
+        return BaseOutput.success().setData(dataAuthRefList);
+    }
     /**
      * 根据条件查询用户数据权限表信息
      * @param userDataAuth
@@ -121,5 +139,41 @@ public class DataAuthApi {
         return BaseOutput.success().setData(detailList);
     }
 
+    
+    
+	@ApiOperation("添加用户数据权")
+	@ApiImplicitParams({ @ApiImplicitParam(name = "id", paramType = "form", value = "DataAuth的主键", required = true, dataType = "long") })
+	@ResponseBody
+	@RequestMapping(value = "/addUserDataAuth.api", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public BaseOutput<Object> addUserDataAuth(@RequestBody String json) {
+		// @RequestParam Long userId, @RequestParam String dataId, @RequestParam String
+		// type
+		JSONObject jo = JSON.parseObject(json);
+		UserDataAuth userDataAuth = DTOUtils.newDTO(UserDataAuth.class);
+		userDataAuth.setRefCode(jo.getString("refCode"));
+		userDataAuth.setValue(jo.getString("value"));
+		userDataAuth.setUserId(jo.getLong("userId"));
+		List<UserDataAuth> listByExample = this.userDataAuthService.listByExample(userDataAuth);
+		if(listByExample!=null&&listByExample.size()>0) {
+			return BaseOutput.failure("添加失败，value:" + jo.getString("value") + "和refCode:" + jo.getString("refCode") + "和userId:" + jo.getString("userId")+ ",不能找到唯一的数据权限");
+		}
+		userDataAuthService.insertSelective(userDataAuth);
+		return BaseOutput.success("添加用户数据权成功");
+	}
 
+	@ResponseBody
+	@RequestMapping(value = "/deleteUserDataAuth.api", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public BaseOutput<Object> deleteUserDataAuth(@RequestBody String json) {
+		JSONObject jo = JSON.parseObject(json);
+		UserDataAuth userDataAuth = DTOUtils.newDTO(UserDataAuth.class);
+		userDataAuth.setRefCode(jo.getString("refCode"));
+		userDataAuth.setValue(jo.getString("value"));
+		userDataAuth.setUserId(jo.getLong("userId"));
+		List<UserDataAuth> listByExample = this.userDataAuthService.listByExample(userDataAuth);
+		if(listByExample==null||listByExample.size()<1) {
+			return BaseOutput.failure("删除失败，value:" + jo.getString("value") + "和refCode:" + jo.getString("refCode") + "和userId:" + jo.getString("userId")+ ",不能找到唯一的数据权限");
+		}
+		userDataAuthService.delete(userDataAuth);
+		return BaseOutput.success("删除用户数据权成功");
+	}
 }

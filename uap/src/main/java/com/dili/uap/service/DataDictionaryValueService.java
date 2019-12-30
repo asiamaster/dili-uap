@@ -2,9 +2,14 @@ package com.dili.uap.service;
 
 import com.dili.ss.base.BaseService;
 import com.dili.ss.domain.BaseOutput;
+import com.dili.ss.dto.DTOUtils;
+import com.dili.uap.domain.dto.DataDictionaryDto;
 import com.dili.uap.sdk.domain.DataDictionaryValue;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.collections4.CollectionUtils;
 
 /**
  * 由MyBatis Generator工具自动生成
@@ -30,5 +35,11 @@ public interface DataDictionaryValueService extends BaseService<DataDictionaryVa
 	 * @return
 	 */
 	public BaseOutput<Object> updateAfterCheck(DataDictionaryValue t) ;
+	
+	
+	public DataDictionaryDto findByCode(String code, String systemCode);
+
+	public BaseOutput<Object> insertDataDictionaryDto(DataDictionaryDto dataDictionaryDto);
+
 
 }
