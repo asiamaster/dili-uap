@@ -14,5 +14,6 @@ public interface ProjectRpc {
 	BaseOutput<List<Project>> selectAll();
 	@POST("/projectApi/get.api")
 	BaseOutput<Project> get(@VOBody Long value);
-
+	@POST("/projectApi/selectByIds.api")
+	BaseOutput<List<Project>> selectByIds(@VOBody List<String> ids);
 }

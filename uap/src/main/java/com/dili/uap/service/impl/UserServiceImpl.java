@@ -386,31 +386,39 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 //            params.put("firmCode", user.getFirmCode());
 //        }
 //        return getActualDao().selectUserDatas(params);
+        List<Project> selectAll =new ArrayList<Project>();
         if(!user.getUserName().equalsIgnoreCase(adminName)){
             params.put("loginUserId", userTicket.getId());
+            List<String> selectUserDataAuthValue = userDataAuthMapper.selectUserDataAuthValue(userTicket.getId(),DataAuthType.PROJECT.getCode());
+            if(selectUserDataAuthValue!=null&&selectUserDataAuthValue.size()>0) {
+                selectAll = this.projectRpc.selectByIds(selectUserDataAuthValue).getData();
+            }else {
+            	return null;
+            }
+        }else {
+            selectAll = this.projectRpc.selectAll().getData();
         }
         List<UserDataDto> selectUserDatas = getActualDao().selectUserDatas(params);
         //添加alm项目数据权限
-        List<Project> selectAll = this.projectRpc.selectAll().getData();
-      
+
     	if(selectAll!=null&&selectAll.size()>0) {
             List<String> selectUserDataAuthValue = userDataAuthMapper.selectUserDataAuthValue(userId,DataAuthType.PROJECT.getCode());
             //添加根目录
             UserDataDto almDataDto=DTOUtils.newDTO(UserDataDto.class);
-        	almDataDto.setTreeId(UapConstants.FIRM_PREFIX+0);
+        	almDataDto.setTreeId(UapConstants.ALM_PROJECT_PREFIX+0);
         	almDataDto.setName("项目生命周期管理");
         	almDataDto.setChecked(false);
         	selectUserDatas.add(almDataDto);
     		for (Project project : selectAll) {
             	UserDataDto userDataDto=DTOUtils.newDTO(UserDataDto.class);
-            	userDataDto.setTreeId(UapConstants.FIRM_PREFIX+project.getId());
+            	userDataDto.setTreeId(UapConstants.ALM_PROJECT_PREFIX+project.getId());
             	if(project.getParentId()!=null) {
-                	userDataDto.setParentId(UapConstants.FIRM_PREFIX+project.getParentId());
+                	userDataDto.setParentId(UapConstants.ALM_PROJECT_PREFIX+project.getParentId());
             	}else {
-                	userDataDto.setParentId(UapConstants.FIRM_PREFIX+0);
+                	userDataDto.setParentId(UapConstants.ALM_PROJECT_PREFIX+0);
             	}
             	userDataDto.setName(project.getName());
-            	boolean isChecked = selectUserDataAuthValue.contains(project.getId());
+            	boolean isChecked = selectUserDataAuthValue.contains(project.getId().toString());
             	userDataDto.setChecked(isChecked);
             	selectUserDatas.add(userDataDto);
     		}
@@ -447,7 +455,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
                 ud.setUserId(userId);
                 if (id.startsWith(UapConstants.ALM_PROJECT_PREFIX)) {
                     String value = id.replace(UapConstants.ALM_PROJECT_PREFIX, "");
-                    if(!value.equals(0)) {
+                    if(!value.equals("0")) {
                     	 ud.setRefCode(DataAuthType.PROJECT.getCode());
                          ud.setValue(value);
                          saveDatas.add(ud);
