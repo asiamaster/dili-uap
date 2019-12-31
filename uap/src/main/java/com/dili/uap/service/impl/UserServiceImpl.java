@@ -12,6 +12,8 @@ import com.dili.ss.util.POJOUtils;
 import com.dili.uap.boot.RabbitConfiguration;
 import com.dili.uap.constants.UapConstants;
 import com.dili.uap.dao.*;
+import com.dili.uap.domain.DataAuthRef;
+import com.dili.uap.domain.Project;
 import com.dili.uap.domain.UserRole;
 import com.dili.uap.domain.dto.UserDataDto;
 import com.dili.uap.domain.dto.UserDepartmentRole;
@@ -19,9 +21,13 @@ import com.dili.uap.domain.dto.UserDepartmentRoleQuery;
 import com.dili.uap.domain.dto.UserDto;
 import com.dili.uap.glossary.UserState;
 import com.dili.uap.manager.UserManager;
+import com.dili.uap.rpc.ProjectRpc;
+import com.dili.uap.sdk.component.DataAuthSource;
 import com.dili.uap.sdk.domain.*;
 import com.dili.uap.sdk.glossary.DataAuthType;
+import com.dili.uap.sdk.service.DataAuthSourceService;
 import com.dili.uap.sdk.session.SessionContext;
+import com.dili.uap.service.DataAuthRefService;
 import com.dili.uap.service.UserService;
 import com.dili.uap.utils.MD5Util;
 import com.github.pagehelper.Page;
@@ -49,6 +55,8 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 
     @Autowired
     private UserManager userManager;
+    @Autowired
+    private ProjectRpc projectRpc;
 
     public UserMapper getActualDao() {
         return (UserMapper) getDao();
@@ -381,7 +389,34 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
         if(!user.getUserName().equalsIgnoreCase(adminName)){
             params.put("loginUserId", userTicket.getId());
         }
-        return getActualDao().selectUserDatas(params);
+        List<UserDataDto> selectUserDatas = getActualDao().selectUserDatas(params);
+        //添加alm项目数据权限
+        List<Project> selectAll = this.projectRpc.selectAll().getData();
+      
+    	if(selectAll!=null&&selectAll.size()>0) {
+            List<String> selectUserDataAuthValue = userDataAuthMapper.selectUserDataAuthValue(userId,DataAuthType.PROJECT.getCode());
+            //添加根目录
+            UserDataDto almDataDto=DTOUtils.newDTO(UserDataDto.class);
+        	almDataDto.setTreeId(UapConstants.FIRM_PREFIX+0);
+        	almDataDto.setName("项目生命周期管理");
+        	almDataDto.setChecked(false);
+        	selectUserDatas.add(almDataDto);
+    		for (Project project : selectAll) {
+            	UserDataDto userDataDto=DTOUtils.newDTO(UserDataDto.class);
+            	userDataDto.setTreeId(UapConstants.FIRM_PREFIX+project.getId());
+            	if(project.getParentId()!=null) {
+                	userDataDto.setParentId(UapConstants.FIRM_PREFIX+project.getParentId());
+            	}else {
+                	userDataDto.setParentId(UapConstants.FIRM_PREFIX+0);
+            	}
+            	userDataDto.setName(project.getName());
+            	boolean isChecked = selectUserDataAuthValue.contains(project.getId());
+            	userDataDto.setChecked(isChecked);
+            	selectUserDatas.add(userDataDto);
+    		}
+    	}
+        
+        return selectUserDatas;
     }
 
     @Override
@@ -410,14 +445,23 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
             for (String id : dataIds) {
                 ud = DTOUtils.newInstance(UserDataAuth.class);
                 ud.setUserId(userId);
-                if (id.startsWith(UapConstants.FIRM_PREFIX)) {
-                    ud.setRefCode(DataAuthType.MARKET.getCode());
-                    ud.setValue(id.replace(UapConstants.FIRM_PREFIX, ""));
-                } else {
-                    ud.setRefCode(DataAuthType.DEPARTMENT.getCode());
-                    ud.setValue(id);
+                if (id.startsWith(UapConstants.ALM_PROJECT_PREFIX)) {
+                    String value = id.replace(UapConstants.ALM_PROJECT_PREFIX, "");
+                    if(!value.equals(0)) {
+                    	 ud.setRefCode(DataAuthType.PROJECT.getCode());
+                         ud.setValue(value);
+                         saveDatas.add(ud);
+                    }
+                }else {
+	                if (id.startsWith(UapConstants.FIRM_PREFIX)) {
+	                    ud.setRefCode(DataAuthType.MARKET.getCode());
+	                    ud.setValue(id.replace(UapConstants.FIRM_PREFIX, ""));
+	                } else {
+	                    ud.setRefCode(DataAuthType.DEPARTMENT.getCode());
+	                    ud.setValue(id);
+	                }
+	                saveDatas.add(ud);
                 }
-                saveDatas.add(ud);
             }
         }
         //如果存在需要保存的用户角色数据，则保存数据

@@ -54,4 +54,15 @@
             <!--</if>-->
         <!--</where>-->
     <!--</select>-->
+    <select id="selectUserDataAuthValue"  resultType="java.lang.String">
+    	select value from user_data_auth where 1=1
+    	        <if test="userId != null">
+    	        	and user_id = #{userId,jdbcType=BIGINT}
+				</if>
+		        <if test="refCode != null">
+		        	and ref_code = #{refCode,jdbcType=VARCHAR}
+		        </if>
+
+    </select>
+    
 </mapper>

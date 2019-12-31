@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.dili.ss.dto.DTOUtils;
+import com.dili.uap.domain.Project;
 import com.dili.uap.glossary.DataRange;
 import com.dili.uap.rpc.ProjectRpc;
 import com.dili.uap.sdk.service.DataAuthSourceService;
@@ -21,7 +22,8 @@ public class ProjectDataAuthSourceService implements DataAuthSourceService {
 	
 	@Override
     public List listDataAuthes(String param) {
-        return projectRpc.selectAll().getData();
+		List<Project> data = projectRpc.selectAll().getData();
+        return data;
     }
 
     @Override

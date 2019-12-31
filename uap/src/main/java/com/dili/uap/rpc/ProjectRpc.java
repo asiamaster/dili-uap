@@ -8,7 +8,7 @@ import com.dili.ss.retrofitful.annotation.Restful;
 import com.dili.ss.retrofitful.annotation.VOBody;
 import com.dili.uap.domain.Project;
 
-@Restful("http://alm.diligrp.com")
+@Restful("http://almweb.diligrp.com")
 public interface ProjectRpc {
 	@POST("/projectApi/selectAll.api")
 	BaseOutput<List<Project>> selectAll();

@@ -10,8 +10,9 @@ public enum DataAuthType {
     //用户和部门关系的数据权限
     DEPARTMENT("department","部门"),
     //用户和市场关系的数据权限
-    MARKET("market","市场");
-
+    MARKET("market","市场"),
+    //项目关系的数据权限
+    PROJECT("project","项目");
     private String name;
     //对应数据权限表中的type
     private String code ;

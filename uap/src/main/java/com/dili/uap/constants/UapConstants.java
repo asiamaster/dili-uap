@@ -48,6 +48,9 @@ public class UapConstants {
      * 树结构，市场code前缀
      */
     public static final String FIRM_PREFIX = "firm_";
-
+    /**
+     * 树状结构，菜单ID前缀
+     */
+    public static final String ALM_PROJECT_PREFIX = "alm_";
 
 }
