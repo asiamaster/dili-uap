@@ -109,4 +109,14 @@ public class DepartmentServiceImpl extends BaseServiceImpl<Department, Long> imp
 	public List<Department> findByUserId(Long userId) {
 		return this.getActualDao().findByUserId(userId);
 	}
+
+	@Override
+	public Department getFirstDepartment(Long id) {
+		Department department = this.getActualDao().selectByPrimaryKey(id);
+		
+		while (department.getParentId()!=null) {
+			department = this.getActualDao().selectByPrimaryKey(department.getParentId());
+		}
+		return department;
+	}
 }

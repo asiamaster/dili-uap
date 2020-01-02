@@ -85,4 +85,15 @@ public class DepartmentApi {
 	public BaseOutput<List<Department>> findByUserId(@RequestBody Long userId) {
 		return BaseOutput.success().setData(this.departmentService.findByUserId(userId));
 	}
+	
+	/**
+	 * 根据iD查询所在一级部门
+	 * @param userId
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getFirstDepartment.api", method = { RequestMethod.GET, RequestMethod.POST })
+	public BaseOutput<Department> getFirstDepartment(@RequestBody Long id) {
+		return BaseOutput.success().setData(this.departmentService.getFirstDepartment(id));
+	}
 }

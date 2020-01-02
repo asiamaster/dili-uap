@@ -49,4 +49,11 @@ public interface DepartmentService extends BaseService<Department, Long> {
      * @return
      */
 	List<Department> findByUserId(Long userId);
+
+	/**
+	 * 根据部门Id查询一级部门
+	 * @param id
+	 * @return
+	 */
+	Department getFirstDepartment(Long id);
 }
