@@ -533,8 +533,8 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 	public List<UserDepartmentRole> findUserContainDepartmentAndRole(UserDepartmentRoleQuery query) {
 		if (query.getDepartmentId() != null && query.getDepartmentId() > 0) {
 			Department newDTO = DTOUtils.newDTO(Department.class);
-			newDTO.setParentId(query.getDepartmentId());
-			List<Department> depts = this.departmentMapper.selectByExample(newDTO);
+			newDTO.setId(query.getDepartmentId());
+			List<Department> depts = this.departmentMapper.select(newDTO);
 			if (CollectionUtils.isNotEmpty(depts)) {
 				List<Long> ids = new ArrayList<>(depts.size());
 				depts.forEach(d -> ids.add(d.getId()));
