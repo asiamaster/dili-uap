@@ -47,7 +47,7 @@ public class DepartmentApi {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/listByExample.api", method = { RequestMethod.GET, RequestMethod.POST })
-	public BaseOutput<Department> listByExample(@RequestBody(required = false) Department department) {
+	public BaseOutput<Department> listByExample(@RequestBody Department department) {
 		return BaseOutput.success().setData(this.departmentService.listByExample(department));
 	}
 	
@@ -58,8 +58,8 @@ public class DepartmentApi {
 	 * @return
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/listByOne.api", method = { RequestMethod.GET, RequestMethod.POST })
-	public BaseOutput<Department> listByOne(@RequestBody(required = false) Department department) {
+	@RequestMapping(value = "/getOne.api", method = { RequestMethod.GET, RequestMethod.POST })
+	public BaseOutput<Department> getOne(@RequestBody Department department) {
 		return BaseOutput.success().setData(this.departmentService.getDepartment(department));
 	}
 	
@@ -71,7 +71,7 @@ public class DepartmentApi {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/listByDepartment.api", method = { RequestMethod.GET, RequestMethod.POST })
-	public BaseOutput<List<Department>> listByDepartment(@RequestBody(required = false) Department department) {
+	public BaseOutput<List<Department>> listByDepartment(@RequestBody Department department) {
 		return BaseOutput.success().setData(this.departmentService.listByExample(department));
 	}
 	
