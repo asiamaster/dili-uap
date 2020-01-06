@@ -34,7 +34,7 @@ public interface UserMapper extends MyMapper<User> {
      */
     List<UserDataDto> selectUserDatas(Map<String,Object> params);
     /**
-     * 根据用户，角色，部门查询用户信息
+     * 根据用户，查询用户对应角色，部门信息
      * @param UserDepartmentRoleQuery
      * @return
      */

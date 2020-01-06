@@ -120,7 +120,7 @@ public interface UserService extends BaseService<User, Long> {
      */
     BaseOutput forcedOffline(Long userId);
     /**
-     * 根据用户，角色，部门信息查询用户信息
+     * 根据用户，查询用户对应角色，部门信息
      * @param UserDepartmentRoleQuery
      * @return
      */

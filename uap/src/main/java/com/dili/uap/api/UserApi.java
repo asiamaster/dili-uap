@@ -103,7 +103,7 @@ public class UserApi {
 		return BaseOutput.success().setData(userService.findUserByRole(roleId));
 	}
 	/**
-	 * 根据部门，角色以及用户信息查询用户集合
+	 * 根据用户，查询用户对应角色，部门信息
 	 * @param userDepartmentRoleQuery
 	 * @return
 	 */
