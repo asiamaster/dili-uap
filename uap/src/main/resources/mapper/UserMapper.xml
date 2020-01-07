@@ -150,7 +150,7 @@
 		user_role ur ON ur.user_id = u.id
 		LEFT JOIN role r ON r.id
 		= ur.role_id
-		WHERE 1=1
+		WHERE u.firm_code="szpt"
 		<if test="userId != null">
 			AND u.id = #{userId}
 		</if>
