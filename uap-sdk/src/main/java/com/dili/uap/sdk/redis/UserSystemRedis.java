@@ -11,10 +11,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import sun.misc.BASE64Decoder;
 
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 /**
@@ -52,25 +51,19 @@ public class UserSystemRedis {
         if(StringUtils.isBlank(mes)){
             return new ArrayList<>();
         }
-        BASE64Decoder dec = new BASE64Decoder();
         byte[] after = null;
-        try {
-            //使用BASE64解码
-            after =dec.decodeBuffer(mes);
-            List systems = (List) SerializeUtil.unserialize(after);
-            if(systems == null){
-                return null;
-            }
-            //由于反序列化出的对象无法迭代，所以重新放到新的List对象
-            List<Systems> systemList = new ArrayList(systems.size());
-            for(Object system : systems){
-                systemList.add(DTOUtils.as(system, Systems.class));
-            }
-            return systemList;
-        } catch (IOException e) {
-            e.printStackTrace();
+        //使用BASE64解码
+        after = Base64.getDecoder().decode(mes);
+        List systems = (List) SerializeUtil.unserialize(after);
+        if(systems == null){
             return null;
         }
+        //由于反序列化出的对象无法迭代，所以重新放到新的List对象
+        List<Systems> systemList = new ArrayList(systems.size());
+        for(Object system : systems){
+            systemList.add(DTOUtils.as(system, Systems.class));
+        }
+        return systemList;
     }
 
     /**

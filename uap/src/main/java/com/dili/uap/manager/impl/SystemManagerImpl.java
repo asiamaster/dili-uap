@@ -11,8 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import sun.misc.BASE64Encoder;
 
+import java.util.Base64;
 import java.util.List;
 
 
@@ -37,11 +37,10 @@ public class SystemManagerImpl implements SystemManager {
 		if (CollectionUtils.isEmpty(systems)) {
 			return;
 		}
-        String key = SessionConstants.USER_SYSTEM_KEY + userId;
-        this.redisUtils.remove(key);
-		BASE64Encoder enc=new BASE64Encoder();
+		String key = SessionConstants.USER_SYSTEM_KEY + userId;
+		this.redisUtils.remove(key);
 		//使用BASE64编码被序列化为byte[]的对象
-		this.redisUtils.set(key, enc.encodeBuffer(SerializeUtil.serialize(systems)), SessionConstants.SESSION_TIMEOUT);
-    }
+		this.redisUtils.set(key, Base64.getEncoder().encode(SerializeUtil.serialize(systems)), SessionConstants.SESSION_TIMEOUT);
+	}
 
 }
