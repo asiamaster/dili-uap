@@ -194,7 +194,7 @@ public class UserController {
 //        kieSession.fireAllRules();
 //        kieSession.delete(factHandle);
 //        kieSession.dispose();
-        return userService.listEasyuiPage(user, true).toString();
+        return userService.selectForEasyuiPage(user, true).toString();
     }
 
 //    /**

@@ -12,7 +12,6 @@ import com.dili.ss.util.POJOUtils;
 import com.dili.uap.boot.RabbitConfiguration;
 import com.dili.uap.constants.UapConstants;
 import com.dili.uap.dao.*;
-import com.dili.uap.domain.DataAuthRef;
 import com.dili.uap.domain.Project;
 import com.dili.uap.domain.UserRole;
 import com.dili.uap.domain.dto.UserDataDto;
@@ -22,12 +21,9 @@ import com.dili.uap.domain.dto.UserDto;
 import com.dili.uap.glossary.UserState;
 import com.dili.uap.manager.UserManager;
 import com.dili.uap.rpc.ProjectRpc;
-import com.dili.uap.sdk.component.DataAuthSource;
 import com.dili.uap.sdk.domain.*;
 import com.dili.uap.sdk.glossary.DataAuthType;
-import com.dili.uap.sdk.service.DataAuthSourceService;
 import com.dili.uap.sdk.session.SessionContext;
-import com.dili.uap.service.DataAuthRefService;
 import com.dili.uap.service.UserService;
 import com.dili.uap.utils.MD5Util;
 import com.github.pagehelper.Page;
@@ -322,7 +318,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 
 
     @Override
-    public EasyuiPageOutput listEasyuiPage(User domain, boolean useProvider) throws Exception {
+    public EasyuiPageOutput selectForEasyuiPage(UserDto domain, boolean useProvider) throws Exception {
         if (domain.getRows() != null && domain.getRows() >= 1) {
             PageHelper.startPage(domain.getPage(), domain.getRows());
         }

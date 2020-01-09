@@ -151,7 +151,7 @@
                         </th>
                     <%
                     }//for end
-                    }%> // if end
+                    }// if end%>
                     </tr>
                 </thead>
             </table>
