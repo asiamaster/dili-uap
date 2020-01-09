@@ -13,6 +13,7 @@
 		<targetServicePackage>com.dili.uap.service</targetServicePackage>
 		<targetControllerPackage>com.dili.uap.controller</targetControllerPackage>
 		<drools.version>7.28.0.Final</drools.version>
+		<java.version>13</java.version>
 	</properties>
 
 	<!-- 父工程定义 -->
@@ -46,6 +47,20 @@
 						<nonFilteredFileExtension>xls</nonFilteredFileExtension>
 						<nonFilteredFileExtension>xlsx</nonFilteredFileExtension>
 					</nonFilteredFileExtensions>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.1</version>
+				<!-- 编译JDK版本 -->
+				<configuration>
+					<source>13</source>
+					<target>13</target>
+					<encoding>UTF-8</encoding>
+					<parameters>true</parameters>
+					<compilerArgument>-proc:none</compilerArgument>
 				</configuration>
 			</plugin>
 		</plugins>
