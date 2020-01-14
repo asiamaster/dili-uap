@@ -149,7 +149,7 @@ public class LoginController {
 	 * @return
 	 */
 	@ApiOperation("执行logout请求，跳转login页面或者弹出错误")
-	@RequestMapping(value = "/logout.action", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@RequestMapping(value = "/logout.action", produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody BaseOutput logoutAction(String systemCode, @RequestParam(required = false) Long userId, HttpServletRequest request) {
 		UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
 		if(userTicket != null) {

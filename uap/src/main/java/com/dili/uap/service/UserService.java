@@ -76,6 +76,15 @@ public interface UserService extends BaseService<User, Long> {
     BaseOutput saveUserRoles(Long userId,String[] roleIds);
 
     /**
+     * 查询用户列表
+     * @param domain
+     * @param useProvider
+     * @return
+     * @throws Exception
+     */
+    public EasyuiPageOutput selectForEasyuiPage(UserDto domain, boolean useProvider) throws Exception;
+
+    /**
      * 根据id查询用户信息
      *
      * @param userId 用户id

@@ -5,7 +5,7 @@ import com.dili.uap.sdk.redis.UserResourceRedis;
 import com.dili.uap.sdk.redis.UserUrlRedis;
 import com.dili.uap.sdk.session.SessionContext;
 import org.apache.commons.lang3.StringUtils;
-import org.beetl.core.Tag;
+import org.beetl.core.tag.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

@@ -2,7 +2,7 @@ package com.dili.uap.sdk.component.beetl;
 
 import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.session.SessionContext;
-import org.beetl.core.Tag;
+import org.beetl.core.tag.Tag;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
