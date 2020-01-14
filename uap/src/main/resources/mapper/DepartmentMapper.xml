@@ -61,7 +61,7 @@
 	<select id="findByUserId" parameterType="Long" resultMap="BaseResultMap">
 		<!-- WARNING - @mbg.generated -->
 		select
-		d.id, d.parent_id, d.firm_code, d.name, d.code, d.description, d.created_id, d.created, modified,
+		d.id, d.parent_id, d.firm_code, d.name, d.code, d.description, d.created_id, d.created, d.modified,
         d.modified_id
 		from department d inner join `user` u on d.id =
 		u.department_id
