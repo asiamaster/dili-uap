@@ -83,7 +83,8 @@ public class DepartmentApi {
 	@ResponseBody
 	@RequestMapping(value = "/findByUserId.api", method = { RequestMethod.GET, RequestMethod.POST })
 	public BaseOutput<List<Department>> findByUserId(@RequestBody Long userId) {
-		return BaseOutput.success().setData(this.departmentService.findByUserId(userId));
+		List<Department> findByUserId = this.departmentService.findByUserId(userId);
+		return BaseOutput.success().setData(findByUserId);
 	}
 	
 	/**
