@@ -3,7 +3,9 @@ package com.dili.uap.api;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.domain.PageOutput;
 import com.dili.ss.dto.DTOUtils;
+import com.dili.uap.component.ResumeLockedUserJob;
 import com.dili.uap.dao.DepartmentMapper;
+import com.dili.uap.domain.ScheduleMessage;
 import com.dili.uap.domain.dto.UserDepartmentRole;
 import com.dili.uap.domain.dto.UserDepartmentRoleQuery;
 import com.dili.uap.domain.dto.UserDto;
@@ -35,6 +37,9 @@ public class UserApi {
 
 	@Autowired
     DepartmentMapper departmentMapper;
+
+	@Autowired
+	ResumeLockedUserJob resumeLockedUserJob;
 
 	/**
 	 * 查询User实体接口
@@ -104,7 +109,7 @@ public class UserApi {
 	}
 	/**
 	 * 根据用户，查询用户对应角色，部门信息
-	 * @param userDepartmentRoleQuery
+	 * @param query
 	 * @return
 	 */
 	@ResponseBody
@@ -112,6 +117,19 @@ public class UserApi {
 	public BaseOutput<List<UserDepartmentRole>> findUserContainDepartmentAndRole(@RequestBody UserDepartmentRoleQuery query) {
 		List<UserDepartmentRole> list = this.userService.findUserContainDepartmentAndRole(query);
 		return BaseOutput.success().setData(list);
+	}
+
+	/**
+	 * 扫描并解锁锁定的用户
+	 * @param scheduleMessage
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/resumeLockedUser.api", method = { RequestMethod.GET, RequestMethod.POST })
+	@ResponseBody
+	public BaseOutput resumeLockedUser(@RequestBody ScheduleMessage scheduleMessage) {
+		resumeLockedUserJob.scan(scheduleMessage);
+		return BaseOutput.success();
 	}
 
 }

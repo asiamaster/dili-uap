@@ -1,9 +1,9 @@
 package com.dili.uap.component;
 
 import com.dili.ss.dto.DTOUtils;
-import com.dili.ss.quartz.domain.ScheduleMessage;
 import com.dili.uap.constants.UapConstants;
 import com.dili.uap.dao.SystemConfigMapper;
+import com.dili.uap.domain.ScheduleMessage;
 import com.dili.uap.glossary.UserState;
 import com.dili.uap.sdk.domain.SystemConfig;
 import com.dili.uap.sdk.domain.User;
