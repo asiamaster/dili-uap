@@ -1,97 +1,124 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.dili.uap.dao.RoleMapper">
-    <resultMap id="BaseResultMap" type="com.dili.uap.sdk.domain.Role">
-        <!--
-          WARNING - @mbg.generated
-        -->
-        <id column="id" jdbcType="BIGINT" property="id"/>
-        <result column="role_name" jdbcType="VARCHAR" property="roleName"/>
-        <result column="description" jdbcType="VARCHAR" property="description"/>
-        <result column="firm_id" jdbcType="BIGINT" property="firmCode"/>
-        <result column="created" jdbcType="TIMESTAMP" property="created"/>
-        <result column="modified" jdbcType="TIMESTAMP" property="modified"/>
-    </resultMap>
-    <sql id="Base_Column_List">
-        <!--
-          WARNING - @mbg.generated
-        -->
-        id, role_name, description, firm_id, created, modified
-    </sql>
-    <select id="selectBy" parameterType="java.lang.Long" resultMap="BaseResultMap">
-        <!--
-          WARNING - @mbg.generated
-        -->
-        select
-        <include refid="Base_Column_List"/>
-        from role
-        where id = #{id,jdbcType=BIGINT}
-    </select>
-    <update id="updateBy" parameterType="com.dili.uap.sdk.domain.Role">
-        <!--
-          WARNING - @mbg.generated
-        -->
-        update role
-        <set>
-            <if test="roleName != null">
-                role_name = #{roleName,jdbcType=VARCHAR},
-            </if>
-            <if test="description != null">
-                description = #{description,jdbcType=VARCHAR},
-            </if>
-            <if test="firmCode != null">
-                firm_id = #{firmCode,jdbcType=BIGINT},
-            </if>
-            <if test="created != null">
-                created = #{created,jdbcType=TIMESTAMP},
-            </if>
-            <if test="modified != null">
-                modified = #{modified,jdbcType=TIMESTAMP},
-            </if>
-        </set>
-        where id = #{id,jdbcType=BIGINT}
-    </update>
+	<resultMap id="BaseResultMap" type="com.dili.uap.sdk.domain.Role">
+		<!-- WARNING - @mbg.generated -->
+		<id column="id" jdbcType="BIGINT" property="id" />
+		<result column="role_name" jdbcType="VARCHAR" property="roleName" />
+		<result column="description" jdbcType="VARCHAR" property="description" />
+		<result column="firm_code" jdbcType="BIGINT" property="firmCode" />
+		<result column="created" jdbcType="TIMESTAMP" property="created" />
+		<result column="modified" jdbcType="TIMESTAMP" property="modified" />
+	</resultMap>
 
-    <!-- 根据角色ID查询该角色下是否存在有用户 -->
-    <select id="countUserByRoleId" resultType="long" parameterType="long">
-       select COUNT(id) from user_role ur where ur.role_id=#{value}
-    </select>
+	<resultMap type="com.dili.uap.sdk.domain.dto.RoleUserDto" id="RoleUserRM" extends="BaseResultMap">
+		<collection property="users" ofType="com.dili.uap.sdk.domain.User" javaType="java.util.List">
+			<id column="user_id" jdbcType="BIGINT" property="id" />
+			<result column="user_name" jdbcType="VARCHAR" property="userName" />
+			<result column="password" jdbcType="VARCHAR" property="password" />
+			<result column="user_firm_code" jdbcType="VARCHAR" property="firmCode" />
+			<result column="department_id" jdbcType="BIGINT" property="departmentId" />
+			<result column="position" jdbcType="VARCHAR" property="position" />
+			<result column="card_number" jdbcType="VARCHAR" property="cardNumber" />
+			<result column="locked" jdbcType="TIMESTAMP" property="locked" />
+			<result column="state" jdbcType="INTEGER" property="state" />
+			<result column="real_name" jdbcType="VARCHAR" property="realName" />
+			<result column="serial_number" jdbcType="VARCHAR" property="serialNumber" />
+			<result column="cellphone" jdbcType="VARCHAR" property="cellphone" />
+			<result column="email" jdbcType="VARCHAR" property="email" />
+		</collection>
+	</resultMap>
 
-    <!-- 根据角色ID删除角色-菜单 信息 -->
-    <delete id="deleteRoleMenuByRoleId" parameterType="map">
-        delete from role_menu  where role_id=#{roleId}
-        <if test="loginUserId != null">
-        AND `menu_id` IN(
-        SELECT a.`menu_id` FROM (
-        SELECT m.id AS menu_id
-        FROM menu m, role_menu rm, user_role ur
-        where m.id = rm.menu_id
-        and rm.role_id = ur.role_id
+	<sql id="Base_Column_List">
+		<!-- WARNING - @mbg.generated -->
+		id, role_name, description, firm_code, created, modified
+	</sql>
+
+	<sql id="Join_Column_List">
+		r.id,
+		r.role_name,
+		r.firm_code,
+		r.description,
+		r.created,
+		r.modified
+	</sql>
+
+	<select id="selectBy" parameterType="java.lang.Long" resultMap="BaseResultMap">
+		<!-- WARNING - @mbg.generated -->
+		select
+		<include refid="Base_Column_List" />
+		from role
+		where id = #{id,jdbcType=BIGINT}
+	</select>
+	<update id="updateBy" parameterType="com.dili.uap.sdk.domain.Role">
+		<!-- WARNING - @mbg.generated -->
+		update role
+		<set>
+			<if test="roleName != null">
+				role_name = #{roleName,jdbcType=VARCHAR},
+			</if>
+			<if test="description != null">
+				description = #{description,jdbcType=VARCHAR},
+			</if>
+			<if test="firmCode != null">
+				firm_id = #{firmCode,jdbcType=BIGINT},
+			</if>
+			<if test="created != null">
+				created = #{created,jdbcType=TIMESTAMP},
+			</if>
+			<if test="modified != null">
+				modified = #{modified,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+
+	<!-- 根据角色ID查询该角色下是否存在有用户 -->
+	<select id="countUserByRoleId" resultType="long" parameterType="long">
+		select COUNT(id) from user_role ur where
+		ur.role_id=#{value}
+	</select>
+
+	<!-- 根据角色ID删除角色-菜单 信息 -->
+	<delete id="deleteRoleMenuByRoleId" parameterType="map">
+		delete from role_menu where role_id=#{roleId}
+		<if test="loginUserId != null">
+			AND `menu_id` IN(
+			SELECT a.`menu_id` FROM (
+			SELECT m.id AS menu_id
+			FROM
+			menu m, role_menu rm, user_role ur
+			where m.id = rm.menu_id
+			and
+			rm.role_id = ur.role_id
         <![CDATA[
         and m.`type` <=1
         ]]>
-        and ur.user_id = #{loginUserId}
-        ) a)
-        </if>
-    </delete>
+			and ur.user_id = #{loginUserId}
+			) a)
+		</if>
+	</delete>
 
-    <!-- 根据角色ID删除角色-资源 信息 -->
-    <delete id="deleteRoleResourceByRoleId" parameterType="map">
-      delete from role_resource where role_id=#{roleId}
-        <if test="loginUserId != null">
-		AND `resource_id` IN(
-         SELECT a.`resource_id` FROM (
-         SELECT r.id AS resource_id
-          FROM resource r, role_resource rr, user_role ur
-			 where r.id = rr.resource_id
-			 and rr.role_id = ur.role_id
-			 and ur.user_id = #{loginUserId}
-         ) a)
-        </if>
-    </delete>
+	<!-- 根据角色ID删除角色-资源 信息 -->
+	<delete id="deleteRoleResourceByRoleId" parameterType="map">
+		delete from role_resource where role_id=#{roleId}
+		<if test="loginUserId != null">
+			AND `resource_id` IN(
+			SELECT a.`resource_id` FROM (
+			SELECT
+			r.id AS resource_id
+			FROM resource r, role_resource rr, user_role ur
+			where r.id = rr.resource_id
+			and rr.role_id = ur.role_id
+			and
+			ur.user_id
+			= #{loginUserId}
+			) a)
+		</if>
+	</delete>
 
-    <!-- 查询所有的菜单及资源信息 -->
-    <select id="getRoleMenuAndResource" resultType="com.dili.uap.domain.dto.SystemResourceDto">
+	<!-- 查询所有的菜单及资源信息 -->
+	<select id="getRoleMenuAndResource" resultType="com.dili.uap.domain.dto.SystemResourceDto">
         <![CDATA[
           (SELECT m.id AS treeId,m.parent_id AS parentId,
             m.system_id AS systemId,m.`name`,m.description,1 AS menu,m.type
@@ -101,10 +128,10 @@
               r.id AS treeId,r.menu_id AS parentId,NULL AS systemId,r.`name`,r.description,0 AS menu,'3' as type
           FROM resource r
           ]]>
-    </select>
+	</select>
 
-    <!-- 根据用户id查询菜单及资源信息 -->
-    <select id="getRoleMenuAndResourceByUserId" resultType="com.dili.uap.domain.dto.SystemResourceDto">
+	<!-- 根据用户id查询菜单及资源信息 -->
+	<select id="getRoleMenuAndResourceByUserId" resultType="com.dili.uap.domain.dto.SystemResourceDto">
         <![CDATA[
           (SELECT DISTINCT m.id AS treeId,m.parent_id AS parentId,
             m.system_id AS systemId,m.`name`,m.description,1 AS menu,m.type
@@ -122,33 +149,66 @@
 			 and rr.role_id = ur.role_id
 			 and ur.user_id = #{userId};
           ]]>
-    </select>
+	</select>
 
-    <!-- 根据角色ID查询对应的菜单及资源信息 -->
-    <select id="getRoleMenuAndResourceByRoleId" parameterType="long" resultType="com.dili.uap.domain.dto.SystemResourceDto">
-          SELECT
-              rm.menu_id AS treeId,1 AS menu
-          FROM
-              role_menu rm where role_id=#{value}
-          UNION ALL
-          SELECT
-                rr.resource_id AS treeId,
-                0 AS menu
-          FROM
-                role_resource rr where role_id=#{value}
-    </select>
+	<!-- 根据角色ID查询对应的菜单及资源信息 -->
+	<select id="getRoleMenuAndResourceByRoleId" parameterType="long" resultType="com.dili.uap.domain.dto.SystemResourceDto">
+		SELECT
+		rm.menu_id AS treeId,1 AS menu
+		FROM
+		role_menu rm where
+		role_id=#{value}
+		UNION ALL
+		SELECT
+		rr.resource_id AS treeId,
+		0
+		AS menu
+		FROM
+		role_resource rr where role_id=#{value}
+	</select>
 
-    <!-- 根据用户id获取用户所属角色信息 -->
-    <select id="listByUserId" parameterType="java.lang.Long" resultMap="BaseResultMap">
-          select r.* from user_role ur LEFT JOIN role r on ur.role_id=r.id where ur.user_id = #{userId}
-    </select>
+	<!-- 根据用户id获取用户所属角色信息 -->
+	<select id="listByUserId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+		select r.* from user_role ur LEFT JOIN role r on
+		ur.role_id=r.id where
+		ur.user_id = #{userId}
+	</select>
 
-    <!-- 根据用户名获取用户所属角色信息 -->
-    <select id="listByUserName" parameterType="java.lang.String" resultMap="BaseResultMap">
-          select r.* ser u
-            where ur.role_id=r.
-            from user_role ur, role r, uid
-            AND ur.user_id = u.id
-            AND u.user_name = #{userName}
-    </select>
+	<!-- 根据用户名获取用户所属角色信息 -->
+	<select id="listByUserName" parameterType="java.lang.String" resultMap="BaseResultMap">
+		select r.* ser u
+		where ur.role_id=r.
+		from user_role ur, role
+		r, uid
+		AND ur.user_id = u.id
+		AND u.user_name = #{userName}
+	</select>
+
+	<select id="listRoleUserByRoleIds" parameterType="java.util.List" resultMap="RoleUserRM">
+		SELECT
+		<include refid="Join_Column_List" />
+		,
+		u.id AS user_id,
+		u.user_name,
+		u.`password`,
+		u.firm_code AS user_firm_code,
+		u.department_id,
+		u.position,
+		u.card_number,
+		u.state,
+		u.real_name,
+		u.serial_number,
+		u.cellphone,
+		u.email,
+		u.locked
+		FROM
+		role r
+		LEFT JOIN
+		user_role ur ON r.id = ur.role_id
+		INNER JOIN `user` u ON ur.user_id = u.id
+		WHERE r.id IN
+		<foreach collection="list" item="roleId" open="(" separator="," close=")">
+			#{roleId}
+		</foreach>
+	</select>
 </mapper>
