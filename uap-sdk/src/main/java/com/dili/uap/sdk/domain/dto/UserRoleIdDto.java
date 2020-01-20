@@ -10,5 +10,5 @@ public interface UserRoleIdDto extends IBaseDomain {
 
 	Long getRoleId();
 
-	void setRoleId();
+	void setRoleId(Long roleId);
 }
