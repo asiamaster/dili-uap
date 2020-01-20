@@ -44,6 +44,11 @@ public class RoleApi {
 		return BaseOutput.failure("参数为空");
 	}
 
+	/**
+	 * 根据角色id
+	 * @param roleIds
+	 * @return
+	 */
 	@PostMapping("/listRoleUserByRoleIds.api")
 	public BaseOutput<List<RoleUserDto>> listRoleUserByRoleIds(@RequestBody List<Long> roleIds) {
 		List<RoleUserDto> list = this.roleService.listRoleUserByRoleIds(roleIds);
