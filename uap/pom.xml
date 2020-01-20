@@ -80,11 +80,11 @@
 		</dependency>
 
 		<!-- 利刃框架引入 -->
-		<dependency>
-			<groupId>com.dili</groupId>
-			<artifactId>ss-scheduler</artifactId>
-			<version>${sharp-sword.version}</version>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>com.dili</groupId>-->
+<!--			<artifactId>ss-scheduler</artifactId>-->
+<!--			<version>${sharp-sword.version}</version>-->
+<!--		</dependency>-->
 		<dependency>
 			<groupId>com.dili</groupId>
 			<artifactId>ss-uid</artifactId>
