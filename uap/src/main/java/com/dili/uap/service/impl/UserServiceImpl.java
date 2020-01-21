@@ -400,11 +400,8 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
     	if(selectAll!=null&&selectAll.size()>0) {
             List<String> selectUserDataAuthValue = userDataAuthMapper.selectUserDataAuthValue(userId,DataAuthType.PROJECT.getCode());
             //添加根目录
-            UserDataDto almDataDto=DTOUtils.newDTO(UserDataDto.class);
-        	almDataDto.setTreeId(UapConstants.ALM_PROJECT_PREFIX+0);
-        	almDataDto.setName("项目生命周期管理");
-        	almDataDto.setChecked(false);
-        	selectUserDatas.add(almDataDto);
+
+            boolean isRootChecked=false;
     		for (Project project : selectAll) {
             	UserDataDto userDataDto=DTOUtils.newDTO(UserDataDto.class);
             	userDataDto.setTreeId(UapConstants.ALM_PROJECT_PREFIX+project.getId());
@@ -415,9 +412,17 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
             	}
             	userDataDto.setName(project.getName());
             	boolean isChecked = selectUserDataAuthValue.contains(project.getId().toString());
+            	if(!isRootChecked&&isChecked) {
+            		isRootChecked=true;
+            	}
             	userDataDto.setChecked(isChecked);
             	selectUserDatas.add(userDataDto);
     		}
+            UserDataDto almDataDto=DTOUtils.newDTO(UserDataDto.class);
+        	almDataDto.setTreeId(UapConstants.ALM_PROJECT_PREFIX+0);
+        	almDataDto.setName("项目生命周期管理");
+        	almDataDto.setChecked(isRootChecked);
+        	selectUserDatas.add(almDataDto);
     	}
         
         return selectUserDatas;
