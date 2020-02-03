@@ -12,7 +12,6 @@ import com.dili.ss.util.POJOUtils;
 import com.dili.uap.boot.RabbitConfiguration;
 import com.dili.uap.constants.UapConstants;
 import com.dili.uap.dao.*;
-import com.dili.uap.domain.Project;
 import com.dili.uap.domain.UserRole;
 import com.dili.uap.domain.dto.UserDataDto;
 import com.dili.uap.domain.dto.UserDepartmentRole;
@@ -382,48 +381,25 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 //            params.put("firmCode", user.getFirmCode());
 //        }
 //        return getActualDao().selectUserDatas(params);
-        List<Project> selectAll =new ArrayList<Project>();
+        List<UserDataDto> selectAll =new ArrayList<UserDataDto>();
         if(!user.getUserName().equalsIgnoreCase(adminName)){
             params.put("loginUserId", userTicket.getId());
             List<String> selectUserDataAuthValue = userDataAuthMapper.selectUserDataAuthValue(userTicket.getId(),DataAuthType.PROJECT.getCode());
             if(selectUserDataAuthValue!=null&&selectUserDataAuthValue.size()>0) {
-                selectAll = this.projectRpc.selectByIds(selectUserDataAuthValue).getData();
+                selectAll = this.projectRpc.selectUserDataByIds(selectUserDataAuthValue).getData();
             }else {
             	return null;
             }
         }else {
-            selectAll = this.projectRpc.selectAll().getData();
+            selectAll = this.projectRpc.selectUserDataTree().getData();
         }
         List<UserDataDto> selectUserDatas = getActualDao().selectUserDatas(params);
         //添加alm项目数据权限
+        selectAll.forEach(userDataDto -> {
+        	selectUserDatas.add(userDataDto);
+		});
 
-    	if(selectAll!=null&&selectAll.size()>0) {
-            List<String> selectUserDataAuthValue = userDataAuthMapper.selectUserDataAuthValue(userId,DataAuthType.PROJECT.getCode());
-            //添加根目录
 
-            boolean isRootChecked=false;
-    		for (Project project : selectAll) {
-            	UserDataDto userDataDto=DTOUtils.newDTO(UserDataDto.class);
-            	userDataDto.setTreeId(UapConstants.ALM_PROJECT_PREFIX+project.getId());
-            	if(project.getParentId()!=null) {
-                	userDataDto.setParentId(UapConstants.ALM_PROJECT_PREFIX+project.getParentId());
-            	}else {
-                	userDataDto.setParentId(UapConstants.ALM_PROJECT_PREFIX+0);
-            	}
-            	userDataDto.setName(project.getName());
-            	boolean isChecked = selectUserDataAuthValue.contains(project.getId().toString());
-            	if(!isRootChecked&&isChecked) {
-            		isRootChecked=true;
-            	}
-            	userDataDto.setChecked(isChecked);
-            	selectUserDatas.add(userDataDto);
-    		}
-            UserDataDto almDataDto=DTOUtils.newDTO(UserDataDto.class);
-        	almDataDto.setTreeId(UapConstants.ALM_PROJECT_PREFIX+0);
-        	almDataDto.setName("项目生命周期管理");
-        	almDataDto.setChecked(isRootChecked);
-        	selectUserDatas.add(almDataDto);
-    	}
         
         return selectUserDatas;
     }
@@ -533,7 +509,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 	@Override
 	public List<UserDepartmentRole> findUserContainDepartmentAndRole(UserDepartmentRoleQuery query) {
 		if (query.getDepartmentId() != null && query.getDepartmentId() > 0) {
-			Department newDTO = DTOUtils.newDTO(Department.class);
+			Department newDTO = DTOUtils.newInstance(Department.class);
 			newDTO.setId(query.getDepartmentId());
 			List<Department> depts = this.departmentMapper.select(newDTO);
 			if (CollectionUtils.isNotEmpty(depts)) {

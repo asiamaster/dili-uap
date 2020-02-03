@@ -1,5 +1,7 @@
 package com.dili.uap.service;
 
+import java.util.List;
+
 import com.dili.ss.base.BaseService;
 import com.dili.uap.sdk.domain.UserDataAuth;
 
@@ -15,4 +17,10 @@ public interface UserDataAuthService extends BaseService<UserDataAuth, Long> {
      * @return
      */
     int delete(UserDataAuth userDataAuth);
+    /**
+     * 根据userId,code查询用户数据权限对应值
+     * @param userId
+     * @return
+     */
+	List<String> listUserDataAuthValueByUserId(Long userId,String code);
 }

@@ -153,7 +153,7 @@ public class DataAuthApi {
 		// @RequestParam Long userId, @RequestParam String dataId, @RequestParam String
 		// type
 		JSONObject jo = JSON.parseObject(json);
-		UserDataAuth userDataAuth = DTOUtils.newDTO(UserDataAuth.class);
+		UserDataAuth userDataAuth = DTOUtils.newInstance(UserDataAuth.class);
 		userDataAuth.setRefCode(jo.getString("refCode"));
 		userDataAuth.setValue(jo.getString("value"));
 		userDataAuth.setUserId(jo.getLong("userId"));
@@ -175,7 +175,7 @@ public class DataAuthApi {
 	@RequestMapping(value = "/deleteUserDataAuth.api", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public BaseOutput<Object> deleteUserDataAuth(@RequestBody String json) {
 		JSONObject jo = JSON.parseObject(json);
-		UserDataAuth userDataAuth = DTOUtils.newDTO(UserDataAuth.class);
+		UserDataAuth userDataAuth = DTOUtils.newInstance(UserDataAuth.class);
 		userDataAuth.setRefCode(jo.getString("refCode"));
 		userDataAuth.setValue(jo.getString("value"));
 		userDataAuth.setUserId(jo.getLong("userId"));

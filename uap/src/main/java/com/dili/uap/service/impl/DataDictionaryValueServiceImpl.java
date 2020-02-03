@@ -80,14 +80,14 @@ public class DataDictionaryValueServiceImpl extends BaseServiceImpl<DataDictiona
 
 	@Override
 	public DataDictionaryDto findByCode(String code,String systemCode) {	
-		DataDictionary record = DTOUtils.newDTO(DataDictionary.class);
+		DataDictionary record = DTOUtils.newInstance(DataDictionary.class);
 		record.setCode(code);
 		record.setSystemCode(systemCode);
 		DataDictionary model = this.dataDictionaryMapper.selectOne(record);
 		if (model == null) {
 			return null;
 		}
-		DataDictionaryValue valueRecord = DTOUtils.newDTO(DataDictionaryValue.class);
+		DataDictionaryValue valueRecord = DTOUtils.newInstance(DataDictionaryValue.class);
 		valueRecord.setDdCode(model.getCode());
 		List<DataDictionaryValue> values = this.getActualDao().select(valueRecord);
 		DataDictionaryDto dto = DTOUtils.as(model, DataDictionaryDto.class);
