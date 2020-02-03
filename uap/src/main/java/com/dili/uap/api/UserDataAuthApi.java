@@ -41,7 +41,7 @@ public class UserDataAuthApi {
 
 	/**
 	 * 根据userId查询UserDataAuthValue值集合接口
-	 * @param user
+	 * @param userId
 	 * @return
 	 */
 	@ApiOperation(value = "查询UserDataAuthValue列表接口", notes = "查询UserDataAuthValue列表接口，返回列表信息")

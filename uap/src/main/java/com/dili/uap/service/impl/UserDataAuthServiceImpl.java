@@ -28,7 +28,9 @@ public class UserDataAuthServiceImpl extends BaseServiceImpl<UserDataAuth, Long>
         return getActualDao().delete(userDataAuth);
     }
     /**
-     * 根据userDataAuth删除数据
+     * 根据userId,code查询用户数据权限对应值
+     * @param userId code
+     * @return
      */
 	@Override
 	public List<String> listUserDataAuthValueByUserId(Long userId,String code) {

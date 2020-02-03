@@ -19,7 +19,7 @@ public interface UserDataAuthService extends BaseService<UserDataAuth, Long> {
     int delete(UserDataAuth userDataAuth);
     /**
      * 根据userId,code查询用户数据权限对应值
-     * @param userId
+     * @param userId code
      * @return
      */
 	List<String> listUserDataAuthValueByUserId(Long userId,String code);
