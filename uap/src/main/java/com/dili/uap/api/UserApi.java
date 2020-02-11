@@ -79,9 +79,9 @@ public class UserApi {
 		if(users instanceof Page) {
 			Page<User> page = (Page) users;
 			Long total = page.getTotal();
-			return PageOutput.success().setTotal(total.intValue()).setPage(page.getPageNum()).setPageSize(page.getPageSize()).setData(users);
+			return PageOutput.success().setTotal(total.intValue()).setPageNum(page.getPageNum()).setPageSize(page.getPageSize()).setData(users);
 		}else{
-			return PageOutput.success().setTotal(users.size()).setPage(user.getPage()).setPageSize(user.getRows()).setData(users);
+			return PageOutput.success().setTotal(users.size()).setPageNum(user.getPage()).setPageSize(user.getRows()).setData(users);
 		}
 	}
 

@@ -44,6 +44,13 @@ public interface UserTicket extends IDTO {
 
 	void setFirmCode(String firmCode);
 
+	@Column(name = "`firm_id`")
+	@FieldDef(label="归属市场ID", maxLength = 20)
+	@EditMode(editor = FieldEditor.Text, required = false)
+	Long getFirmId();
+
+	void setFirmId(Long firmId);
+
 	@Column(name = "`department_id`")
 	@FieldDef(label="归属部门")
 	@EditMode(editor = FieldEditor.Number, required = false)

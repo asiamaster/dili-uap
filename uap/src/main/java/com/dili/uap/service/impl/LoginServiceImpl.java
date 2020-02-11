@@ -5,6 +5,7 @@ import com.dili.ss.constant.ResultCode;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.constants.UapConstants;
+import com.dili.uap.dao.FirmMapper;
 import com.dili.uap.dao.SystemConfigMapper;
 import com.dili.uap.dao.UserMapper;
 import com.dili.uap.domain.LoginLog;
@@ -14,9 +15,7 @@ import com.dili.uap.glossary.LoginType;
 import com.dili.uap.glossary.UserState;
 import com.dili.uap.glossary.Yn;
 import com.dili.uap.manager.*;
-import com.dili.uap.sdk.domain.Systems;
-import com.dili.uap.sdk.domain.SystemConfig;
-import com.dili.uap.sdk.domain.User;
+import com.dili.uap.sdk.domain.*;
 import com.dili.uap.sdk.manager.SessionRedisManager;
 import com.dili.uap.sdk.session.ManageConfig;
 import com.dili.uap.sdk.session.SessionConstants;
@@ -96,6 +95,9 @@ public class LoginServiceImpl implements LoginService {
 
 	@Autowired
 	private SessionRedisManager sessionManager;
+
+	@Autowired
+	private FirmMapper firmMapper;
 
 	@Override
 	public BaseOutput<String> validate(LoginDto loginDto) {
@@ -367,7 +369,15 @@ public class LoginServiceImpl implements LoginService {
 	 */
 	private void makeRedisTag(User user, String sessionId) {
 		Map<String, Object> sessionData = new HashMap<>(1);
-		sessionData.put(SessionConstants.LOGGED_USER, JSON.toJSONString(user));
+		//根据firmCode查询firmId，放入UserTicket
+		Firm condition = DTOUtils.newInstance(Firm.class);
+		condition.setCode(user.getFirmCode());
+		Firm firm = firmMapper.selectOne(condition);
+		UserTicket userTicket = DTOUtils.asInstance(user, UserTicket.class);
+		if(firm != null){
+			userTicket.setFirmId(firm.getId());
+		}
+		sessionData.put(SessionConstants.LOGGED_USER, JSON.toJSONString(userTicket));
 
 		LOG.debug("--- Save Session Data To Redis ---");
 		// redis: ressionId - user
