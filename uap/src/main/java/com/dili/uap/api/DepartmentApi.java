@@ -1,22 +1,20 @@
 package com.dili.uap.api;
 
 import com.dili.ss.domain.BaseOutput;
-import com.dili.ss.retrofitful.annotation.POST;
 import com.dili.uap.sdk.domain.Department;
 import com.dili.uap.service.DepartmentService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.List;
 
 /**
  * 部门接口
@@ -47,7 +45,7 @@ public class DepartmentApi {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/listByExample.api", method = { RequestMethod.GET, RequestMethod.POST })
-	public BaseOutput<Department> listByExample( Department department) {
+	public BaseOutput<List<Department>> listByExample( Department department) {
 		return BaseOutput.success().setData(this.departmentService.listByExample(department));
 	}
 	
