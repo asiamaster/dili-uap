@@ -394,13 +394,12 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
             selectAll = this.projectRpc.selectUserDataTree().getData();
         }
         List<UserDataDto> selectUserDatas = getActualDao().selectUserDatas(params);
-        //添加alm项目数据权限
-        selectAll.forEach(userDataDto -> {
-        	selectUserDatas.add(userDataDto);
-		});
-
-
-        
+        if(selectAll!=null&&selectAll.size()>0) {
+        	//添加alm项目数据权限
+            selectAll.forEach(userDataDto -> {
+            	selectUserDatas.add(userDataDto);
+    		});
+        }
         return selectUserDatas;
     }
 
