@@ -8,6 +8,7 @@ import com.dili.ss.dto.IDTO;
 import com.dili.ss.metadata.ValueProviderUtils;
 import com.dili.uap.constants.UapConstants;
 import com.dili.uap.domain.DataAuthRef;
+import com.dili.uap.domain.dto.UserDataDto;
 import com.dili.uap.domain.dto.UserDto;
 import com.dili.uap.sdk.component.DataAuthSource;
 import com.dili.uap.sdk.domain.Firm;
@@ -32,6 +33,7 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.annotation.Validated;
@@ -40,6 +42,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -63,7 +67,8 @@ public class UserController {
 
     @Autowired
     private DataAuthRefService dataAuthRefService;
-
+    @Value("${uap.adminName:admin}")
+    private String adminName;
     /**
      * 跳转到User页面
      * @param modelMap
@@ -451,6 +456,30 @@ public class UserController {
         if (CollectionUtils.isNotEmpty(userDataAuths)) {
             map.put("currDataAuth", userDataAuths.get(0).getValue());
         }
+        return output.setData(map);
+    }
+    
+    /**
+     * 获取项目数据权限
+     * @param id
+     * @return
+     */
+    @ApiOperation(value = "获取项目数据权限", notes = "获取用户项目数据权限")
+    @RequestMapping(value = "/getUserProjectData.action", method = {RequestMethod.GET, RequestMethod.POST})
+    @ResponseBody
+    public BaseOutput<Map<String,Object>> getUserProjectData(Long id){
+        UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
+        if(userTicket == null){
+            return BaseOutput.failure("用户未登录");
+        }
+        //获取需要分配数据权限的用户信息
+        User user = userService.get(id);
+        if (null == user) {
+        	return BaseOutput.failure("没有该用户");
+        }
+        BaseOutput<Map<String, Object>> output = BaseOutput.success();
+        Map map = Maps.newHashMap();
+        map.put("dataProject",userService.getUserDataProjectAuthForTree(id));
         return output.setData(map);
     }
 

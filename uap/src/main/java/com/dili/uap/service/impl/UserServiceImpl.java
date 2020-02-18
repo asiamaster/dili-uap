@@ -10,8 +10,10 @@ import com.dili.ss.metadata.ValueProviderUtils;
 import com.dili.ss.util.AESUtils;
 import com.dili.ss.util.POJOUtils;
 import com.dili.uap.boot.RabbitConfiguration;
+import com.dili.uap.component.DataProjectSourceService;
 import com.dili.uap.constants.UapConstants;
 import com.dili.uap.dao.*;
+import com.dili.uap.domain.DataAuthRef;
 import com.dili.uap.domain.UserRole;
 import com.dili.uap.domain.dto.UserDataDto;
 import com.dili.uap.domain.dto.UserDepartmentRole;
@@ -20,9 +22,12 @@ import com.dili.uap.domain.dto.UserDto;
 import com.dili.uap.glossary.UserState;
 import com.dili.uap.manager.UserManager;
 import com.dili.uap.rpc.ProjectRpc;
+import com.dili.uap.sdk.component.DataAuthSource;
 import com.dili.uap.sdk.domain.*;
 import com.dili.uap.sdk.glossary.DataAuthType;
+import com.dili.uap.sdk.service.DataAuthSourceService;
 import com.dili.uap.sdk.session.SessionContext;
+import com.dili.uap.service.DataAuthRefService;
 import com.dili.uap.service.UserService;
 import com.dili.uap.utils.MD5Util;
 import com.github.pagehelper.Page;
@@ -73,7 +78,9 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
     private AmqpTemplate amqpTemplate;
     @Value("${aesKey:}")
     private String aesKey;
-
+    @Autowired
+    DataAuthRefService dataAuthRefService;
+    public static final String ALM_PROJECT_PREFIX = "alm_";
     @Override
     public void logout(String sessionId) {
         this.userManager.clearSession(sessionId);
@@ -381,12 +388,19 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 //            params.put("firmCode", user.getFirmCode());
 //        }
 //        return getActualDao().selectUserDatas(params);
-        List<UserDataDto> selectAll =new ArrayList<UserDataDto>();
+	      if(!user.getUserName().equalsIgnoreCase(adminName)){
+	          params.put("loginUserId", userTicket.getId());
+	      }
+	      return getActualDao().selectUserDatas(params);
+        
+        
+        
+/*        List<UserDataDto> selectAll =new ArrayList<UserDataDto>();
         if(!user.getUserName().equalsIgnoreCase(adminName)){
             params.put("loginUserId", userTicket.getId());
             List<String> selectUserDataAuthValue = userDataAuthMapper.selectUserDataAuthValue(userTicket.getId(),DataAuthType.PROJECT.getCode());
             if(selectUserDataAuthValue!=null&&selectUserDataAuthValue.size()>0) {
-                selectAll = this.projectRpc.selectUserDataByIds(selectUserDataAuthValue).getData();
+                selectAll = this.projectRpc.selectUserDataByIds(selectUserDataAuthValue,userTicket.getId()).getData();
             }else {
             	return null;
             }
@@ -400,7 +414,8 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
             	selectUserDatas.add(userDataDto);
     		});
         }
-        return selectUserDatas;
+        return selectUserDatas;*/
+       
     }
 
     @Override
@@ -518,5 +533,52 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 			}
 		}
 		return this.getActualDao().findUserContainDepartmentAndRole(query);
+	}
+
+	@Override
+	public List<UserDataDto> getUserDataProjectAuthForTree(Long userId) {
+		 //获取需要分配数据权限的用户信息
+        User user = this.get(userId);
+        if (null == user) {
+            return null;
+        }
+        UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
+        //获取用户的数据权限
+        List<UserDataDto> selectAll =new ArrayList<UserDataDto>();
+    	if(userTicket.getUserName().equalsIgnoreCase(adminName)) {
+    		selectAll = this.projectRpc.selectUserDataTree().getData();
+    	}else {
+            List<String> selectUserDataAuthValue = userDataAuthMapper.selectUserDataAuthValue(userTicket.getId(),DataAuthType.PROJECT.getCode());
+            if(selectUserDataAuthValue!=null&&selectUserDataAuthValue.size()>0) {
+            	BaseOutput<List<UserDataDto>> selectUserDataByIds = this.projectRpc.selectUserDataByIds(selectUserDataAuthValue);
+                selectAll = selectUserDataByIds.getData();
+            }else {
+            	return null;
+            }
+    	}
+		List<String> selectUserDataAuthValue = userDataAuthMapper.selectUserDataAuthValue(userId,DataAuthType.PROJECT.getCode());
+		boolean isRootChecked=false;
+		if(selectAll!=null&&selectAll.size()>0) {
+			if(selectUserDataAuthValue!=null&&selectUserDataAuthValue.size()>0) {
+				//判断选中
+				for (UserDataDto userDataDto : selectAll) {			
+					String replace = userDataDto.getTreeId().replace(ALM_PROJECT_PREFIX, "");
+					System.out.println(replace);
+			      	boolean isChecked = selectUserDataAuthValue.contains(replace);
+			      	if(!isRootChecked&&isChecked) {
+			      		isRootChecked=true;
+			      	}
+			      	userDataDto.setChecked(isChecked);
+				}
+			}
+		    
+				
+		}
+		UserDataDto almDataDto=DTOUtils.newInstance(UserDataDto.class);
+	  	almDataDto.setTreeId(ALM_PROJECT_PREFIX+0);
+	  	almDataDto.setName("项目生命周期管理");
+	  	almDataDto.setChecked(isRootChecked);
+	  	selectAll.add(almDataDto);
+        return selectAll;
 	}
 }
