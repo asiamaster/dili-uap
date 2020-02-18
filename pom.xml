@@ -51,26 +51,22 @@
 		</resources>
 		<plugins>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.8.1</version>
-				<!-- 编译JDK版本 -->
+				<groupId>org.mybatis.generator</groupId>
+				<artifactId>mybatis-generator-maven-plugin</artifactId>
+				<version>1.3.7</version>
 				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
-					<encoding>UTF-8</encoding>
-					<parameters>true</parameters>
-					<compilerArgument>-proc:none</compilerArgument>
-					<!--					<compilerArgs>-->
-					<!--						<arg>&#45;&#45;add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED</arg>-->
-					<!--						<arg>&#45;&#45;add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED</arg>-->
-					<!--						<arg>&#45;&#45;add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED</arg>-->
-					<!--						<arg>&#45;&#45;add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED</arg>-->
-					<!--						<arg>&#45;&#45;add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</arg>-->
-					<!--					</compilerArgs>-->
+					<configurationFile>${basedir}/src/main/resources/generator/generatorConfig.xml</configurationFile>
+					<overwrite>true</overwrite>
+					<verbose>true</verbose>
 				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>com.dili</groupId>
+						<artifactId>ss-mbg</artifactId>
+						<version>${project.parent.version}</version>
+					</dependency>
+				</dependencies>
 			</plugin>
-
 		</plugins>
 	</build>
 

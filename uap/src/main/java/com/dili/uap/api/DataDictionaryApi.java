@@ -3,7 +3,7 @@ package com.dili.uap.api;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.dili.ss.domain.BaseOutput;
-import com.dili.ss.retrofitful.annotation.VOField;
+import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.domain.dto.DataDictionaryDto;
 import com.dili.uap.sdk.domain.DataDictionary;
 import com.dili.uap.sdk.domain.DataDictionaryValue;
@@ -12,10 +12,7 @@ import com.dili.uap.service.DataDictionaryValueService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -31,7 +28,7 @@ public class DataDictionaryApi {
 	@Autowired
 	DataDictionaryService dataDictionaryService;
 	/**
-	 * 查询数据字典
+	 * 查询数据字典值
 	 * @param dataDictionaryValue
 	 * @return
 	 */
@@ -40,10 +37,23 @@ public class DataDictionaryApi {
 	public BaseOutput<List<DataDictionaryValue>> listDataDictionaryValue(DataDictionaryValue dataDictionaryValue) {
 		return BaseOutput.success().setData(this.dataDictionaryValueService.listByExample(dataDictionaryValue));
 	}
+
+	/**
+	 * 根据数据字典编码查询数据字典值
+	 * @param ddCode
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/listDataDictionaryValueByDdCode.api", method = { RequestMethod.GET, RequestMethod.POST })
+	public BaseOutput<List<DataDictionaryValue>> listDataDictionaryValueByDdCode(@RequestParam("ddCode") String ddCode) {
+		DataDictionaryValue dataDictionaryValue = DTOUtils.newInstance(DataDictionaryValue.class);
+		dataDictionaryValue.setDdCode(ddCode);
+		return BaseOutput.success().setData(this.dataDictionaryValueService.listByExample(dataDictionaryValue));
+	}
 	
 	/**
 	 * 查询数据字典与值的集合
-	 * @param dataDictionaryValue
+	 * @param json
 	 * @return DataDictionaryDto
 	 */
 	@ResponseBody
