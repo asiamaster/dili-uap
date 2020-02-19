@@ -9,6 +9,7 @@ import com.dili.uap.domain.ScheduleMessage;
 import com.dili.uap.domain.dto.UserDepartmentRole;
 import com.dili.uap.domain.dto.UserDepartmentRoleQuery;
 import com.dili.uap.domain.dto.UserDto;
+import com.dili.uap.domain.dto.UserQuery;
 import com.dili.uap.sdk.domain.User;
 import com.dili.uap.service.UserService;
 import com.github.pagehelper.Page;
@@ -74,7 +75,7 @@ public class UserApi {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/listByExample.api", method = { RequestMethod.GET, RequestMethod.POST })
-	public PageOutput<List<User>> listByExample(User user) {
+	public PageOutput<List<User>> listByExample(UserQuery user) {
 		List<User> users = this.userService.listByExample(user);
 		if(users instanceof Page) {
 			Page<User> page = (Page) users;

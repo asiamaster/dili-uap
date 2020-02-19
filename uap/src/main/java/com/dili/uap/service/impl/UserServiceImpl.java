@@ -381,27 +381,23 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 //            params.put("firmCode", user.getFirmCode());
 //        }
 //        return getActualDao().selectUserDatas(params);
-        List<UserDataDto> selectAll =new ArrayList<UserDataDto>();
+
+//        List<UserDataDto> selectAll =new ArrayList<UserDataDto>();
+//        if(!user.getUserName().equalsIgnoreCase(adminName)){
+//            params.put("loginUserId", userTicket.getId());
+//            List<String> selectUserDataAuthValue = userDataAuthMapper.selectUserDataAuthValue(userTicket.getId(),DataAuthType.PROJECT.getCode());
+//            if(selectUserDataAuthValue!=null&&selectUserDataAuthValue.size()>0) {
+//                selectAll = this.projectRpc.selectUserDataByIds(selectUserDataAuthValue).getData();
+//            }else {
+//            	return null;
+//            }
+//        }else {
+//            selectAll = this.projectRpc.selectUserDataTree().getData();
+//        }
         if(!user.getUserName().equalsIgnoreCase(adminName)){
             params.put("loginUserId", userTicket.getId());
-            List<String> selectUserDataAuthValue = userDataAuthMapper.selectUserDataAuthValue(userTicket.getId(),DataAuthType.PROJECT.getCode());
-            if(selectUserDataAuthValue!=null&&selectUserDataAuthValue.size()>0) {
-                selectAll = this.projectRpc.selectUserDataByIds(selectUserDataAuthValue).getData();
-            }else {
-            	return null;
-            }
-        }else {
-            selectAll = this.projectRpc.selectUserDataTree().getData();
         }
-        List<UserDataDto> selectUserDatas = getActualDao().selectUserDatas(params);
-        //添加alm项目数据权限
-        selectAll.forEach(userDataDto -> {
-        	selectUserDatas.add(userDataDto);
-		});
-
-
-        
-        return selectUserDatas;
+        return getActualDao().selectUserDatas(params);
     }
 
     @Override
