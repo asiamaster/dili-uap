@@ -1,4 +1,4 @@
-package com.dili.uap.domain.dto;
+package com.dili.uap.sdk.domain.dto;
 
 import com.dili.ss.domain.annotation.Operator;
 import com.dili.uap.sdk.domain.Department;

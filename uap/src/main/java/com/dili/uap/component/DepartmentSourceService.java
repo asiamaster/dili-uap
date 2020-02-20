@@ -1,9 +1,10 @@
 package com.dili.uap.component;
 
 import com.dili.ss.dto.DTOUtils;
-import com.dili.uap.dao.DepartmentMapper;
+import com.dili.uap.sdk.domain.Department;
+import com.dili.uap.sdk.domain.dto.DepartmentDto;
 import com.dili.uap.sdk.service.DataAuthSourceService;
-import org.apache.commons.collections.map.HashedMap;
+import com.dili.uap.service.DepartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,20 +20,26 @@ import java.util.Map;
 public class DepartmentSourceService implements DataAuthSourceService {
 
     @Autowired
-    private DepartmentMapper departmentMapper;
+    private DepartmentService departmentService;
     @Override
     public List listDataAuthes(String param) {
-        return departmentMapper.selectAll();
+        return departmentService.list(null);
     }
 
     @Override
     public Map<String, Map> bindDataAuthes(String param, List<String> values) {
+        DepartmentDto department = DTOUtils.newInstance(DepartmentDto.class);
+        department.setIds(values);
+        List<Department> departments = departmentService.listByExample(department);
         Map<String, Map> retMap = new HashMap<>();
-        for(String value : values){
-            Map<String, Object> valueMap = new HashedMap();
-            valueMap.putAll(DTOUtils.go(departmentMapper.selectByPrimaryKey(value)));
-            retMap.put(value, valueMap);
-        }
+        departments.stream().forEach(t -> {
+            retMap.put(t.getId().toString(), DTOUtils.go(t));
+        });
+//        for(String value : values){
+//            Map<String, Object> valueMap = new HashedMap();
+//            valueMap.putAll(DTOUtils.go(departmentMapper.selectByPrimaryKey(value)));
+//            retMap.put(value, valueMap);
+//        }
         return retMap;
     }
 }

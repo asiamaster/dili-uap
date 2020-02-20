@@ -1,7 +1,6 @@
 package com.dili.uap.sdk.redis;
 
 import com.alibaba.fastjson.JSONObject;
-import com.dili.uap.sdk.rpc.DataAuthRefRpc;
 import com.dili.uap.sdk.session.SessionConstants;
 import com.dili.uap.sdk.util.ManageRedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +19,6 @@ import java.util.Map;
 public class DataAuthRedis {
     @Autowired
     private ManageRedisUtil redisUtil;
-
-    @Autowired
-    private DataAuthRefRpc dataAuthRefRpc;
 
     /**
      * 根据userId和数据权限type获取数据权限详情列表

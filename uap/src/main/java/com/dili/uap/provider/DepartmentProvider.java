@@ -2,7 +2,7 @@ package com.dili.uap.provider;
 
 import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.metadata.provider.BatchDisplayTextProviderAdaptor;
-import com.dili.uap.domain.dto.DepartmentDto;
+import com.dili.uap.sdk.domain.dto.DepartmentDto;
 import com.dili.uap.service.DepartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

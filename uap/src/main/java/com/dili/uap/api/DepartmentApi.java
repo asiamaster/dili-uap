@@ -2,6 +2,7 @@ package com.dili.uap.api;
 
 import com.dili.ss.domain.BaseOutput;
 import com.dili.uap.sdk.domain.Department;
+import com.dili.uap.sdk.domain.dto.DepartmentDto;
 import com.dili.uap.service.DepartmentService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -45,7 +46,7 @@ public class DepartmentApi {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/listByExample.api", method = { RequestMethod.GET, RequestMethod.POST })
-	public BaseOutput<List<Department>> listByExample( Department department) {
+	public BaseOutput<List<Department>> listByExample(DepartmentDto department) {
 		return BaseOutput.success().setData(this.departmentService.listByExample(department));
 	}
 	

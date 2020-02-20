@@ -11,7 +11,7 @@ import java.util.List;
 public interface UserDto extends User{
 
     @Transient
-    default String getOldPassword(){return "123456";};
+    default String getOldPassword(){return "123456";}
     void setOldPassword(String oldPassword);
 
     @Transient
