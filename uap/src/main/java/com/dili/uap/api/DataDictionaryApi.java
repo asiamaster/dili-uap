@@ -36,6 +36,16 @@ public class DataDictionaryApi {
 	 * @return
 	 */
 	@ResponseBody
+	@RequestMapping(value = "/list.api", method = { RequestMethod.GET, RequestMethod.POST })
+	public BaseOutput<List<DataDictionaryValue>> list(DataDictionaryValue dataDictionaryValue) {
+		return BaseOutput.success().setData(this.dataDictionaryValueService.listByExample(dataDictionaryValue));
+	}
+	/**
+	 * 查询数据字典
+	 * @param dataDictionaryValue
+	 * @return
+	 */
+	@ResponseBody
 	@RequestMapping(value = "/listDataDictionaryValue.api", method = { RequestMethod.GET, RequestMethod.POST })
 	public BaseOutput<List<DataDictionaryValue>> listDataDictionaryValue(DataDictionaryValue dataDictionaryValue) {
 		return BaseOutput.success().setData(this.dataDictionaryValueService.listByExample(dataDictionaryValue));
