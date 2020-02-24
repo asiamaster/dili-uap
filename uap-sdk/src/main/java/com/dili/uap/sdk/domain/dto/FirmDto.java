@@ -20,4 +20,9 @@ public interface FirmDto extends Firm {
     List<String> getCodes();
     void setCodes(List<String> code);
 
+    @Operator(Operator.IN)
+    @Column(name = "`id`")
+    List<Long> getIdList();
+    void setIdList(List<Long> idList);
+
 }
