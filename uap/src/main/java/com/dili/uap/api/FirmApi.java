@@ -54,4 +54,15 @@ public class FirmApi {
 		return BaseOutput.success().setData(firms.get(0));
 	}
 
+	/**
+	 * 根据id查询公司
+	 * @param id
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getById.api", method = { RequestMethod.GET, RequestMethod.POST })
+	public BaseOutput<Firm> getById(@RequestBody Long id) {
+		return BaseOutput.success().setData(firmService.get(id));
+	}
+
 }

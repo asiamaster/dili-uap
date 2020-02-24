@@ -20,4 +20,12 @@ public interface DepartmentRpc {
 	@POST("/departmentApi/listByExample.api")
 	BaseOutput<List<Department>> listByExample(@VOBody DepartmentDto department);
 
+	/**
+	 * 根据ID查询
+	 * @param id
+	 * @return
+	 */
+	@POST("/departmentApi/get.api")
+	BaseOutput<Department> get(@VOBody Long id);
+
 }
