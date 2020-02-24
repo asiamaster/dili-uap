@@ -5,7 +5,6 @@ import com.dili.ss.retrofitful.annotation.POST;
 import com.dili.ss.retrofitful.annotation.Restful;
 import com.dili.ss.retrofitful.annotation.VOBody;
 import com.dili.uap.sdk.domain.User;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
@@ -30,5 +29,5 @@ public interface UserRpc {
     BaseOutput<List<User>> listByExample(@VOBody User user);
 
     @POST("/userApi/listUserByIds.api")
-    BaseOutput<List<User>> listUserByIds(@RequestBody List<String> ids);
+    BaseOutput<List<User>> listUserByIds(@VOBody List<String> ids);
 }
