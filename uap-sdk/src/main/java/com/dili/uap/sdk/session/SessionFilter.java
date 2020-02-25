@@ -71,7 +71,7 @@ public class SessionFilter implements Filter {
         PermissionContext pc = new PermissionContext(req, resp, this, config);
         WebContent.put(SessionConstants.MANAGE_PERMISSION_CONTEXT, pc);
         //如果是框架导出，需要手动设置SessionId到Header中，因为restful取不到cookies
-        if(pc.getReq().getRequestURI().trim().endsWith("/export/serverExport")) {
+        if(pc.getReq().getRequestURI().trim().endsWith("/export/serverExport.action")) {
             MutableHttpServletRequest mreq = new MutableHttpServletRequest(req);
             mreq.putHeader(SessionConstants.SESSION_ID, pc.getSessionId());
             req = mreq;
