@@ -2,12 +2,15 @@ package com.dili.uap.api;
 
 import com.dili.ss.domain.BaseOutput;
 import com.dili.uap.sdk.domain.Department;
+import com.dili.uap.sdk.domain.Firm;
 import com.dili.uap.sdk.domain.dto.DepartmentDto;
 import com.dili.uap.service.DepartmentService;
+import com.dili.uap.service.FirmService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 部门接口
@@ -25,7 +29,9 @@ import java.util.List;
 @RequestMapping("/departmentApi")
 public class DepartmentApi {
 	@Autowired
-    DepartmentService departmentService;
+    private DepartmentService departmentService;
+	@Autowired
+	private FirmService firmService;
 
 	/**
 	 * 根据id查询部门
@@ -47,6 +53,13 @@ public class DepartmentApi {
 	@ResponseBody
 	@RequestMapping(value = "/listByExample.api", method = { RequestMethod.GET, RequestMethod.POST })
 	public BaseOutput<List<Department>> listByExample(DepartmentDto department) {
+		//如果传入的市场code为空，市场id不为空，因为部门表里没有存市场id，则需要转换市场id为市场code
+		if (Objects.nonNull(department.getFirmId()) && StringUtils.isBlank(department.getFirmCode())) {
+			Firm firm = firmService.get(department.getFirmId());
+			if (Objects.nonNull(firm)) {
+				department.setFirmCode(firm.getCode());
+			}
+		}
 		return BaseOutput.success().setData(this.departmentService.listByExample(department));
 	}
 	

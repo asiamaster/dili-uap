@@ -21,4 +21,13 @@ public interface DepartmentDto extends Department {
     @Column(name = "`id`")
     List<String> getIds();
     void setIds(List<String> ids);
+
+    /**
+     * 市场ID
+     * 根据市场ID查询部门
+     * 因为部门表，目前没有市场ID，所以无 Column 映射
+     * @return
+     */
+    Long getFirmId();
+    void setFirmId(Long firmId);
 }
