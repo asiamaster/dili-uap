@@ -4,6 +4,7 @@ import com.dili.ss.domain.annotation.Operator;
 import com.dili.uap.sdk.domain.Department;
 
 import javax.persistence.Column;
+import javax.persistence.Transient;
 import java.util.List;
 
 /**
@@ -28,6 +29,7 @@ public interface DepartmentDto extends Department {
      * 因为部门表，目前没有市场ID，所以无 Column 映射
      * @return
      */
+    @Transient
     Long getFirmId();
     void setFirmId(Long firmId);
 }
