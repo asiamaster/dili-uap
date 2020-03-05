@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
@@ -24,10 +25,11 @@ import java.util.List;
 @RequestMapping("/departmentApi")
 public class DepartmentApi {
 	@Autowired
-    DepartmentService departmentService;
+	DepartmentService departmentService;
 
 	/**
 	 * 根据id查询部门
+	 * 
 	 * @param id
 	 * @return
 	 */
@@ -40,41 +42,43 @@ public class DepartmentApi {
 
 	/**
 	 * 查询部门
+	 * 
 	 * @param department
 	 * @return
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/listByExample.api", method = { RequestMethod.GET, RequestMethod.POST })
-	public BaseOutput<List<Department>> listByExample( Department department) {
+	public BaseOutput<List<Department>> listByExample(Department department) {
 		return BaseOutput.success().setData(this.departmentService.listByExample(department));
 	}
-	
-	
+
 	/**
 	 * 查询单个部门
+	 * 
 	 * @param department
 	 * @return
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/getOne.api", method = { RequestMethod.GET, RequestMethod.POST })
-	public BaseOutput<Department> getOne( Department department) {
+	public BaseOutput<Department> getOne(Department department) {
 		return BaseOutput.success().setData(this.departmentService.getDepartment(department));
 	}
-	
-	
+
 	/**
 	 * 查询部门列表
+	 * 
 	 * @param department
 	 * @return
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/listByDepartment.api", method = { RequestMethod.GET, RequestMethod.POST })
-	public BaseOutput<List<Department>> listByDepartment( Department department) {
+	public BaseOutput<List<Department>> listByDepartment(Department department) {
 		return BaseOutput.success().setData(this.departmentService.listByExample(department));
 	}
-	
+
 	/**
 	 * 根据userID查询所在部门列表
+	 * 
 	 * @param userId
 	 * @return
 	 */
@@ -84,9 +88,10 @@ public class DepartmentApi {
 		List<Department> findByUserId = this.departmentService.findByUserId(userId);
 		return BaseOutput.success().setData(findByUserId);
 	}
-	
+
 	/**
 	 * 根据iD查询所在一级部门
+	 * 
 	 * @param userId
 	 * @return
 	 */
@@ -95,4 +100,17 @@ public class DepartmentApi {
 	public BaseOutput<Department> getFirstDepartment(@RequestBody Long id) {
 		return BaseOutput.success().setData(this.departmentService.getFirstDepartment(id));
 	}
+
+	/**
+	 * 根据父级id查询所有子部门，包含子部门的子部门
+	 * 
+	 * @param parentId
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getChildDepartments.api", method = { RequestMethod.GET, RequestMethod.POST })
+	public BaseOutput<Department> getChildDepartments(@RequestParam Long parentId) {
+		return BaseOutput.success().setData(this.departmentService.getChildDepartments(parentId));
+	}
+
 }
