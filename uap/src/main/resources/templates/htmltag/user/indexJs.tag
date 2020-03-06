@@ -572,6 +572,8 @@
      * 编辑用户的数据权限
      */
     function editUserDataAuth() {
+
+    	$("#dataTabs").tabs('select',0);
         var selected = userGrid.datagrid("getSelected");
         if (null == selected) {
             swal('警告', '请选中一条数据', 'warning');
@@ -604,6 +606,14 @@
                 $('#dataRangeDiv').html(output.join(''));
             }
         }, 'json');
+        $.post('${contextPath!}/user/getUserProjectData.action', {id: selected.id}, function (ret) {
+            if (ret && ret.success) {
+                //data 中存有 数据权限范围选项，数据权限本身，当前所属的数据权限
+                var data = ret.data;
+                console.log(data);
+                $('#projectDateTree').tree("loadData", data.dataProject);
+            }
+         }, 'json');
     }
 
     /**
@@ -611,10 +621,14 @@
      */
     function saveUserDatas() {
         var nodes = $('#dataTree').tree('getChecked');
+        var nodes2 = $('#projectDateTree').tree('getChecked');
         //节点选中的ID，包括 市场，角色
         var ids = [];
         for (var i = 0; i < nodes.length; i++) {
             ids.push(nodes[i].id);
+        }
+        for (var i = 0; i < nodes2.length; i++) {
+            ids.push(nodes2[i].id);
         }
         var dataRange=$('input:radio[name="dataRange"]:checked').val();
         var selected = userGrid.datagrid("getSelected");

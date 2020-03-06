@@ -1,199 +1,201 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <artifactId>uap-sdk</artifactId>
-    <groupId>com.dili</groupId>
-    <version>${project.parent.version}</version>
-    <name>uap-sdk</name>
-    <description>uap-sdk</description>
-    <packaging>jar</packaging>
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>uap-sdk</artifactId>
+	<name>uap-sdk</name>
+	<description>uap-sdk</description>
+	<packaging>jar</packaging>
 
-    <!-- 父工程定义 -->
-    <parent>
-        <artifactId>dili-uap</artifactId>
-        <groupId>com.dili</groupId>
-        <version>2.6.1-SNAPSHOT</version>
-    </parent>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
-                <!-- 编译JDK版本 -->
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                    <encoding>UTF-8</encoding>
-                    <!-- 支持参数名解析 -->
-                    <parameters>true</parameters>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-    <dependencies>
-        <dependency>
-            <groupId>com.dili</groupId>
-            <artifactId>ss-beetl</artifactId>
-            <version>${sharp-sword.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.dili</groupId>
-            <artifactId>ss-redis</artifactId>
-            <version>${sharp-sword.version}</version>
-        </dependency>
+	<!-- 父工程定义 -->
+	<parent>
+		<artifactId>dili-uap</artifactId>
+		<groupId>com.dili</groupId>
+		<version>2.7.0-SNAPSHOT</version>
+	</parent>
 
-        <!-- 参数校验包 -->
-        <!--<dependency>-->
-            <!--<groupId>org.hibernate</groupId>-->
-            <!--<artifactId>hibernate-validator</artifactId>-->
-            <!--<version>5.2.4.Final</version>-->
-            <!--<exclusions>-->
-                <!--<exclusion>-->
-                    <!--<groupId>com.fasterxml</groupId>-->
-                    <!--<artifactId>classmate</artifactId>-->
-                <!--</exclusion>-->
-            <!--</exclusions>-->
+	<properties>
+		<java.version>1.8</java.version>
+	</properties>
 
-        <!--swagger -->
-<!--        <dependency>-->
-<!--            <groupId>io.swagger</groupId>-->
-<!--            <artifactId>swagger-annotations</artifactId>-->
-<!--            <version>1.5.3</version>-->
-<!--        </dependency>-->
+	<dependencies>
+		<dependency>
+			<groupId>com.dili</groupId>
+			<artifactId>ss-beetl</artifactId>
+			<version>${sharp-sword.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.dili</groupId>
+			<artifactId>ss-redis</artifactId>
+			<version>${sharp-sword.version}</version>
+		</dependency>
 
-        <!-- mariadb -->
-        <!--<dependency>-->
-            <!--<groupId>org.mariadb.jdbc</groupId>-->
-            <!--<artifactId>mariadb-java-client</artifactId>-->
-            <!--<version>1.1.7</version>-->
-        <!--</dependency>-->
+		<!-- 参数校验包 -->
+		<!--<dependency> -->
+		<!--<groupId>org.hibernate</groupId> -->
+		<!--<artifactId>hibernate-validator</artifactId> -->
+		<!--<version>5.2.4.Final</version> -->
+		<!--<exclusions> -->
+		<!--<exclusion> -->
+		<!--<groupId>com.fasterxml</groupId> -->
+		<!--<artifactId>classmate</artifactId> -->
+		<!--</exclusion> -->
+		<!--</exclusions> -->
+
+		<!--swagger -->
+		<!-- <dependency> -->
+		<!-- <groupId>io.swagger</groupId> -->
+		<!-- <artifactId>swagger-annotations</artifactId> -->
+		<!-- <version>1.5.3</version> -->
+		<!-- </dependency> -->
+
+		<!-- mariadb -->
+		<!--<dependency> -->
+		<!--<groupId>org.mariadb.jdbc</groupId> -->
+		<!--<artifactId>mariadb-java-client</artifactId> -->
+		<!--<version>1.1.7</version> -->
+		<!--</dependency> -->
 
 
-        <!-- if you enable json support in spring mvc. -->
-        <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-mapper-asl</artifactId>
-            <version>1.9.13</version>
-        </dependency>
+		<!-- if you enable json support in spring mvc. -->
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+			<version>1.9.13</version>
+		</dependency>
 
-        <!-- ===============  spring boot starters  =============== -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <!--<version>${boot.version}</version>-->
-            <scope>test</scope>
-        </dependency>
-        <!--mybatis-->
-        <!--<dependency>-->
-            <!--<groupId>org.mybatis.spring.boot</groupId>-->
-            <!--<artifactId>mybatis-spring-boot-starter</artifactId>-->
-            <!--<version>1.1.1</version>-->
-        <!--</dependency>-->
-        <!--pagehelper-->
-        <!--<dependency>-->
-            <!--<groupId>com.github.pagehelper</groupId>-->
-            <!--<artifactId>pagehelper-spring-boot-starter</artifactId>-->
-            <!--<version>1.1.1</version>-->
-        <!--</dependency>-->
+		<!-- =============== spring boot starters =============== -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<!--<version>${boot.version}</version> -->
+			<scope>test</scope>
+		</dependency>
+		<!--mybatis -->
+		<!--<dependency> -->
+		<!--<groupId>org.mybatis.spring.boot</groupId> -->
+		<!--<artifactId>mybatis-spring-boot-starter</artifactId> -->
+		<!--<version>1.1.1</version> -->
+		<!--</dependency> -->
+		<!--pagehelper -->
+		<!--<dependency> -->
+		<!--<groupId>com.github.pagehelper</groupId> -->
+		<!--<artifactId>pagehelper-spring-boot-starter</artifactId> -->
+		<!--<version>1.1.1</version> -->
+		<!--</dependency> -->
 
-        <!--<dependency>-->
-            <!--<groupId>com.github.pagehelper</groupId>-->
-            <!--<artifactId>pagehelper</artifactId>-->
-            <!--<version>5.0.0</version>-->
-        <!--</dependency>-->
-        <!--mapper-->
-        <!--<dependency>-->
-            <!--<groupId>tk.mybatis</groupId>-->
-            <!--<artifactId>mapper-spring-boot-starter</artifactId>-->
-            <!--<version>1.1.1</version>-->
-        <!--</dependency>-->
-        <!-- mongo -->
-        <!--<dependency>-->
-            <!--<groupId>org.springframework.boot</groupId>-->
-            <!--<artifactId>spring-boot-starter-data-mongodb</artifactId>-->
-        <!--</dependency>-->
+		<!--<dependency> -->
+		<!--<groupId>com.github.pagehelper</groupId> -->
+		<!--<artifactId>pagehelper</artifactId> -->
+		<!--<version>5.0.0</version> -->
+		<!--</dependency> -->
+		<!--mapper -->
+		<!--<dependency> -->
+		<!--<groupId>tk.mybatis</groupId> -->
+		<!--<artifactId>mapper-spring-boot-starter</artifactId> -->
+		<!--<version>1.1.1</version> -->
+		<!--</dependency> -->
+		<!-- mongo -->
+		<!--<dependency> -->
+		<!--<groupId>org.springframework.boot</groupId> -->
+		<!--<artifactId>spring-boot-starter-data-mongodb</artifactId> -->
+		<!--</dependency> -->
 
-        <!-- actuator -->
-        <!--<dependency>-->
-            <!--<groupId>org.springframework.boot</groupId>-->
-            <!--<artifactId>spring-boot-starter-actuator</artifactId>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.springframework.boot</groupId>-->
-            <!--<artifactId>spring-boot-starter-freemarker</artifactId>-->
-        <!--</dependency>-->
+		<!-- actuator -->
+		<!--<dependency> -->
+		<!--<groupId>org.springframework.boot</groupId> -->
+		<!--<artifactId>spring-boot-starter-actuator</artifactId> -->
+		<!--</dependency> -->
+		<!--<dependency> -->
+		<!--<groupId>org.springframework.boot</groupId> -->
+		<!--<artifactId>spring-boot-starter-freemarker</artifactId> -->
+		<!--</dependency> -->
 
-        <!--<dependency>-->
-            <!--<groupId>com.github.ulisesbocchio</groupId>-->
-            <!--<artifactId>jasypt-spring-boot-starter</artifactId>-->
-            <!--<version>1.8</version>-->
-        <!--</dependency>-->
-        <!--&lt;!&ndash; https://mvnrepository.com/artifact/org.jasypt/jasypt-spring31 &ndash;&gt;-->
-        <!--<dependency>-->
-            <!--<groupId>org.jasypt</groupId>-->
-            <!--<artifactId>jasypt-spring31</artifactId>-->
-            <!--<version>1.9.2</version>-->
-        <!--</dependency>-->
+		<!--<dependency> -->
+		<!--<groupId>com.github.ulisesbocchio</groupId> -->
+		<!--<artifactId>jasypt-spring-boot-starter</artifactId> -->
+		<!--<version>1.8</version> -->
+		<!--</dependency> -->
+		<!--&lt;!&ndash; https://mvnrepository.com/artifact/org.jasypt/jasypt-spring31 &ndash;&gt; -->
+		<!--<dependency> -->
+		<!--<groupId>org.jasypt</groupId> -->
+		<!--<artifactId>jasypt-spring31</artifactId> -->
+		<!--<version>1.9.2</version> -->
+		<!--</dependency> -->
 
-        <!-- starter-security -->
-        <!--<dependency>-->
-            <!--<groupId>org.springframework.boot</groupId>-->
-            <!--<artifactId>spring-boot-starter-security</artifactId>-->
-        <!--</dependency>-->
-        <!-- ===========================================spring cloud=========================================== -->
-        <!--<dependency>-->
-            <!--<groupId>org.springframework.cloud</groupId>-->
-            <!--<artifactId>spring-cloud-stream</artifactId>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.springframework.cloud</groupId>-->
-            <!--<artifactId>spring-cloud-stream-binder-kafka</artifactId>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.springframework.cloud</groupId>-->
-            <!--<artifactId>spring-cloud-stream-reactive</artifactId>-->
-        <!--</dependency>-->
-        <!-- eureka-client -->
-        <!--<dependency>-->
-            <!--<groupId>org.springframework.cloud</groupId>-->
-            <!--<artifactId>spring-cloud-starter-eureka</artifactId>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.springframework.cloud</groupId>-->
-            <!--<artifactId>spring-cloud-starter-ribbon</artifactId>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.springframework.cloud</groupId>-->
-            <!--<artifactId>spring-cloud-starter-feign</artifactId>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.springframework.cloud</groupId>-->
-            <!--<artifactId>spring-cloud-starter-hystrix</artifactId>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.springframework.cloud</groupId>-->
-            <!--<artifactId>spring-cloud-starter-hystrix-dashboard</artifactId>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.springframework.boot</groupId>-->
-            <!--<artifactId>spring-boot-starter-freemarker</artifactId>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.springframework.cloud</groupId>-->
-            <!--<artifactId>spring-cloud-starter-config</artifactId>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.springframework.cloud</groupId>-->
-            <!--<artifactId>spring-cloud-starter-bus-kafka</artifactId>-->
-        <!--</dependency>-->
+		<!-- starter-security -->
+		<!--<dependency> -->
+		<!--<groupId>org.springframework.boot</groupId> -->
+		<!--<artifactId>spring-boot-starter-security</artifactId> -->
+		<!--</dependency> -->
+		<!-- ===========================================spring cloud=========================================== -->
+		<!--<dependency> -->
+		<!--<groupId>org.springframework.cloud</groupId> -->
+		<!--<artifactId>spring-cloud-stream</artifactId> -->
+		<!--</dependency> -->
+		<!--<dependency> -->
+		<!--<groupId>org.springframework.cloud</groupId> -->
+		<!--<artifactId>spring-cloud-stream-binder-kafka</artifactId> -->
+		<!--</dependency> -->
+		<!--<dependency> -->
+		<!--<groupId>org.springframework.cloud</groupId> -->
+		<!--<artifactId>spring-cloud-stream-reactive</artifactId> -->
+		<!--</dependency> -->
+		<!-- eureka-client -->
+		<!--<dependency> -->
+		<!--<groupId>org.springframework.cloud</groupId> -->
+		<!--<artifactId>spring-cloud-starter-eureka</artifactId> -->
+		<!--</dependency> -->
+		<!--<dependency> -->
+		<!--<groupId>org.springframework.cloud</groupId> -->
+		<!--<artifactId>spring-cloud-starter-ribbon</artifactId> -->
+		<!--</dependency> -->
+		<!--<dependency> -->
+		<!--<groupId>org.springframework.cloud</groupId> -->
+		<!--<artifactId>spring-cloud-starter-feign</artifactId> -->
+		<!--</dependency> -->
+		<!--<dependency> -->
+		<!--<groupId>org.springframework.cloud</groupId> -->
+		<!--<artifactId>spring-cloud-starter-hystrix</artifactId> -->
+		<!--</dependency> -->
+		<!--<dependency> -->
+		<!--<groupId>org.springframework.cloud</groupId> -->
+		<!--<artifactId>spring-cloud-starter-hystrix-dashboard</artifactId> -->
+		<!--</dependency> -->
+		<!--<dependency> -->
+		<!--<groupId>org.springframework.boot</groupId> -->
+		<!--<artifactId>spring-boot-starter-freemarker</artifactId> -->
+		<!--</dependency> -->
+		<!--<dependency> -->
+		<!--<groupId>org.springframework.cloud</groupId> -->
+		<!--<artifactId>spring-cloud-starter-config</artifactId> -->
+		<!--</dependency> -->
+		<!--<dependency> -->
+		<!--<groupId>org.springframework.cloud</groupId> -->
+		<!--<artifactId>spring-cloud-starter-bus-kafka</artifactId> -->
+		<!--</dependency> -->
 
-        <!-- 内部包  -->
-
-
-    </dependencies>
+		<!-- 内部包 -->
 
 
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.1</version>
+				<!-- 编译JDK版本 -->
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+					<encoding>UTF-8</encoding>
+					<!-- 支持参数名解析 -->
+					<parameters>true</parameters>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 
 </project>

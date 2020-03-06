@@ -135,4 +135,11 @@ public interface UserService extends BaseService<User, Long> {
      */
 	List<UserDepartmentRole> findUserContainDepartmentAndRole(UserDepartmentRoleQuery query);
 
+	/**
+     * 根据用户ID获取用户所拥有的项目权限
+     * @param userId 用户ID
+     * @return
+     */
+    List<UserDataDto> getUserDataProjectAuthForTree(Long userId);
+
 }

@@ -258,13 +258,22 @@
          <div style="margin:10px 0">
              <input class="easyui-textbox"  editable="false" readonly id="data_userName" style="width:400px;height:28px;" data-options="labelAlign:'right',label:'用户账号:',cls:'noborder'" />
          </div>
-         <div style="margin-left:20px;">
-             <ui>请选择数据权限:</ui>
-             <ui id="dataRangeDiv"></ui>
-         </div>
-         <div class="easyui-panel" style="margin-left:20px;padding:10px;width: 95%;height: 350px;">
-             <ui id="dataTree" class="easyui-tree" style="width: 90%;" data-options="checkbox:true,_idField:'treeId',_textField:'name',_parentIdField:'parentId',loadFilter:treeLoadFilter,cascadeCheck:false"></ui>
-         </div>
+         <div class="easyui-tabs" id="dataTabs" style="width: 100%; height: 100%">
+				<div title="数据权限" style="width: 95%">
+			         <div style="margin-left:20px;">
+			             <ui>请选择数据权限:</ui>
+			             <ui id="dataRangeDiv"></ui>
+			         </div>
+			         <div class="easyui-panel" style="margin-left:20px;padding:10px;width: 95%;height: 350px;">
+			             <ui id="dataTree" class="easyui-tree" style="width: 90%;" data-options="checkbox:true,_idField:'treeId',_textField:'name',_parentIdField:'parentId',loadFilter:treeLoadFilter,cascadeCheck:false"></ui>
+			         </div>
+			    </div>
+			    <div title="项目权限" style="width: 95%">
+			         <div class="easyui-panel" style="margin-left:20px;padding:10px;width: 95%;height: 350px;">
+			             <ui id="projectDateTree" class="easyui-tree" style="width: 90%;" data-options="checkbox:true,_idField:'treeId',_textField:'name',_parentIdField:'parentId',loadFilter:treeLoadFilter,cascadeCheck:false"></ui>
+			         </div>
+			    </div>
+		</div>
      </div>
     <!-- ====================================================================================================================== -->
     <!-- style & script 分隔线 -->

@@ -68,4 +68,9 @@
 		where
 		u.id = #{userId}
 	</select>
+	
+	<select id="getChildDepartments" parameterType="java.lang.Long"
+		resultMap="BaseResultMap">
+		{call getChildDepartments(#{id})}
+	</select>
 </mapper>
