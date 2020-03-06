@@ -1,7 +1,6 @@
 package com.dili.uap.controller;
 
 import com.dili.ss.domain.BaseOutput;
-import com.dili.ss.oplog.annotation.OpLog;
 import com.dili.uap.sdk.domain.Firm;
 import com.dili.uap.service.FirmService;
 import io.swagger.annotations.Api;
@@ -14,6 +13,8 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+//import com.dili.ss.oplog.annotation.OpLog;
 
 /**
  * 由MyBatis Generator工具自动生成
@@ -91,7 +92,7 @@ public class FirmController {
 		@ApiImplicitParam(name="Firm", paramType="form", value = "Firm的form信息", required = true, dataType = "string")
 	})
     @RequestMapping(value="/update.action", method = {RequestMethod.GET, RequestMethod.POST})
-    @OpLog(contentProvider = "updateLogContentProvider")
+//    @OpLog(contentProvider = "updateLogContentProvider")
     public @ResponseBody BaseOutput update(Firm firm) {
         firmService.updateSelective(firm);
         return BaseOutput.success("修改成功");
