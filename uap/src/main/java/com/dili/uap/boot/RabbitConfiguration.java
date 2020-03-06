@@ -23,6 +23,26 @@ public class RabbitConfiguration {
     public static final String UAP_ADD_USER_QUEUE = "uap.addUser.queue";
     public static final String UAP_CHANGE_PASSWORD_QUEUE = "uap.changePassword.queue";
 
+//    //消息交换机
+//    public static final String LOGGER_TOPIC_EXCHANGE = "dili.logger.topicExchange";
+//    public static final String LOGGER_ADD_OPERATION_KEY = "dili.logger.addOperationKey";
+//    public static final String LOGGER_ADD_OPERATION_QUEUE = "dili.logger.addOperationQueue";
+//
+//    @Bean
+//    public TopicExchange topicExchange() {
+//        return new TopicExchange(LOGGER_TOPIC_EXCHANGE, true, false);
+//    }
+//
+//    @Bean
+//    public Queue addOperationQueue() {
+//        return new Queue(LOGGER_ADD_OPERATION_QUEUE, true, false, false);
+//    }
+//
+//    @Bean
+//    public Binding addOperationBinding() {
+//        return BindingBuilder.bind(addOperationQueue()).to(topicExchange()).with(LOGGER_ADD_OPERATION_KEY);
+//    }
+
     @Bean
     public MessageConverter messageConverter() {
         return new Jackson2JsonMessageConverter();

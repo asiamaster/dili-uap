@@ -7,7 +7,7 @@ import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.util.RSAUtils;
 import com.dili.uap.dao.MenuMapper;
 import com.dili.uap.dao.ResourceMapper;
-import com.dili.uap.domain.DataAuthRef;
+import com.dili.uap.sdk.domain.DataAuthRef;
 import com.dili.uap.domain.Resource;
 import com.dili.uap.domain.dto.LoginDto;
 import com.dili.uap.domain.dto.UserDto;

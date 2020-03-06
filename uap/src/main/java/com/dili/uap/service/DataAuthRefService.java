@@ -1,7 +1,7 @@
 package com.dili.uap.service;
 
 import com.dili.ss.base.BaseService;
-import com.dili.uap.domain.DataAuthRef;
+import com.dili.uap.sdk.domain.DataAuthRef;
 
 /**
  * 由MyBatis Generator工具自动生成

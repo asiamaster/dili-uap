@@ -93,7 +93,7 @@
 <!--		</dependency>-->
 		<dependency>
 			<groupId>com.dili</groupId>
-			<artifactId>ss-uid</artifactId>
+			<artifactId>ss-oplog</artifactId>
 			<version>${sharp-sword.version}</version>
 		</dependency>
 
@@ -209,17 +209,17 @@
 <!--			<version>3.3.0</version>-->
 <!--		</dependency>-->
 
-<!--		<dependency>-->
-<!--			<groupId>org.kie</groupId>-->
-<!--			<artifactId>kie-spring</artifactId>-->
-<!--			<version>${drools.version}</version>-->
-<!--		</dependency>-->
-<!--		<dependency>-->
-<!--			<groupId>org.drools</groupId>-->
-<!--			<artifactId>drools-compiler</artifactId>-->
-<!--			<version>${drools.version}</version>-->
-<!--		</dependency>-->
-	</dependencies>
+	<!--		<dependency>-->
+	<!--			<groupId>org.kie</groupId>-->
+	<!--			<artifactId>kie-spring</artifactId>-->
+	<!--			<version>${drools.version}</version>-->
+	<!--		</dependency>-->
+	<!--		<dependency>-->
+	<!--			<groupId>org.drools</groupId>-->
+	<!--			<artifactId>drools-compiler</artifactId>-->
+	<!--			<version>${drools.version}</version>-->
+	<!--		</dependency>-->
+</dependencies>
 
 
 </project>

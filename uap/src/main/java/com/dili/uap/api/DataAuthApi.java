@@ -4,8 +4,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
-import com.dili.uap.domain.DataAuthRef;
 import com.dili.uap.sdk.component.DataAuthSource;
+import com.dili.uap.sdk.domain.DataAuthRef;
 import com.dili.uap.sdk.domain.UserDataAuth;
 import com.dili.uap.sdk.service.DataAuthSourceService;
 import com.dili.uap.service.DataAuthRefService;
@@ -15,8 +15,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-
-import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;

@@ -1,6 +1,7 @@
 package com.dili.uap.controller;
 
 import com.dili.ss.domain.BaseOutput;
+import com.dili.ss.oplog.annotation.OpLog;
 import com.dili.uap.sdk.domain.Firm;
 import com.dili.uap.service.FirmService;
 import io.swagger.annotations.Api;
@@ -90,6 +91,7 @@ public class FirmController {
 		@ApiImplicitParam(name="Firm", paramType="form", value = "Firm的form信息", required = true, dataType = "string")
 	})
     @RequestMapping(value="/update.action", method = {RequestMethod.GET, RequestMethod.POST})
+    @OpLog(contentProvider = "updateLogContentProvider")
     public @ResponseBody BaseOutput update(Firm firm) {
         firmService.updateSelective(firm);
         return BaseOutput.success("修改成功");

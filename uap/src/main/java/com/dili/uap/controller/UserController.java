@@ -7,14 +7,9 @@ import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.dto.IDTO;
 import com.dili.ss.metadata.ValueProviderUtils;
 import com.dili.uap.constants.UapConstants;
-import com.dili.uap.domain.DataAuthRef;
-import com.dili.uap.domain.dto.UserDataDto;
 import com.dili.uap.domain.dto.UserDto;
 import com.dili.uap.sdk.component.DataAuthSource;
-import com.dili.uap.sdk.domain.Firm;
-import com.dili.uap.sdk.domain.User;
-import com.dili.uap.sdk.domain.UserDataAuth;
-import com.dili.uap.sdk.domain.UserTicket;
+import com.dili.uap.sdk.domain.*;
 import com.dili.uap.sdk.glossary.DataAuthType;
 import com.dili.uap.sdk.service.DataAuthSourceService;
 import com.dili.uap.sdk.session.SessionContext;
@@ -42,8 +37,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 

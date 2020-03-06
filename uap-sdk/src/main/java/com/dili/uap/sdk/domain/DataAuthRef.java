@@ -1,4 +1,4 @@
-package com.dili.uap.domain;
+package com.dili.uap.sdk.domain;
 
 import com.dili.ss.dto.IBaseDomain;
 import com.dili.ss.metadata.FieldEditor;

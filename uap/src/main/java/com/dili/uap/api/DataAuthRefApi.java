@@ -2,7 +2,7 @@ package com.dili.uap.api;
 
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
-import com.dili.uap.domain.DataAuthRef;
+import com.dili.uap.sdk.domain.DataAuthRef;
 import com.dili.uap.sdk.component.DataAuthSource;
 import com.dili.uap.sdk.service.DataAuthSourceService;
 import com.dili.uap.service.DataAuthRefService;
