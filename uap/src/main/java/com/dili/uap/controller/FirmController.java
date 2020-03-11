@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-//import com.dili.ss.oplog.annotation.OpLog;
-
 /**
  * 由MyBatis Generator工具自动生成
  * This file was generated on 2019-04-09 14:35:13.
@@ -93,6 +91,7 @@ public class FirmController {
 	})
     @RequestMapping(value="/update.action", method = {RequestMethod.GET, RequestMethod.POST})
 //    @OpLog(contentProvider = "updateLogContentProvider")
+//    @DiliLogger(bizCode="", content="编号 ：${code}, id:${id}", operationType="update", businessType="lease")
     public @ResponseBody BaseOutput update(Firm firm) {
         firmService.updateSelective(firm);
         return BaseOutput.success("修改成功");
