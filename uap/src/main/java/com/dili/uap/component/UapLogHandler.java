@@ -1,12 +1,12 @@
 package com.dili.uap.component;
 
 import com.alibaba.fastjson.JSON;
+import com.dili.logger.sdk.boot.LoggerRabbitConfiguration;
+import com.dili.logger.sdk.boot.LoggerRabbitProducerConfiguration;
+import com.dili.logger.sdk.dto.CorrelationDataExt;
 import com.dili.ss.dto.IBaseDomain;
 import com.dili.ss.oplog.base.LogHandler;
 import com.dili.ss.oplog.dto.LogContext;
-import com.dili.uap.boot.RabbitConfiguration;
-import com.dili.uap.boot.RabbitProducerConfiguration;
-import com.dili.uap.domain.dto.CorrelationDataExt;
 import com.dili.uap.domain.dto.OperationLog;
 import com.dili.uap.sdk.domain.UserTicket;
 import org.springframework.amqp.core.Message;
@@ -29,7 +29,7 @@ public class UapLogHandler implements LogHandler {
     private RabbitTemplate rabbitTemplate;
 
     @Autowired
-    private RabbitProducerConfiguration rabbitProducerConfiguration;
+    private LoggerRabbitProducerConfiguration rabbitProducerConfiguration;
 
     @Override
     public void log(String content, Method method, Object[] args, String params, LogContext logContext) {
@@ -47,7 +47,7 @@ public class UapLogHandler implements LogHandler {
         operationLog.setCreateTime(LocalDateTime.now());
         String json = JSON.toJSONString(operationLog);
         System.out.println("发送消息:"+json);
-        sendMsg(RabbitConfiguration.LOGGER_TOPIC_EXCHANGE, RabbitConfiguration.LOGGER_ADD_OPERATION_KEY, json);
+        sendMsg(LoggerRabbitConfiguration.LOGGER_TOPIC_EXCHANGE, LoggerRabbitConfiguration.LOGGER_ADD_BUSINESS_KEY, json);
     }
 
     private void sendMsg(String exchange, String routingKey, String json){
@@ -64,8 +64,8 @@ public class UapLogHandler implements LogHandler {
         CorrelationDataExt correlationData =
                 new CorrelationDataExt(uuid);
         correlationData.setMessage(message);
-        correlationData.setExchange(RabbitConfiguration.LOGGER_TOPIC_EXCHANGE);
-        correlationData.setRoutingKey(RabbitConfiguration.LOGGER_ADD_OPERATION_KEY);
+        correlationData.setExchange(LoggerRabbitConfiguration.LOGGER_TOPIC_EXCHANGE);
+        correlationData.setRoutingKey(LoggerRabbitConfiguration.LOGGER_ADD_BUSINESS_KEY);
         this.rabbitTemplate.convertAndSend(exchange, routingKey, message, correlationData);
     }
 }

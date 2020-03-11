@@ -1,7 +1,12 @@
 package com.dili.uap.controller;
 
+import com.dili.logger.sdk.annotation.BusinessLogger;
+import com.dili.logger.sdk.base.LoggerContext;
+import com.dili.logger.sdk.glossary.LoggerConstant;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.uap.sdk.domain.Firm;
+import com.dili.uap.sdk.domain.UserTicket;
+import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.service.FirmService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -91,8 +96,15 @@ public class FirmController {
 	})
     @RequestMapping(value="/update.action", method = {RequestMethod.GET, RequestMethod.POST})
 //    @OpLog(contentProvider = "updateLogContentProvider")
-//    @DiliLogger(bizCode="", content="编号 ：${code}, id:${id}", operationType="update", businessType="lease")
+    @BusinessLogger(businessType="test", content="业务类型编号:${businessCode}，业务id:${businessId},用户id:${operatorId}, 市场id:${marketId}，公司名:${name}。", operationType="edit", notes = "备注", systemCode = "UAP")
     public @ResponseBody BaseOutput update(Firm firm) {
+//        LoggerContext.put(LoggerConstant.LOG_BUSINESS_CODE_KEY, "firm0001");
+        LoggerContext.put(LoggerConstant.LOG_BUSINESS_ID_KEY, firm.getId());
+        UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
+        if(userTicket != null) {
+            LoggerContext.put(LoggerConstant.LOG_OPERATOR_ID_KEY, userTicket.getId());
+            LoggerContext.put(LoggerConstant.LOG_MARKET_ID_KEY, userTicket.getFirmId());
+        }
         firmService.updateSelective(firm);
         return BaseOutput.success("修改成功");
     }

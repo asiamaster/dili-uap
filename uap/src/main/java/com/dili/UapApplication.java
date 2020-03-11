@@ -33,7 +33,7 @@ import tk.mybatis.spring.annotation.MapperScan;
 // @EnableScheduling
 @SpringBootApplication
 @EnableTransactionManagement
-@ComponentScan(basePackages = { "com.dili.ss", "com.dili.uap"})
+@ComponentScan(basePackages = { "com.dili.ss", "com.dili.uap", "com.dili.logger.sdk"})
 @RestfulScan({"com.dili.uap.rpc", "com.dili.uap.sdk.rpc"})
 @MapperScan(basePackages = {"com.dili.uap.dao", "com.dili.ss.uid.dao", "com.dili.ss.dao", "com.dili.ss.quartz.dao"})
 @DTOScan(value={"com.dili.ss", "com.dili.uap"})
