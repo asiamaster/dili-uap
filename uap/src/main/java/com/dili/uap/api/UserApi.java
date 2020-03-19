@@ -22,6 +22,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
@@ -34,42 +35,43 @@ import java.util.List;
 @RequestMapping("/userApi")
 public class UserApi {
 	@Autowired
-    UserService userService;
+	UserService userService;
 
 	@Autowired
-    DepartmentMapper departmentMapper;
+	DepartmentMapper departmentMapper;
 
 	@Autowired
 	ResumeLockedUserJob resumeLockedUserJob;
 
 	/**
 	 * 查询User实体接口
+	 * 
 	 * @param id
 	 * @return
 	 */
 	@ApiOperation(value = "查询User实体接口", notes = "根据id查询User接口，返回User实体")
 	@ApiImplicitParams({ @ApiImplicitParam(name = "id", value = "User的id", required = true, dataType = "long") })
 	@RequestMapping(value = "/get.api", method = { RequestMethod.GET, RequestMethod.POST })
-	public @ResponseBody
-    BaseOutput<User> get(@RequestBody Long id) {
+	public @ResponseBody BaseOutput<User> get(@RequestBody Long id) {
 		return BaseOutput.success().setData(userService.get(id));
 	}
 
 	/**
 	 * 查询User列表接口
+	 * 
 	 * @param user
 	 * @return
 	 */
 	@ApiOperation(value = "查询User列表接口", notes = "查询User列表接口，返回列表信息")
 	@ApiImplicitParams({ @ApiImplicitParam(name = "User", paramType = "form", value = "User的form信息", required = false, dataType = "string") })
 	@RequestMapping(value = "/list.api", method = { RequestMethod.GET, RequestMethod.POST })
-	public @ResponseBody
-    BaseOutput<List<User>> list(User user) {
+	public @ResponseBody BaseOutput<List<User>> list(User user) {
 		return BaseOutput.success().setData(userService.list(user));
 	}
 
 	/**
 	 * 查询用户
+	 * 
 	 * @param user
 	 * @return
 	 */
@@ -77,29 +79,32 @@ public class UserApi {
 	@RequestMapping(value = "/listByExample.api", method = { RequestMethod.GET, RequestMethod.POST })
 	public PageOutput<List<User>> listByExample(UserQuery user) {
 		List<User> users = this.userService.listByExample(user);
-		if(users instanceof Page) {
+		if (users instanceof Page) {
 			Page<User> page = (Page) users;
 			Long total = page.getTotal();
 			return PageOutput.success().setTotal(total.intValue()).setPageNum(page.getPageNum()).setPageSize(page.getPageSize()).setData(users);
-		}else{
+		} else {
 			return PageOutput.success().setTotal(users.size()).setPageNum(user.getPage()).setPageSize(user.getRows()).setData(users);
 		}
 	}
 
 	/**
 	 * 根据ids查询用户
+	 * 
 	 * @param ids
 	 * @return
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/listUserByIds.api", method = { RequestMethod.GET, RequestMethod.POST })
-	public BaseOutput<List<User>> listUserByIds(@RequestBody List<String> ids){
+	public BaseOutput<List<User>> listUserByIds(@RequestBody List<String> ids) {
 		UserDto user = DTOUtils.newInstance(UserDto.class);
 		user.setIds(ids);
 		return BaseOutput.success().setData(userService.listByExample(user));
 	}
+
 	/**
 	 * 根据角色roleId查询用户集合
+	 * 
 	 * @param roleId
 	 * @return
 	 */
@@ -108,8 +113,10 @@ public class UserApi {
 	public BaseOutput<List<User>> listUserByRoleId(@RequestBody Long roleId) {
 		return BaseOutput.success().setData(userService.findUserByRole(roleId));
 	}
+
 	/**
 	 * 根据用户，查询用户对应角色，部门信息
+	 * 
 	 * @param query
 	 * @return
 	 */
@@ -122,6 +129,7 @@ public class UserApi {
 
 	/**
 	 * 扫描并解锁锁定的用户
+	 * 
 	 * @param scheduleMessage
 	 * @return
 	 * @throws Exception
@@ -131,6 +139,20 @@ public class UserApi {
 	public BaseOutput resumeLockedUser(@RequestBody ScheduleMessage scheduleMessage) {
 		resumeLockedUserJob.scan(scheduleMessage);
 		return BaseOutput.success();
+	}
+
+	/**
+	 * 查询当前部门下具有特定权限编码的用户
+	 * 
+	 * @param departmentId 部门id
+	 * @param resourceCode 权限编码
+	 * @return
+	 */
+	@RequestMapping("/findCurrentDepartmentUsersByResourceCode.api")
+	@ResponseBody
+	public BaseOutput<List<User>> findCurrentDepartmentUsersByResourceCode(@RequestParam Long departmentId, @RequestParam String resourceCode) {
+		List<User> list = this.userService.findCurrentDepartmentUsersByResourceCode(departmentId, resourceCode);
+		return BaseOutput.success().setData(list);
 	}
 
 }

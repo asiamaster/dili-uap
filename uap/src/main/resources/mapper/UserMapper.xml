@@ -1,36 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.dili.uap.dao.UserMapper">
-  <resultMap id="BaseResultMap" type="com.dili.uap.sdk.domain.User">
-    <!--
-      WARNING - @mbg.generated
-    -->
-    <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="user_name" jdbcType="VARCHAR" property="userName" />
-    <result column="password" jdbcType="VARCHAR" property="password" />
-    <result column="firm_code" jdbcType="VARCHAR" property="firmCode" />
-    <result column="department_id" jdbcType="BIGINT" property="departmentId" />
-    <result column="position" jdbcType="VARCHAR" property="position" />
-    <result column="card_number" jdbcType="VARCHAR" property="cardNumber" />
-    <result column="locked" jdbcType="TIMESTAMP" property="locked" />
-    <result column="created" jdbcType="TIMESTAMP" property="created" />
-    <result column="modified" jdbcType="TIMESTAMP" property="modified" />
-    <result column="state" jdbcType="INTEGER" property="state" />
-    <result column="real_name" jdbcType="VARCHAR" property="realName" />
-    <result column="serial_number" jdbcType="VARCHAR" property="serialNumber" />
-    <result column="cellphone" jdbcType="VARCHAR" property="cellphone" />
-    <result column="email" jdbcType="VARCHAR" property="email" />
-  </resultMap>
-  <sql id="Base_Column_List">
-    <!--
-      WARNING - @mbg.generated
-    -->
-    id, user_name, password, firm_code, department_id, position, card_number, created, 
-    modified, state, real_name, serial_number, cellphone, email,locked
-  </sql>
+	<resultMap id="BaseResultMap" type="com.dili.uap.sdk.domain.User">
+		<!-- WARNING - @mbg.generated -->
+		<id column="id" jdbcType="BIGINT" property="id" />
+		<result column="user_name" jdbcType="VARCHAR" property="userName" />
+		<result column="password" jdbcType="VARCHAR" property="password" />
+		<result column="firm_code" jdbcType="VARCHAR" property="firmCode" />
+		<result column="department_id" jdbcType="BIGINT" property="departmentId" />
+		<result column="position" jdbcType="VARCHAR" property="position" />
+		<result column="card_number" jdbcType="VARCHAR" property="cardNumber" />
+		<result column="locked" jdbcType="TIMESTAMP" property="locked" />
+		<result column="created" jdbcType="TIMESTAMP" property="created" />
+		<result column="modified" jdbcType="TIMESTAMP" property="modified" />
+		<result column="state" jdbcType="INTEGER" property="state" />
+		<result column="real_name" jdbcType="VARCHAR" property="realName" />
+		<result column="serial_number" jdbcType="VARCHAR" property="serialNumber" />
+		<result column="cellphone" jdbcType="VARCHAR" property="cellphone" />
+		<result column="email" jdbcType="VARCHAR" property="email" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		<!-- WARNING - @mbg.generated -->
+		id, user_name, password, firm_code, department_id, position, card_number, created,
+		modified, state, real_name, serial_number, cellphone, email,locked
+	</sql>
 
-  <!-- 根据角色ID查询用户列表信息 -->
-  <select id="findUserByRole" parameterType="Long" resultMap="BaseResultMap">
+	<!-- 根据角色ID查询用户列表信息 -->
+	<select id="findUserByRole" parameterType="Long" resultMap="BaseResultMap">
         <![CDATA[
         SELECT u.*
         FROM user u
@@ -39,98 +35,95 @@
 		]]>
 	</select>
 
-  <!--- 联合查询分页信息 -->
-  <select id="selectForPage" parameterType="com.dili.uap.sdk.domain.User" resultType="com.dili.uap.domain.dto.UserDto">
-      select u.*,
-            CASE
-              WHEN group_concat(r.role_name) IS NOT NULL THEN group_concat(r.role_name)
-              ELSE '--'
-            END AS user_roles
-      FROM user u LEFT JOIN user_role ur ON u.id=ur.user_id LEFT JOIN role r ON ur.role_id=r.id
-      <include refid="QUERY_WHERE_CLAUSE" />
-      GROUP BY  u.id
-      order by ${sort} ${order}
-  </select>
+	<!--- 联合查询分页信息 -->
+	<select id="selectForPage" parameterType="com.dili.uap.sdk.domain.User" resultType="com.dili.uap.domain.dto.UserDto">
+		select u.*,
+		CASE
+		WHEN group_concat(r.role_name) IS NOT NULL THEN group_concat(r.role_name)
+		ELSE '--'
+		END AS user_roles
+		FROM user u LEFT JOIN user_role ur ON u.id=ur.user_id LEFT JOIN role r ON
+		ur.role_id=r.id
+		<include refid="QUERY_WHERE_CLAUSE" />
+		GROUP BY u.id
+		order by ${sort} ${order}
+	</select>
 
-  <!-- 全部条件(更多功能可以通过queryData扩展实现)  -->
-  <sql id="QUERY_WHERE_CLAUSE">
-    <where>
-      1 = 1
-      <if test="firmCode != null">
-         and u.firm_code = #{firmCode}
-      </if>
-      <if test="departmentId != null">
-        and u.department_id = #{departmentId}
-      </if>
-      <if test="state != null">
-        and u.state = #{state}
-      </if>
-      <if test="roleId != null">
-        and ur.role_id = #{roleId}
-      </if>
-      <if test="keywords != null and keywords != ''">
-        and (u.user_name = #{keywords} or u.cellphone = #{keywords})
-      </if>
-    </where>
-  </sql>
+	<!-- 全部条件(更多功能可以通过queryData扩展实现) -->
+	<sql id="QUERY_WHERE_CLAUSE">
+		<where>
+			1 = 1
+			<if test="firmCode != null">
+				and u.firm_code = #{firmCode}
+			</if>
+			<if test="departmentId != null">
+				and u.department_id = #{departmentId}
+			</if>
+			<if test="state != null">
+				and u.state = #{state}
+			</if>
+			<if test="roleId != null">
+				and ur.role_id = #{roleId}
+			</if>
+			<if test="keywords != null and keywords != ''">
+				and (u.user_name = #{keywords} or u.cellphone = #{keywords})
+			</if>
+		</where>
+	</sql>
 
-    <!-- 查询用户数据权限,超级管理员不用传入loginUserId参数 -->
-    <select id="selectUserDatas" parameterType="map" resultType="com.dili.uap.domain.dto.UserDataDto">
-        SELECT d.id AS treeId
-        , CASE WHEN d.parent_id is null THEN CONCAT('firm_',d.firm_code) ELSE d.parent_id END AS parentId
-        , d.`name`
-        , CASE WHEN ud.id IS NULL THEN FALSE ELSE TRUE END AS checked
-        <if test="loginUserId == null">
-            FROM department d
-        </if>
-        <if test="loginUserId != null">
-            FROM (SELECT de.* FROM department de inner join user_data_auth uda on de.id = uda.value WHERE uda.user_id=#{loginUserId} ) d
-        </if>
-        LEFT JOIN (SELECT u.* from user_data_auth u where u.user_id = #{userId} AND u.ref_code='department') ud
-        ON d.id = ud.value
-        UNION ALL
-        SELECT CONCAT('firm_',f.`code`) AS treeId, NULL AS parentId, f.`name`, CASE WHEN ud.id IS NULL THEN FALSE ELSE TRUE END AS checked
-        <if test="loginUserId == null">
-            FROM firm f
-        </if>
-        <if test="loginUserId != null">
-            FROM (SELECT fi.id, fi.name, fi.parent_id, fi.code, fi.description FROM firm fi inner join user_data_auth uda on fi.code = uda.value WHERE uda.user_id=#{loginUserId} ) f
-        </if>
-        LEFT JOIN (SELECT u.* from user_data_auth u where u.user_id = #{userId} AND u.ref_code='market') ud
-        ON f.code = ud.value
-    </select>
-    
-    
-    <resultMap id="UDRResultMap"
-		type="com.dili.uap.domain.dto.UserDepartmentRole">
-		 <id column="id" jdbcType="BIGINT" property="id" />
-	    <result column="user_name" jdbcType="VARCHAR" property="userName" />
-	    <result column="password" jdbcType="VARCHAR" property="password" />
-	    <result column="firm_code" jdbcType="VARCHAR" property="firmCode" />
-	    <result column="department_id" jdbcType="BIGINT" property="departmentId" />
-	    <result column="position" jdbcType="VARCHAR" property="position" />
-	    <result column="card_number" jdbcType="VARCHAR" property="cardNumber" />
-	    <result column="locked" jdbcType="TIMESTAMP" property="locked" />
-	    <result column="created" jdbcType="TIMESTAMP" property="created" />
-	    <result column="modified" jdbcType="TIMESTAMP" property="modified" />
-	    <result column="state" jdbcType="INTEGER" property="state" />
-	    <result column="real_name" jdbcType="VARCHAR" property="realName" />
-	    <result column="serial_number" jdbcType="VARCHAR" property="serialNumber" />
-	    <result column="cellphone" jdbcType="VARCHAR" property="cellphone" />
-	    <result column="email" jdbcType="VARCHAR" property="email" />
-		<association javaType="com.dili.uap.sdk.domain.Department"
-			property="department">
+	<!-- 查询用户数据权限,超级管理员不用传入loginUserId参数 -->
+	<select id="selectUserDatas" parameterType="map" resultType="com.dili.uap.domain.dto.UserDataDto">
+		SELECT d.id AS treeId
+		, CASE WHEN d.parent_id is null THEN CONCAT('firm_',d.firm_code) ELSE d.parent_id END AS parentId
+		, d.`name`
+		, CASE WHEN ud.id IS NULL THEN FALSE ELSE TRUE END AS checked
+		<if test="loginUserId == null">
+			FROM department d
+		</if>
+		<if test="loginUserId != null">
+			FROM (SELECT de.* FROM department de inner join user_data_auth uda on de.id = uda.value WHERE uda.user_id=#{loginUserId} ) d
+		</if>
+		LEFT JOIN (SELECT u.* from user_data_auth u where u.user_id = #{userId} AND u.ref_code='department') ud
+		ON d.id = ud.value
+		UNION ALL
+		SELECT CONCAT('firm_',f.`code`) AS treeId, NULL AS parentId,
+		f.`name`, CASE WHEN ud.id IS NULL THEN FALSE ELSE TRUE END AS checked
+		<if test="loginUserId == null">
+			FROM firm f
+		</if>
+		<if test="loginUserId != null">
+			FROM (SELECT fi.id, fi.name, fi.parent_id, fi.code, fi.description FROM firm fi inner join user_data_auth uda on fi.code = uda.value WHERE uda.user_id=#{loginUserId} ) f
+		</if>
+		LEFT JOIN (SELECT u.* from user_data_auth u where u.user_id = #{userId} AND u.ref_code='market') ud
+		ON f.code = ud.value
+	</select>
+
+
+	<resultMap id="UDRResultMap" type="com.dili.uap.domain.dto.UserDepartmentRole">
+		<id column="id" jdbcType="BIGINT" property="id" />
+		<result column="user_name" jdbcType="VARCHAR" property="userName" />
+		<result column="password" jdbcType="VARCHAR" property="password" />
+		<result column="firm_code" jdbcType="VARCHAR" property="firmCode" />
+		<result column="department_id" jdbcType="BIGINT" property="departmentId" />
+		<result column="position" jdbcType="VARCHAR" property="position" />
+		<result column="card_number" jdbcType="VARCHAR" property="cardNumber" />
+		<result column="locked" jdbcType="TIMESTAMP" property="locked" />
+		<result column="created" jdbcType="TIMESTAMP" property="created" />
+		<result column="modified" jdbcType="TIMESTAMP" property="modified" />
+		<result column="state" jdbcType="INTEGER" property="state" />
+		<result column="real_name" jdbcType="VARCHAR" property="realName" />
+		<result column="serial_number" jdbcType="VARCHAR" property="serialNumber" />
+		<result column="cellphone" jdbcType="VARCHAR" property="cellphone" />
+		<result column="email" jdbcType="VARCHAR" property="email" />
+		<association javaType="com.dili.uap.sdk.domain.Department" property="department">
 			<result column="department_id" property="id" />
 			<result column="department_name" property="name" />
 			<result column="code" property="code" />
 		</association>
-		<collection column="id" property="roles"
-			select="com.dili.uap.dao.RoleMapper.listByUserId" />
+		<collection column="id" property="roles" select="com.dili.uap.dao.RoleMapper.listByUserId" />
 	</resultMap>
-	
-	<select id="findUserContainDepartmentAndRole"
-		parameterType="com.dili.uap.domain.dto.UserDepartmentRoleQuery"
-		resultMap="UDRResultMap">
+
+	<select id="findUserContainDepartmentAndRole" parameterType="com.dili.uap.domain.dto.UserDepartmentRoleQuery" resultMap="UDRResultMap">
 		SELECT DISTINCT
 		u.id,
 		u.real_name,
@@ -144,7 +137,8 @@
 		r.role_name
 		FROM
 		`user` u
-		LEFT JOIN department d ON u.department_id =
+		LEFT JOIN department d ON u.department_id
+		=
 		d.id
 		LEFT JOIN
 		user_role ur ON ur.user_id = u.id
@@ -159,14 +153,26 @@
 		</if>
 		<if test="departmentIds != null and departmentIds.size > 0">
 			AND u.department_id IN
-			<foreach close=")" collection="departmentIds" item="deptId"
-				open="(" separator=",">
+			<foreach close=")" collection="departmentIds" item="deptId" open="(" separator=",">
 				#{deptId}
 			</foreach>
 		</if>
 		<if test="roleId != null">
 			AND dr.role_id = #{roleId}
 		</if>
+	</select>
+
+	<select id="findCurrentDepartmentUsersByResourceCode" resultMap="BaseResultMap">
+		SELECT DISTINCT
+		u.*
+		FROM
+		`user` u
+		INNER JOIN user_role ur ON u.id = ur.user_id
+		INNER JOIN role_resource rr ON ur.role_id = rr.role_id
+		INNER JOIN resource r ON r.id = rr.resource_id
+		WHERE
+		u.department_id = #{departmentId}
+		AND r.`code` = #{resourceCode}
 	</select>
 
 </mapper>

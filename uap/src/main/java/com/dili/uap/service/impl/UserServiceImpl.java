@@ -548,4 +548,9 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 		selectAll.add(almDataDto);
 		return selectAll;
 	}
+
+	@Override
+	public List<User> findCurrentDepartmentUsersByResourceCode(Long departmentId, String resourceCode) {
+		return this.getActualDao().findCurrentDepartmentUsersByResourceCode(departmentId, resourceCode);
+	}
 }
