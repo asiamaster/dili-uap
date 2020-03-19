@@ -45,6 +45,6 @@ public interface UserRpc {
 	@POST("/userApi/findUserContainDepartmentAndRole.api")
 	BaseOutput<List<UserDepartmentRole>> findUserContainDepartmentAndRole(@VOBody(required = false) UserDepartmentRoleQuery dto);
 
-	@POST("/userApi/findCurrentDepartmentUsersByResourceCode.api")
+	@POST("/userApi/findCurrentFirmUsersByResourceCode.api")
 	BaseOutput<List<User>> findCurrentFirmUsersByResourceCode(@ReqParam("firmCode") String firmCode, @ReqParam("resourceCode") String resourceCode);
 }
