@@ -49,9 +49,9 @@ public interface UserMapper extends MyMapper<User> {
 	/**
 	 * 查询当前部门下具有特定权限编码的用户
 	 * 
-	 * @param departmentId 部门id
+	 * @param firmCode 部门id
 	 * @param resourceCode 权限编码
 	 * @return
 	 */
-	List<User> findCurrentDepartmentUsersByResourceCode(@Param("departmentId") Long departmentId, @Param("resourceCode") String resourceCode);
+	List<User> findCurrentFirmUsersByResourceCode(@Param("firmCode") String firmCode, @Param("resourceCode") String resourceCode);
 }

@@ -550,7 +550,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 	}
 
 	@Override
-	public List<User> findCurrentDepartmentUsersByResourceCode(Long departmentId, String resourceCode) {
-		return this.getActualDao().findCurrentDepartmentUsersByResourceCode(departmentId, resourceCode);
+	public List<User> findCurrentFirmUsersByResourceCode(String firmCode, String resourceCode) {
+		return this.getActualDao().findCurrentFirmUsersByResourceCode(firmCode, resourceCode);
 	}
 }

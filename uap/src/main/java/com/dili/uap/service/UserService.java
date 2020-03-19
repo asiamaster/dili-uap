@@ -159,12 +159,12 @@ public interface UserService extends BaseService<User, Long> {
 	List<UserDataDto> getUserDataProjectAuthForTree(Long userId);
 
 	/**
-	 * 查询当前部门下具有特定权限编码的用户
+	 * 查询当前市场下具有特定权限编码的用户
 	 * 
-	 * @param departmentId 部门id
+	 * @param firmCode 部门id
 	 * @param resourceCode 权限编码
 	 * @return
 	 */
-	List<User> findCurrentDepartmentUsersByResourceCode(Long departmentId, String resourceCode);
+	List<User> findCurrentFirmUsersByResourceCode(String firmCode, String resourceCode);
 
 }
