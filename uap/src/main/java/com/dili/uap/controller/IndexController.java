@@ -19,6 +19,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.CollectionUtils;
@@ -36,15 +37,18 @@ import java.util.Map;
 @Controller
 @RequestMapping("/index")
 public class IndexController {
-	//跳转到首页
+	// 跳转到首页
 	public static final String INDEX_PATH = "index/leftMenuIndex";
-	//跳转到平台首页
+	// 跳转到平台首页
 	public static final String PLATFORM_PATH = "index/platform";
-	//跳转到首页Controller
+	// 跳转到首页Controller
 	public static final String REDIRECT_INDEX_PAGE = "redirect:/index/index.html";
 
 	public static final String USERDETAIL_PATH = "index/userDetail";
 	public static final String CHANGEPWD_PATH = "index/changePwd";
+
+	@Value("${bpmc.server.address:bpmc.server.address=http://bpmc.diligrp.com}")
+	private String bpmcUrl;
 
 	@Autowired
 	private UserSystemRedis userSystemRedis;
@@ -63,6 +67,7 @@ public class IndexController {
 
 	/**
 	 * 跳转到权限主页面
+	 * 
 	 * @param modelMap
 	 * @param request
 	 * @return
@@ -72,45 +77,45 @@ public class IndexController {
 	public String index(ModelMap modelMap, HttpServletRequest request) {
 		UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
 		if (userTicket != null) {
-			//设置页面使用的用户id、名称和用户状态
+			// 设置页面使用的用户id、名称和用户状态
 			modelMap.put("userid", userTicket.getId());
 			modelMap.put("username", userTicket.getRealName());
-			//这里必须要从数据库取，因为从cookie取的话，用户修改完密码，再回到此页面也会弹出修改密码框，因为cookie没有刷新
+			// 这里必须要从数据库取，因为从cookie取的话，用户修改完密码，再回到此页面也会弹出修改密码框，因为cookie没有刷新
 			modelMap.put("userState", userService.get(userTicket.getId()).getState());
 			String systemCode = request.getParameter("systemCode") == null ? UapConstants.UAP_SYSTEM_CODE : request.getParameter("systemCode");
 			modelMap.put("systemCode", systemCode);
-			if(systemCode.equals(UapConstants.UAP_SYSTEM_CODE)){
+			if (systemCode.equals(UapConstants.UAP_SYSTEM_CODE)) {
 				Systems condition = DTOUtils.newInstance(Systems.class);
 				condition.setCode(UapConstants.UAP_SYSTEM_CODE);
 				List<Systems> uap = systemService.listByExample(condition);
-				if(CollectionUtils.isEmpty(uap)){
+				if (CollectionUtils.isEmpty(uap)) {
 					throw new AppException("未配置统一权限系统");
 				}
 				modelMap.put("system", DTOUtils.as(uap.get(0), Systems.class));
-				//如果用户有任务中心的权限，则显示任务导航
-				String taskCenterUrl = "http://bpmc.diligrp.com:8617/task/taskCenter.html";
-				if(userResRedis.checkUserMenuUrlRight(userTicket.getId(), taskCenterUrl)){
+				// 如果用户有任务中心的权限，则显示任务导航
+				String taskCenterUrl = this.bpmcUrl + "/task/taskCenter.html";
+				if (userResRedis.checkUserMenuUrlRight(userTicket.getId(), taskCenterUrl)) {
 					modelMap.put("taskCenterUrl", taskCenterUrl);
 				}
 				return INDEX_PATH;
 			}
 			List<Systems> systems = userSystemRedis.getRedisUserSystems(userTicket.getId());
-			if(null == systems){
+			if (null == systems) {
 				return LoginController.REDIRECT_INDEX_PAGE;
 			}
-			for(Systems system : systems){
-				if(systemCode.equals(system.getCode())){
+			for (Systems system : systems) {
+				if (systemCode.equals(system.getCode())) {
 					modelMap.put("system", system);
 					break;
 				}
 			}
-			//没有系统权限，则弹回登录页
-			if(!modelMap.containsKey("system")){
+			// 没有系统权限，则弹回登录页
+			if (!modelMap.containsKey("system")) {
 				return LoginController.REDIRECT_INDEX_PAGE;
 			}
-			//如果用户有任务中心的权限，则显示任务导航
-			String taskCenterUrl = "http://bpmc.diligrp.com:8617/task/taskCenter.html";
-			if(userResRedis.checkUserMenuUrlRight(userTicket.getId(), taskCenterUrl)){
+			// 如果用户有任务中心的权限，则显示任务导航
+			String taskCenterUrl = this.bpmcUrl + "/task/taskCenter.html";
+			if (userResRedis.checkUserMenuUrlRight(userTicket.getId(), taskCenterUrl)) {
 				modelMap.put("taskCenterUrl", taskCenterUrl);
 			}
 			return INDEX_PATH;
@@ -121,6 +126,7 @@ public class IndexController {
 
 	/**
 	 * 跳转到平台页面
+	 * 
 	 * @param modelMap
 	 * @param req
 	 * @return
@@ -132,7 +138,7 @@ public class IndexController {
 		if (userTicket != null) {
 			List<Systems> systems = systemService.listByUserId(userTicket.getId());
 			User user = userService.get(userTicket.getId());
-			if(user == null){
+			if (user == null) {
 				throw new NotLoginException("登录用户不存在");
 			}
 			modelMap.put("sessionId", getSessionId(req));
@@ -150,35 +156,37 @@ public class IndexController {
 
 	/**
 	 * 获取sessionId
+	 * 
 	 * @param req
 	 * @return
 	 */
 	public String getSessionId(HttpServletRequest req) {
 		String sessionId = null;
-			//首先读取链接中的session
-			sessionId = req.getParameter(SessionConstants.SESSION_ID);
-			if(StringUtils.isBlank(sessionId)) {
-				sessionId = req.getHeader(SessionConstants.SESSION_ID);
-			}
-			if (StringUtils.isNotBlank(sessionId)) {
-				WebContent.setCookie(SessionConstants.SESSION_ID, sessionId);
-			} else {
-				sessionId = WebContent.getCookieVal(SessionConstants.SESSION_ID);
-			}
+		// 首先读取链接中的session
+		sessionId = req.getParameter(SessionConstants.SESSION_ID);
+		if (StringUtils.isBlank(sessionId)) {
+			sessionId = req.getHeader(SessionConstants.SESSION_ID);
+		}
+		if (StringUtils.isNotBlank(sessionId)) {
+			WebContent.setCookie(SessionConstants.SESSION_ID, sessionId);
+		} else {
+			sessionId = WebContent.getCookieVal(SessionConstants.SESSION_ID);
+		}
 		return sessionId;
 	}
 
 	/**
 	 * 跳转到功能列表页面
+	 * 
 	 * @param systemCode
 	 * @param modelMap
 	 * @return
 	 */
 	@ApiOperation("跳转到功能列表页面")
 	@RequestMapping(value = "/featureList.html", method = RequestMethod.GET)
-	public String featureList(String systemCode, ModelMap modelMap){
+	public String featureList(String systemCode, ModelMap modelMap) {
 		UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
-		//获取系统下该用户有权限显示的菜单
+		// 获取系统下该用户有权限显示的菜单
 		List<Map> menus = menuService.listDirAndLinks(userTicket.getId(), systemCode);
 		modelMap.put("menus", menus);
 		return "index/featureList";
@@ -186,6 +194,7 @@ public class IndexController {
 
 	/**
 	 * 跳转到园区管理首页
+	 * 
 	 * @param modelMap
 	 * @return
 	 */
@@ -197,12 +206,13 @@ public class IndexController {
 
 	/**
 	 * 判断是否包含统一权限平台
+	 * 
 	 * @param systems
 	 * @return
 	 */
-	private boolean containsUap(List<Systems> systems){
-		for(Systems system : systems){
-			if(UapConstants.UAP_SYSTEM_CODE.equals(system.getCode())){
+	private boolean containsUap(List<Systems> systems) {
+		for (Systems system : systems) {
+			if (UapConstants.UAP_SYSTEM_CODE.equals(system.getCode())) {
 				return true;
 			}
 		}
@@ -211,6 +221,7 @@ public class IndexController {
 
 	/**
 	 * 跳转到个人信息页面
+	 * 
 	 * @param modelMap
 	 * @return
 	 */
@@ -222,6 +233,7 @@ public class IndexController {
 
 	/**
 	 * 跳转到修改密码页面
+	 * 
 	 * @param modelMap
 	 * @return
 	 */
