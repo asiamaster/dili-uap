@@ -376,6 +376,7 @@ public class LoginServiceImpl implements LoginService {
 		UserTicket userTicket = DTOUtils.asInstance(user, UserTicket.class);
 		if(firm != null){
 			userTicket.setFirmId(firm.getId());
+			userTicket.setFirmName(firm.getName());
 		}
 		sessionData.put(SessionConstants.LOGGED_USER, JSON.toJSONString(userTicket));
 

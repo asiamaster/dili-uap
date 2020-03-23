@@ -5,13 +5,11 @@ import com.dili.ss.metadata.FieldEditor;
 import com.dili.ss.metadata.annotation.EditMode;
 import com.dili.ss.metadata.annotation.FieldDef;
 
-import java.sql.Timestamp;
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.util.Date;
 
 public interface UserTicket extends IDTO {
 	@Id
@@ -50,6 +48,13 @@ public interface UserTicket extends IDTO {
 	Long getFirmId();
 
 	void setFirmId(Long firmId);
+
+	@Column(name = "`firm_name`")
+	@FieldDef(label="归属市场名称", maxLength = 20)
+	@EditMode(editor = FieldEditor.Text)
+	String getFirmName();
+
+	void setFirmName(String firmName);
 
 	@Column(name = "`department_id`")
 	@FieldDef(label="归属部门")
