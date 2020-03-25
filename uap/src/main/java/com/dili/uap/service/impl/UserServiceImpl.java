@@ -377,11 +377,10 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 		// 原来UAP的需求是集团用户可以查询所有公司和部门，现在需要改为只有admin用户可以查询所有公司和部门
 		// 普通用户只能查询自己有权限的公司和部门
 		// ===================================================
-		if (!user.getUserName().equalsIgnoreCase(adminName)) {
+		if (!userTicket.getUserName().equalsIgnoreCase(adminName)) {
 			params.put("loginUserId", userTicket.getId());
 		}
 		return getActualDao().selectUserDatas(params);
-
 	}
 
 	@Override

@@ -96,9 +96,8 @@ public class FirmController {
 	})
     @RequestMapping(value="/update.action", method = {RequestMethod.GET, RequestMethod.POST})
 //    @OpLog(contentProvider = "updateLogContentProvider")
-    @BusinessLogger(businessType="test", content="业务类型编号:${businessCode}，业务id:${businessId},用户id:${operatorId}, 市场id:${marketId}，公司名:${name}。", operationType="edit", notes = "备注", systemCode = "UAP")
+    @BusinessLogger(businessType="test", content="业务id:${businessId!},用户id:${operatorId!}, 市场id:${marketId!}，公司名:${name!}。", operationType="edit", notes = "备注", systemCode = "UAP")
     public @ResponseBody BaseOutput update(Firm firm) {
-//        LoggerContext.put(LoggerConstant.LOG_BUSINESS_CODE_KEY, "firm0001");
         LoggerContext.put(LoggerConstant.LOG_BUSINESS_ID_KEY, firm.getId());
         UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
         if(userTicket != null) {
