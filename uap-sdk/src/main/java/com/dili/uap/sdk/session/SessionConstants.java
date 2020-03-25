@@ -57,6 +57,8 @@ public class SessionConstants {
     public static final String COOKIE_USER_ID_KEY = APPLICATION_NAME + "userId";
     //用户名
     public static final String COOKIE_USER_NAME_KEY = APPLICATION_NAME + "username";
+    //市场id
+    public static final String COOKIE_FIRM_ID_KEY = APPLICATION_NAME + "firmId";
     //登录地址referer
     public static final String COOKIE_LOGIN_PATH_KEY = APPLICATION_NAME + "loginPath";
 }
