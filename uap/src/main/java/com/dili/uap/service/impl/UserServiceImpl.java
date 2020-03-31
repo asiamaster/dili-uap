@@ -30,6 +30,9 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+
+import tk.mybatis.mapper.entity.Example;
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.amqp.core.AmqpTemplate;
@@ -39,6 +42,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 由MyBatis Generator工具自动生成 This file was generated on 2018-05-18 10:46:46.
@@ -393,10 +397,22 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 		if (userTicket == null) {
 			return BaseOutput.failure("用户未登录");
 		}
-		Map param = new HashMap();
-		param.put("userId", userId);
-		param.put("loginUserId", userTicket.getId());
-		userDataAuthMapper.deleteUserDataAuth(param);
+		UserDataAuth record = DTOUtils.newInstance(UserDataAuth.class);
+		record.setUserId(userId);
+		List<UserDataAuth> currentUserDataAuthList = this.userDataAuthMapper.select(record);
+		record.setUserId(userTicket.getId());
+		List<UserDataAuth> loggedUserDataAuthList = this.userDataAuthMapper.select(record);
+		if (CollectionUtils.isEmpty(loggedUserDataAuthList)) {
+			return BaseOutput.failure("当前登录用户没有数据权限！");
+		}
+		List<Long> toRmoveIds = new ArrayList<>();
+		List<UserDataAuth> toRemoveList = currentUserDataAuthList.stream()
+				.filter(ud -> loggedUserDataAuthList.stream().filter(lud -> lud.getRefCode().equals(ud.getRefCode()) && lud.getValue().equals(ud.getValue())).findFirst().orElse(null) != null)
+				.collect(Collectors.toList());
+		toRemoveList.forEach(ud -> toRmoveIds.add(ud.getId()));
+		Example example = new Example(UserDataAuth.class);
+		example.createCriteria().andEqualTo("userId", userId).andIn("id", toRmoveIds);
+		this.userDataAuthMapper.deleteByExample(example);
 		List<UserDataAuth> saveDatas = Lists.newArrayList();
 		// 保存用户数据范围信息
 		UserDataAuth ud = DTOUtils.newInstance(UserDataAuth.class);
@@ -428,9 +444,19 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 				}
 			}
 		}
+		saveDatas = saveDatas.stream()
+				.filter(sd -> toRemoveList.stream().filter(rud -> rud.getRefCode().equals(sd.getRefCode()) && rud.getValue().equals(sd.getValue())).findFirst().orElse(null) != null)
+				.collect(Collectors.toList());
+		int originalSize = saveDatas.size();
+		saveDatas = saveDatas.stream()
+				.filter(sd -> loggedUserDataAuthList.stream().filter(lud -> lud.getRefCode().equals(sd.getRefCode()) && lud.getValue().equals(sd.getValue())).findFirst().orElse(null) != null)
+				.collect(Collectors.toList());
 		// 如果存在需要保存的用户角色数据，则保存数据
 		if (CollectionUtils.isNotEmpty(saveDatas)) {
 			userDataAuthMapper.insertList(saveDatas);
+		}
+		if (currentUserDataAuthList.size() != toRemoveList.size() || originalSize != saveDatas.size()) {
+			return BaseOutput.success("修改的用户数据权限中包含当前登录用户不具备的数据权限，部分数据修改不成功，请核对数据！");
 		}
 		return BaseOutput.success("操作成功");
 	}

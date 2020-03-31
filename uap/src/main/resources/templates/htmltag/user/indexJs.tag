@@ -641,6 +641,7 @@
             async: true,
             success: function (ret) {
                 if (ret.success) {
+                	swal('提示', ret.message, 'success');
                     $('#userDataDlg').dialog('close');
                 } else {
                     swal('错误', ret.result, 'error');
