@@ -398,38 +398,19 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 			return BaseOutput.failure("用户未登录");
 		}
 		BaseOutput<Object> output = null;
-		List<UserDataAuth> saveDatas = this.convertToSaveUserDatas(userId, dataRange, dataIds);
+		List<UserDataAuth> saveDatas = this.convertToSaveUserDatas(userId, dataRange, dataIds);// 1235
 		UserDataAuth record = DTOUtils.newInstance(UserDataAuth.class);
 		record.setUserId(userId);
 		if (this.adminName.equals(userTicket.getUserName())) {
 			this.userDataAuthMapper.delete(record);
 		} else {
-			List<UserDataAuth> currentUserDataAuthList = this.userDataAuthMapper.select(record);
-			record.setUserId(userTicket.getId());
-			List<UserDataAuth> loggedUserDataAuthList = this.userDataAuthMapper.select(record);
-			if (CollectionUtils.isEmpty(loggedUserDataAuthList)) {
-				return BaseOutput.failure("当前登录用户没有数据权限！");
-			}
-			List<Long> toRmoveIds = new ArrayList<>();
-			List<UserDataAuth> toRemoveList = currentUserDataAuthList.stream()
-					.filter(ud -> loggedUserDataAuthList.stream().filter(lud -> lud.getRefCode().equals(ud.getRefCode()) && lud.getValue().equals(ud.getValue())).findFirst().orElse(null) != null)
-					.collect(Collectors.toList());
-			if (CollectionUtils.isNotEmpty(toRemoveList)) {
-				toRemoveList.forEach(ud -> toRmoveIds.add(ud.getId()));
-				Example example = new Example(UserDataAuth.class);
-				example.createCriteria().andEqualTo("userId", userId).andIn("id", toRmoveIds);
-				this.userDataAuthMapper.deleteByExample(example);
-			}
-			int originalSize = saveDatas.size();
-			saveDatas = saveDatas.stream()
-					.filter(sd -> toRemoveList.stream().filter(rud -> rud.getRefCode().equals(sd.getRefCode()) && rud.getValue().equals(sd.getValue())).findFirst().orElse(null) != null)
-					.collect(Collectors.toList());
-			saveDatas = saveDatas.stream()
-					.filter(sd -> loggedUserDataAuthList.stream().filter(lud -> lud.getRefCode().equals(sd.getRefCode()) && lud.getValue().equals(sd.getValue())).findFirst().orElse(null) != null)
-					.collect(Collectors.toList());
-			if (currentUserDataAuthList.size() != toRemoveList.size() || originalSize != saveDatas.size()) {
-				output = BaseOutput.success("修改的用户数据权限中包含当前登录用户不具备的数据权限，部分数据修改不成功，请核对数据！");
-			}
+			this.userDataAuthMapper.deleteUserDataAuth(new HashMap<String, Object>() {
+				{
+					put("userId", userId);
+					put("loggedUserId", userTicket.getId());
+				}
+			});
+			saveDatas = this.userDataAuthMapper.selectIntersectionUpdateUserDatas(userTicket.getId(), userId, saveDatas);
 		}
 		// 如果存在需要保存的用户角色数据，则保存数据
 		if (CollectionUtils.isNotEmpty(saveDatas)) {

@@ -81,7 +81,7 @@
 			FROM department d
 		</if>
 		<if test="loginUserId != null">
-			FROM (SELECT de.* FROM department de inner join user_data_auth uda on de.id = uda.value WHERE uda.user_id=#{loginUserId} ) d
+			FROM (SELECT de.* FROM department de inner join user_data_auth uda on de.id = uda.value WHERE uda.user_id=#{loginUserId} AND ref_code='department' ) d
 		</if>
 		LEFT JOIN (SELECT u.* from user_data_auth u where u.user_id = #{userId} AND u.ref_code='department') ud
 		ON d.id = ud.value
@@ -92,7 +92,7 @@
 			FROM firm f
 		</if>
 		<if test="loginUserId != null">
-			FROM (SELECT fi.id, fi.name, fi.parent_id, fi.code, fi.description FROM firm fi inner join user_data_auth uda on fi.code = uda.value WHERE uda.user_id=#{loginUserId} ) f
+			FROM (SELECT fi.id, fi.name, fi.parent_id, fi.code, fi.description FROM firm fi inner join user_data_auth uda on fi.code = uda.value WHERE uda.user_id=#{loginUserId} AND ref_code='market' ) f
 		</if>
 		LEFT JOIN (SELECT u.* from user_data_auth u where u.user_id = #{userId} AND u.ref_code='market') ud
 		ON f.code = ud.value
