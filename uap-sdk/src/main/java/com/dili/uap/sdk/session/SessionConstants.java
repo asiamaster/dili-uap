@@ -50,7 +50,7 @@ public class SessionConstants {
 
     //Cookie key
     //Cookie过期时间(秒)
-    public  static Integer COOKIE_TIMEOUT = SESSION_TIMEOUT.intValue() * 48;
+    public  static Integer COOKIE_TIMEOUT = SESSION_TIMEOUT.intValue();
     //登录会话id
     public static final String COOKIE_SESSION_ID = APPLICATION_NAME + "SessionId";
     //用户id
