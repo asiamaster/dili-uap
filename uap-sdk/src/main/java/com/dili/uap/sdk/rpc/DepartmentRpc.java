@@ -1,10 +1,7 @@
 package com.dili.uap.sdk.rpc;
 
 import com.dili.ss.domain.BaseOutput;
-import com.dili.ss.retrofitful.annotation.POST;
-import com.dili.ss.retrofitful.annotation.ReqParam;
-import com.dili.ss.retrofitful.annotation.Restful;
-import com.dili.ss.retrofitful.annotation.VOBody;
+import com.dili.ss.retrofitful.annotation.*;
 import com.dili.uap.sdk.domain.Department;
 import com.dili.uap.sdk.domain.dto.DepartmentDto;
 
@@ -83,4 +80,13 @@ public interface DepartmentRpc {
 	 */
 	@POST("/departmentApi/getChildDepartments.api")
 	BaseOutput<List<Department>> getChildDepartments(@ReqParam(required = true, value = "parentId") Long parentId);
+
+	/**
+	 * 根据用户ID及市场ID，查询用户在某市场中有权限的部门
+	 * @param userId 用户ID
+	 * @param firmId 市场ID
+	 * @return
+	 */
+	@POST("/departmentApi/listUserAuthDepartmentByFirmId.api")
+	BaseOutput<List<Department>> listUserAuthDepartmentByFirmId(@ReqParam("userId") Long userId, @ReqParam("firmId") Long firmId);
 }

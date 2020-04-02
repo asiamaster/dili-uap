@@ -1,6 +1,8 @@
 package com.dili.uap.api;
 
 import com.dili.ss.domain.BaseOutput;
+import com.dili.ss.retrofitful.annotation.POST;
+import com.dili.ss.retrofitful.annotation.ReqParam;
 import com.dili.uap.sdk.domain.Department;
 import com.dili.uap.sdk.domain.Firm;
 import com.dili.uap.sdk.domain.dto.DepartmentDto;
@@ -125,6 +127,18 @@ public class DepartmentApi {
 	@RequestMapping(value = "/getChildDepartments.api", method = { RequestMethod.GET, RequestMethod.POST })
 	public BaseOutput<Department> getChildDepartments(@RequestParam Long parentId) {
 		return BaseOutput.success().setData(this.departmentService.getChildDepartments(parentId));
+	}
+
+	/**
+	 * 根据用户ID及市场ID，查询用户在某市场中有权限的部门
+	 * @param userId 用户ID
+	 * @param firmId 市场ID
+	 * @return
+	 */
+	@RequestMapping("/listUserAuthDepartmentByFirmId.api")
+	@ResponseBody
+	public BaseOutput<List<Department>> listUserAuthDepartmentByFirmId(@RequestParam("userId") Long userId, @RequestParam("firmId") Long firmId) {
+		return BaseOutput.success().setData(this.departmentService.listUserAuthDepartmentByFirmId(userId, firmId));
 	}
 
 }

@@ -67,4 +67,12 @@ public interface DepartmentService extends BaseService<Department, Long> {
 	 * @return
 	 */
 	List<Department> getChildDepartments(Long parentId);
+
+	/**
+	 * 根据用户ID及市场ID，查询用户在某市场中有权限的部门
+	 * @param userId 用户ID
+	 * @param firmId 市场ID
+	 * @return
+	 */
+	List<Department> listUserAuthDepartmentByFirmId(Long userId, Long firmId);
 }
