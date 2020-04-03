@@ -5,14 +5,11 @@ import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.dao.DepartmentMapper;
 import com.dili.uap.dao.FirmMapper;
-import com.dili.uap.sdk.domain.DataAuthRef;
 import com.dili.uap.sdk.domain.Department;
 import com.dili.uap.sdk.domain.Firm;
 import com.dili.uap.sdk.domain.UserDataAuth;
 import com.dili.uap.sdk.glossary.DataAuthType;
 import com.dili.uap.service.DepartmentService;
-import com.dili.uap.service.FirmService;
-
 import com.dili.uap.service.UserDataAuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -152,6 +149,6 @@ public class DepartmentServiceImpl extends BaseServiceImpl<Department, Long> imp
 		if (CollectionUtils.isEmpty(departmentList)){
 			return Collections.emptyList();
 		}
-		return departmentList.stream().filter(d -> userDataAuthList.stream().allMatch(ud -> Objects.equals(String.valueOf(d.getId()), ud.getValue()))).collect(Collectors.toList());
+		return departmentList.stream().filter(d -> userDataAuthList.stream().anyMatch(ud -> Objects.equals(String.valueOf(d.getId()), ud.getValue()))).collect(Collectors.toList());
 	}
 }
