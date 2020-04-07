@@ -345,6 +345,11 @@
      */
     function initUserGrid() {
         var pager = userGrid.datagrid('getPager');
+        //如果是窄边距(<1300像素)，使用工具栏
+        var narrowWidth = document.body.clientWidth < 1300 ? true : false;
+        if(narrowWidth){
+            userGrid.datagrid({toolbar: "#toolbar"});
+        }else{
         pager.pagination({
             <#controls_paginationOpts/>,
             buttons:[
@@ -455,6 +460,7 @@
                 </#resource>
             ]
         });
+        }
         //表格仅显示下边框
         userGrid.datagrid('getPanel').removeClass('lines-both lines-no lines-right lines-bottom').addClass("lines-bottom");
     }
