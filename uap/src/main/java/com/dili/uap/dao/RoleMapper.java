@@ -22,16 +22,18 @@ public interface RoleMapper extends MyMapper<Role> {
 	 * 根据角色ID删除角色-菜单信息
 	 * 
 	 * @param param 角色ID和登录用户ID
+	 * @return TODO
 	 */
-	void deleteRoleMenuByRoleId(Map param);
+	int deleteRoleMenuByRoleId(Map param);
 
 	/**
 	 * 根据角色ID删除角色-资源信息
 	 * 
 	 * @param param 角色ID和登录用户ID
+	 * @return TODO
 	 * @return 受影响行数
 	 */
-	void deleteRoleResourceByRoleId(Map param);
+	int deleteRoleResourceByRoleId(Map param);
 
 	/**
 	 * 加载所有的菜单及资源信息

@@ -291,6 +291,7 @@
                 $("#saveRoleMenuAndResourceBtn").linkbutton("enable");
                 if (ret.success) {
                     $('#roleMenuAndResourceDlg').dialog('close');
+                     swal('提示',ret.result, 'success');
                 } else {
                     swal('错误',ret.result, 'error');
                 }

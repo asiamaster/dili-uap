@@ -230,21 +230,22 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements Role
 				}
 			}
 		}
+		int count = this.getActualDao().getRoleMenuAndResourceByRoleId(roleId).size();
 		UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
 		Map param = new HashMap<>(2);
 		param.put("roleId", roleId);
 		param.put("loginUserId", userTicket.getId());
 		// 删除对应的角色-菜单信息
-		getActualDao().deleteRoleMenuByRoleId(param);
+		int rows = getActualDao().deleteRoleMenuByRoleId(param);
 		// 删除对应的角色-资源信息
-		getActualDao().deleteRoleResourceByRoleId(param);
+		rows += getActualDao().deleteRoleResourceByRoleId(param);
 		if (CollectionUtils.isNotEmpty(roleMenus)) {
 			roleMenuMapper.insertList(roleMenus);
 		}
 		if (CollectionUtils.isNotEmpty(roleResources)) {
 			roleResourceMapper.insertList(roleResources);
 		}
-		return BaseOutput.success("操作成功");
+		return BaseOutput.success(count == rows ? "操作成功" : "当前登录用户权限不足，部分权限修改不成功，请核对！");
 	}
 
 	@Override
