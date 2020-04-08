@@ -1,10 +1,6 @@
 package com.dili.uap.component;
 
-import com.dili.ss.dto.DTOUtils;
-import com.dili.uap.constants.UapConstants;
 import com.dili.uap.dao.SystemConfigMapper;
-import com.dili.uap.sdk.domain.SystemConfig;
-import com.dili.uap.sdk.session.SessionConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -24,11 +20,11 @@ public class InitListener implements ApplicationListener<ContextRefreshedEvent> 
 	@Override
 	public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
 		//根据系统配置设置登录超时时长，默认为30分钟
-		SystemConfig systemConfig = DTOUtils.newInstance(SystemConfig.class);
-		systemConfig.setSystemCode(UapConstants.UAP_SYSTEM_CODE);
-		systemConfig.setCode(SessionConstants.SESSION_TIMEOUT_CONFIG_KEY);
-		systemConfig = systemConfigMapper.selectOne(systemConfig);
-		SessionConstants.SESSION_TIMEOUT = Long.parseLong(systemConfig.getValue()) * 60;
+//		SystemConfig systemConfig = DTOUtils.newInstance(SystemConfig.class);
+//		systemConfig.setSystemCode(UapConstants.UAP_SYSTEM_CODE);
+//		systemConfig.setCode(SessionConstants.SESSION_TIMEOUT_CONFIG_KEY);
+//		systemConfig = systemConfigMapper.selectOne(systemConfig);
+//		SessionConstants.SESSION_TIMEOUT = Long.parseLong(systemConfig.getValue()) * 60;
 	}
 
 

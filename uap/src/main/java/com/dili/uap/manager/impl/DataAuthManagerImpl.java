@@ -5,6 +5,7 @@ import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.dao.UserDataAuthMapper;
 import com.dili.uap.manager.DataAuthManager;
 import com.dili.uap.sdk.domain.UserDataAuth;
+import com.dili.uap.sdk.session.DynaSessionConstants;
 import com.dili.uap.sdk.session.SessionConstants;
 import com.dili.uap.sdk.util.ManageRedisUtil;
 import org.slf4j.Logger;
@@ -31,6 +32,9 @@ public class DataAuthManagerImpl implements DataAuthManager {
 	@Autowired
 	private ManageRedisUtil redisUtil;
 
+	@Autowired
+	private DynaSessionConstants dynaSessionConstants;
+
 	@Override
 	public void initUserDataAuthesInRedis(Long userId) {
 		UserDataAuth userDataAuth = DTOUtils.newInstance(UserDataAuth.class);
@@ -43,7 +47,7 @@ public class DataAuthManagerImpl implements DataAuthManager {
 			return;
 		}
 		BoundSetOperations<String, Object> ops = this.redisUtil.getRedisTemplate().boundSetOps(key);
-		ops.expire(SessionConstants.SESSION_TIMEOUT, TimeUnit.SECONDS);
+		ops.expire(dynaSessionConstants.getSessionTimeout(), TimeUnit.SECONDS);
 		for (UserDataAuth dataAuth : userDataAuths) {
 			ops.add(JSON.toJSONString(dataAuth));
 		}

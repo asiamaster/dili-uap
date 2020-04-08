@@ -1,6 +1,7 @@
 package com.dili.uap.sdk.manager.impl;
 
 import com.dili.uap.sdk.manager.SessionRedisManager;
+import com.dili.uap.sdk.session.DynaSessionConstants;
 import com.dili.uap.sdk.session.SessionConstants;
 import com.dili.uap.sdk.util.ManageRedisUtil;
 import com.google.common.collect.Lists;
@@ -21,12 +22,13 @@ public class SessionRedisManagerImpl implements SessionRedisManager {
 
 	@Autowired
 	private ManageRedisUtil myRedisUtil;
-
+	@Autowired
+	private DynaSessionConstants dynaSessionConstants;
 	@Override
 	public void setUserIdSessionIdKey(String userId, String sessionId) {
 		BoundSetOperations<String, String> userIdSessionIds = myRedisUtil.getRedisTemplate().boundSetOps(SessionConstants.USERID_SESSIONID_KEY + userId);
 		userIdSessionIds.add(sessionId);
-		userIdSessionIds.expire(SessionConstants.SESSION_TIMEOUT, TimeUnit.SECONDS);
+		userIdSessionIds.expire(dynaSessionConstants.getSessionTimeout(), TimeUnit.SECONDS);
 //		myRedisUtil.set(SessionConstants.USERID_SESSIONID_KEY + user.getId(), sessionId,
 //				SessionConstants.SESSION_TIMEOUT);
 	}
@@ -109,14 +111,14 @@ public class SessionRedisManagerImpl implements SessionRedisManager {
 	@Override
 	public void setSessionUserIdKey(String sessionId, String userId) {
 		myRedisUtil.set(SessionConstants.SESSIONID_USERID_KEY + sessionId, userId,
-				SessionConstants.SESSION_TIMEOUT);
+				dynaSessionConstants.getSessionTimeout());
 	}
 
 	// sessionId - userName 操作 - START
 	@Override
 	public void setSessionUserNameKey(String sessionId, String userName) {
 		myRedisUtil.set(SessionConstants.SESSIONID_USERNAME_KEY + sessionId, userName,
-				SessionConstants.SESSION_TIMEOUT);
+				dynaSessionConstants.getSessionTimeout());
 	}
 
 	@Override

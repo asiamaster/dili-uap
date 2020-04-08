@@ -194,10 +194,11 @@ public class PermissionContext {
     }
 
     public UserTicket getUser(){
-        if (getSessionId() == null) {
+        String sessionId = getSessionId();
+        if (sessionId == null) {
             return null;
         }
-        return getUserRedis().getUser(getSessionId());
+        return getUserRedis().getUser(sessionId);
     }
 
     public UserTicket getAuthorizer(){
