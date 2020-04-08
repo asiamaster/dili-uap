@@ -7,16 +7,17 @@ import com.dili.uap.dao.DepartmentMapper;
 import com.dili.uap.dao.FirmMapper;
 import com.dili.uap.sdk.domain.Department;
 import com.dili.uap.sdk.domain.Firm;
+import com.dili.uap.sdk.domain.UserDataAuth;
+import com.dili.uap.sdk.glossary.DataAuthType;
 import com.dili.uap.service.DepartmentService;
-import com.dili.uap.service.FirmService;
-
+import com.dili.uap.service.UserDataAuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 由MyBatis Generator工具自动生成 This file was generated on 2018-05-22 16:10:05.
@@ -30,6 +31,9 @@ public class DepartmentServiceImpl extends BaseServiceImpl<Department, Long> imp
 	public DepartmentMapper getActualDao() {
 		return (DepartmentMapper) getDao();
 	}
+
+	@Autowired
+	private UserDataAuthService userDataAuthService;
 
 	@Override
 	@Transactional
@@ -121,5 +125,30 @@ public class DepartmentServiceImpl extends BaseServiceImpl<Department, Long> imp
 	@Override
 	public List<Department> getChildDepartments(Long parentId) {
 		return this.getActualDao().getChildDepartments(parentId);
+	}
+
+	@Override
+	public List<Department> listUserAuthDepartmentByFirmId(Long userId, Long firmId) {
+		if (Objects.isNull(userId) || Objects.isNull(firmId)){
+			return Collections.emptyList();
+		}
+		UserDataAuth condition = DTOUtils.newInstance(UserDataAuth.class);
+		condition.setUserId(userId);
+		condition.setRefCode(DataAuthType.DEPARTMENT.getCode());
+		List<UserDataAuth> userDataAuthList = userDataAuthService.list(condition);
+		if (CollectionUtils.isEmpty(userDataAuthList)){
+			return Collections.emptyList();
+		}
+		Firm firm = firmMapper.selectByPrimaryKey(firmId);
+		if (Objects.isNull(firm)){
+			return Collections.emptyList();
+		}
+		Department department = DTOUtils.newInstance(Department.class);
+		department.setFirmCode(firm.getCode());
+		List<Department> departmentList = this.listByExample(department);
+		if (CollectionUtils.isEmpty(departmentList)){
+			return Collections.emptyList();
+		}
+		return departmentList.stream().filter(d -> userDataAuthList.stream().anyMatch(ud -> Objects.equals(String.valueOf(d.getId()), ud.getValue()))).collect(Collectors.toList());
 	}
 }

@@ -171,7 +171,7 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, Long> implements Menu
                 return 0;
             }
         });
-        System.out.println(menuTrees);
+//        System.out.println(menuTrees);
         return menuTrees;
     }
 
