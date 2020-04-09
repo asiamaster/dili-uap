@@ -1,0 +1,12 @@
+package com.dili.rules
+
+import com.dili.uap.domain.CustomizeBeanImpl;
+
+rule "result should be filled with true3"
+
+    when
+        bean : CustomizeBeanImpl();
+    then
+        bean.setResult(true);
+        System.out.println("规则中打印日志：校验通过3!");
+end
