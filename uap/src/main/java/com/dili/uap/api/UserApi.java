@@ -9,8 +9,8 @@ import com.dili.uap.domain.ScheduleMessage;
 import com.dili.uap.domain.dto.UserDepartmentRole;
 import com.dili.uap.domain.dto.UserDepartmentRoleQuery;
 import com.dili.uap.domain.dto.UserDto;
-import com.dili.uap.domain.dto.UserQuery;
 import com.dili.uap.sdk.domain.User;
+import com.dili.uap.sdk.domain.dto.UserQuery;
 import com.dili.uap.service.UserService;
 import com.github.pagehelper.Page;
 import io.swagger.annotations.Api;
@@ -19,11 +19,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
