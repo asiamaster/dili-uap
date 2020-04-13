@@ -1,16 +1,35 @@
 package com.dili.uap.service.impl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.dili.ss.base.BaseServiceImpl;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.constants.UapConstants;
-import com.dili.uap.dao.*;
+import com.dili.uap.dao.RoleMapper;
+import com.dili.uap.dao.RoleMenuMapper;
+import com.dili.uap.dao.RoleResourceMapper;
+import com.dili.uap.dao.SystemMapper;
+import com.dili.uap.dao.UserMapper;
+import com.dili.uap.dao.UserRoleMapper;
 import com.dili.uap.domain.RoleMenu;
 import com.dili.uap.domain.RoleResource;
 import com.dili.uap.domain.UserRole;
 import com.dili.uap.domain.dto.SystemResourceDto;
 import com.dili.uap.glossary.MenuType;
 import com.dili.uap.glossary.Yn;
+import com.dili.uap.sdk.domain.Menu;
 import com.dili.uap.sdk.domain.Role;
 import com.dili.uap.sdk.domain.Systems;
 import com.dili.uap.sdk.domain.UserTicket;
@@ -19,14 +38,6 @@ import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.service.RoleService;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.*;
 
 /**
  * 由MyBatis Generator工具自动生成 This file was generated on 2018-05-18 11:45:41.
@@ -48,6 +59,8 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements Role
 	RoleResourceMapper roleResourceMapper;
 	@Autowired
 	UserRoleMapper userRoleMapper;
+	@Autowired
+	private UserMapper userMapper;
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
@@ -207,8 +220,10 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements Role
 	public BaseOutput saveRoleMenuAndResource(Long roleId, String[] resourceIds) {
 		// 勾选的菜单数据集合
 		List<RoleMenu> roleMenus = Lists.newArrayList();
+		List<RoleMenu> toInsertRoleMenus = null;
 		// 勾选的资源ID集合
 		List<RoleResource> roleResources = Lists.newArrayList();
+		List<RoleResource> toInsertRoleResources = null;
 		/**
 		 * 循环所勾选的资源信息，分割出菜单、资源信息
 		 */
@@ -230,22 +245,45 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements Role
 				}
 			}
 		}
-		int count = this.getActualDao().getRoleMenuAndResourceByRoleId(roleId).size();
 		UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
+		// 超级管理员权限最大
+		if (userTicket.getUserName().equals(this.adminName)) {
+			RoleMenu rmCondition = DTOUtils.newInstance(RoleMenu.class);
+			rmCondition.setRoleId(roleId);
+			this.roleMenuMapper.delete(rmCondition);
+			RoleResource rrCondition = DTOUtils.newInstance(RoleResource.class);
+			rrCondition.setRoleId(roleId);
+			this.roleResourceMapper.delete(rrCondition);
+			this.roleMenuMapper.insertList(roleMenus);
+			this.roleResourceMapper.insertList(roleResources);
+			return BaseOutput.success("操作成功");
+		}
+		final StringBuilder sb = new StringBuilder();
+		if (CollectionUtils.isNotEmpty(roleMenus)) {
+			toInsertRoleMenus = this.getActualDao().selectInsertRoleMenuByLoggedUserId(roleMenus, roleId, userTicket.getId());
+		}
+		if (CollectionUtils.isNotEmpty(roleResources)) {
+			toInsertRoleResources = this.getActualDao().selectInsertRoleResourceByLoggedUserId(roleResources, roleId, userTicket.getId());
+		}
 		Map param = new HashMap<>(2);
 		param.put("roleId", roleId);
 		param.put("loginUserId", userTicket.getId());
 		// 删除对应的角色-菜单信息
-		int rows = getActualDao().deleteRoleMenuByRoleId(param);
+		getActualDao().deleteRoleMenuByRoleId(param);
 		// 删除对应的角色-资源信息
-		rows += getActualDao().deleteRoleResourceByRoleId(param);
-		if (CollectionUtils.isNotEmpty(roleMenus)) {
-			roleMenuMapper.insertList(roleMenus);
+		getActualDao().deleteRoleResourceByRoleId(param);
+		if (CollectionUtils.isNotEmpty(toInsertRoleMenus)) {
+			roleMenuMapper.insertList(toInsertRoleMenus);
 		}
-		if (CollectionUtils.isNotEmpty(roleResources)) {
-			roleResourceMapper.insertList(roleResources);
+		if (CollectionUtils.isNotEmpty(toInsertRoleResources)) {
+			roleResourceMapper.insertList(toInsertRoleResources);
 		}
-		return BaseOutput.success(count == rows ? "操作成功" : "当前登录用户权限不足，部分权限修改不成功，请核对！");
+		List<SystemResourceDto> resources = this.getActualDao().selectLimittedUpdateMenuList(roleMenus, roleResources, roleId, userTicket.getId());
+		if (CollectionUtils.isNotEmpty(resources)) {
+			sb.append("当前登录用户权限不足，以下权限修改不成功：");
+			resources.forEach(s -> sb.append(s.getName()).append(','));
+		}
+		return BaseOutput.success(StringUtils.isEmpty(sb) ? "操作成功" : sb.substring(0, sb.length() - 1));
 	}
 
 	@Override

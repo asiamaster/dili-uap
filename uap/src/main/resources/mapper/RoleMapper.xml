@@ -211,4 +211,116 @@
 			#{roleId}
 		</foreach>
 	</select>
+
+	<select id="selectInsertRoleMenuByLoggedUserId" resultMap="com.dili.uap.dao.RoleMenuMapper.BaseResultMap">
+		SELECT
+		#{roleId} AS role_id,
+		id AS menu_id
+		FROM
+		menu
+		WHERE
+		id IN (
+		<foreach collection="roleMenus" item="rm" separator=",">
+			#{rm.menuId}
+		</foreach>
+		)
+		AND id IN ( SELECT rm.menu_id FROM role_menu rm INNER
+		JOIN user_role ur ON rm.role_id = ur.role_id WHERE ur.user_id = #{loggedUserId} )
+	</select>
+
+	<select id="selectInsertRoleResourceByLoggedUserId" resultMap="com.dili.uap.dao.RoleResourceMapper.BaseResultMap">
+		SELECT
+		#{roleId} AS role_id,
+		id AS resource_id
+		FROM
+		resource
+		WHERE
+		id IN (
+		<foreach collection="roleResources" item="rr" separator=",">
+			#{rr.resourceId}
+		</foreach>
+		)
+		AND id IN (
+		SELECT
+		rr.resource_id
+		FROM
+		role_resource rr
+		INNER JOIN user_role ur ON rr.role_id = ur.role_id WHERE ur.user_id = #{loggedUserId})
+	</select>
+
+	<select id="selectLimittedUpdateMenuList" resultType="com.dili.uap.domain.dto.SystemResourceDto">
+		SELECT
+		t1.id,
+		t1.`name`
+		FROM
+		(
+		SELECT
+		id,
+		`name`
+		FROM
+		menu
+		WHERE
+		id IN (
+		<foreach collection="roleMenus" item="rm" separator=",">
+			#{rm.menuId}
+		</foreach>
+		) UNION
+		SELECT
+		rm.menu_id,
+		m.`name`
+		FROM
+		role_menu rm
+		INNER JOIN menu m on rm.menu_id=m.id
+		WHERE
+		role_id = #{roleId}
+		) t1
+		WHERE
+		t1.id NOT IN (
+		SELECT
+		rm.menu_id
+		FROM
+		role_menu rm
+		INNER JOIN user_role ur ON
+		rm.role_id =
+		ur.role_id
+		WHERE
+		ur.user_id = #{loggedUserId})
+		UNION ALL
+		SELECT
+		t1.id,
+		t1.`name`
+		FROM
+		(
+		SELECT
+		id,
+		`name`
+		FROM
+		resource
+		WHERE
+		id IN (
+		<foreach collection="roleResources" item="rr" separator=",">
+			#{rr.resourceId}
+		</foreach>
+		) UNION
+		SELECT
+		rr.resource_id,
+		r.`name`
+		FROM
+		role_resource rr
+		INNER JOIN resource r ON rr.resource_id = r.id
+		WHERE
+		role_id = #{roleId}
+		) t1
+		WHERE
+		t1.id NOT IN (
+		SELECT
+		rr.resource_id
+		FROM
+		role_resource rr
+		INNER
+		JOIN
+		user_role ur ON rr.role_id = ur.role_id
+		WHERE
+		ur.user_id = #{loggedUserId})
+	</select>
 </mapper>
