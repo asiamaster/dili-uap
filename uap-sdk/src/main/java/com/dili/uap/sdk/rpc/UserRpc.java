@@ -2,6 +2,7 @@ package com.dili.uap.sdk.rpc;
 
 import java.util.List;
 
+import com.dili.uap.sdk.domain.dto.UserQuery;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.dili.ss.domain.BaseOutput;
@@ -33,8 +34,17 @@ public interface UserRpc {
 	@POST("/userApi/listUserByIds.api")
 	BaseOutput<List<User>> listUserByIds(@VOBody List<String> ids);
 
+	/**
+	 * 因为在api中查询条件参数是 UserQuery，并为了兼容以前的版本调用，所有，此方法现在标记为弃用，请接口调用改成下边的的那个方法
+	 * @param user
+	 * @return
+	 */
+	@Deprecated
 	@POST("/userApi/listByExample.api")
 	PageOutput<List<User>> listByExample(@VOBody(required = false) User user);
+
+	@POST("/userApi/listByExample.api")
+	PageOutput<List<User>> listByExample(@VOBody(required = false) UserQuery userQuery);
 
 	@POST("/userApi/get.api")
 	BaseOutput<User> findUserById(@VOBody Long id);
