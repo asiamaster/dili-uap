@@ -121,7 +121,7 @@ public class SessionFilter implements Filter {
             pc.sendRedirect(e.getPath());
         } catch (NotLoginException e) {
             systemExceptionLog(pc, e);
-            pc.noAccess();
+            pc.noLogin();
         } catch (NotAccessPermissionException e) {
             if (log.isInfoEnabled()) {
                 log.info("用户{Session:" + pc.getSessionId() + ", userId:" + pc.getUserId() + "}没有访问" + pc.getUrl() + "权限！");

@@ -74,7 +74,7 @@ public interface User extends IBaseDomain,IMybatisForceParams {
     @Column(name = "`card_number`")
     @FieldDef(label="卡号", maxLength = 30)
     @EditMode(editor = FieldEditor.Text)
-    @Size(min = 12, max = 22, message = "卡号长度介于12-22之间", groups = {AddView.class, ModifyView.class})
+    @Size( max = 22, message = "卡号长度不大于22", groups = {AddView.class, ModifyView.class})
     String getCardNumber();
 
     void setCardNumber(String cardNumber);

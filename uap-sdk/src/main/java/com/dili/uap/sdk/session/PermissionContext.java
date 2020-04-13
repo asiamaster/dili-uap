@@ -173,6 +173,17 @@ public class PermissionContext {
             return;
         }
         resp.setContentType("application/json;charset=UTF-8");
+        resp.getWriter().write(JSON.toJSONString(BaseOutput.failure("用户没有权限").setCode("401")));
+        resp.flushBuffer();
+    }
+
+    public void noLogin() throws IOException {
+        String requestType = req.getHeader("X-Requested-With");
+        if (requestType == null) {
+            sendRedirect("/error/noLogin.do");
+            return;
+        }
+        resp.setContentType("application/json;charset=UTF-8");
         resp.getWriter().write(JSON.toJSONString(BaseOutput.failure("用户未登录").setCode("401")));
         resp.flushBuffer();
     }
@@ -194,10 +205,11 @@ public class PermissionContext {
     }
 
     public UserTicket getUser(){
-        if (getSessionId() == null) {
+        String sessionId = getSessionId();
+        if (sessionId == null) {
             return null;
         }
-        return getUserRedis().getUser(getSessionId());
+        return getUserRedis().getUser(sessionId);
     }
 
     public UserTicket getAuthorizer(){

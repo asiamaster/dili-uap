@@ -1,5 +1,10 @@
 package com.dili.uap.sdk.session;
 
+import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.stereotype.Component;
+
+@RefreshScope
+@Component
 public class SessionConstants {
     //系统名称前缀
     public static final String APPLICATION_NAME = "UAP_";
@@ -20,7 +25,7 @@ public class SessionConstants {
     // sessionId - SessionData的Redis 过期时间(秒)
     // sessionId - userId和UserIdSessionData的Redis 过期时间(秒)
     // 30分钟
-    public static Long SESSION_TIMEOUT = 60 * 30L;
+//    public static Long SESSION_TIMEOUT;
     // sessionId - userId和UserIdSessionData的Redis 过期时间(秒)
 //    public static Long SESSIONID_USERID_TIMEOUT = 60 * 60 * 24L;
 
@@ -49,8 +54,8 @@ public class SessionConstants {
     public static final String USER_PWD_ERROR_KEY = APPLICATION_NAME + "manage:user_pwd_error:";
 
     //Cookie key
-    //Cookie过期时间(秒)
-    public  static Integer COOKIE_TIMEOUT = SESSION_TIMEOUT.intValue() * 48;
+    //Cookie过期时间(秒) 1天
+    public  static Integer COOKIE_TIMEOUT = 86400;
     //登录会话id
     public static final String COOKIE_SESSION_ID = APPLICATION_NAME + "SessionId";
     //用户id
@@ -61,4 +66,5 @@ public class SessionConstants {
     public static final String COOKIE_FIRM_ID_KEY = APPLICATION_NAME + "firmId";
     //登录地址referer
     public static final String COOKIE_LOGIN_PATH_KEY = APPLICATION_NAME + "loginPath";
+
 }

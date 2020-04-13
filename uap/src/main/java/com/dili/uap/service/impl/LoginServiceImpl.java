@@ -17,6 +17,7 @@ import com.dili.uap.glossary.Yn;
 import com.dili.uap.manager.*;
 import com.dili.uap.sdk.domain.*;
 import com.dili.uap.sdk.manager.SessionRedisManager;
+import com.dili.uap.sdk.session.DynaSessionConstants;
 import com.dili.uap.sdk.session.ManageConfig;
 import com.dili.uap.sdk.session.SessionConstants;
 import com.dili.uap.sdk.util.ManageRedisUtil;
@@ -98,6 +99,9 @@ public class LoginServiceImpl implements LoginService {
 
 	@Autowired
 	private FirmMapper firmMapper;
+
+	@Autowired
+	private DynaSessionConstants dynaSessionConstants;
 
 	@Override
 	public BaseOutput<String> validate(LoginDto loginDto) {
@@ -386,7 +390,7 @@ public class LoginServiceImpl implements LoginService {
 		LOG.debug("--- Save Session Data To Redis ---");
 		// redis: ressionId - user
 		// 用于在SDK中根据sessionId获取用户信息，如果sessionId不存在，过期或者被挤，都会被权限系统拦截
-		this.redisUtil.set(SessionConstants.SESSION_KEY_PREFIX + sessionId, JSON.toJSONString(sessionData), SessionConstants.SESSION_TIMEOUT);
+		this.redisUtil.set(SessionConstants.SESSION_KEY_PREFIX + sessionId, JSON.toJSONString(sessionData), dynaSessionConstants.getSessionTimeout());
 		// redis: sessionId - userID
 		this.sessionRedisManager.setSessionUserIdKey(sessionId, user.getId().toString());
 		// redis: sessionId - userName

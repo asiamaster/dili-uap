@@ -29,7 +29,7 @@ public class UapGlobalExceptionHandler {
         String requestType = request.getHeader("X-Requested-With");
         if (requestType == null) {
             request.setAttribute("exception", e);
-            return SpringUtil.getProperty("error.page.noLogin", "error/noLogin");
+            return SpringUtil.getProperty("error.page.noLogin", "error/uapNoLogin");
         }
         response.setContentType("application/json;charset=UTF-8");
         return JSON.toJSONString(BaseOutput.failure(e.getMessage()));

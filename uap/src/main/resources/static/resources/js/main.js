@@ -64,6 +64,9 @@ $(function () {
         //验证银行卡号规则：目前只要求是数字，且长度在12-22位之间即可
         bankCard: {
             validator: function(value, param){
+                // if(value == null || value.length ==0){
+                //     return true;
+                // }
                 return /^[1-9]\d{11,21}$/.test(value);
             },
             message: '请输入正确的卡号。'

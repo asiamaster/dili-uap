@@ -1,0 +1,50 @@
+package com.dili.rules;
+//generated from Decision Table
+import com.dili.uap.domain.CustomizeBeanImpl;
+function void printName(String name, String desc, int age){
+System.out.println("name:"+name+",desc:"+desc+",age:"+age);
+}
+// rule values at B11, header at B6
+rule "age dtable-sheet_11"
+	salience 65535
+	when
+		bean:CustomizeBeanImpl(age<=12)
+	then
+		bean.setDesc("少年");
+retract(bean);
+		printName(bean.getName(), bean.getDesc(), bean.getAge());
+end
+
+// rule values at B12, header at B6
+rule "age dtable-sheet_12"
+	salience 65534
+	when
+		bean:CustomizeBeanImpl((age>12 && id != null), age<=24)
+	then
+		bean.setDesc("青年");
+retract(bean);
+		printName(bean.getName(), bean.getDesc(), bean.getAge());
+end
+
+// rule values at B13, header at B6
+rule "age dtable-sheet_13"
+	salience 65533
+	when
+		bean:CustomizeBeanImpl((age>24 && id != null), age<=65)
+	then
+		bean.setDesc("中年");
+retract(bean);
+		printName(bean.getName(), bean.getDesc(), bean.getAge());
+end
+
+// rule values at B14, header at B6
+rule "age dtable-sheet_14"
+	salience 65532
+	when
+		bean:CustomizeBeanImpl((age>65 && id != null))
+	then
+		bean.setDesc("老年");
+retract(bean);
+		printName(bean.getName(), bean.getDesc(), bean.getAge());
+end
+

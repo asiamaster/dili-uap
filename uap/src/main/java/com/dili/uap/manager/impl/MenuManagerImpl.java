@@ -3,6 +3,7 @@ package com.dili.uap.manager.impl;
 import com.dili.uap.dao.MenuMapper;
 import com.dili.uap.manager.MenuManager;
 import com.dili.uap.sdk.domain.Menu;
+import com.dili.uap.sdk.session.DynaSessionConstants;
 import com.dili.uap.sdk.session.SessionConstants;
 import com.dili.uap.sdk.util.ManageRedisUtil;
 import org.apache.commons.collections.CollectionUtils;
@@ -33,6 +34,9 @@ public class MenuManagerImpl implements MenuManager {
 	@Autowired
 	private ManageRedisUtil redisUtils;
 
+	@Autowired
+	private DynaSessionConstants dynaSessionConstants;
+
 	@Override
 	public void initUserMenuUrlsInRedis(Long userId) {
 		List<String> urls = new ArrayList<>();
@@ -50,7 +54,7 @@ public class MenuManagerImpl implements MenuManager {
         String key = SessionConstants.USER_MENU_URL_KEY + userId;
         this.redisUtils.remove(key);
         BoundSetOperations<String, Object> ops = this.redisUtils.getRedisTemplate().boundSetOps(key);
-        ops.expire(SessionConstants.SESSION_TIMEOUT, TimeUnit.SECONDS);
+        ops.expire(dynaSessionConstants.getSessionTimeout(), TimeUnit.SECONDS);
         ops.add(urls.toArray());
     }
 

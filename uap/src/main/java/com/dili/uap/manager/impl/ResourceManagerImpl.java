@@ -3,6 +3,7 @@ package com.dili.uap.manager.impl;
 import com.dili.uap.dao.ResourceMapper;
 import com.dili.uap.domain.Resource;
 import com.dili.uap.manager.ResourceManager;
+import com.dili.uap.sdk.session.DynaSessionConstants;
 import com.dili.uap.sdk.session.SessionConstants;
 import com.dili.uap.sdk.util.ManageRedisUtil;
 import org.apache.commons.collections.CollectionUtils;
@@ -32,6 +33,9 @@ public class ResourceManagerImpl implements ResourceManager {
 	@Autowired
 	private ManageRedisUtil redisUtils;
 
+	@Autowired
+	private DynaSessionConstants dynaSessionConstants;
+
 	@Override
 	public void initUserResourceCodeInRedis(Long userId) {
 		List<Resource> resources = this.resourceMapper.listByUserId(userId);
@@ -50,7 +54,7 @@ public class ResourceManagerImpl implements ResourceManager {
 		String key = SessionConstants.USER_RESOURCE_CODE_KEY + userId;
 		this.redisUtils.remove(key);
 		BoundSetOperations<String, Object> ops = this.redisUtils.getRedisTemplate().boundSetOps(key);
-		ops.expire(SessionConstants.SESSION_TIMEOUT, TimeUnit.SECONDS);
+		ops.expire(dynaSessionConstants.getSessionTimeout(), TimeUnit.SECONDS);
 		ops.add(codes.toArray());
 	}
 }

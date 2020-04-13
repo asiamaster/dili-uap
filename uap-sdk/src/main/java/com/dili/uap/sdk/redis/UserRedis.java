@@ -3,6 +3,7 @@ package com.dili.uap.sdk.redis;
 import com.alibaba.fastjson.JSONObject;
 import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.manager.SessionRedisManager;
+import com.dili.uap.sdk.session.DynaSessionConstants;
 import com.dili.uap.sdk.session.SessionConstants;
 import com.dili.uap.sdk.util.ManageRedisUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -25,6 +26,9 @@ public class UserRedis {
     @Autowired
     private SessionRedisManager sessionRedisManager;
 
+    @Autowired
+    private DynaSessionConstants dynaSessionConstants;
+
     /**
      * 根据sessionId获取userId
      * @param sessionId
@@ -40,7 +44,7 @@ public class UserRedis {
 
     /**
      * 根据sessionId获取数据，支持转型为指定的clazz<br/>
-     * 如果有数据则将redis超时推后SessionConstants.SESSION_TIMEOUT的时间<br/>
+     * 如果有数据则将redis超时推后dynaSessionConstants.getSessionTimeout()的时间<br/>
      *
      * @param sessionId
      * @return
@@ -66,34 +70,34 @@ public class UserRedis {
      * @param sessionId
      */
     private void defer(String sessionId) {
-        //推后SessionConstants.SESSIONID_USERID_KEY + sessionId : userId : SessionConstants.SESSION_TIMEOUT
-        redisUtil.expire(SessionConstants.SESSIONID_USERID_KEY + sessionId, SessionConstants.SESSION_TIMEOUT, TimeUnit.SECONDS);
+        //推后SessionConstants.SESSIONID_USERID_KEY + sessionId : userId : dynaSessionConstants.getSessionTimeout()
+        redisUtil.expire(SessionConstants.SESSIONID_USERID_KEY + sessionId, dynaSessionConstants.getSessionTimeout(), TimeUnit.SECONDS);
         //先根据sessionId找到用户id
-        //SessionConstants.SESSIONID_USERID_KEY + sessionId : userId : SessionConstants.SESSION_TIMEOUT
+        //SessionConstants.SESSIONID_USERID_KEY + sessionId : userId : dynaSessionConstants.getSessionTimeout()
         String userId = getUserIdBySessionId(sessionId);
         //再根据userId，推后sessionId
-        //推后SessionConstants.USERID_SESSIONID_KEY + userId : sessionId : SessionConstants.SESSION_TIMEOUT
-        redisUtil.expire(SessionConstants.USERID_SESSIONID_KEY + userId, SessionConstants.SESSION_TIMEOUT, TimeUnit.SECONDS);
-        //推后SessionConstants.USER_SYSTEM_KEY + userId : systems : SessionConstants.SESSION_TIMEOUT
-        redisUtil.expire(SessionConstants.USER_SYSTEM_KEY + userId, SessionConstants.SESSION_TIMEOUT, TimeUnit.SECONDS);
-        //推后SessionConstants.USER_MENU_URL_KEY + userId : menuUrls : SessionConstants.SESSION_TIMEOUT
-        redisUtil.expire(SessionConstants.USER_MENU_URL_KEY + userId, SessionConstants.SESSION_TIMEOUT, TimeUnit.SECONDS);
-        //推后SessionConstants.USER_RESOURCE_CODE_KEY + userId ： resourceCodes : SessionConstants.SESSION_TIMEOUT
-        redisUtil.expire(SessionConstants.USER_RESOURCE_CODE_KEY + userId, SessionConstants.SESSION_TIMEOUT, TimeUnit.SECONDS);
-        //推后SessionConstants.USER_DATA_AUTH_KEY + userId : userDataAuths : SessionConstants.SESSION_TIMEOUT
-        redisUtil.expire(SessionConstants.USER_DATA_AUTH_KEY + userId, SessionConstants.SESSION_TIMEOUT, TimeUnit.SECONDS);
+        //推后SessionConstants.USERID_SESSIONID_KEY + userId : sessionId : dynaSessionConstants.getSessionTimeout()
+        redisUtil.expire(SessionConstants.USERID_SESSIONID_KEY + userId, dynaSessionConstants.getSessionTimeout(), TimeUnit.SECONDS);
+        //推后SessionConstants.USER_SYSTEM_KEY + userId : systems : dynaSessionConstants.getSessionTimeout()
+        redisUtil.expire(SessionConstants.USER_SYSTEM_KEY + userId, dynaSessionConstants.getSessionTimeout(), TimeUnit.SECONDS);
+        //推后SessionConstants.USER_MENU_URL_KEY + userId : menuUrls : dynaSessionConstants.getSessionTimeout()
+        redisUtil.expire(SessionConstants.USER_MENU_URL_KEY + userId, dynaSessionConstants.getSessionTimeout(), TimeUnit.SECONDS);
+        //推后SessionConstants.USER_RESOURCE_CODE_KEY + userId ： resourceCodes : dynaSessionConstants.getSessionTimeout()
+        redisUtil.expire(SessionConstants.USER_RESOURCE_CODE_KEY + userId, dynaSessionConstants.getSessionTimeout(), TimeUnit.SECONDS);
+        //推后SessionConstants.USER_DATA_AUTH_KEY + userId : userDataAuths : dynaSessionConstants.getSessionTimeout()
+        redisUtil.expire(SessionConstants.USER_DATA_AUTH_KEY + userId, dynaSessionConstants.getSessionTimeout(), TimeUnit.SECONDS);
     }
     
     /**
      * 根据sessionId获取String数据<br/>
-     * 如果有数据则将redis超时推后SessionConstants.SESSION_TIMEOUT的时间
+     * 如果有数据则将redis超时推后dynaSessionConstants.getSessionTimeout()的时间
      * @param sessionId
      * @return
      */
     private String getSession(String sessionId){
         String sessionData = redisUtil.get(SessionConstants.SESSION_KEY_PREFIX + sessionId, String.class);
         if (sessionData != null) {
-            redisUtil.expire(SessionConstants.SESSION_KEY_PREFIX + sessionId, SessionConstants.SESSION_TIMEOUT, TimeUnit.SECONDS);
+            redisUtil.expire(SessionConstants.SESSION_KEY_PREFIX + sessionId, dynaSessionConstants.getSessionTimeout(), TimeUnit.SECONDS);
         }
         return sessionData;
     }

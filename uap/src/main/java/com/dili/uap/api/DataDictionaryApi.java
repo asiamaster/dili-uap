@@ -35,6 +35,10 @@ public class DataDictionaryApi {
 	@ResponseBody
 	@RequestMapping(value = "/list.api", method = { RequestMethod.GET, RequestMethod.POST })
 	public BaseOutput<List<DataDictionaryValue>> list(DataDictionaryValue dataDictionaryValue) {
+		//默认按orderNumber排序
+		if(dataDictionaryValue.getOrderNumber() != null) {
+			dataDictionaryValue.setOrder("orderNumber");
+		}
 		return BaseOutput.success().setData(this.dataDictionaryValueService.listByExample(dataDictionaryValue));
 	}
 	/**
@@ -45,7 +49,7 @@ public class DataDictionaryApi {
 	@ResponseBody
 	@RequestMapping(value = "/listDataDictionaryValue.api", method = { RequestMethod.GET, RequestMethod.POST })
 	public BaseOutput<List<DataDictionaryValue>> listDataDictionaryValue(DataDictionaryValue dataDictionaryValue) {
-		return BaseOutput.success().setData(this.dataDictionaryValueService.listByExample(dataDictionaryValue));
+		return this.list(dataDictionaryValue);
 	}
 
 	/**
@@ -58,6 +62,10 @@ public class DataDictionaryApi {
 	public BaseOutput<List<DataDictionaryValue>> listDataDictionaryValueByDdCode(@RequestParam("ddCode") String ddCode) {
 		DataDictionaryValue dataDictionaryValue = DTOUtils.newInstance(DataDictionaryValue.class);
 		dataDictionaryValue.setDdCode(ddCode);
+		//默认按orderNumber排序
+		if(dataDictionaryValue.getOrderNumber() != null) {
+			dataDictionaryValue.setOrder("orderNumber");
+		}
 		return BaseOutput.success().setData(this.dataDictionaryValueService.listByExample(dataDictionaryValue));
 	}
 	
