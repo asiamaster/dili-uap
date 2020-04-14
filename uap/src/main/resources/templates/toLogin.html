@@ -6,7 +6,11 @@
     <script type="text/javascript">
         //到登录页面
         if(window === window.top){
-            window.location.href = '<#config name="uap.contextPath"/>';
+            if(typeof callbackObj != "undefined"){
+                callbackObj.logout();
+            }else {
+                window.location.href = '<#config name="uap.contextPath"/>';
+            }
         }else{
             window.parent.postMessage('toLogin','<#config name="uap.contextPath"/>');
         }

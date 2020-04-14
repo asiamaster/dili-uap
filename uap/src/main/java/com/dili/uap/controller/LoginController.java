@@ -51,7 +51,7 @@ public class LoginController {
 	// 跳转到登录页面
 	public static final String INDEX_PATH = "login/index";
 	// 跳转到登录页Controller
-	public static final String REDIRECT_INDEX_PAGE = "redirect:/login/index.html";
+	public static final String REDIRECT_INDEX_PAGE = "redirect:/login/toLogin.html";
 
 	/**
 	 * 跳转到Login页面
