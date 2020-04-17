@@ -25,6 +25,13 @@
 
 	<build>
 		<finalName>uap</finalName>
+		<!-- 资源文件过滤 -->
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
@@ -46,6 +53,9 @@
 					<nonFilteredFileExtensions>
 						<nonFilteredFileExtension>xls</nonFilteredFileExtension>
 						<nonFilteredFileExtension>xlsx</nonFilteredFileExtension>
+						<nonFilteredFileExtension>zip</nonFilteredFileExtension>
+						<nonFilteredFileExtension>rar</nonFilteredFileExtension>
+						<nonFilteredFileExtension>7z</nonFilteredFileExtension>
 					</nonFilteredFileExtensions>
 				</configuration>
 			</plugin>
