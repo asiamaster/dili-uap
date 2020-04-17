@@ -101,7 +101,7 @@
         </appender>
     </springProfile>
 
-    <root level="info">
+    <root level="debug">
         <appender-ref ref="appender" />
         <appender-ref ref="FILE" />
     </root>
