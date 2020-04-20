@@ -42,13 +42,11 @@
 		id, ref_code, #{userId} AS user_id, value
 		FROM
 		user_data_auth
-		WHERE
+		WHERE 1 = 1 AND
 		<if test="saveDatas != null and saveDatas.size()>0">
 			(ref_code,`value`) IN(
-			<foreach collection="saveDatas" item="dataAuth" separator=" UNION ALL ">
-				SELECT
-				#{dataAuth.refCode} AS ref_code,
-				#{dataAuth.value} as `value`
+			<foreach collection="saveDatas" item="dataAuth" separator=",">
+				(#{dataAuth.refCode},#{dataAuth.value})
 			</foreach>
 			)
 		</if>

@@ -404,13 +404,13 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 		if (this.adminName.equals(userTicket.getUserName())) {
 			this.userDataAuthMapper.delete(record);
 		} else {
+			saveDatas = this.userDataAuthMapper.selectIntersectionUpdateUserDatas(userTicket.getId(), userId, saveDatas);
 			this.userDataAuthMapper.deleteUserDataAuth(new HashMap<String, Object>() {
 				{
 					put("userId", userId);
 					put("loggedUserId", userTicket.getId());
 				}
 			});
-			saveDatas = this.userDataAuthMapper.selectIntersectionUpdateUserDatas(userTicket.getId(), userId, saveDatas);
 		}
 		// 如果存在需要保存的用户角色数据，则保存数据
 		if (CollectionUtils.isNotEmpty(saveDatas)) {
