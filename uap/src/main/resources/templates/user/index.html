@@ -87,17 +87,39 @@
                 </thead>
             </table>
             <div id="toolbar" style="padding:2px 5px;">
+            	<#resource code="editUserRole">
                 <a href="#" class="easyui-linkbutton" iconCls="icon-role" onclick="editUserRole()" plain="true">分配角色</a>
+                </#resource>
+                <#resource code="editUserData">
                 <a href="#" class="easyui-linkbutton" iconCls="icon-data" onclick="editUserDataAuth()" plain="true">数据权限</a>
+                </#resource>
+                <#resource code="viewUser">
                 <a href="#" class="easyui-linkbutton" iconCls="icon-detail" onclick="openDetail()" plain="true">详情</a>
+                </#resource>
+                <#resource code="insertUser">
                 <a href="#" class="easyui-linkbutton" iconCls="icon-add" onclick="openInsert()" plain="true">新增</a>
+                </#resource>
+                <#resource code="updateUser">
                 <a href="#" class="easyui-linkbutton" iconCls="icon-edit" onclick="openUpdate()" plain="true">修改</a>
+                </#resource>
+                <#resource code="deleteUser">
                 <a href="#" class="easyui-linkbutton" iconCls="icon-remove" onclick="del()" plain="true">删除</a>
+                </#resource>
+                <#resource code="resetPass">
                 <a href="#" class="easyui-linkbutton" iconCls="icon-reset" onclick="resetPass()" plain="true">密码重置</a>
+                </#resource>
+                <#resource code="enabledUser">
                 <a href="#" class="easyui-linkbutton" iconCls="icon-play" onclick="doEnable(true)" plain="true">启用</a>
+                </#resource>
+                <#resource code="disabledUser">
                 <a href="#" class="easyui-linkbutton" iconCls="icon-stop" onclick="doEnable(false)" plain="true">禁用</a>
+                </#resource>
+                <#resource code="unlockUser">
                 <a href="#" class="easyui-linkbutton" iconCls="icon-unlock" onclick="doUnlock()" plain="true">解锁</a>
+                </#resource>
+                <#resource code="exportUser">
                 <a href="#" class="easyui-linkbutton" iconCls="icon-export" onclick="doExport('userGrid')" plain="true">导出</a>
+                </#resource>
             </div>
         </div>
     </div>
