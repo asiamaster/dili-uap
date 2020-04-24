@@ -1,10 +1,35 @@
 package com.dili.uap.sdk.session;
 
+import java.io.IOException;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
+import javax.security.auth.login.LoginException;
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.dili.logger.sdk.domain.ExceptionLog;
+import com.dili.logger.sdk.rpc.ExceptionLogRpc;
 import com.dili.ss.domain.BaseOutput;
-import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.sdk.domain.Menu;
-import com.dili.uap.sdk.domain.SystemExceptionLog;
 import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.exception.NotAccessPermissionException;
 import com.dili.uap.sdk.exception.NotLoginException;
@@ -12,22 +37,8 @@ import com.dili.uap.sdk.exception.RedirectException;
 import com.dili.uap.sdk.glossary.ExceptionType;
 import com.dili.uap.sdk.redis.UserUrlRedis;
 import com.dili.uap.sdk.rpc.MenuRpc;
-import com.dili.uap.sdk.rpc.SystemExceptionLogRpc;
 import com.dili.uap.sdk.util.WebContent;
 import com.google.common.collect.Lists;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import javax.security.auth.login.LoginException;
-import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.*;
 
 /**
  * 权限统一拦截器
@@ -35,236 +46,237 @@ import java.util.*;
 @Component
 public class SessionFilter implements Filter {
 
-    private static final Logger log = LoggerFactory.getLogger(SessionFilter.class);
-    //配置信息
-    @Autowired
-    private ManageConfig config;
-    //过滤器配置，留待使用
-    private FilterConfig filterConfig;
+	private static final Logger log = LoggerFactory.getLogger(SessionFilter.class);
+	// 配置信息
+	@Autowired
+	private ManageConfig config;
+	// 过滤器配置，留待使用
+	private FilterConfig filterConfig;
 
-    @Autowired
-    private MenuRpc menuRpc;
+	@Autowired
+	private MenuRpc menuRpc;
 
-    @Autowired
-    private UserUrlRedis userResRedis;
+	@Autowired
+	private UserUrlRedis userResRedis;
 
-    @Autowired
-    private SystemExceptionLogRpc systemExceptionLogRpc;
+	@Autowired
+	private ExceptionLogRpc logRpc;
 
-    @Override
-    public void destroy() {}
+	@Override
+	public void destroy() {
+	}
 
-    @Override
-    public void init(FilterConfig conf) throws ServletException {
-        filterConfig = conf;
-    }
+	@Override
+	public void init(FilterConfig conf) throws ServletException {
+		filterConfig = conf;
+	}
 
-    @Override
-    public void doFilter(ServletRequest request, ServletResponse response,
-                         FilterChain filter) throws IOException, ServletException {
-        WebContent.resetLocal();
-        SessionContext.resetLocal();
-        HttpServletRequest req = (HttpServletRequest) request;
-        HttpServletResponse resp = (HttpServletResponse) response;
-        WebContent.put(req);
-        WebContent.put(resp);
-        PermissionContext pc = new PermissionContext(req, resp, this, config);
-        WebContent.put(SessionConstants.MANAGE_PERMISSION_CONTEXT, pc);
-        //如果是框架导出，需要手动设置SessionId到Header中，因为restful取不到cookies
-        if(pc.getReq().getRequestURI().trim().endsWith("/export/serverExport.action")) {
-            MutableHttpServletRequest mreq = new MutableHttpServletRequest(req);
-            mreq.putHeader(SessionConstants.SESSION_ID, pc.getSessionId());
-            req = mreq;
-        }
-        //判断是否要(include或exclude)权限检查, 不过滤就直接放过
-        if (!config.hasChecked()) {
-            filter.doFilter(req, resp);
-            return;
-        }
-        WebContent.put(req);
-        WebContent.put(resp);
-        //如果作登录验证，则不进行其它权限验证
-        if(config.isLoginCheck()){
-            if (pc.getUser() == null) {
-                pc.noAccess();
-                systemExceptionLog(pc, new LoginException("用户未登录"));
-            }else {
-                filter.doFilter(req, resp);
-                SessionContext.remove();
-            }
-            return;
-        }
-        proxyHandle(req, resp, filter);
-    }
+	@Override
+	public void doFilter(ServletRequest request, ServletResponse response, FilterChain filter) throws IOException, ServletException {
+		WebContent.resetLocal();
+		SessionContext.resetLocal();
+		HttpServletRequest req = (HttpServletRequest) request;
+		HttpServletResponse resp = (HttpServletResponse) response;
+		WebContent.put(req);
+		WebContent.put(resp);
+		PermissionContext pc = new PermissionContext(req, resp, this, config);
+		WebContent.put(SessionConstants.MANAGE_PERMISSION_CONTEXT, pc);
+		// 如果是框架导出，需要手动设置SessionId到Header中，因为restful取不到cookies
+		if (pc.getReq().getRequestURI().trim().endsWith("/export/serverExport.action")) {
+			MutableHttpServletRequest mreq = new MutableHttpServletRequest(req);
+			mreq.putHeader(SessionConstants.SESSION_ID, pc.getSessionId());
+			req = mreq;
+		}
+		// 判断是否要(include或exclude)权限检查, 不过滤就直接放过
+		if (!config.hasChecked()) {
+			filter.doFilter(req, resp);
+			return;
+		}
+		WebContent.put(req);
+		WebContent.put(resp);
+		// 如果作登录验证，则不进行其它权限验证
+		if (config.isLoginCheck()) {
+			if (pc.getUser() == null) {
+				pc.noAccess();
+				systemExceptionLog(pc, new LoginException("用户未登录"));
+			} else {
+				filter.doFilter(req, resp);
+				SessionContext.remove();
+			}
+			return;
+		}
+		proxyHandle(req, resp, filter);
+	}
 
-    /**
-     * 权限判断
-     * @param request
-     * @param response
-     * @param filter
-     * @throws IOException
-     */
-    private void proxyHandle(HttpServletRequest request, HttpServletResponse response, FilterChain filter) throws IOException {
-        PermissionContext pc = (PermissionContext) WebContent.get(SessionConstants.MANAGE_PERMISSION_CONTEXT);
-        if (log.isDebugEnabled()) {
-            log.debug("请求地址:" + pc.getUrl());
-        }
-        try {
-            //iframe
-            checkIframe(pc);
-            //登录鉴权
-            checkUser(pc);
-            //设置导航面包屑到RequestAttribute
-            setNavAttr(pc);
-            filter.doFilter(request, response);
-        } catch (RedirectException e) {
-            pc.sendRedirect(e.getPath());
-        } catch (NotLoginException e) {
-            systemExceptionLog(pc, e);
-            pc.noLogin();
-        } catch (NotAccessPermissionException e) {
-            if (log.isInfoEnabled()) {
-                log.info("用户{Session:" + pc.getSessionId() + ", userId:" + pc.getUserId() + "}没有访问" + pc.getUrl() + "权限！");
-            }
-            pc.nonPermission();
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-        } finally {
-            SessionContext.remove();
-        }
-    }
+	/**
+	 * 权限判断
+	 * 
+	 * @param request
+	 * @param response
+	 * @param filter
+	 * @throws IOException
+	 */
+	private void proxyHandle(HttpServletRequest request, HttpServletResponse response, FilterChain filter) throws IOException {
+		PermissionContext pc = (PermissionContext) WebContent.get(SessionConstants.MANAGE_PERMISSION_CONTEXT);
+		if (log.isDebugEnabled()) {
+			log.debug("请求地址:" + pc.getUrl());
+		}
+		try {
+			// iframe
+			checkIframe(pc);
+			// 登录鉴权
+			checkUser(pc);
+			// 设置导航面包屑到RequestAttribute
+			setNavAttr(pc);
+			filter.doFilter(request, response);
+		} catch (RedirectException e) {
+			pc.sendRedirect(e.getPath());
+		} catch (NotLoginException e) {
+			systemExceptionLog(pc, e);
+			pc.noLogin();
+		} catch (NotAccessPermissionException e) {
+			if (log.isInfoEnabled()) {
+				log.info("用户{Session:" + pc.getSessionId() + ", userId:" + pc.getUserId() + "}没有访问" + pc.getUrl() + "权限！");
+			}
+			pc.nonPermission();
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+		} finally {
+			SessionContext.remove();
+		}
+	}
 
-    /**
-     * 记录系统异常
-     * @param pc
-     * @param e
-     */
-    private void systemExceptionLog(PermissionContext pc, Exception e){
-        BaseOutput<Map<String, Object>> output = menuRpc.getMenuDetailByUrl(pc.getUrl());
-        if(output.isSuccess()){
-            Map<String, Object> menu1 = output.getData();
-            if(menu1 == null || menu1.isEmpty()) {
-                SystemExceptionLog systemExceptionLog = DTOUtils.newDTO(SystemExceptionLog.class);
-                systemExceptionLog.setMsg(e.getMessage()+",url:" + pc.getUrl());
-                systemExceptionLog.setType(ExceptionType.NOT_AUTH_ERROR.getCode());
-                systemExceptionLog.setExceptionTime(new Date());
-                systemExceptionLog.setIp(pc.getReq().getRemoteAddr());
-                systemExceptionLogRpc.insert(systemExceptionLog);
-                return;
-            }
-            SystemExceptionLog systemExceptionLog = DTOUtils.newDTO(SystemExceptionLog.class);
-            systemExceptionLog.setMenuId(Long.parseLong(menu1.get("id").toString()));
-            systemExceptionLog.setMsg(e.getMessage());
-            systemExceptionLog.setSystemCode(menu1.get("system_code").toString());
-            systemExceptionLog.setSystemName(menu1.get("system_name").toString());
-            systemExceptionLog.setType(ExceptionType.NOT_AUTH_ERROR.getCode());
-            systemExceptionLog.setExceptionTime(new Date());
-            systemExceptionLog.setIp(pc.getReq().getRemoteAddr());
-            systemExceptionLogRpc.insert(systemExceptionLog);
-        }
-    }
+	/**
+	 * 记录系统异常
+	 * 
+	 * @param pc
+	 * @param e
+	 */
+	private void systemExceptionLog(PermissionContext pc, Exception e) {
+		BaseOutput<Map<String, Object>> output = menuRpc.getMenuDetailByUrl(pc.getUrl());
+		if (output.isSuccess()) {
+			Map<String, Object> menu1 = output.getData();
+			if (menu1 == null || menu1.isEmpty()) {
+				ExceptionLog log = new ExceptionLog();
+				log.setExceptionType(ExceptionType.NOT_AUTH_ERROR.getCode());
+				log.setContent(e.getMessage() + ",url:" + pc.getUrl());
+				log.setRemoteIp(pc.getReq().getRemoteAddr());
+				this.logRpc.save(log, pc.getReferer());
+				return;
+			}
+			ExceptionLog log = new ExceptionLog();
+			log.setExceptionType(ExceptionType.NOT_AUTH_ERROR.getCode());
+			log.setContent(e.getMessage() + ",url:" + pc.getUrl());
+			log.setRemoteIp(pc.getReq().getRemoteAddr());
+			log.setSystemCode(menu1.get("system_code").toString());
+			this.logRpc.save(log, pc.getReferer());
+		}
+	}
 
-    /**
-     * 检查是否在iframe中
-     * @param pc
-     */
-    private void checkIframe(PermissionContext pc){
-        String referer = pc.getReferer();
-        if (StringUtils.equals("/main.do", pc.getUri())) {
-            return;
-        }
-        if (!pc.getConfig().getMustIframe()) {
-            return;
-        }
-        if (!StringUtils.isBlank(referer)) {
-            return;
-        }
-        if("ResourceHttpRequestHandler".equalsIgnoreCase(pc.getHandler().getClass().getName())){
-            return;
-        }
-        StringBuffer path = new StringBuffer();
-        path.append("/main.do?returnUrl=");
-        path.append(pc.getUrl());
-        path.append("?");
-        path.append(pc.getQueryString());
-        throw new RedirectException(path.toString());
-    }
+	/**
+	 * 检查是否在iframe中
+	 * 
+	 * @param pc
+	 */
+	private void checkIframe(PermissionContext pc) {
+		String referer = pc.getReferer();
+		if (StringUtils.equals("/main.do", pc.getUri())) {
+			return;
+		}
+		if (!pc.getConfig().getMustIframe()) {
+			return;
+		}
+		if (!StringUtils.isBlank(referer)) {
+			return;
+		}
+		if ("ResourceHttpRequestHandler".equalsIgnoreCase(pc.getHandler().getClass().getName())) {
+			return;
+		}
+		StringBuffer path = new StringBuffer();
+		path.append("/main.do?returnUrl=");
+		path.append(pc.getUrl());
+		path.append("?");
+		path.append(pc.getQueryString());
+		throw new RedirectException(path.toString());
+	}
 
-    /**
-     * 检查用户是否有权限访问
-     * @param pc
-     */
-    private void checkUser(PermissionContext pc) {
-        UserTicket user = pc.getUser();
-        if (user == null) {
-            throw new NotLoginException();
-        }
-        if (userResRedis.checkUserMenuUrlRight(user.getId(), pc.getUrl())) {
-            return;
-        }
-        //检测授权
+	/**
+	 * 检查用户是否有权限访问
+	 * 
+	 * @param pc
+	 */
+	private void checkUser(PermissionContext pc) {
+		UserTicket user = pc.getUser();
+		if (user == null) {
+			throw new NotLoginException();
+		}
+		if (userResRedis.checkUserMenuUrlRight(user.getId(), pc.getUrl())) {
+			return;
+		}
+		// 检测授权
 //        UserTicket auth = pc.getAuthorizer();
 //        if(auth == null){
 //            throw new NotAccessPermissionException();
 //        }
-        throw new NotAccessPermissionException();
-    }
+		throw new NotAccessPermissionException();
+	}
 
-    /**
-     * 设置导航栏需要的数据到request
-     * @param pc
-     */
-    private void setNavAttr(PermissionContext pc){
-        BaseOutput<List<Menu>> list = menuRpc.getParentMenusByUrl(pc.getUrl());
-        if(list == null || list.getData() == null || list.getData().isEmpty()){
-            WebContent.getRequest().setAttribute("parentMenus", Lists.newArrayList());
-        }else {
-            WebContent.getRequest().setAttribute("parentMenus", list.getData());
-        }
-    }
+	/**
+	 * 设置导航栏需要的数据到request
+	 * 
+	 * @param pc
+	 */
+	private void setNavAttr(PermissionContext pc) {
+		BaseOutput<List<Menu>> list = menuRpc.getParentMenusByUrl(pc.getUrl());
+		if (list == null || list.getData() == null || list.getData().isEmpty()) {
+			WebContent.getRequest().setAttribute("parentMenus", Lists.newArrayList());
+		} else {
+			WebContent.getRequest().setAttribute("parentMenus", list.getData());
+		}
+	}
 
-    final class MutableHttpServletRequest extends HttpServletRequestWrapper {
-        // holds custom header and value mapping
-        private final Map<String, String> customHeaders;
+	final class MutableHttpServletRequest extends HttpServletRequestWrapper {
+		// holds custom header and value mapping
+		private final Map<String, String> customHeaders;
 
-        public MutableHttpServletRequest(HttpServletRequest request){
-            super(request);
-            this.customHeaders = new HashMap<String, String>();
-        }
+		public MutableHttpServletRequest(HttpServletRequest request) {
+			super(request);
+			this.customHeaders = new HashMap<String, String>();
+		}
 
-        public void putHeader(String name, String value){
-            this.customHeaders.put(name, value);
-        }
+		public void putHeader(String name, String value) {
+			this.customHeaders.put(name, value);
+		}
 
-        @Override
-        public String getHeader(String name) {
-            // check the custom headers first
-            String headerValue = customHeaders.get(name);
+		@Override
+		public String getHeader(String name) {
+			// check the custom headers first
+			String headerValue = customHeaders.get(name);
 
-            if (headerValue != null){
-                return headerValue;
-            }
-            // else return from into the original wrapped object
-            return ((HttpServletRequest) getRequest()).getHeader(name);
-        }
+			if (headerValue != null) {
+				return headerValue;
+			}
+			// else return from into the original wrapped object
+			return ((HttpServletRequest) getRequest()).getHeader(name);
+		}
 
-        @Override
-        public Enumeration<String> getHeaderNames() {
-            // create a set of the custom header names
-            Set<String> set = new HashSet<String>(customHeaders.keySet());
+		@Override
+		public Enumeration<String> getHeaderNames() {
+			// create a set of the custom header names
+			Set<String> set = new HashSet<String>(customHeaders.keySet());
 
-            // now add the headers from the wrapped request object
-            @SuppressWarnings("unchecked")
-            Enumeration<String> e = ((HttpServletRequest) getRequest()).getHeaderNames();
-            while (e.hasMoreElements()) {
-                // add the names of the request headers into the list
-                String n = e.nextElement();
-                set.add(n);
-            }
+			// now add the headers from the wrapped request object
+			@SuppressWarnings("unchecked")
+			Enumeration<String> e = ((HttpServletRequest) getRequest()).getHeaderNames();
+			while (e.hasMoreElements()) {
+				// add the names of the request headers into the list
+				String n = e.nextElement();
+				set.add(n);
+			}
 
-            // create an enumeration from the set and return
-            return Collections.enumeration(set);
-        }
-    }
+			// create an enumeration from the set and return
+			return Collections.enumeration(set);
+		}
+	}
 
 }

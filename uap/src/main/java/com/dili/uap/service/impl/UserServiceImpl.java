@@ -389,7 +389,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public BaseOutput saveUserDatas(Long userId, String[] dataIds, Long dataRange) {
+	public BaseOutput<List<UserDataAuth>> saveUserDatas(Long userId, String[] dataIds, Long dataRange) {
 		if (null == userId || null == dataRange) {
 			return BaseOutput.failure("用户数据丢失");
 		}
@@ -397,8 +397,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 		if (userTicket == null) {
 			return BaseOutput.failure("用户未登录");
 		}
-		BaseOutput<Object> output = null;
-		List<UserDataAuth> saveDatas = this.convertToSaveUserDatas(userId, dataRange, dataIds);// 1235
+		List<UserDataAuth> saveDatas = this.convertToSaveUserDatas(userId, dataRange, dataIds);
 		UserDataAuth record = DTOUtils.newInstance(UserDataAuth.class);
 		record.setUserId(userId);
 		if (this.adminName.equals(userTicket.getUserName())) {
@@ -416,7 +415,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 		if (CollectionUtils.isNotEmpty(saveDatas)) {
 			userDataAuthMapper.insertList(saveDatas);
 		}
-		return output == null ? BaseOutput.success("操作成功") : output;
+		return BaseOutput.success("操作成功").setData(saveDatas);
 	}
 
 	private List<UserDataAuth> convertToSaveUserDatas(Long userId, Long dataRange, String[] dataIds) {
