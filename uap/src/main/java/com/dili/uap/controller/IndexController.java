@@ -47,7 +47,7 @@ public class IndexController {
 	public static final String USERDETAIL_PATH = "index/userDetail";
 	public static final String CHANGEPWD_PATH = "index/changePwd";
 
-	@Value("${bpmc.server.address:bpmc.server.address=http://bpmc.diligrp.com}")
+	@Value("${bpmc.server.address:bpmc.server.address=https://bpmc.diligrp.com}")
 	private String bpmcUrl;
 
 	@Autowired
