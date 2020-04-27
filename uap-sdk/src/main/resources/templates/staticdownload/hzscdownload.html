@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智能档位管理系统</title>
+    <style>
+        html,
+        body,
+        div {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+        html {
+            color: #fff;
+            padding-top: 4rem;
+        }
+
+        @media screen and (max-width: 1920px) {
+            html {
+                font-size: 16px;
+            }
+        }
+
+        @media screen and (max-width: 1600px) {
+            html {
+                font-size: 13.3333px;
+            }
+        }
+
+        @media screen and (max-width: 1400px) {
+            html {
+                font-size: 11px;
+            }
+        }
+
+        html {
+            width: 100%;
+            height: 100%;
+            font-family: 'Microsoft YaHei';
+            background: url(./images/hzscdown-bg.png) no-repeat center top;
+            /* background-size: 100%; */
+            background-size: cover;
+            /* background-size: auto; */
+            /* background-size: contain; */
+            /* overflow: hidden; */
+        }
+        .title {
+            text-align: center;
+            font-size: 3.75rem;
+        }
+        .subtitle {
+            text-align: center;
+            font-size: 1.875rem;
+        }
+        .downwrap {
+            position: relative;
+            width: 87.5rem;
+            height: 36rem;
+            padding-top: 6.25rem;
+            padding-left: 1.5rem;
+            margin: 0 auto;
+            line-height: 3.875rem;
+            
+        }
+        .downwrap::before {
+            position: absolute;
+            content: '';
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #1f6af3;
+            border-radius: 3.5rem;
+            opacity: .4;
+            z-index: -1;
+        }
+        .downitem {
+            width: 100%;
+            margin-bottom: 3.75rem;
+        }
+
+        .itemtitle {
+            display: inline-block;
+            height: 3.875rem;
+            margin-right: 1.875rem;
+            font-size: 1.875rem;
+            vertical-align: middle;
+        }
+
+        .itemlink {
+            position: relative;
+            display: inline-block;
+            width: 26.875rem;
+            height: 3.875rem;
+            margin-right: 1.25rem;
+            background-color: #fff;
+            border-radius: .625rem;
+            text-indent: 3.125rem;
+            color: #1f7ef3;
+            font-size: 1.6875rem;
+            vertical-align: middle;
+            text-decoration: none;
+        }
+
+        .itemlink::before {
+            position: absolute;
+            content: '';
+            top: 1.75rem;
+            left: 1.5rem;
+            width: 0;
+            height: 0;
+            border-top: 7px solid transparent;
+            border-left: 7px solid #1f6af3;
+            border-bottom: 5px solid transparent;
+
+        }
+
+        .tips {
+            width: 4.75rem;
+            height: 2.375rem;
+            margin-left: 1.25rem;
+            background-color: #1f6af3;
+            font-style: normal;
+            font-size: 1.4375rem;
+            display: inline-block;
+            line-height: 2.375rem;
+            text-align: center;
+            border-radius: .625rem;
+            color: #fff;
+            text-indent: 0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h3 class="title">智能档位管理系统</h3>
+        <p class="subtitle">请根据个人需求选择下载</p>
+        <div class="downwrap">
+            <div class="downitem">
+                <span class="itemtitle">业务系统</span>
+                <a href="http://uap.diligrp.com/files/UPSetup.exe" class="itemlink">智能档位管理系统安装包</a>
+            </div>
+            <div class="downitem">
+                <span class="itemtitle">操作手册</span>
+                <a href="http://uap.diligrp.com/files/智能档位管理系统操作手册.pdf" class="itemlink">智能档位管理系统系统操作手册</a>
+            </div>
+            <div class="downitem">
+                <span class="itemtitle">系统驱动</span>
+                <a href="http://uap.diligrp.com/files/USBDrv3.0-x86.msi" class="itemlink">身份证读卡器驱动 <i
+                        class="tips">32位</i></a>
+                <a href="http://uap.diligrp.com/files/USBDrv3.0-x64.msi" class="itemlink">身份证读卡器驱动 <i
+                        class="tips">64位</i></a>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
