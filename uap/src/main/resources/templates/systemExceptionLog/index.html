@@ -1,89 +1,63 @@
 <#body>
-   <div class="easyui-layout" fit="true">
-       <!-- ====================================================================================================================== -->
-       <!-- 上方布局 -->
-       <!-- ====================================================================================================================== -->
-       <div region="north" height="auto" align="center" border="false">
-           <div id="nav" style="padding-left:15px;padding-top:10px;" align="left">
-               <#nav/>
-           </div>
-           <!-- =========================================================表单========================================================= -->
-           <div class="easyui-panel" style="width:100%;" align="left" border="false">
-                <form id="form" class="easyui-form" method="post" fit="true">
-                    <table style="padding:10px;">
-                        <tr>
-                            <td style="padding:5px;">
-                            <input class="easyui-datetimebox" name="startExceptionTime" editable="false" id="startExceptionTime"
-                                   labelAlign="right" data-options="label:' 异常时间:'" style="width: 250px;"/>
-                            - <input class="easyui-datetimebox" editable="false" name="endExceptionTime" id="endExceptionTime"
-                                     labelAlign="right" style="width: 150px;"/>
-
-                        </td>
-                        <td style="padding:5px;">
-                                  <input name="systemCode" id="systemCode" style="width:100%;" panelWidth="auto" data-options="editable:false, labelAlign:'right'" panelHeight="auto" label="登录系统:"/>
-                                  <#comboProvider _id="systemCode" _provider='systemProvider' _queryParams='{emptyText:"-- 全部 --"}'/>
-                            </td>
-                            <td style="padding:5px;">
-                                 <input name="type" id="type" style="width:100%;" editable="false" panelWidth="auto" panelHeight="auto" label="异常类型:" labelAlign="right" value=""/>
-                                 <#comboProvider _id="type" _provider='exceptionTypeProvider' _queryParams='{emptyText:"-- 全部 --"}'/>
-                            </td>
-                            <td>
-                                <a href="#" class="easyui-linkbutton" data-options="width:80"  iconCls="icon-search" id="queryBtn"
-                                   onclick="queryGrid()">查询</a>&nbsp;&nbsp;
-                                <a href="javascript:void(0)" class="easyui-linkbutton" data-options="width:80"  iconCls="icon-clear"  onclick="clearForm()">清除</a>
-                            </td>
-                        </tr>
-                    </table>
-                </form>
-           </div>
-       </div>
-       <!-- ====================================================================================================================== -->
-       <!-- 中央布局 -->
-       <!-- ====================================================================================================================== -->
-       <!-- 表格 -->
-       <div region="center" style="width:100%;" height="auto" align="center" border="false">
-           <div style="width: 100%;height: 100%;" align="center">
-               <!-- =========================================================表格========================================================= -->
-               <table class="easyui-datagrid" title="异常日志列表" id="grid" fitColumns="true"
-                 noheader="true" border="false"
-                   pagination="true" pageSize="50" pageList="[50,100,200]" pageNumber="1" pagePosition="top" remoteSort="true"
-                   loadMsg="数据加载中..." singleSelect="true" method="post" multiSort="false" sortName="exceptionTime" sortOrder="desc"
-                   align="center" fit="true" striped="false" idField="id" data-options="onLoadSuccess:gridLoadSuccess">
-                     <thead>
-                    <tr>
-                        <th data-options="field:'ip', width:'10%',  sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            服务器ip
-                        </th>
-                        <th data-options="field:'systemName',width:'10%',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            系统
-                        </th>
-                        <th data-options="field:'menuId',width:'12%'
+<div class="easyui-layout" fit="true">
+	<!-- ====================================================================================================================== -->
+	<!-- 上方布局 -->
+	<!-- ====================================================================================================================== -->
+	<div region="north" height="auto" align="center" border="false">
+		<div id="nav" style="padding-left: 15px; padding-top: 10px;" align="left">
+			<#nav />
+		</div>
+		<!-- =========================================================表单========================================================= -->
+		<div class="easyui-panel" style="width: 100%;" align="left" border="false">
+			<form id="form" class="easyui-form" method="post" fit="true">
+				<table style="padding: 10px;">
+					<tr>
+						<td style="padding: 5px;"><input class="easyui-datetimebox" name="startExceptionTime" editable="false" id="startExceptionTime" labelAlign="right" data-options="label:' 异常时间:'"
+							style="width: 250px;" /> - <input class="easyui-datetimebox" editable="false" name="endExceptionTime" id="endExceptionTime" labelAlign="right" style="width: 150px;" /></td>
+						<td style="padding: 5px;"><input name="systemCode" id="systemCode" style="width: 100%;" panelWidth="auto" data-options="editable:false, labelAlign:'right'" panelHeight="auto" label="登录系统:" />
+							<#comboProvider _id="systemCode" _provider='systemProvider' _queryParams='{emptyText:"-- 全部 --"}' /></td>
+						<td style="padding: 5px;"><input name="type" id="type" style="width: 100%;" editable="false" panelWidth="auto" panelHeight="auto" label="异常类型:" labelAlign="right" value="" /> <#comboProvider
+								_id="type" _provider='exceptionTypeProvider' _queryParams='{emptyText:"-- 全部 --"}' /></td>
+						<td><a href="#" class="easyui-linkbutton" data-options="width:80" iconCls="icon-search" id="queryBtn" onclick="queryGrid()">查询</a>&nbsp;&nbsp; <a href="javascript:void(0)"
+							class="easyui-linkbutton" data-options="width:80" iconCls="icon-clear" onclick="clearForm()">清除</a></td>
+					</tr>
+				</table>
+			</form>
+		</div>
+	</div>
+	<!-- ====================================================================================================================== -->
+	<!-- 中央布局 -->
+	<!-- ====================================================================================================================== -->
+	<!-- 表格 -->
+	<div region="center" style="width: 100%;" height="auto" align="center" border="false">
+		<div style="width: 100%; height: 100%;" align="center">
+			<!-- =========================================================表格========================================================= -->
+			<table class="easyui-datagrid" title="异常日志列表" id="grid" fitColumns="true" noheader="true" border="false" pagination="true" pageSize="50" pageList="[50,100,200]" pageNumber="1" pagePosition="top"
+				remoteSort="true" loadMsg="数据加载中..." singleSelect="true" method="post" multiSort="false" sortName="exceptionTime" sortOrder="desc" align="center" fit="true" striped="false" idField="id"
+				data-options="onLoadSuccess:gridLoadSuccess">
+				<thead>
+					<tr>
+						<th data-options="field:'ip', width:'10%',  sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">服务器ip</th>
+						<th data-options="field:'systemName',width:'10%',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">系统</th>
+						<th
+							data-options="field:'menuId',width:'12%'
                         , _provider:'simpleBatchDisplayTextProvider',_escapeFileds:{'menuId':'name'},_fkField:'menuId',_relationTable:'menu',_relationTablePkField:'id', _queryParams:{}
                         ,   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            功能模块
-                        </th>
-                        <th data-options="field:'type',width:'8%',_provider:'exceptionTypeProvider', _queryParams:{},   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            异常类型
-                        </th>
-                        <th data-options="field:'version',width:'8%',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            版本号
-                        </th>
-                        <th data-options="field:'exceptionTime',width:'12%',  _provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            异常时间
-                        </th>
-                        <th data-options="field:'msg',width:'40%',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-                            异常信息
-                        </th>
-                    </tr>
-                </thead>
-            </table>
-           </div>
-       </div>
-   </div>
+							功能模块</th>
+						<th data-options="field:'type',width:'8%',_provider:'exceptionTypeProvider', _queryParams:{},   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">异常类型</th>
+						<th data-options="field:'version',width:'8%',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">版本号</th>
+						<th data-options="field:'exceptionTime',width:'12%',  _provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">异常时间</th>
+						<th data-options="field:'msg',width:'40%',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">异常信息</th>
+					</tr>
+				</thead>
+			</table>
+		</div>
+	</div>
+</div>
 
-    <!-- 隐藏编辑框 -->
-    <div id="dlg" class="easyui-dialog" resizable="false" constrain="true" shadow="true" draggable="false" title="SystemExceptionLog信息" style="padding:20px" modal="true" border="thin" closed="true"
-         data-options="
+<!-- 隐藏编辑框 -->
+<div id="dlg" class="easyui-dialog" resizable="false" constrain="true" shadow="true" draggable="false" title="SystemExceptionLog信息" style="padding: 20px" modal="true" border="thin" closed="true"
+	data-options="
 				iconCls: 'icon-save',
 				height: 480,
 				buttons: [{
@@ -97,58 +71,39 @@
 					}
 				}]
 			">
-    <form id="_form" class="easyui-form" method="post" fit="true">
-        <input name="_id" id="_id" type="hidden">
-        <table width="360px">
-            <tr>
-                <td style="padding:5px;">
-                    <input class="easyui-textbox" name="_host" id="_host" style="width:100%" data-options="label:'备注:', validType:'length[0,255]'" />
-                </td>
-            </tr>
-            <tr>
-                <td style="padding:5px;">
-                    <input class="easyui-numberbox" name="_systemId" id="_systemId" style="width:100%" data-options="label:'系统:'" />
-                </td>
-            </tr>
-            <tr>
-                <td style="padding:5px;">
-                    <input class="easyui-numberbox" name="_menuId" id="_menuId" style="width:100%" data-options="label:'功能模块:'" />
-                </td>
-            </tr>
-            <tr>
-                <td style="padding:5px;">
-                    <input class="easyui-numberbox" name="_type" id="_type" style="width:100%" data-options="label:'异常类型:'" />
-                </td>
-            </tr>
-            <tr>
-                <td style="padding:5px;">
-                    <input class="easyui-textbox" name="_firmCode" id="_firmCode" style="width:100%" data-options="label:'市场编码:', validType:'length[0,50]'" />
-                </td>
-            </tr>
-            <tr>
-                <td style="padding:5px;">
-                    <input class="easyui-numberbox" name="_version" id="_version" style="width:100%" data-options="label:'版本号:'" />
-                </td>
-            </tr>
-            <tr>
-                <td style="padding:5px;">
-                    <input class="easyui-datetimebox" name="_exceptionTime" id="_exceptionTime" style="width:100%" data-options="label:'异常时间:'" 
-                        required="true" />
-                </td>
-            </tr>
-            <tr>
-                <td style="padding:5px;">
-                    <input class="easyui-textbox" name="_msg" id="_msg" style="width:100%" data-options="label:'异常信息:', validType:'length[0,511]'" />
-                </td>
-            </tr>
-        </table>
-    </form>
+	<form id="_form" class="easyui-form" method="post" fit="true">
+		<input name="_id" id="_id" type="hidden">
+		<table width="360px">
+			<tr>
+				<td style="padding: 5px;"><input class="easyui-textbox" name="_host" id="_host" style="width: 100%" data-options="label:'备注:', validType:'length[0,255]'" /></td>
+			</tr>
+			<tr>
+				<td style="padding: 5px;"><input class="easyui-numberbox" name="_systemId" id="_systemId" style="width: 100%" data-options="label:'系统:'" /></td>
+			</tr>
+			<tr>
+				<td style="padding: 5px;"><input class="easyui-numberbox" name="_menuId" id="_menuId" style="width: 100%" data-options="label:'功能模块:'" /></td>
+			</tr>
+			<tr>
+				<td style="padding: 5px;"><input class="easyui-numberbox" name="_type" id="_type" style="width: 100%" data-options="label:'异常类型:'" /></td>
+			</tr>
+			<tr>
+				<td style="padding: 5px;"><input class="easyui-textbox" name="_firmCode" id="_firmCode" style="width: 100%" data-options="label:'市场编码:', validType:'length[0,50]'" /></td>
+			</tr>
+			<tr>
+				<td style="padding: 5px;"><input class="easyui-numberbox" name="_version" id="_version" style="width: 100%" data-options="label:'版本号:'" /></td>
+			</tr>
+			<tr>
+				<td style="padding: 5px;"><input class="easyui-datetimebox" name="_exceptionTime" id="_exceptionTime" style="width: 100%" data-options="label:'异常时间:'" required="true" /></td>
+			</tr>
+			<tr>
+				<td style="padding: 5px;"><input class="easyui-textbox" name="_msg" id="_msg" style="width: 100%" data-options="label:'异常信息:', validType:'length[0,511]'" /></td>
+			</tr>
+		</table>
+	</form>
 
-    </div>
-    <!-- ====================================================================================================================== -->
-    <!-- style & script 分隔线 -->
-    <!-- ====================================================================================================================== -->
-    <script type="text/javascript">
+</div>
+<!-- ====================================================================================================================== --> <!-- style & script 分隔线 --> <!-- ====================================================================================================================== -->
+<script type="text/javascript">
         //打开新增窗口
         function openInsert(){
             $('#dlg').dialog('open');
@@ -318,6 +273,18 @@
                          iconCls:'icon-export',
                          text:'导出',
                          handler:function(){
+                        	 var start=$('#startExceptionTime').datetimebox('getValue');
+                        	 var end=$('#endExceptionTime').datetimebox('getValue');
+            				if(!end){
+            					end=(new Date()).getTime();
+            				}
+                        	 if(start){
+                        		start=Date.parse(start);
+                        		if(end-start>31*24*60*60*1000){
+                        			 $.messager.alert('错误','只能导出31天内的数据！');
+                        			 return;
+                        		}
+                        	 }
                              doExport('grid');
                          }
                      }
@@ -331,5 +298,4 @@
             
             
         })
-    </script>
-</#body>
+    </script> </#body>
