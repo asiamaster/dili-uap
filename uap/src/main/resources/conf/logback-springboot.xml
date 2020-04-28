@@ -99,6 +99,9 @@
                 <pattern>[${LOG_NAME}-prod] %d |- %-5level [%t] %c [%L] -| %msg%n</pattern>
             </encoder>
         </appender>
+        <logger name="org.springframework.web" level="WARN"/>
+        <logger name="com.dili.${LOG_NAME}" level="INFO"/>
+        <logger name="com.alibaba.nacos.client" level="WARN"/>
     </springProfile>
 
     <root level="info">
