@@ -284,6 +284,7 @@
                         			 $.messager.alert('错误','只能导出31天内的数据！');
                         			 return;
                         		}
+                        		doExport('grid')
                         	 }else{
                         		 $.messager.alert('提示','未选择开始时间，只会导出31天的数据！','warning',function(){
                         			 doExport('grid');		 
