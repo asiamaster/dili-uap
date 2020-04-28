@@ -77,7 +77,8 @@ public class PermissionContext {
         this.req = req;
         referer = req.getHeader("referer");
         uri = req.getRequestURI();
-        url = req.getRequestURL().toString();
+        String serverPath = SpringUtil.getProperty("project.serverPath");
+        url = StringUtils.isBlank(serverPath) ? req.getRequestURL().toString() : serverPath+uri;
         queryString = req.getQueryString();
     }
 

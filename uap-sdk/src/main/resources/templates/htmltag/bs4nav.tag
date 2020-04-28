@@ -2,7 +2,7 @@
     <nav class="col-12">
         <ol class="breadcrumb"  data-toggle="collapse" data-target="#_nav" aria-controls="_nav">
             <li class="breadcrumb-item active">
-                <div style="font-size:16px; display: inline;"><img style="margin-right: 8px;vertical-align: top;" src="${contextPath}/resources/images/icon/pos-icon.png" alt="">当前位置:</div>
+                <div style="font-size:14px; display: inline;"><img style="margin-right: 8px;vertical-align: top;" src="${contextPath}/resources/images/icon/pos-icon.png" alt="">当前位置:</div>
                 <%
                     if(has(parentMenus)){
                         for(parentMenu in parentMenus){
