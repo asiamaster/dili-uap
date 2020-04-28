@@ -273,10 +273,13 @@
                          iconCls:'icon-export',
                          text:'导出',
                          handler:function(){
+                        	 debugger;
                         	 var start=$('#startExceptionTime').datetimebox('getValue');
                         	 var end=$('#endExceptionTime').datetimebox('getValue');
             				if(!end){
             					end=(new Date()).getTime();
+            				}else{
+            					end=Date.parse(end);
             				}
                         	 if(start){
                         		start=Date.parse(start);
