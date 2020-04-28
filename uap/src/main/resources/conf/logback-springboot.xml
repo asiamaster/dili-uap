@@ -52,6 +52,9 @@
                 <pattern>[${LOG_NAME}-test] %d |- %-5level [%t] %c [%L] -| %msg%n</pattern>
             </encoder>
         </appender>
+        <logger name="org.springframework.web" level="INFO"/>
+        <logger name="com.dili.${LOG_NAME}" level="INFO"/>
+        <logger name="com.alibaba.nacos.client" level="WARN"/>
         <jmxConfigurator/>
     </springProfile>
     <!-- 灰度环境 -->
