@@ -254,8 +254,12 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements Role
 			RoleResource rrCondition = DTOUtils.newInstance(RoleResource.class);
 			rrCondition.setRoleId(roleId);
 			this.roleResourceMapper.delete(rrCondition);
-			this.roleMenuMapper.insertList(roleMenus);
-			this.roleResourceMapper.insertList(roleResources);
+			if (CollectionUtils.isNotEmpty(roleMenus)) {
+				this.roleMenuMapper.insertList(roleMenus);
+			}
+			if (CollectionUtils.isNotEmpty(roleResources)) {
+				this.roleResourceMapper.insertList(roleResources);
+			}
 			return BaseOutput.success("操作成功");
 		}
 		final StringBuilder sb = new StringBuilder();
