@@ -10,7 +10,7 @@ import com.dili.ss.retrofitful.annotation.VOBody;
 import com.dili.uap.domain.dto.UserDataDto;
 
 
-@Restful("${alm.contextPath:http://almweb.diligrp.com}")
+@Restful("${alm.contextPath}")
 public interface ProjectRpc {
 	@POST("/projectApi/selectUserDataByIds.api")
 	BaseOutput<List<UserDataDto>> selectUserDataByIds(@VOBody Collection<String> ids);
