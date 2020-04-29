@@ -64,7 +64,11 @@
         if(!$('#form').form("validate")){
             return;
         }
-        $('#userGrid').datagrid("load", bindGridMeta2Form("userGrid", "form"));
+        var data = bindGridMeta2Form("userGrid", "form");
+        <%if(!isGroup){%>
+        	data.firmCode = '${firmCode}';
+        <%}%>
+        $('#userGrid').datagrid("load", data);
     }
 
     /**
