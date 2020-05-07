@@ -8,7 +8,9 @@ import com.dili.uap.dao.FirmMapper;
 import com.dili.uap.sdk.domain.Department;
 import com.dili.uap.sdk.domain.Firm;
 import com.dili.uap.sdk.domain.UserDataAuth;
+import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.glossary.DataAuthType;
+import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.service.DepartmentService;
 import com.dili.uap.service.UserDataAuthService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,12 +52,23 @@ public class DepartmentServiceImpl extends BaseServiceImpl<Department, Long> imp
 		department.setModified(now);
 
 		int result = this.getActualDao().insertSelective(department);
-		department.setCode(department.getFirmCode() + "-" + department.getId());
-		this.getActualDao().updateByPrimaryKey(department);
-		if (result > 0) {
-			return BaseOutput.success().setData(department);
+		if (result <= 0) {
+			return BaseOutput.failure("插入部门失败");
 		}
-		return BaseOutput.failure("插入失败");
+		department.setCode(department.getFirmCode() + "-" + department.getId());
+		result = this.getActualDao().updateByPrimaryKey(department);
+		if (result <= 0) {
+			throw new RuntimeException("更新部门编码失败");
+		}
+		UserTicket user = SessionContext.getSessionContext().getUserTicket();
+		UserDataAuth userDataAuth = DTOUtils.newInstance(UserDataAuth.class);
+		userDataAuth.setUserId(user.getId());
+		userDataAuth.setValue(department.getId().toString());
+		result = this.userDataAuthService.insert(userDataAuth);
+		if (result <= 0) {
+			throw new RuntimeException("更新部门编码失败");
+		}
+		return BaseOutput.success().setData(department);
 	}
 
 	@Override
@@ -129,24 +142,24 @@ public class DepartmentServiceImpl extends BaseServiceImpl<Department, Long> imp
 
 	@Override
 	public List<Department> listUserAuthDepartmentByFirmId(Long userId, Long firmId) {
-		if (Objects.isNull(userId) || Objects.isNull(firmId)){
+		if (Objects.isNull(userId) || Objects.isNull(firmId)) {
 			return Collections.emptyList();
 		}
 		UserDataAuth condition = DTOUtils.newInstance(UserDataAuth.class);
 		condition.setUserId(userId);
 		condition.setRefCode(DataAuthType.DEPARTMENT.getCode());
 		List<UserDataAuth> userDataAuthList = userDataAuthService.list(condition);
-		if (CollectionUtils.isEmpty(userDataAuthList)){
+		if (CollectionUtils.isEmpty(userDataAuthList)) {
 			return Collections.emptyList();
 		}
 		Firm firm = firmMapper.selectByPrimaryKey(firmId);
-		if (Objects.isNull(firm)){
+		if (Objects.isNull(firm)) {
 			return Collections.emptyList();
 		}
 		Department department = DTOUtils.newInstance(Department.class);
 		department.setFirmCode(firm.getCode());
 		List<Department> departmentList = this.listByExample(department);
-		if (CollectionUtils.isEmpty(departmentList)){
+		if (CollectionUtils.isEmpty(departmentList)) {
 			return Collections.emptyList();
 		}
 		return departmentList.stream().filter(d -> userDataAuthList.stream().anyMatch(ud -> Objects.equals(String.valueOf(d.getId()), ud.getValue()))).collect(Collectors.toList());

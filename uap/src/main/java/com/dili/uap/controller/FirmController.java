@@ -81,7 +81,7 @@ public class FirmController {
 	})
     @RequestMapping(value="/insert.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody BaseOutput insert(Firm firm) {
-        firmService.insertSelective(firm);
+        firmService.insertAndBindUserDataAuth(firm);
         return BaseOutput.success("新增成功");
     }
 
