@@ -12,6 +12,8 @@ import com.dili.uap.sdk.glossary.DataAuthType;
 import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.service.FirmService;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,5 +54,21 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 			throw new RuntimeException("绑定用户市场数据权限失败");
 		}
 		return BaseOutput.success();
+	}
+
+	@Transactional
+	@Override
+	public BaseOutput<Object> updateSelectiveAfterCheck(Firm firm) {
+		Firm query = DTOUtils.newInstance(Firm.class);
+		query.setCode(firm.getCode());
+		List<Firm> list = this.getActualDao().select(query);
+		if (list.size() > 1) {
+			return BaseOutput.failure("已存在相同编码的市场");
+		}
+		if (list.size() == 1 && !list.get(0).getId().equals(firm.getId())) {
+			return BaseOutput.failure("已存在相同编码的市场");
+		}
+		int rows = this.getActualDao().updateByPrimaryKeySelective(firm);
+		return rows > 0 ? BaseOutput.success("修改成功") : BaseOutput.failure("修改失败");
 	}
 }

@@ -99,8 +99,8 @@ public class FirmController {
 			LoggerContext.put(LoggerConstant.LOG_OPERATOR_ID_KEY, userTicket.getId());
 			LoggerContext.put(LoggerConstant.LOG_MARKET_ID_KEY, userTicket.getFirmId());
 		}
-		firmService.updateSelective(firm);
-		return BaseOutput.success("修改成功");
+		return firmService.updateSelectiveAfterCheck(firm);
+
 	}
 
 	/**

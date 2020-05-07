@@ -16,4 +16,12 @@ public interface FirmService extends BaseService<Firm, Long> {
 	 * @return
 	 */
 	BaseOutput<Object> insertAndBindUserDataAuth(Firm firm);
+
+	/**
+	 * 修改市场验证编码是否重复
+	 * 
+	 * @param firm
+	 * @return
+	 */
+	BaseOutput<Object> updateSelectiveAfterCheck(Firm firm);
 }
