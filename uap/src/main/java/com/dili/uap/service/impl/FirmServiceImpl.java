@@ -8,6 +8,7 @@ import com.dili.uap.dao.UserDataAuthMapper;
 import com.dili.uap.sdk.domain.Firm;
 import com.dili.uap.sdk.domain.UserDataAuth;
 import com.dili.uap.sdk.domain.UserTicket;
+import com.dili.uap.sdk.glossary.DataAuthType;
 import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.service.FirmService;
 
@@ -41,6 +42,7 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 		}
 		UserTicket user = SessionContext.getSessionContext().getUserTicket();
 		UserDataAuth userDataAuth = DTOUtils.newInstance(UserDataAuth.class);
+		userDataAuth.setRefCode(DataAuthType.MARKET.getCode());
 		userDataAuth.setUserId(user.getId());
 		userDataAuth.setValue(firm.getCode());
 		rows = this.userDataAuthMapper.insertSelective(userDataAuth);

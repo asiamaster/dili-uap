@@ -62,6 +62,7 @@ public class DepartmentServiceImpl extends BaseServiceImpl<Department, Long> imp
 		}
 		UserTicket user = SessionContext.getSessionContext().getUserTicket();
 		UserDataAuth userDataAuth = DTOUtils.newInstance(UserDataAuth.class);
+		userDataAuth.setRefCode(DataAuthType.DEPARTMENT.getCode());
 		userDataAuth.setUserId(user.getId());
 		userDataAuth.setValue(department.getId().toString());
 		result = this.userDataAuthService.insert(userDataAuth);
