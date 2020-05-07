@@ -14,6 +14,7 @@ import com.dili.uap.service.FirmService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 由MyBatis Generator工具自动生成 This file was generated on 2018-05-23 14:31:07.
@@ -28,6 +29,7 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 		return (FirmMapper) getDao();
 	}
 
+	@Transactional
 	@Override
 	public BaseOutput<Object> insertAndBindUserDataAuth(Firm firm) {
 		Firm query = DTOUtils.newInstance(Firm.class);
