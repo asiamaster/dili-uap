@@ -8,6 +8,7 @@ import com.dili.uap.domain.dto.UserDepartmentRole;
 import com.dili.uap.domain.dto.UserDepartmentRoleQuery;
 import com.dili.uap.domain.dto.UserDto;
 import com.dili.uap.sdk.domain.User;
+import com.dili.uap.sdk.domain.UserDataAuth;
 
 import java.util.List;
 
@@ -116,7 +117,7 @@ public interface UserService extends BaseService<User, Long> {
 	 * @param dataRange 数据权限范围
 	 * @return 操作结果
 	 */
-	BaseOutput saveUserDatas(Long userId, String[] dataIds, Long dataRange);
+	BaseOutput<List<UserDataAuth>> saveUserDatas(Long userId, String[] dataIds, Long dataRange);
 
 	/**
 	 * 根据用户ID解锁用户
@@ -161,7 +162,7 @@ public interface UserService extends BaseService<User, Long> {
 	/**
 	 * 查询当前市场下具有特定权限编码的用户
 	 * 
-	 * @param firmCode 部门id
+	 * @param firmCode     部门id
 	 * @param resourceCode 权限编码
 	 * @return
 	 */

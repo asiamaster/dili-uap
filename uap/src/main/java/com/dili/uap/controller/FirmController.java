@@ -1,5 +1,12 @@
 package com.dili.uap.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.dili.logger.sdk.annotation.BusinessLogger;
 import com.dili.logger.sdk.base.LoggerContext;
 import com.dili.logger.sdk.glossary.LoggerConstant;
@@ -8,16 +15,11 @@ import com.dili.uap.sdk.domain.Firm;
 import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.service.FirmService;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * 由MyBatis Generator工具自动生成 This file was generated on 2019-04-09 14:35:13.
@@ -76,9 +78,20 @@ public class FirmController {
 	 */
 	@ApiOperation("新增Firm")
 	@ApiImplicitParams({ @ApiImplicitParam(name = "Firm", paramType = "form", value = "Firm的form信息", required = true, dataType = "string") })
+	@BusinessLogger(businessType = "firm_management", content = "新增市场", operationType = "add", systemCode = "UAP")
 	@RequestMapping(value = "/insert.action", method = { RequestMethod.GET, RequestMethod.POST })
 	public @ResponseBody BaseOutput insert(Firm firm) {
-		return firmService.insertAndBindUserDataAuth(firm);
+		BaseOutput<Object> output = firmService.insertAndBindUserDataAuth(firm);
+		if (output.isSuccess()) {
+			LoggerContext.put(LoggerConstant.LOG_BUSINESS_CODE_KEY, firm.getCode());
+			LoggerContext.put(LoggerConstant.LOG_BUSINESS_ID_KEY, firm.getId());
+			UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
+			if (userTicket != null) {
+				LoggerContext.put(LoggerConstant.LOG_OPERATOR_ID_KEY, userTicket.getId());
+				LoggerContext.put(LoggerConstant.LOG_MARKET_ID_KEY, userTicket.getFirmId());
+			}
+		}
+		return output;
 	}
 
 	/**
@@ -90,17 +103,19 @@ public class FirmController {
 	@ApiOperation("修改Firm")
 	@ApiImplicitParams({ @ApiImplicitParam(name = "Firm", paramType = "form", value = "Firm的form信息", required = true, dataType = "string") })
 	@RequestMapping(value = "/update.action", method = { RequestMethod.GET, RequestMethod.POST })
-//    @OpLog(contentProvider = "updateLogContentProvider")
 	@BusinessLogger(businessType = "test", content = "业务id:${businessId!},用户id:${operatorId!}, 市场id:${marketId!}，公司名:${name!}。", operationType = "edit", notes = "备注", systemCode = "UAP")
 	public @ResponseBody BaseOutput update(Firm firm) {
-		LoggerContext.put(LoggerConstant.LOG_BUSINESS_ID_KEY, firm.getId());
-		UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
-		if (userTicket != null) {
-			LoggerContext.put(LoggerConstant.LOG_OPERATOR_ID_KEY, userTicket.getId());
-			LoggerContext.put(LoggerConstant.LOG_MARKET_ID_KEY, userTicket.getFirmId());
+		BaseOutput<Object> output = firmService.updateSelectiveAfterCheck(firm);
+		if (output.isSuccess()) {
+			LoggerContext.put(LoggerConstant.LOG_BUSINESS_CODE_KEY, firm.getCode());
+			LoggerContext.put(LoggerConstant.LOG_BUSINESS_ID_KEY, firm.getId());
+			UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
+			if (userTicket != null) {
+				LoggerContext.put(LoggerConstant.LOG_OPERATOR_ID_KEY, userTicket.getId());
+				LoggerContext.put(LoggerConstant.LOG_MARKET_ID_KEY, userTicket.getFirmId());
+			}
 		}
-		return firmService.updateSelectiveAfterCheck(firm);
-
+		return output;
 	}
 
 	/**
@@ -113,7 +128,15 @@ public class FirmController {
 	@ApiImplicitParams({ @ApiImplicitParam(name = "id", paramType = "form", value = "Firm的主键", required = true, dataType = "long") })
 	@RequestMapping(value = "/delete.action", method = { RequestMethod.GET, RequestMethod.POST })
 	public @ResponseBody BaseOutput delete(Long id) {
+		Firm firm = this.firmService.get(id);
 		firmService.delete(id);
+		LoggerContext.put(LoggerConstant.LOG_BUSINESS_CODE_KEY, firm.getCode());
+		LoggerContext.put(LoggerConstant.LOG_BUSINESS_ID_KEY, firm.getId());
+		UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
+		if (userTicket != null) {
+			LoggerContext.put(LoggerConstant.LOG_OPERATOR_ID_KEY, userTicket.getId());
+			LoggerContext.put(LoggerConstant.LOG_MARKET_ID_KEY, userTicket.getFirmId());
+		}
 		return BaseOutput.success("删除成功");
 	}
 }

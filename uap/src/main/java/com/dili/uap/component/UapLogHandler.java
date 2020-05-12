@@ -25,47 +25,42 @@ public class UapLogHandler implements LogHandler {
 //    @Autowired
 //    private AmqpTemplate amqpTemplate;
 
-    @Autowired
-    private RabbitTemplate rabbitTemplate;
+	@Autowired
+	private RabbitTemplate rabbitTemplate;
 
-    @Autowired
-    private LoggerRabbitProducerConfiguration rabbitProducerConfiguration;
+	@Autowired
+	private LoggerRabbitProducerConfiguration rabbitProducerConfiguration;
 
-    @Override
-    public void log(String content, Method method, Object[] args, String params, LogContext logContext) {
-        IBaseDomain baseDomain = (IBaseDomain) args[0];
-        System.out.println("content:" + content);
-        OperationLog operationLog = new OperationLog();
-        operationLog.setBusinessType("test");
-        operationLog.setBusinessId(baseDomain.getId());
-        operationLog.setOperationType("edit");
-        operationLog.setContent(content);
-        operationLog.setNotes("UAP操作日志测试Firm修改");
-        UserTicket userTicket = (UserTicket) logContext.getUser();
-        operationLog.setOperatorId(userTicket.getId());
-        operationLog.setMarketId(userTicket.getFirmId());
-        operationLog.setCreateTime(LocalDateTime.now());
-        String json = JSON.toJSONString(operationLog);
-        System.out.println("发送消息:" + json);
-        sendMsg(LoggerConstant.MQ_LOGGER_TOPIC_EXCHANGE, LoggerConstant.MQ_LOGGER_ADD_BUSINESS_KEY, json);
-    }
+	@Override
+	public void log(String content, Method method, Object[] args, String params, LogContext logContext) {
+		IBaseDomain baseDomain = (IBaseDomain) args[0];
+		System.out.println("content:" + content);
+		OperationLog operationLog = new OperationLog();
+		operationLog.setBusinessType("test");
+		operationLog.setBusinessId(baseDomain.getId());
+		operationLog.setOperationType("edit");
+		operationLog.setContent(content);
+		operationLog.setNotes("UAP操作日志测试Firm修改");
+		UserTicket userTicket = (UserTicket) logContext.getUser();
+		operationLog.setOperatorId(userTicket.getId());
+		operationLog.setMarketId(userTicket.getFirmId());
+		operationLog.setCreateTime(LocalDateTime.now());
+		String json = JSON.toJSONString(operationLog);
+		System.out.println("发送消息:" + json);
+		sendMsg(LoggerConstant.MQ_LOGGER_ADD_BUSINESS_KEY, LoggerConstant.MQ_LOGGER_ADD_BUSINESS_KEY, json);
+	}
 
-    private void sendMsg(String exchange, String routingKey, String json) {
-        String uuid = UUID.randomUUID().toString();
-        Message message = MessageBuilder.withBody(json.getBytes())
-                .setContentType(MessageProperties.CONTENT_TYPE_JSON)
-                .setContentEncoding("utf-8")
-                .setMessageId(uuid)
-                .build();
-        this.rabbitTemplate.setReturnCallback(rabbitProducerConfiguration);
-        this.rabbitTemplate.setConfirmCallback(rabbitProducerConfiguration);
+	private void sendMsg(String exchange, String routingKey, String json) {
+		String uuid = UUID.randomUUID().toString();
+		Message message = MessageBuilder.withBody(json.getBytes()).setContentType(MessageProperties.CONTENT_TYPE_JSON).setContentEncoding("utf-8").setMessageId(uuid).build();
+		this.rabbitTemplate.setReturnCallback(rabbitProducerConfiguration);
+		this.rabbitTemplate.setConfirmCallback(rabbitProducerConfiguration);
 
-        //使用继承扩展的CorrelationData 、id消息流水号
-        CorrelationDataExt correlationData =
-                new CorrelationDataExt(uuid);
-        correlationData.setMessage(message);
-        correlationData.setExchange(exchange);
-        correlationData.setRoutingKey(routingKey);
-        this.rabbitTemplate.convertAndSend(exchange, routingKey, message, correlationData);
-    }
+		// 使用继承扩展的CorrelationData 、id消息流水号
+		CorrelationDataExt correlationData = new CorrelationDataExt(uuid);
+		correlationData.setMessage(message);
+		correlationData.setExchange(exchange);
+		correlationData.setRoutingKey(routingKey);
+		this.rabbitTemplate.convertAndSend(exchange, routingKey, message, correlationData);
+	}
 }
