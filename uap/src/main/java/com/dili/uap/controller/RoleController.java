@@ -1,5 +1,30 @@
 package com.dili.uap.controller;
 
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.dili.logger.sdk.annotation.BusinessLogger;
@@ -19,24 +44,13 @@ import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.service.FirmService;
 import com.dili.uap.service.RoleService;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import javax.annotation.Resource;
-import java.io.FileNotFoundException;
-import java.util.*;
-import java.util.concurrent.Callable;
-import java.util.stream.Collectors;
+import tk.mybatis.mapper.entity.Example;
+import tk.mybatis.mapper.entity.Example.Criteria;
 
 /**
  * 由MyBatis Generator工具自动生成 This file was generated on 2018-05-18 11:45:41.
@@ -97,6 +111,79 @@ public class RoleController {
 		})).collect(Collectors.toList());
 		List<Map> list = ValueProviderUtils.buildDataByProvider(getRoleMetadata(), sortList);
 		return JSONObject.toJSONString(list);
+	}
+
+	/**
+	 * 查询Role
+	 * 
+	 * @param role
+	 * @return
+	 * @throws Exception
+	 */
+	@ApiOperation(value = "查询Role", notes = "查询Role，返回列表信息")
+	@ApiImplicitParams({ @ApiImplicitParam(name = "Role", paramType = "form", value = "Role的form信息", required = false, dataType = "string") })
+	@RequestMapping(value = "/listTreeGrid.action", method = { RequestMethod.GET, RequestMethod.POST })
+	@ResponseBody
+	public String listTreeGrid(Role role, @RequestParam(required = false, defaultValue = "false") Boolean queryModel) throws Exception {
+		List<Role> roleList = null;
+		if (!queryModel) {
+			Example example = new Example(Role.class);
+			Criteria criteria = example.createCriteria().andIsNull("parentId");
+			if (StringUtils.isNotBlank(role.getFirmCode())) {
+				criteria.andEqualTo("firmCode", role.getFirmCode());
+			}
+			roleList = this.roleService.selectByExample(example);
+		} else {
+			roleList = roleService.listByExample(role);
+		}
+		List<Map> list = ValueProviderUtils.buildDataByProvider(getRoleMetadata(), roleList);
+		Firm firm = DTOUtils.newInstance(Firm.class);
+		if (StringUtils.isNotBlank(role.getFirmCode())) {
+			firm.setCode(role.getFirmCode());
+		}
+		list.forEach(rm -> {
+			if (!(Boolean) rm.get("leaf")) {
+				rm.put("state", "closed");
+			}
+			if (rm.get("parentId") == null) {
+				rm.put("parentId", rm.get("$_firmCode"));
+			}
+		});
+		if (!queryModel) {
+			List<Firm> firmList = null;
+			firmList = this.firmService.list(firm);
+			firmList.forEach(f -> {
+				Map map = new HashMap();
+				map.put("id", f.getCode());
+				map.put("roleName", f.getName());
+				list.add(map);
+			});
+		}
+		List<Map> footers = new ArrayList<Map>();
+		Map footer = new HashMap(1);
+		footer.put("roleName", "共有" + this.roleService.countAll()+"条记录");
+		footers.add(footer);
+		EasyuiPageOutput result = new EasyuiPageOutput(list.size(), list);
+		result.setFooter(footers);
+		return result.toString();
+	}
+
+	@ResponseBody
+	@RequestMapping("/expand.action")
+	public String expandList(Long parentId) throws Exception {
+		Role role = DTOUtils.newDTO(Role.class);
+		role.setParentId(parentId);
+		Map<String, Object> metadata = this.getRoleMetadata();
+
+		role.mset(metadata);
+		EasyuiPageOutput easyuiPageOutput = this.roleService.listEasyuiPageByExample(role, true);
+		for (Object rowObj : easyuiPageOutput.getRows()) {
+			Map rowMap = (Map) rowObj;
+			if (!(Boolean) rowMap.get("leaf")) {
+				rowMap.put("state", "closed");
+			}
+		}
+		return JSONArray.toJSONString(easyuiPageOutput.getRows());
 	}
 
 	/**
@@ -284,6 +371,12 @@ public class RoleController {
 		firmCodeProvider.put("provider", "firmCodeProvider");
 		firmCodeProvider.put(ValueProvider.FIELD_KEY, "firmCode");
 		metadata.put("firmCode", firmCodeProvider);
+
+		JSONObject datetimeProvider = new JSONObject();
+		datetimeProvider.put("provider", "datetimeProvider");
+		datetimeProvider.put(ValueProvider.FIELD_KEY, "created");
+		metadata.put("created", datetimeProvider);
+		metadata.put("modified", datetimeProvider);
 
 		return metadata;
 	}

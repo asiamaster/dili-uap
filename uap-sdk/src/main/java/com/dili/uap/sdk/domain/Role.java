@@ -67,12 +67,19 @@ public interface Role extends IBaseDomain, IMybatisForceParams {
 
 	void setModified(Date modified);
 
-	@Column(name = "`state`")
+	@Column(name = "`role_state`")
 	@FieldDef(label = "状态")
 	@EditMode(editor = FieldEditor.Number, required = true)
-	Integer getState();
+	Integer getRoleState();
 
-	void setState(Integer state);
+	void setRoleState(Integer roleState);
+
+	@Column(name = "`merge_name`")
+	@FieldDef(label = "合并名称")
+	@EditMode(editor = FieldEditor.Number, required = true)
+	String getMergeName();
+	
+	void setMergeName(String mergeName);
 	
 	@Column(name = "`parent_id`")
 	@FieldDef(label = "父级角色")
@@ -80,4 +87,10 @@ public interface Role extends IBaseDomain, IMybatisForceParams {
 	Long getParentId();
 
 	void setParentId(Long parentId);
+	
+	@Column(name = "`leaf`")
+	@FieldDef(label = "是否是叶子节点")
+	Boolean getLeaf();
+	
+	void setLeaf(Boolean leaf);
 }

@@ -74,6 +74,20 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements Role
 		if (null != count && count >= 1L) {
 			return BaseOutput.failure("该角色下有关联用户，不能删除");
 		}
+		Role role = this.getActualDao().selectByPrimaryKey(id);
+		if (!role.getLeaf()) {
+			return BaseOutput.failure("包含子角色不能删除");
+		}
+		if (role.getParentId() != null) {
+			Role query = DTOUtils.newInstance(Role.class);
+			query.setParentId(role.getParentId());
+			count = (long) this.getActualDao().selectCount(query);
+			if (count <= 0) {
+				Role parent = this.getActualDao().selectByPrimaryKey(role.getParentId());
+				parent.setLeaf(true);
+				this.getActualDao().updateByPrimaryKeySelective(parent);
+			}
+		}
 		Map param = new HashMap(1);
 		param.put("roleId", id);
 		// 删除对应的角色-菜单信息
@@ -98,6 +112,17 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements Role
 			if (null != role.getId()) {
 				updateExactSimple(role);
 			} else {
+				// 更新叶节点状态
+				if (role.getParentId() != null) {
+					query = DTOUtils.newInstance(Role.class);
+					query.setId(role.getParentId());
+					Role parent = this.getActualDao().selectOne(query);
+					if (parent != null && parent.getLeaf()) {
+						role.setMergeName(parent.getMergeName() + "," + role.getRoleName());
+						parent.setLeaf(false);
+						this.getActualDao().updateByPrimaryKeySelective(parent);
+					}
+				}
 				insertSelective(role);
 			}
 		} else {
@@ -330,6 +355,11 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements Role
 	@Override
 	public List<RoleUserDto> listRoleUserByRoleIds(List<Long> roleIds) {
 		return this.getActualDao().listRoleUserByRoleIds(roleIds);
+	}
+
+	@Override
+	public Integer countAll() {
+		return this.getActualDao().selectCount(DTOUtils.newInstance(Role.class));
 	}
 
 }

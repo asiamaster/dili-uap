@@ -9,8 +9,10 @@
 		<result column="firm_code" jdbcType="BIGINT" property="firmCode" />
 		<result column="created" jdbcType="TIMESTAMP" property="created" />
 		<result column="modified" jdbcType="TIMESTAMP" property="modified" />
-		<result column="state" jdbcType="INTEGER" property="state" />
+		<result column="role_state" jdbcType="INTEGER" property="roleState" />
+		<result column="merge_name" jdbcType="VARCHAR" property="mergeName" />
 		<result column="parent_id" jdbcType="BIGINT" property="parentId" />
+		<result column="leaf" jdbcType="INTEGER" property="leaf" />
 	</resultMap>
 
 	<resultMap type="com.dili.uap.sdk.domain.dto.RoleUserDto" id="RoleUserRM" extends="BaseResultMap">
@@ -33,7 +35,7 @@
 
 	<sql id="Base_Column_List">
 		<!-- WARNING - @mbg.generated -->
-		id, role_name, description, firm_code, created, modified,state,parent_id
+		id, role_name, description, firm_code, created, modified,role_state,merge_name,parent_id,leaf
 	</sql>
 
 	<sql id="Join_Column_List">
@@ -43,8 +45,10 @@
 		r.description,
 		r.created,
 		r.modified,
-		r.state,
-		r.parent_id
+		r.role_state,
+		r.merge_name,
+		r.parent_id,
+		r.leaf
 	</sql>
 
 	<select id="selectBy" parameterType="java.lang.Long" resultMap="BaseResultMap">

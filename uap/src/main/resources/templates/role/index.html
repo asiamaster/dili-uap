@@ -26,7 +26,7 @@
                             </td>
                             <td>
                                 <a href="#" class="easyui-linkbutton" iconCls="icon-search" id="queryBtn"
-                                   onclick="queryGrid()">查询</a>&nbsp;&nbsp;
+                                   onclick="queryGrid(true)">查询</a>&nbsp;&nbsp;
                                 <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-clear" onclick="clearForm()">清除</a>
                             </td>
                         </tr>
@@ -40,22 +40,30 @@
         <!-- 表格 -->
         <div region="center" style="width:100%;" height="auto" align="center" border="false">
                 <!-- =========================================================表格========================================================= -->
-                <table class="easyui-datagrid" title="角色列表" id="roleGrid" fitColumns="true"  noheader="true"
-                       pagination="true" pageSize="30" pageNumber="1" pagePosition="top" remoteSort="true" border="false"
-                       loadMsg="数据加载中..." singleSelect="true" method="post" sortName="id" sortOrder="desc"
-                       align="center" fit="true" striped="false"  idField="id" data-options="onHeaderContextMenu:headerContextMenu, onBeforeLoad:onBeforeLoad, onLoadSuccess:gridLoadSuccess">
+                <table class="easyui-treegrid" title="角色列表" id="roleGrid" fitColumns="true"  noheader="true"
+                        remoteSort="true" border="false" toolbar="#toolbar" footer="#footerbar"
+                       loadMsg="数据加载中..." singleSelect="true" method="post"
+                       align="center" fit="true" striped="false"  idField="id" treeField="roleName" 
+                       data-options="loadFilter:treegridLoadFilter, 
+                       _parentIdField:'parentId',
+                       onHeaderContextMenu:headerContextMenu, 
+                       onLoadSuccess:onLoadSuccess,
+                       onBeforeExpand:renderChildren">
                     <thead>
                         <tr>
                             <th data-options="field:'id',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false',hidden:true">
                                 ID
                             </th>
-                            <th width="20%" data-options="field:'roleName',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false',editor:{type:'textbox',options:{required:true,validType:'length[2,20]'}}">
+                            <th width="20%"  data-options="field:'roleName',sortable:true, order:'asc', align:'left', resizable:'true', fixed:'false',editor:{type:'textbox',options:{required:true,validType:'length[2,20]'}}">
                                 角色名
                             </th>
-                            <th width="40%" data-options="field:'description',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false',editor:{type:'textbox',options:{validType:'length[0,20]'}}">
+                            <th width="20%"  data-options="field:'mergeName',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                                合并名称
+                            </th>
+                            <th width="20%" data-options="field:'description',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false',editor:{type:'textbox',options:{validType:'length[0,20]'}}">
                                 角色描述
                             </th>
-                            <th width="10%" data-options="field:'firmCode', _provider:'firmCodeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false',editor:{type:'combobox',options:{required:true,editable:false,valueField:'code',textField:'name',panelHeight:'auto'}}">
+                            <th width="10%" data-options="field:'firmCode', _provider:'firmCodeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                                 归属市场
                             </th>
                             <th width="15%" data-options="field:'created',_provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
@@ -64,9 +72,36 @@
                             <th width="16%" data-options="field:'modified',_provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                                 修改时间
                             </th>
+                            <th data-options="field:'leaf',hidden:true">
+                            </th>
                         </tr>
                     </thead>
                 </table>
+                <div id="toolbar" style="padding: 10px 5px 10px 30px;background: #FFFFFF">
+                <#resource code="rolePermission">
+                    <a href="#" class="easyui-linkbutton" iconCls="icon-role" onclick="editRoleMenuAndResource();" plain="true">权限</a>
+                </#resource>
+                <#resource code="roleUsers">
+                    <a href="#" class="easyui-linkbutton" iconCls="icon-man" onclick="onUserList()" plain="true">所属用户</a>
+                </#resource>
+                <#resource code="insertRole">
+                    <a href="#" class="easyui-linkbutton" iconCls="icon-add" onclick="$('#roleGrid').dataGridEditor().insert();" plain="true">新增</a>
+                </#resource>
+                <#resource code="updateRole">
+                    <a href="#" class="easyui-linkbutton" iconCls="icon-edit" onclick="$('#roleGrid').dataGridEditor().update();" plain="true">修改</a>
+                </#resource>
+                <#resource code="deleteRole">
+                    <a href="#" class="easyui-linkbutton" iconCls="icon-remove" onclick="$('#roleGrid').dataGridEditor().delete();" plain="true">删除</a>
+                </#resource>
+                <#resource code="exportRole">
+                    <a href="#" class="easyui-linkbutton" iconCls="icon-export" onclick="doExport('roleGrid');" plain="true">导出</a>
+                </#resource>
+                <a href="#" class="easyui-linkbutton" iconCls="icon-ok" id="save_btn" style="display: none" onclick="$('#roleGrid').dataGridEditor().save();" plain="true">保存</a>
+                <a href="#" id="cancel_btn" class="easyui-linkbutton" iconCls="icon-clear" onclick="$('#roleGrid').dataGridEditor().cancel();" style="display: none" plain="true">取消</a>
+            </div>
+             <div id="footerbar" style="padding: 10px 5px 10px 30px;background: #FFFFFF">
+             总共0条记录
+            </div>
         </div>
     </div>
      <!-- 隐藏的权限编辑框 -->
