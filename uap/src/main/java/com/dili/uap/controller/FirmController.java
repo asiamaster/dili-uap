@@ -1,5 +1,7 @@
 package com.dili.uap.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -11,6 +13,8 @@ import com.dili.logger.sdk.annotation.BusinessLogger;
 import com.dili.logger.sdk.base.LoggerContext;
 import com.dili.logger.sdk.glossary.LoggerConstant;
 import com.dili.ss.domain.BaseOutput;
+import com.dili.ss.dto.DTOUtils;
+import com.dili.uap.constants.UapConstants;
 import com.dili.uap.sdk.domain.Firm;
 import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.session.SessionContext;
@@ -138,5 +142,17 @@ public class FirmController {
 			LoggerContext.put(LoggerConstant.LOG_MARKET_ID_KEY, userTicket.getFirmId());
 		}
 		return BaseOutput.success("删除成功");
+	}
+
+	@ResponseBody
+	@RequestMapping("/listByLoggedUser.action")
+	public List<Firm> listByLoggedUser() {
+		UserTicket user = SessionContext.getSessionContext().getUserTicket();
+		if (!user.getFirmCode().equals(UapConstants.GROUP_CODE)) {
+			Firm query = DTOUtils.newInstance(Firm.class);
+			query.setCode(user.getFirmCode());
+			return this.firmService.list(query);
+		}
+		return this.firmService.list(DTOUtils.newInstance(Firm.class));
 	}
 }

@@ -1,5 +1,6 @@
 package com.dili.uap.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.dili.logger.sdk.annotation.BusinessLogger;
 import com.dili.logger.sdk.base.LoggerContext;
 import com.dili.logger.sdk.glossary.LoggerConstant;
@@ -12,6 +13,10 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -67,6 +72,12 @@ public class DataDictionaryValueController {
 	@ApiImplicitParams({ @ApiImplicitParam(name = "DataDictionaryValue", paramType = "form", value = "DataDictionaryValue的form信息", required = false, dataType = "string") })
 	@RequestMapping(value = "/listPage.action", method = { RequestMethod.GET, RequestMethod.POST })
 	public @ResponseBody String listPage(DataDictionaryValue dataDictionaryValue) throws Exception {
+		@SuppressWarnings("unchecked")
+		Map<Object, Object> metadata = null == dataDictionaryValue.getMetadata() ? new HashMap<>() : dataDictionaryValue.getMetadata();
+
+		metadata.put("firmCode", "firmCodeProvider");
+		dataDictionaryValue.setMetadata(metadata);
+
 		return dataDictionaryValueService.listEasyuiPageByExample(dataDictionaryValue, true).toString();
 	}
 

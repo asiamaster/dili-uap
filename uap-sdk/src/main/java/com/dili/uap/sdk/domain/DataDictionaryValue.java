@@ -58,6 +58,13 @@ public interface DataDictionaryValue extends IBaseDomain {
     String getCode();
 
     void setCode(String code);
+    
+    @Column(name = "`firm_code`")
+    @FieldDef(label="市场编码", maxLength = 40)
+    @EditMode(editor = FieldEditor.Text, required = false)
+    String getFirmCode();
+    
+    void setFirmCode(String firmCode);
 
     @Column(name = "`description`")
     @FieldDef(label="描述", maxLength = 255)

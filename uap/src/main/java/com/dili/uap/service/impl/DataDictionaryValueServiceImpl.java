@@ -2,6 +2,7 @@ package com.dili.uap.service.impl;
 
 import com.dili.ss.base.BaseServiceImpl;
 import com.dili.ss.domain.BaseOutput;
+import com.dili.ss.domain.EasyuiPageOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.dao.DataDictionaryMapper;
 import com.dili.uap.dao.DataDictionaryValueMapper;
@@ -23,55 +24,58 @@ import java.util.List;
 import javax.management.RuntimeErrorException;
 
 /**
- * 由MyBatis Generator工具自动生成
- * This file was generated on 2018-05-21 10:40:13.
+ * 由MyBatis Generator工具自动生成 This file was generated on 2018-05-21 10:40:13.
  */
 @Service
 public class DataDictionaryValueServiceImpl extends BaseServiceImpl<DataDictionaryValue, Long> implements DataDictionaryValueService {
 
+	public DataDictionaryValueMapper getActualDao() {
+		return (DataDictionaryValueMapper) getDao();
+	}
 
-    public DataDictionaryValueMapper getActualDao() {
-        return (DataDictionaryValueMapper) getDao();
-    }
+	@Autowired
+	private DataDictionaryMapper dataDictionaryMapper;
 
-    @Autowired
-    private DataDictionaryMapper dataDictionaryMapper;
-    @Override
-    public List<DataDictionaryValue> listDictionaryValueByCode(String code) {
-        return null;
-    }
-    @Override
+	@Override
+	public List<DataDictionaryValue> listDictionaryValueByCode(String code) {
+		return null;
+	}
+
+	@Override
 	public BaseOutput<Object> insertAfterCheck(DataDictionaryValue t) {
-		
-		if(StringUtils.isBlank(t.getCode())){
+
+		if (StringUtils.isBlank(t.getCode())) {
 			return BaseOutput.failure("编码不能为空");
 		}
-		if(StringUtils.isBlank(t.getDdCode())){
-			return BaseOutput.failure("系统编码不能为空");
+		if (StringUtils.isBlank(t.getDdCode())) {
+			return BaseOutput.failure("数据字典编码不能为空");
 		}
-		DataDictionaryValue condition=DTOUtils.newInstance(DataDictionaryValue.class);
+		DataDictionaryValue condition = DTOUtils.newInstance(DataDictionaryValue.class);
 		condition.setCode(StringUtils.trim(t.getCode()));
+		condition.setFirmCode(t.getFirmCode());
 		condition.setDdCode(StringUtils.trim(t.getDdCode()));
-		int size=this.list(condition).size();
-		if(size>0) {
+		int size = this.list(condition).size();
+		if (size > 0) {
 			return BaseOutput.failure("相同编码已经存在");
 		}
 		this.insertSelective(t);
-		return BaseOutput.success("新增成功");
+		return BaseOutput.success("新增成功").setData(t.getId());
 	}
+
 	@Override
 	public BaseOutput<Object> updateAfterCheck(DataDictionaryValue t) {
-		if(StringUtils.isBlank(t.getCode())){
+		if (StringUtils.isBlank(t.getCode())) {
 			return BaseOutput.failure("编码不能为空");
 		}
-		if(StringUtils.isBlank(t.getDdCode())){
+		if (StringUtils.isBlank(t.getDdCode())) {
 			return BaseOutput.failure("系统编码不能为空");
 		}
-		DataDictionaryValue condition=DTOUtils.newInstance(DataDictionaryValue.class);
+		DataDictionaryValue condition = DTOUtils.newInstance(DataDictionaryValue.class);
 		condition.setCode(StringUtils.trim(t.getCode()));
+		condition.setFirmCode(t.getFirmCode());
 		condition.setDdCode(StringUtils.trim(t.getDdCode()));
-		boolean exists=this.list(condition).stream().anyMatch((d)->!d.getId().equals(t.getId()));
-		if(exists) {
+		boolean exists = this.list(condition).stream().anyMatch((d) -> !d.getId().equals(t.getId()));
+		if (exists) {
 			return BaseOutput.failure("相同编码已经存在");
 		}
 		this.updateSelective(t);
@@ -79,7 +83,7 @@ public class DataDictionaryValueServiceImpl extends BaseServiceImpl<DataDictiona
 	}
 
 	@Override
-	public DataDictionaryDto findByCode(String code,String systemCode) {	
+	public DataDictionaryDto findByCode(String code, String systemCode) {
 		DataDictionary record = DTOUtils.newInstance(DataDictionary.class);
 		record.setCode(code);
 		record.setSystemCode(systemCode);
@@ -100,19 +104,20 @@ public class DataDictionaryValueServiceImpl extends BaseServiceImpl<DataDictiona
 		}
 		return dto;
 	}
+
 	@Override
 	@Transactional
 	public BaseOutput<Object> insertDataDictionaryDto(DataDictionaryDto dataDictionaryDto) {
 		try {
 			DataDictionary dataDictionary = DTOUtils.as(dataDictionaryDto, DataDictionary.class);
 			int insert = this.dataDictionaryMapper.insert(dataDictionary);
-			if(insert==0) {
+			if (insert == 0) {
 				throw new RuntimeException("添加失败");
 			}
 			List<DataDictionaryValue> deDataDictionaryValues = dataDictionaryDto.getDataDictionaryValues();
 			for (DataDictionaryValue dataDictionaryValue : deDataDictionaryValues) {
 				int insertValue = this.getActualDao().insert(dataDictionaryValue);
-				if(insertValue==0) {
+				if (insertValue == 0) {
 					throw new RuntimeException("添加失败");
 				}
 			}
@@ -122,7 +127,7 @@ public class DataDictionaryValueServiceImpl extends BaseServiceImpl<DataDictiona
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
 			return BaseOutput.failure(e.getMessage());
 		}
-		
+
 		return BaseOutput.success("添加成功");
 	}
 
