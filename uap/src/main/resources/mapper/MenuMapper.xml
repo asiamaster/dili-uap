@@ -16,6 +16,24 @@
 		<result column="type" jdbcType="INTEGER" property="type" />
 		<result column="icon_cls" jdbcType="VARCHAR" property="iconCls" />
 	</resultMap>
+
+
+	<resultMap id="clientMenuRM" type="com.dili.uap.sdk.domain.dto.ClientMenuDto">
+		<!-- WARNING - @mbg.generated -->
+		<id column="id" jdbcType="VARCHAR" property="id" />
+		<result column="parent_id" jdbcType="VARCHAR" property="parentId" />
+		<result column="system_id" jdbcType="BIGINT" property="systemId" />
+		<result column="order_number" jdbcType="INTEGER" property="orderNumber" />
+		<result column="url" jdbcType="VARCHAR" property="url" />
+		<result column="name" jdbcType="VARCHAR" property="name" />
+		<result column="description" jdbcType="VARCHAR" property="description" />
+		<result column="target" jdbcType="INTEGER" property="target" />
+		<result column="created" jdbcType="TIMESTAMP" property="created" />
+		<result column="modified" jdbcType="TIMESTAMP" property="modified" />
+		<result column="type" jdbcType="INTEGER" property="type" />
+		<result column="icon_cls" jdbcType="VARCHAR" property="iconCls" />
+	</resultMap>
+
 	<sql id="Base_Column_List">
 		<!-- WARNING - @mbg.generated -->
 		id, parent_id, system_id, order_number, url, name, description, target, created, modified, type,
@@ -96,6 +114,103 @@
 		1 = 1
 		<if test="systemId != null">
 			AND m.system_id =#{systemId}
+		</if>
+	</select>
+
+	<select id="listClientMenus" parameterType="java.util.HashMap" resultMap="clientMenuRM">
+		SELECT DISTINCT
+		m.id,
+		( CASE WHEN m.parent_id IS NULL THEN s.`code` ELSE m.parent_id END ) AS parent_id,
+		m.system_id,
+		m.order_number,
+		m.url,
+		m.`name`,
+		m.description,
+		m.target,
+		m.created,
+		m.modified,
+		m.icon_cls,
+		m.`type`,
+		m.`shortcut`
+		FROM
+		menu m
+		INNER JOIN role_menu rm ON m.id = rm.menu_id
+		INNER JOIN (
+		SELECT DISTINCT
+		r.id
+		FROM
+		role r
+		INNER JOIN user_role ur ON r.id = ur.role_id
+		WHERE
+		ur.user_id = #{userId}
+		OR FIND_IN_SET(
+		r.id,
+		getChildRoles ( ur.role_id ))) r ON rm.role_id = r.id
+		INNER JOIN system s ON m.system_id = s.id
+		WHERE
+		1 = 1
+		<if test="systemId != null">
+			AND m.system_id =#{systemId}
+		</if>
+		UNION
+		SELECT DISTINCT
+		m.id,
+		( CASE WHEN m.parent_id IS NULL THEN s.`code` ELSE m.parent_id END ) AS parent_id,
+		m.system_id,
+		m.order_number,
+		m.url,
+		m.`name`,
+		m.description,
+		m.target,
+		m.created,
+		m.modified,
+		m.icon_cls,
+		m.`type`,
+		m.`shortcut`
+		FROM
+		menu m
+		INNER JOIN resource_link rl ON m.id = rl.menu_id
+		INNER JOIN resource r ON rl.resource_code = r.`code`
+		INNER JOIN role_resource rr ON r.id = rr.resource_id
+		INNER JOIN (
+		SELECT DISTINCT
+		r.id
+		FROM
+		role r
+		INNER JOIN user_role ur ON r.id = ur.role_id
+		WHERE
+		ur.user_id = #{userId}
+		OR FIND_IN_SET(
+		r.id,
+		getChildRoles ( ur.role_id ))) t1 ON rr.role_id = t1.id
+		INNER JOIN
+		system s ON m.system_id = s.id
+		WHERE
+		1 = 1
+		<if test="systemId != null">
+			AND m.system_id =#{systemId}
+		</if>
+		UNION ALL
+		SELECT
+		`code` AS id,
+		NULL AS parent_id,
+		NULL AS system_id,
+		order_number,
+		NULL AS url,
+		`name`,
+		description,
+		NULL AS target,
+		created,
+		modified,
+		NULL AS icon_cls,
+		NULL AS `type`,
+		NULL AS `shortcut`
+		FROM
+		systems
+		WHERE
+		1 = 1
+		<if test="systemId != null">
+			AND id = #{systemId}
 		</if>
 	</select>
 

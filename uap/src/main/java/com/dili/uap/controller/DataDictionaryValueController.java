@@ -5,6 +5,7 @@ import com.dili.logger.sdk.annotation.BusinessLogger;
 import com.dili.logger.sdk.base.LoggerContext;
 import com.dili.logger.sdk.glossary.LoggerConstant;
 import com.dili.ss.domain.BaseOutput;
+import com.dili.uap.constants.UapConstants;
 import com.dili.uap.sdk.domain.DataDictionaryValue;
 import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.session.SessionContext;
@@ -77,6 +78,11 @@ public class DataDictionaryValueController {
 
 		metadata.put("firmCode", "firmCodeProvider");
 		dataDictionaryValue.setMetadata(metadata);
+
+		UserTicket user = SessionContext.getSessionContext().getUserTicket();
+		if (!user.getFirmCode().equals(UapConstants.GROUP_CODE)) {
+			dataDictionaryValue.setFirmCode(user.getFirmCode());
+		}
 
 		return dataDictionaryValueService.listEasyuiPageByExample(dataDictionaryValue, true).toString();
 	}

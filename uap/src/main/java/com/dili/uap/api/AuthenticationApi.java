@@ -15,6 +15,7 @@ import com.dili.uap.manager.DataAuthManager;
 import com.dili.uap.sdk.component.DataAuthSource;
 import com.dili.uap.sdk.domain.Menu;
 import com.dili.uap.sdk.domain.Systems;
+import com.dili.uap.sdk.domain.dto.ClientMenuDto;
 import com.dili.uap.sdk.redis.DataAuthRedis;
 import com.dili.uap.sdk.redis.UserRedis;
 import com.dili.uap.sdk.redis.UserSystemRedis;
@@ -220,7 +221,7 @@ public class AuthenticationApi {
     @ApiOperation("获取菜单权限列表")
     @RequestMapping(value = "/listMenus.api", method = { RequestMethod.POST })
     @ResponseBody
-    public BaseOutput<List<Menu>> listMenus(@RequestBody String json){
+    public BaseOutput<Object> listMenus(@RequestBody String json){
         JSONObject jsonObject = JSONObject.parseObject(json);
         String sessionId = jsonObject.getString("sessionId");
         String systemId = jsonObject.getString("systemId");
@@ -234,7 +235,7 @@ public class AuthenticationApi {
         Map param = new HashMap(2);
         param.put("userId", userId);
         param.put("systemId", systemId);
-        return BaseOutput.success("调用成功").setData(this.menuMapper.listByUserAndSystemId(param));
+        return BaseOutput.success("调用成功").setData(this.menuMapper.listClientMenus(param));
     }
 
     /**
