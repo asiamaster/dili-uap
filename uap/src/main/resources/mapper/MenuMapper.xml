@@ -203,7 +203,7 @@
 		created,
 		modified,
 		NULL AS icon_cls,
-		-1 AS `type`,
+		4 AS `type`,
 		NULL AS `shortcut`
 		FROM
 		systems
