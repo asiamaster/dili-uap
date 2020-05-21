@@ -161,13 +161,20 @@ public class RoleController {
 		}
 		List<Map> footers = new ArrayList<Map>();
 		Map footer = new HashMap(1);
-		footer.put("roleName", "共有" + this.roleService.countAll()+"条记录");
+		footer.put("roleName", "共有" + this.roleService.countAll() + "条记录");
 		footers.add(footer);
 		EasyuiPageOutput result = new EasyuiPageOutput(list.size(), list);
 		result.setFooter(footers);
 		return result.toString();
 	}
 
+	/**
+	 * 加载下级角色数据
+	 * 
+	 * @param parentId
+	 * @return
+	 * @throws Exception
+	 */
 	@ResponseBody
 	@RequestMapping("/expand.action")
 	public String expandList(Long parentId) throws Exception {

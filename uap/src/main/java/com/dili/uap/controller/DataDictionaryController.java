@@ -4,10 +4,12 @@ import com.dili.logger.sdk.annotation.BusinessLogger;
 import com.dili.logger.sdk.base.LoggerContext;
 import com.dili.logger.sdk.glossary.LoggerConstant;
 import com.dili.ss.domain.BaseOutput;
+import com.dili.uap.constants.UapConstants;
 import com.dili.uap.domain.dto.DataDictionaryDto;
 import com.dili.uap.provider.SystemProvider;
 import com.dili.uap.sdk.domain.DataDictionary;
 import com.dili.uap.sdk.domain.UserTicket;
+import com.dili.uap.sdk.domain.dto.DataDictionaryLevel;
 import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.service.DataDictionaryService;
 import io.swagger.annotations.Api;
@@ -71,6 +73,10 @@ public class DataDictionaryController {
 	@ApiImplicitParams({ @ApiImplicitParam(name = "DataDictionary", paramType = "form", value = "DataDictionary的form信息", required = false, dataType = "string") })
 	@RequestMapping(value = "/listPage.action", method = { RequestMethod.GET, RequestMethod.POST })
 	public @ResponseBody String listPage(DataDictionaryDto dataDictionary) {
+		UserTicket user = SessionContext.getSessionContext().getUserTicket();
+		if (!user.getFirmCode().equals(UapConstants.GROUP_CODE)) {
+			dataDictionary.setLevel(DataDictionaryLevel.BUSINESS.getValue());
+		}
 		try {
 			return dataDictionaryService.listEasyuiPageByExample(dataDictionary, true).toString();
 		} catch (Exception e) {

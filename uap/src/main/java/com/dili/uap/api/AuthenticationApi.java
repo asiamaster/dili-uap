@@ -1,31 +1,12 @@
 package com.dili.uap.api;
 
-import com.alibaba.fastjson.JSONObject;
-import com.dili.ss.constant.ResultCode;
-import com.dili.ss.domain.BaseOutput;
-import com.dili.ss.dto.DTOUtils;
-import com.dili.ss.util.RSAUtils;
-import com.dili.uap.dao.MenuMapper;
-import com.dili.uap.dao.ResourceMapper;
-import com.dili.uap.sdk.domain.DataAuthRef;
-import com.dili.uap.domain.Resource;
-import com.dili.uap.domain.dto.LoginDto;
-import com.dili.uap.domain.dto.UserDto;
-import com.dili.uap.manager.DataAuthManager;
-import com.dili.uap.sdk.component.DataAuthSource;
-import com.dili.uap.sdk.domain.Menu;
-import com.dili.uap.sdk.domain.Systems;
-import com.dili.uap.sdk.domain.dto.ClientMenuDto;
-import com.dili.uap.sdk.redis.DataAuthRedis;
-import com.dili.uap.sdk.redis.UserRedis;
-import com.dili.uap.sdk.redis.UserSystemRedis;
-import com.dili.uap.sdk.rpc.SystemConfigRpc;
-import com.dili.uap.service.DataAuthRefService;
-import com.dili.uap.service.LoginService;
-import com.dili.uap.service.UserService;
-import com.dili.uap.utils.WebUtil;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -37,11 +18,31 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import com.alibaba.fastjson.JSONObject;
+import com.dili.ss.constant.ResultCode;
+import com.dili.ss.domain.BaseOutput;
+import com.dili.ss.dto.DTOUtils;
+import com.dili.ss.util.RSAUtils;
+import com.dili.uap.dao.MenuMapper;
+import com.dili.uap.dao.ResourceMapper;
+import com.dili.uap.domain.Resource;
+import com.dili.uap.domain.dto.LoginDto;
+import com.dili.uap.domain.dto.UserDto;
+import com.dili.uap.manager.DataAuthManager;
+import com.dili.uap.sdk.component.DataAuthSource;
+import com.dili.uap.sdk.domain.DataAuthRef;
+import com.dili.uap.sdk.domain.Systems;
+import com.dili.uap.sdk.redis.DataAuthRedis;
+import com.dili.uap.sdk.redis.UserRedis;
+import com.dili.uap.sdk.redis.UserSystemRedis;
+import com.dili.uap.sdk.rpc.SystemConfigRpc;
+import com.dili.uap.service.DataAuthRefService;
+import com.dili.uap.service.LoginService;
+import com.dili.uap.service.UserService;
+import com.dili.uap.utils.WebUtil;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * Created by asiam on 2018/6/7 0007.

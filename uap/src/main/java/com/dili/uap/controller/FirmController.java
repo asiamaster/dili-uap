@@ -144,6 +144,11 @@ public class FirmController {
 		return BaseOutput.success("删除成功");
 	}
 
+	/**
+	 * 根据登录用户过滤市场
+	 * 
+	 * @return
+	 */
 	@ResponseBody
 	@RequestMapping("/listByLoggedUser.action")
 	public List<Firm> listByLoggedUser() {

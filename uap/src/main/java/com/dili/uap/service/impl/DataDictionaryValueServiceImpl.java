@@ -1,15 +1,7 @@
 package com.dili.uap.service.impl;
 
-import com.dili.ss.base.BaseServiceImpl;
-import com.dili.ss.domain.BaseOutput;
-import com.dili.ss.domain.EasyuiPageOutput;
-import com.dili.ss.dto.DTOUtils;
-import com.dili.uap.dao.DataDictionaryMapper;
-import com.dili.uap.dao.DataDictionaryValueMapper;
-import com.dili.uap.domain.dto.DataDictionaryDto;
-import com.dili.uap.sdk.domain.DataDictionary;
-import com.dili.uap.sdk.domain.DataDictionaryValue;
-import com.dili.uap.service.DataDictionaryValueService;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -18,14 +10,22 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.management.RuntimeErrorException;
+import com.dili.ss.base.BaseServiceImpl;
+import com.dili.ss.domain.BaseOutput;
+import com.dili.ss.dto.DTOUtils;
+import com.dili.uap.dao.DataDictionaryMapper;
+import com.dili.uap.dao.DataDictionaryValueMapper;
+import com.dili.uap.dao.FirmMapper;
+import com.dili.uap.domain.dto.DataDictionaryDto;
+import com.dili.uap.sdk.domain.DataDictionary;
+import com.dili.uap.sdk.domain.DataDictionaryValue;
+import com.dili.uap.sdk.domain.Firm;
+import com.dili.uap.service.DataDictionaryValueService;
 
 /**
  * 由MyBatis Generator工具自动生成 This file was generated on 2018-05-21 10:40:13.
  */
+@Transactional
 @Service
 public class DataDictionaryValueServiceImpl extends BaseServiceImpl<DataDictionaryValue, Long> implements DataDictionaryValueService {
 
@@ -35,6 +35,8 @@ public class DataDictionaryValueServiceImpl extends BaseServiceImpl<DataDictiona
 
 	@Autowired
 	private DataDictionaryMapper dataDictionaryMapper;
+	@Autowired
+	private FirmMapper firmMapper;
 
 	@Override
 	public List<DataDictionaryValue> listDictionaryValueByCode(String code) {
@@ -58,6 +60,12 @@ public class DataDictionaryValueServiceImpl extends BaseServiceImpl<DataDictiona
 		if (size > 0) {
 			return BaseOutput.failure("相同编码已经存在");
 		}
+		Firm firmQuery = DTOUtils.newInstance(Firm.class);
+		firmQuery.setCode(t.getFirmCode());
+		Firm firm = this.firmMapper.selectOne(firmQuery);
+		if (firm != null) {
+			t.setFirmId(firm.getId());
+		}
 		this.insertSelective(t);
 		return BaseOutput.success("新增成功").setData(t.getId());
 	}
@@ -77,6 +85,12 @@ public class DataDictionaryValueServiceImpl extends BaseServiceImpl<DataDictiona
 		boolean exists = this.list(condition).stream().anyMatch((d) -> !d.getId().equals(t.getId()));
 		if (exists) {
 			return BaseOutput.failure("相同编码已经存在");
+		}
+		Firm firmQuery = DTOUtils.newInstance(Firm.class);
+		firmQuery.setCode(t.getFirmCode());
+		Firm firm = this.firmMapper.selectOne(firmQuery);
+		if (firm != null) {
+			t.setFirmId(firm.getId());
 		}
 		this.updateSelective(t);
 		return BaseOutput.success("修改成功");
