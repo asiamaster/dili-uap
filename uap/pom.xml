@@ -206,6 +206,23 @@
 <!--			</exclusions>-->
 		</dependency>
 
+		<dependency>
+			<groupId>org.webjars.npm</groupId>
+			<artifactId>swiper</artifactId>
+			<version>4.5.0</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.webjars.npm</groupId>
+					<artifactId>ssr-window</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.webjars.npm</groupId>
+			<artifactId>ssr-window</artifactId>
+			<version>3.0.0-alpha.3</version>
+		</dependency>
+
 		<!-- 公共信息 -->
 		<dependency>
 			<groupId>com.dili</groupId>
