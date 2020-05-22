@@ -29,6 +29,11 @@ public class SystemTypeProvider implements ValueProvider {
 
     @Override
     public List<ValuePair<?>> getLookupList(Object obj, Map metaMap, FieldMeta fieldMeta) {
+        BUFFER.clear();
+        List<ValuePair<?>> BUFFER = Stream.of(SystemType.values())
+                //enum 转换为ValuePair
+                .map(e->new ValuePairImpl<String>(e.getName(), e.getCode().toString()))
+                .collect(Collectors.toList());
         return BUFFER;
     }
 
