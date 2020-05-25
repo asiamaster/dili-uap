@@ -35,11 +35,13 @@ function onBeginEditDdValue(index, row) {
 }
 
 function onAfterEditDdValue(index, row, changes) {
+	if(row.id){
+		changes.$_firmCode=row.$_firmCode;
+	}
 	var isValid = ddValueGrid.datagrid('validateRow', index);
 	if (!isValid) {
 		return false;
 	}
-
 	insertOrUpdateDdValue(index, row, changes);
 	setOptValueBtnDisplay(false);
 }
@@ -104,14 +106,12 @@ function onClickDdValueGridRow(index, row) {
 }
 
 function insertOrUpdateDdValue(index, row, changes) {
-    var oldRecord;
     var url = contextPath + '/dataDictionaryValue/';
     if (!row.id) {
         row.ddCode = ddCode;
         url += 'insert.action';
     } else {
-        oldRecord = new Object();
-        $.extend(true, oldRecord, row);
+    	row.firmCode=row.$_firmCode
         url += 'update.action';
     }
     $.post(url, row, function (data) {

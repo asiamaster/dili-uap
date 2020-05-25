@@ -21,9 +21,19 @@
                     <th width="25%" data-options="field:'name',sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false',editor:{type : 'textbox',options : {required : true,validType:'length[1,120]'}}">名称</th>
                     <th width="25%" data-options="field:'code', sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false',editor:{type : 'textbox',options : {required : true,validType:'length[1,120]'}}">编码</th>
                     <th width="25%" data-options="field:'firmCode',sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false',editor:{type : 'combobox',options : {required : true,valueField:'code',textField:'name',url:'${contextPath!}/firm/listByLoggedUser.action',editable:false}}">归属市场</th>
-                    <th width="18%" data-options="field:'orderNumber',sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false',
+                    <th width="13%" data-options="field:'orderNumber',sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false',
 						editor:{type : 'numberbox',options : {required : true,validType:'length[1,5]'}}">排序号</th>
-                    <th width="33%" data-options="field:'description',sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false',
+					<th width="10%" data-options="field:'state',sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false',
+						formatter:function(v){return v==1?'启用':'禁用';},
+						editor:{type : 'combobox',options : {
+							editable:false,
+							valueField:'value',
+							textField:'label',
+							data:[
+								{label:'启用',value:1},
+								{label:'禁用',value:0}]
+							}}">状态</th>
+                    <th width="28%" data-options="field:'description',sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false',
 						editor:{type : 'textbox',options : {validType:'length[0,20]'}}">备注</th>
                 </tr>
                 </thead>
