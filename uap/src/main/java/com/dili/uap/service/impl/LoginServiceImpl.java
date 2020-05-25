@@ -195,7 +195,7 @@ public class LoginServiceImpl implements LoginService {
 			record.setUserName(loginDto.getUserName());
 			User user = this.userMapper.selectOne(record);
 			if (user == null) {
-				return BaseOutput.failure("用户不存在");
+				return BaseOutput.failure("用户名或密码错误");
 			}
 			// 设置默认登录系统为UAP
 			if (StringUtils.isBlank(loginDto.getSystemCode())) {
