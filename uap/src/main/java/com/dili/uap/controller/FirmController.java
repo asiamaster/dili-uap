@@ -142,6 +142,13 @@ public class FirmController {
 		return output;
 	}
 
+	/**
+	 * 编辑视图
+	 * 
+	 * @param id
+	 * @param modelMap
+	 * @return
+	 */
 	@GetMapping("/update.html")
 	public String updateView(Long id, ModelMap modelMap) {
 		Firm firm = this.firmService.get(id);
