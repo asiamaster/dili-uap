@@ -13,6 +13,7 @@ import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import com.dili.ss.base.BaseServiceImpl;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
+import com.dili.uap.constants.UapConstants;
 import com.dili.uap.dao.DataDictionaryMapper;
 import com.dili.uap.dao.DataDictionaryValueMapper;
 import com.dili.uap.dao.FirmMapper;
@@ -98,25 +99,7 @@ public class DataDictionaryValueServiceImpl extends BaseServiceImpl<DataDictiona
 
 	@Override
 	public DataDictionaryDto findByCode(String code, String systemCode) {
-		DataDictionary record = DTOUtils.newInstance(DataDictionary.class);
-		record.setCode(code);
-		record.setSystemCode(systemCode);
-		DataDictionary model = this.dataDictionaryMapper.selectOne(record);
-		if (model == null) {
-			return null;
-		}
-		DataDictionaryValue valueRecord = DTOUtils.newInstance(DataDictionaryValue.class);
-		valueRecord.setDdCode(model.getCode());
-		List<DataDictionaryValue> values = this.getActualDao().select(valueRecord);
-		DataDictionaryDto dto = DTOUtils.as(model, DataDictionaryDto.class);
-		if (CollectionUtils.isNotEmpty(values)) {
-			List<DataDictionaryValue> dtos = new ArrayList<>(values.size());
-			for (DataDictionaryValue value : values) {
-				dtos.add(value);
-			}
-			dto.setDataDictionaryValues(dtos);
-		}
-		return dto;
+		return this.findByCode(code, systemCode, null);
 	}
 
 	@Override
@@ -143,6 +126,30 @@ public class DataDictionaryValueServiceImpl extends BaseServiceImpl<DataDictiona
 		}
 
 		return BaseOutput.success("添加成功");
+	}
+
+	@Override
+	public DataDictionaryDto findByCode(String code, String systemCode, String firmCode) {
+		DataDictionary record = DTOUtils.newInstance(DataDictionary.class);
+		record.setCode(code);
+		record.setSystemCode(systemCode);
+		DataDictionary model = this.dataDictionaryMapper.selectOne(record);
+		if (model == null) {
+			return null;
+		}
+		DataDictionaryValue valueRecord = DTOUtils.newInstance(DataDictionaryValue.class);
+		valueRecord.setDdCode(model.getCode());
+		valueRecord.setFirmCode(StringUtils.isBlank(firmCode) ? UapConstants.GROUP_CODE : firmCode);
+		List<DataDictionaryValue> values = this.getActualDao().select(valueRecord);
+		DataDictionaryDto dto = DTOUtils.as(model, DataDictionaryDto.class);
+		if (CollectionUtils.isNotEmpty(values)) {
+			List<DataDictionaryValue> dtos = new ArrayList<>(values.size());
+			for (DataDictionaryValue value : values) {
+				dtos.add(value);
+			}
+			dto.setDataDictionaryValues(dtos);
+		}
+		return dto;
 	}
 
 }

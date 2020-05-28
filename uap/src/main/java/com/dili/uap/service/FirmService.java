@@ -2,6 +2,8 @@ package com.dili.uap.service;
 
 import com.dili.ss.base.BaseService;
 import com.dili.ss.domain.BaseOutput;
+import com.dili.uap.domain.dto.FirmAddDto;
+import com.dili.uap.domain.dto.FirmUpdateDto;
 import com.dili.uap.sdk.domain.Firm;
 
 /**
@@ -15,13 +17,13 @@ public interface FirmService extends BaseService<Firm, Long> {
 	 * @param firm
 	 * @return
 	 */
-	BaseOutput<Object> insertAndBindUserDataAuth(Firm firm);
+	BaseOutput<Object> insertAndBindUserDataAuth(FirmAddDto firm);
 
 	/**
 	 * 修改市场验证编码是否重复
 	 * 
-	 * @param firm
+	 * @param dto
 	 * @return
 	 */
-	BaseOutput<Object> updateSelectiveAfterCheck(Firm firm);
+	BaseOutput<Object> updateSelectiveAfterCheck(FirmUpdateDto dto);
 }

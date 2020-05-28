@@ -40,7 +40,7 @@ import tk.mybatis.spring.annotation.MapperScan;
 @SpringBootApplication
 @EnableTransactionManagement
 @EnableDiscoveryClient
-@EnableFeignClients(basePackages = "com.dili.logger.sdk")
+@EnableFeignClients(basePackages = { "com.dili.logger.sdk", "com.dili.uap.rpc" })
 @ComponentScan(basePackages = { "com.dili.ss", "com.dili.uap", "com.dili.logger.sdk" })
 @RestfulScan({ "com.dili.uap.rpc", "com.dili.uap.sdk.rpc" })
 @MapperScan(basePackages = { "com.dili.uap.dao", "com.dili.ss.dao" })
@@ -55,7 +55,7 @@ public class UapApplication extends SpringBootServletInitializer implements Comm
 	public static void main(String[] args) {
 		SpringApplication.run(UapApplication.class, args);
 	}
-	
+
 	@LoadBalanced
 	@Bean
 	public RestTemplate restTemplate() {

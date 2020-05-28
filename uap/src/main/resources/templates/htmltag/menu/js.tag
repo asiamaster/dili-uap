@@ -23,11 +23,13 @@
         return true;
     };
     /**
- * 页面加载完毕后默认选中菜单树的第一个根节点节点
- * @param node
- * @param data
- */
+	 * 页面加载完毕后默认选中菜单树的第一个根节点节点
+	 * 
+	 * @param node
+	 * @param data
+	 */
 function onTreeLoadSuccess(node, data) {
+	$(this).tree('collapseAll');
     var roots = $('#menuTree').tree('getRoots');
     $('#menuTree').tree("select", roots[0].target);
 }
@@ -43,37 +45,37 @@ function onSelectTree(node) {
     cancelEdit("grid1");
     cancelEdit("grid2");
     queryGrid(node);
-    //表格1的清空选择
+    // 表格1的清空选择
     $("#grid1").datagrid("clearSelections");
-    //此时表格2可能还没渲染，无法清空，所以要判断是否有class属性
+    // 此时表格2可能还没渲染，无法清空，所以要判断是否有class属性
     if($("#grid2").attr("class") != null){
         $("#grid2").datagrid("clearSelections");
     }
-    //清空表格3的数据
+    // 清空表格3的数据
     $("#grid3").datagrid("loadData",[]);
 }
 
 /**
- * 点击左边菜单，查询右边的两个表格
- * 如果是菜单目录，则只显示上方的菜单列表
- * 如果是菜单链接，则显示上方的权限列表和下方的内链菜单列表
- *  @param node 页面布局左边树形菜单节点数据，根据这个参数来判断是显示menu还是resource
+ * 点击左边菜单，查询右边的两个表格 如果是菜单目录，则只显示上方的菜单列表 如果是菜单链接，则显示上方的权限列表和下方的内链菜单列表
+ * 
+ * @param node
+ *            页面布局左边树形菜单节点数据，根据这个参数来判断是显示menu还是resource
  */
 function queryGrid(node) {
     var nodeType = node.attributes.type;
-    //点击目录和系统
+    // 点击目录和系统
     if(nodeType == ${@com.dili.uap.glossary.MenuType.DIRECTORY.getCode()}
         || nodeType == ${@com.dili.uap.glossary.MenuType.SYSTEM.getCode()}){
-        //东侧面板收缩
+        // 东侧面板收缩
         $("#layoutPanel").layout("collapse", "east");
-        //中北面板最大化
+        // 中北面板最大化
         $('#centerNorthPanel').panel('maximize');
         queryGridByDir(node);
-    }else{//点击链接
-        //东侧面板恢复
+    }else{// 点击链接
+        // 东侧面板恢复
         // $("#eastPanel").panel("expand");
         $("#layoutPanel").layout("expand", "east");
-        //恢复中北子面板的大小
+        // 恢复中北子面板的大小
         $('#centerNorthPanel').panel('restore');
         queryGridByLinks(node);
     }
@@ -98,7 +100,7 @@ function queryGridByLinks(node) {
     // renderResourceLinkGrid("grid3");
 }
 
-//可编辑表格的操作
+// 可编辑表格的操作
 function openInsert(gridId) {
     $("#"+gridId).dataGridEditor().insert();
 }
@@ -153,7 +155,7 @@ function addResourceLink() {
         dataType: "json",
         async: true,
         success: function (output) {
-            //新加的resource可能没有为资源链接列表grid添加url，所以这里需要判断，并添加
+            // 新加的resource可能没有为资源链接列表grid添加url，所以这里需要判断，并添加
             var opts = $("#grid3").datagrid("options");
             if (null == opts.url || "" == opts.url) {
                 opts.url = "${contextPath}/resource/listResourceLink.action";
@@ -194,15 +196,16 @@ function deleteResourceLink() {
     </#swalConfirm>
 }
 
-// ======================  私有方法分割线  ======================
+// ====================== 私有方法分割线 ======================
 
 /**
  * 渲染菜单列表
+ * 
  * @param node
  * @param gridId
  */
 function renderMenuGrid(node, gridId) {
-    //渲染上方列表
+    // 渲染上方列表
     $("#"+gridId).datagrid({
         title : "菜单列表",
         height : '100%',
@@ -323,7 +326,7 @@ function renderMenuGrid(node, gridId) {
                 }
             }
         }]]
-        //columns 属性结束
+        // columns 属性结束
     });
     $("#"+gridId).datagrid('getPanel').removeClass('lines-both lines-no lines-right lines-bottom').addClass("lines-bottom");
 }
@@ -336,17 +339,18 @@ function clickResource(index, row) {
     if (null == opts.url || "" == opts.url) {
         opts.url = "${contextPath}/resource/listResourceLink.action";
     }
-    //渲染权限列表
+    // 渲染权限列表
     $("#grid3").datagrid("load", bindGridMeta2Data("grid3", {resourceCode:row.code}));
     $("#grid3").datagrid('getPanel').removeClass('lines-both lines-no lines-right lines-bottom').addClass("lines-bottom");
 }
 /**
  * 渲染资源列表
+ * 
  * @param node
  * @param gridId
  */
 function renderResourceGrid(node, gridId) {
-    //渲染权限列表
+    // 渲染权限列表
     $("#"+gridId).datagrid({
         title : "权限列表",
         url : '${contextPath!}/resource/list.action',
@@ -404,11 +408,12 @@ function renderResourceGrid(node, gridId) {
 
 /**
  * 渲染内部链接列表
+ * 
  * @param node
  * @param gridId
  */
 function renderInternalLinksGrid(node, gridId) {
-    //渲染内部链接列表
+    // 渲染内部链接列表
     $("#"+gridId).datagrid({
         title : "内部链接列表",
         height : '100%',
@@ -461,13 +466,14 @@ function renderInternalLinksGrid(node, gridId) {
                 }
             }
         }]]
-        //columns 属性结束
+        // columns 属性结束
     });
     $("#"+gridId).datagrid('getPanel').removeClass('lines-both lines-no lines-right lines-bottom').addClass("lines-bottom");
 }
 
 /**
  * 绑定可编辑菜单表格
+ * 
  * @param node
  */
 function bindEditMenuGrid(node) {
@@ -488,14 +494,14 @@ function bindEditMenuGrid(node) {
             $("#btnCancel1").hide();
         },
         onSaveSuccess: function (index, row, data) {
-            //data就是新增后返回的id，没有返回id就是修改
+            // data就是新增后返回的id，没有返回id就是修改
             if(data) {
                 // row.id=data;
                 // $("#grid1").datagrid("updateRow",{
-                //     index: index,
-                //     row:row
+                // index: index,
+                // row:row
                 // });
-                //为菜单添加相应的节点
+                // 为菜单添加相应的节点
                 addMenuNode(row, row["type"]);
             }else{
                 updateMenuNode(row);
@@ -519,13 +525,14 @@ function bindEditMenuGrid(node) {
             <%}%>
         }
     });
-    //设置当前菜单节点选中的全局变量：systemId和menuId， 用于新增和修改
+    // 设置当前菜单节点选中的全局变量：systemId和menuId， 用于新增和修改
     $("#grid1").data('systemId', node.attributes.systemId);
     $("#grid1").data('menuId', node.id);
 }
 
 /**
  * 绑定可编辑资源表格
+ * 
  * @param node
  */
 function bindEditResourceGrid(node) {
@@ -544,12 +551,12 @@ function bindEditResourceGrid(node) {
         },
         onSaveSuccess: function (index, row, data) {
             // $("#grid1").datagrid("clearSelections");
-            //data就是新增后返回的id，没有返回id就是修改
+            // data就是新增后返回的id，没有返回id就是修改
             if(data) {
                 row.id=data;
                 // $("#grid1").datagrid("updateRow",{
-                //     index: index,
-                //     row:row
+                // index: index,
+                // row:row
                 // });
             }
         },
@@ -571,12 +578,13 @@ function bindEditResourceGrid(node) {
             <%}%>
         }
     });
-    //设置当前菜单节点选中的全局变量：menuId， 用于新增和修改
+    // 设置当前菜单节点选中的全局变量：menuId， 用于新增和修改
     $("#grid1").data('menuId', node.id);
 }
 
 /**
  * 绑定内链菜单表格
+ * 
  * @param node
  */
 function bindInternalLinksGrid(node) {
@@ -594,15 +602,15 @@ function bindInternalLinksGrid(node) {
 
         },
         onSaveSuccess: function (index, row, data) {
-            //data就是新增后返回的id，没有返回id就是修改
+            // data就是新增后返回的id，没有返回id就是修改
             if(data) {
                 row.id = data.id;
             }
             // if(data) {
-            //     //为菜单添加相应的节点
-            //     addMenuNode(row, 2);
+            // //为菜单添加相应的节点
+            // addMenuNode(row, 2);
             // }else{
-            //     updateMenuNode(row);
+            // updateMenuNode(row);
             // }
         },
         onDeleteSuccess: function (row, data) {
@@ -627,15 +635,18 @@ function bindInternalLinksGrid(node) {
             <%}%>
         }
     });
-    //设置当前菜单节点选中的全局变量：systemId和menuId， 用于新增和修改
+    // 设置当前菜单节点选中的全局变量：systemId和menuId， 用于新增和修改
     $("#grid2").data('systemId', node.attributes.systemId);
     $("#grid2").data('menuId', node.id);
 }
 
 /**
  * 在当前选中的节点添加菜单树子节点
- * @param row 必需id和name字段
- * @param menuType 菜单类型
+ * 
+ * @param row
+ *            必需id和name字段
+ * @param menuType
+ *            菜单类型
  */
 function addMenuNode(row, menuType) {
     var selected = $('#menuTree').tree('getSelected');
@@ -651,7 +662,9 @@ function addMenuNode(row, menuType) {
 
 /**
  * 修改指定菜单树节点
- * @param row 必需id和name字段
+ * 
+ * @param row
+ *            必需id和name字段
  */
 function updateMenuNode(row) {
     var node = $('#menuTree').tree('find', "menu_"+row.id);
@@ -664,27 +677,30 @@ function updateMenuNode(row) {
 
 /**
  * 拖动完菜单时触发
- * @param target the target node element to be dropped.
- * @param source the source node being dragged.
+ * 
+ * @param target
+ *            the target node element to be dropped.
+ * @param source
+ *            the source node being dragged.
  */
 function dragMenu(target, source, point) {
     endEditing("grid1");
     endEditing("grid2");
-    //只允许拖到某个节点下面
+    // 只允许拖到某个节点下面
     if(point != "append"){
         return false;
     }
-    //不允许拖最顶层的系统
+    // 不允许拖最顶层的系统
     if(source.id.startsWith("sys_")){
         return false;
     }
     var targetNode = $('#menuTree').tree('getNode', target);
-    //目标节点可以是系统或菜单
+    // 目标节点可以是系统或菜单
     if(targetNode.id.startsWith("sys_") || targetNode.id.startsWith("menu_")){
         var msg = "是否要移动["+source.text+"]到["+targetNode.text+"]下面?";
-        //除了原生confirm，其它第三方都无法阻塞。。。
+        // 除了原生confirm，其它第三方都无法阻塞。。。
         if(confirm(msg)){
-            //是否拖动成功
+            // 是否拖动成功
             var flag = false;
             $.ajax({
                 type: "POST",

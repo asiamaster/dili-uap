@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * 由MyBatis Generator工具自动生成 This file was generated on 2018-05-21 16:08:04.
@@ -187,6 +188,7 @@ public class MenuController {
 			// 如果菜单树上点的节点是系统，需要把parent_id清空
 			menu.mset(IDTO.NULL_VALUE_FIELD, "parent_id");
 		}
+		menu.setCode(UUID.randomUUID().toString());
 		menuService.insertSelective(menu);
 		LoggerContext.put(LoggerConstant.LOG_BUSINESS_CODE_KEY, menu.getId());
 		LoggerContext.put(LoggerConstant.LOG_BUSINESS_ID_KEY, menu.getId());

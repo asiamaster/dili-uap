@@ -164,7 +164,7 @@
         $('#roleMenuAndResourceGrid').treegrid("clearSelections");
         var opts = $('#roleMenuAndResourceGrid').treegrid("options");
         // 设置 关闭 级联检查，不然会默认勾选子节点中的未选中的数据
-        opts.cascadeCheck = false;
+//        opts.cascadeCheck = false;
         if (null == opts.url || "" == opts.url) {
             opts.url = "${contextPath}/role/getRoleMenuAndResource.action";
         }
