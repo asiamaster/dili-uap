@@ -108,6 +108,11 @@ public class FirmController {
 		return firmService.listEasyuiPageByExample(firm, true).toString();
 	}
 
+	/**
+	 * 新增视图
+	 * 
+	 * @return
+	 */
 	@GetMapping("/add.html")
 	public String addView() {
 		return "firm/add";
