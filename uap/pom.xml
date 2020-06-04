@@ -83,17 +83,6 @@
 	</build>
 
 	<dependencies>
-		<!-- 在运行时为项目临时迁移属性, 迁移完成之后，请确保从项目的依赖关系中移除该模块 -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-properties-migrator</artifactId>
-		</dependency>
-	
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-collections4</artifactId>
-			<version>4.1</version>
-		</dependency>
 
 		<!-- 利刃框架引入 -->
 <!--		<dependency>-->
@@ -131,19 +120,19 @@
 <!--			<artifactId>springfox-swagger-ui</artifactId>-->
 <!--			<version>2.9.2</version>-->
 <!--		</dependency>-->
-<!--		<dependency>-->
-<!--			<groupId>io.swagger</groupId>-->
-<!--			<artifactId>swagger-annotations</artifactId>-->
-<!--			<version>1.5.22</version>-->
-<!--		</dependency>-->
+		<dependency>
+			<groupId>io.swagger</groupId>
+			<artifactId>swagger-annotations</artifactId>
+			<version>1.5.22</version>
+		</dependency>
 
 
 		<!-- if you enable json support in spring mvc. -->
-		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-mapper-asl</artifactId>
-			<version>1.9.13</version>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>org.codehaus.jackson</groupId>-->
+<!--			<artifactId>jackson-mapper-asl</artifactId>-->
+<!--			<version>1.9.13</version>-->
+<!--		</dependency>-->
 
 
 		<!-- =============== spring boot starters =============== -->
@@ -198,6 +187,7 @@
 			<groupId>com.dili</groupId>
 			<artifactId>ss-processor</artifactId>
 			<version>${sharp-sword.version}</version>
+			<scope>provided</scope>
 <!--			<exclusions>-->
 <!--				<exclusion>-->
 <!--					<groupId>com.sun</groupId>-->
