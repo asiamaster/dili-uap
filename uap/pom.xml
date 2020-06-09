@@ -204,12 +204,12 @@
 			<groupId>com.dili</groupId>
 			<artifactId>ss-processor</artifactId>
 			<version>${sharp-sword.version}</version>
-			<!-- <exclusions>
+			<exclusions>
 				<exclusion>
 					<groupId>com.sun</groupId>
 					<artifactId>tools</artifactId>
 				</exclusion>
-			</exclusions> -->
+			</exclusions>
 		</dependency>
 
 		<dependency>

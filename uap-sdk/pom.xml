@@ -58,11 +58,11 @@
 
 
 		<!-- if you enable json support in spring mvc. -->
-		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-mapper-asl</artifactId>
-			<version>1.9.13</version>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>org.codehaus.jackson</groupId>-->
+<!--			<artifactId>jackson-mapper-asl</artifactId>-->
+<!--			<version>1.9.13</version>-->
+<!--		</dependency>-->
 
 		<!-- =============== spring boot starters =============== -->
 		<dependency>
