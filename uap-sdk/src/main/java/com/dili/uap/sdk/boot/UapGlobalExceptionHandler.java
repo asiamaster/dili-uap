@@ -59,15 +59,22 @@ public class UapGlobalExceptionHandler {
      */
     @ExceptionHandler(Exception.class)
     public String defultExcepitonHandler(HttpServletRequest request, HttpServletResponse response, Exception e) throws IOException {
-        e.printStackTrace();
+        Exception exception = e;e.printStackTrace();
+        String exMsg = exception.getMessage();
+        //Sentinel限流引发的异常
+        if(e.getCause() != null && "com.alibaba.csp.sentinel.slots.block.flow.FlowException".equals(e.getCause().toString())){
+            exception = (Exception)e.getCause();
+            exMsg = "服务开启限流保护,请稍后再试!";
+        }
         String requestType = request.getHeader("X-Requested-With");
         if (requestType == null) {
-            request.setAttribute("exception", e);
+            request.setAttribute("exception", exception);
+            request.setAttribute("exMsg", exMsg);
 //            response.sendRedirect(basePath + SpringUtil.getProperty("error.page.default", "error/default"));
             return SpringUtil.getProperty("error.page.default", "error/default");
         }
         response.setContentType("application/json;charset=UTF-8");
-        response.getWriter().write(JSON.toJSONString(BaseOutput.failure(e.getMessage())));
+        response.getWriter().write(JSON.toJSONString(BaseOutput.failure(exMsg)));
         return null;
     }
 
