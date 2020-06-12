@@ -3,12 +3,16 @@ package com.dili.uap.service.impl;
 import com.dili.ss.base.BaseServiceImpl;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
+import com.dili.ss.exception.AppException;
 import com.dili.uap.dao.DataDictionaryMapper;
 import com.dili.uap.dao.DataDictionaryValueMapper;
 import com.dili.uap.sdk.domain.DataDictionary;
 import com.dili.uap.sdk.domain.DataDictionaryValue;
 import com.dili.uap.service.DataDictionaryService;
 
+import java.util.List;
+
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -65,6 +69,7 @@ public class DataDictionaryServiceImpl extends BaseServiceImpl<DataDictionary, L
 		return BaseOutput.success("新增成功").setData(t);
 	}
 
+	@Transactional
 	@Override
 	public BaseOutput<Object> updateAfterCheck(DataDictionary t) {
 		if (StringUtils.isBlank(t.getCode())) {
@@ -80,7 +85,23 @@ public class DataDictionaryServiceImpl extends BaseServiceImpl<DataDictionary, L
 		if (exists) {
 			return BaseOutput.failure("相同编码已经存在");
 		}
-		this.updateSelective(t);
+		String originalCode = this.getActualDao().selectByPrimaryKey(t.getId()).getCode();
+		int rows = this.updateSelective(t);
+		if (rows <= 0) {
+			return BaseOutput.failure("更新数据字典失败");
+		}
+		DataDictionaryValue ddQuery = DTOUtils.newInstance(DataDictionaryValue.class);
+		ddQuery.setDdCode(originalCode);
+		List<DataDictionaryValue> ddList = this.dataDictionaryValueMapper.select(ddQuery);
+		if (CollectionUtils.isNotEmpty(ddList)) {
+			ddList.forEach(dd -> {
+				dd.setDdCode(t.getCode());
+				int affectRows = this.dataDictionaryValueMapper.updateByPrimaryKey(dd);
+				if (affectRows <= 0) {
+					throw new AppException("更新数据字典值失败");
+				}
+			});
+		}
 		return BaseOutput.success("修改成功");
 	}
 
