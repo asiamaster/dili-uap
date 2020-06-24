@@ -1,8 +1,20 @@
 package com.dili.uap.api;
 
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.domain.PageOutput;
 import com.dili.ss.dto.DTOUtils;
+import com.dili.ss.dto.IDTO;
 import com.dili.uap.component.ResumeLockedUserJob;
 import com.dili.uap.dao.DepartmentMapper;
 import com.dili.uap.domain.ScheduleMessage;
@@ -13,15 +25,11 @@ import com.dili.uap.sdk.domain.User;
 import com.dili.uap.sdk.domain.dto.UserQuery;
 import com.dili.uap.service.UserService;
 import com.github.pagehelper.Page;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * 由MyBatis Generator工具自动生成 This file was generated on 2017-07-11 16:56:50.
@@ -73,7 +81,23 @@ public class UserApi {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/listByExample.api", method = { RequestMethod.GET, RequestMethod.POST })
-	public PageOutput<List<User>> listByExample(UserQuery user) {
+	public BaseOutput<List<User>> listByExample(UserQuery user) {
+		if (StringUtils.isNotBlank(user.getKeywords())) {
+			user.setMetadata(IDTO.AND_CONDITION_EXPR, "(user_name like '%" + user.getKeywords() + "%' or real_name like '%" + user.getKeywords() + "%')");
+		}
+		List<User> users = this.userService.listByExample(user);
+		return BaseOutput.success().setData(users);
+	}
+
+	/**
+	 * 查询用户
+	 * 
+	 * @param user
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/listPageByExample.api", method = { RequestMethod.GET, RequestMethod.POST })
+	public PageOutput<List<User>> listPageByExample(UserQuery user) {
 		List<User> users = this.userService.listByExample(user);
 		if (users instanceof Page) {
 			Page<User> page = (Page) users;
@@ -140,7 +164,7 @@ public class UserApi {
 	/**
 	 * 查询当前市场下具有特定权限编码的用户
 	 * 
-	 * @param firmCode 部门id
+	 * @param firmCode     部门id
 	 * @param resourceCode 权限编码
 	 * @return
 	 */
