@@ -82,8 +82,8 @@ public class UserApi {
 	@ResponseBody
 	@RequestMapping(value = "/listByExample.api", method = { RequestMethod.GET, RequestMethod.POST })
 	public BaseOutput<List<User>> listByExample(UserQuery user) {
-		if (StringUtils.isNotBlank(user.getKeywords())) {
-			user.setMetadata(IDTO.AND_CONDITION_EXPR, "(user_name like '%" + user.getKeywords() + "%' or real_name like '%" + user.getKeywords() + "%')");
+		if (StringUtils.isNotBlank(user.getKeyword())) {
+			user.setMetadata(IDTO.AND_CONDITION_EXPR, "(user_name like '%" + user.getKeyword() + "%' or real_name like '%" + user.getKeyword() + "%')");
 		}
 		List<User> users = this.userService.listByExample(user);
 		return BaseOutput.success().setData(users);

@@ -50,7 +50,7 @@ public interface UserQuery extends User {
 	void setFirmCodes(List<String> firmCodes);
 
 	@Transient
-	String getKeywords();
+	String getKeyword();
 
-	void setKeywords(String keywords);
+	void setKeyword(String keyword);
 }
