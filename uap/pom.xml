@@ -89,12 +89,6 @@
             <version>1.5.22</version>
         </dependency>
 
-		<!-- 在运行时为项目临时迁移属性, 迁移完成之后，请确保从项目的依赖关系中移除该模块 -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-properties-migrator</artifactId>
-		</dependency>
-
 		<!-- 利刃框架引入 -->
 		<!-- <dependency> -->
 		<!-- <groupId>com.dili</groupId> -->
@@ -189,12 +183,12 @@
 			<groupId>com.dili</groupId>
 			<artifactId>ss-processor</artifactId>
 			<version>${sharp-sword.version}</version>
-<!--			<exclusions>-->
-<!--				<exclusion>-->
-<!--					<groupId>com.sun</groupId>-->
-<!--					<artifactId>tools</artifactId>-->
-<!--				</exclusion>-->
-<!--			</exclusions>-->
+			<exclusions>
+				<exclusion>
+					<groupId>com.sun</groupId>
+					<artifactId>tools</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
