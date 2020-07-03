@@ -1,1 +1,1 @@
-{"DownloadUrl":"http://uap.diligrp.com/files/UPSetup.exe","ForcedUpdating":true,"VersionNum":"1.0.9","IsIncrement":"true","IncrementDownloadUrl":"http://uap.diligrp.com/resources/files/hzsc_updatefile1.0.9.zip","MarketShort":"hzsc"}
+{"DownloadUrl":"https://uap.diligrp.com/files/UPSetup.exe","ForcedUpdating":true,"VersionNum":"1.0.11","IsIncrement":"true","IncrementDownloadUrl":"https://uap.diligrp.com/files/hzsc_updatefile1.0.11.zip","MarketShort":"hzsc"}
