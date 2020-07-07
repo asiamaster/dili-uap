@@ -42,7 +42,7 @@ public interface DepartmentRpc {
 	 * @param department
 	 * @return
 	 */
-	@POST("/api/departmentApi/listByExample.api")
+	@POST("/departmentApi/listByExample.api")
 	BaseOutput<List<Department>> listByExample(@VOBody(required = false) Department department);
 
 	/**
