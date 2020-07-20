@@ -2,6 +2,7 @@ package com.dili.uap.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.dili.ss.base.BaseServiceImpl;
+import com.dili.ss.constant.ResultCode;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.domain.EasyuiPageOutput;
 import com.dili.ss.dto.DTO;
@@ -568,5 +569,25 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 	@Override
 	public List<User> findCurrentFirmUsersByResourceCode(String firmCode, String resourceCode) {
 		return this.getActualDao().findCurrentFirmUsersByResourceCode(firmCode, resourceCode);
+	}
+
+	@Override
+	public BaseOutput<Object> validatePassword(Long userId, String password) {
+		User user = this.getActualDao().selectByPrimaryKey(userId);
+		if (user == null) {
+			return BaseOutput.failure("用户不存在");
+		}
+		// 用户状态为锁定和禁用不允许登录
+		if (user.getState().equals(UserState.LOCKED.getCode())) {
+			return BaseOutput.failure("用户已被锁定，请联系管理员").setCode(ResultCode.NOT_AUTH_ERROR);
+		}
+		if (user.getState().equals(UserState.DISABLED.getCode())) {
+			return BaseOutput.failure("用户已被禁用，请联系管理员!");
+		}
+		// 判断密码不正确，三次后锁定用户、锁定后的用户12小时后自动解锁
+		if (!StringUtils.equals(user.getPassword(), this.encryptPwd(password))) {
+			return BaseOutput.failure("用户名或密码错误").setCode(ResultCode.NOT_AUTH_ERROR);
+		}
+		return BaseOutput.success();
 	}
 }

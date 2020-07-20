@@ -168,4 +168,13 @@ public interface UserService extends BaseService<User, Long> {
 	 */
 	List<User> findCurrentFirmUsersByResourceCode(String firmCode, String resourceCode);
 
+	/**
+	 * 验证用户密码
+	 * 
+	 * @param userId
+	 * @param password
+	 * @return
+	 */
+	BaseOutput<Object> validatePassword(Long userId, String password);
+
 }

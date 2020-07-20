@@ -83,7 +83,8 @@ public class UserApi {
 	@RequestMapping(value = "/listByExample.api", method = { RequestMethod.GET, RequestMethod.POST })
 	public BaseOutput<List<User>> listByExample(UserQuery user) {
 		if (StringUtils.isNotBlank(user.getKeyword())) {
-			user.setMetadata(IDTO.AND_CONDITION_EXPR, "(user_name like '%" + user.getKeyword() + "%' or real_name like '%" + user.getKeyword() + "%')");
+			user.setMetadata(IDTO.AND_CONDITION_EXPR,
+					"(user_name like '%" + user.getKeyword() + "%' or real_name like '%" + user.getKeyword() + "%'" + "%' or serial_number like '%" + user.getKeyword() + "%')");
 		}
 		List<User> users = this.userService.listByExample(user);
 		return BaseOutput.success().setData(users);
@@ -173,6 +174,19 @@ public class UserApi {
 	public BaseOutput<List<User>> findCurrentFirmUsersByResourceCode(@RequestParam String firmCode, @RequestParam String resourceCode) {
 		List<User> list = this.userService.findCurrentFirmUsersByResourceCode(firmCode, resourceCode);
 		return BaseOutput.success().setData(list);
+	}
+
+	/**
+	 * 验证用户密码
+	 * 
+	 * @param userId
+	 * @param password
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping("/validatePassword.api")
+	public BaseOutput<Object> validatePassword(@RequestParam Long userId, @RequestParam String password) {
+		return this.userService.validatePassword(userId, password);
 	}
 
 }
