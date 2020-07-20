@@ -164,7 +164,7 @@
         $('#roleMenuAndResourceGrid').treegrid("clearSelections");
         var opts = $('#roleMenuAndResourceGrid').treegrid("options");
         // 设置 关闭 级联检查，不然会默认勾选子节点中的未选中的数据
-//        opts.cascadeCheck = false;
+ 		opts.cascadeCheck = false;
         if (null == opts.url || "" == opts.url) {
             opts.url = "${contextPath}/role/getRoleMenuAndResource.action";
         }
@@ -299,6 +299,11 @@
             });
         });
     }
+    
+    function roleMenuTreeLoadsuccess(){
+        var opts = $('#roleMenuAndResourceGrid').treegrid("options");
+ 		opts.cascadeCheck = true;
+    }
 
     /**
 	 * 分配角色的grid，加载完成后，设置 开启 级联检查
@@ -307,8 +312,6 @@
     	$('#footerbar').text($(this).treegrid('getFooterRows')[0].roleName);
     	$(this).treegrid("options").url = "${contextPath}/role/listTreeGrid.action";
         $(this).treegrid("clearSelections");
-        var opts = $('#roleMenuAndResourceGrid').treegrid("options");
-        opts.cascadeCheck = true;
         setOptBtnDisplay(false);
     }
     

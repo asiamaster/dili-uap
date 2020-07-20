@@ -146,7 +146,7 @@
 		OR FIND_IN_SET(
 		r.id,
 		getChildRoles ( ur.role_id ))) r ON rm.role_id = r.id
-		INNER JOIN system s ON m.system_id = s.id
+		INNER JOIN systems s ON m.system_id = s.id
 		WHERE
 		1 = 1
 		<if test="systemId != null">
@@ -184,7 +184,7 @@
 		r.id,
 		getChildRoles ( ur.role_id ))) t1 ON rr.role_id = t1.id
 		INNER JOIN
-		system s ON m.system_id = s.id
+		systems s ON m.system_id = s.id
 		WHERE
 		1 = 1
 		<if test="systemId != null">
