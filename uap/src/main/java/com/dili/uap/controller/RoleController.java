@@ -1,5 +1,7 @@
 package com.dili.uap.controller;
 
+import com.alibaba.csp.sentinel.EntryType;
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.dili.ss.domain.BaseOutput;
@@ -53,6 +55,7 @@ public class RoleController {
      * @return
      */
     @ApiOperation("跳转到Role页面")
+    @SentinelResource("roleIndex")
     @RequestMapping(value="/index.html", method = RequestMethod.GET)
     public String index(ModelMap modelMap) throws FileNotFoundException {
         String firmCode = SessionContext.getSessionContext().getUserTicket().getFirmCode();
@@ -106,6 +109,7 @@ public class RoleController {
     @ApiImplicitParams({
 		@ApiImplicitParam(name="Role", paramType="form", value = "Role的form信息", required = false, dataType = "string")
 	})
+    @SentinelResource(value = "listPage", entryType = EntryType.IN)
     @RequestMapping(value="/listPage.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody Callable<String> listPage(Role role) throws Exception {
         String firmCode = SessionContext.getSessionContext().getUserTicket().getFirmCode();
