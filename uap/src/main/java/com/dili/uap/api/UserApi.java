@@ -84,7 +84,7 @@ public class UserApi {
 	public BaseOutput<List<User>> listByExample(UserQuery user) {
 		if (StringUtils.isNotBlank(user.getKeyword())) {
 			user.setMetadata(IDTO.AND_CONDITION_EXPR,
-					"(user_name like '%" + user.getKeyword() + "%' or real_name like '%" + user.getKeyword() + "%'" + "%' or serial_number like '%" + user.getKeyword() + "%')");
+					"(user_name like '%" + user.getKeyword() + "%' or real_name like '%" + user.getKeyword() + "%' or serial_number like '%" + user.getKeyword() + "%')");
 		}
 		List<User> users = this.userService.listByExample(user);
 		return BaseOutput.success().setData(users);
