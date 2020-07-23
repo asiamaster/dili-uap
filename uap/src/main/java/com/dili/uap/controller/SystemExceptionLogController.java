@@ -32,15 +32,9 @@ import com.dili.uap.sdk.glossary.ExceptionType;
 import com.dili.uap.sdk.session.SessionConstants;
 import com.dili.uap.service.SystemExceptionLogService;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-
 /**
  * 由MyBatis Generator工具自动生成 This file was generated on 2018-05-22 15:27:04.
  */
-@Api("/systemExceptionLog")
 @Controller
 @RequestMapping("/systemExceptionLog")
 public class SystemExceptionLogController {
@@ -55,7 +49,6 @@ public class SystemExceptionLogController {
 	 * @param modelMap
 	 * @return
 	 */
-	@ApiOperation("跳转到SystemExceptionLog页面")
 	@RequestMapping(value = "/index.html", method = RequestMethod.GET)
 	public String index(ModelMap modelMap) {
 		return "systemExceptionLog/index";
@@ -67,8 +60,6 @@ public class SystemExceptionLogController {
 	 * @param systemExceptionLog
 	 * @return
 	 */
-	@ApiOperation(value = "查询SystemExceptionLog", notes = "查询SystemExceptionLog，返回列表信息")
-	@ApiImplicitParams({ @ApiImplicitParam(name = "SystemExceptionLog", paramType = "form", value = "SystemExceptionLog的form信息", required = false, dataType = "string") })
 	@RequestMapping(value = "/list", method = { RequestMethod.GET, RequestMethod.POST })
 	public @ResponseBody List<SystemExceptionLog> list(SystemExceptionLog systemExceptionLog) {
 		return systemExceptionLogService.list(systemExceptionLog);
@@ -81,8 +72,6 @@ public class SystemExceptionLogController {
 	 * @return
 	 * @throws Exception
 	 */
-	@ApiOperation(value = "分页查询SystemExceptionLog", notes = "分页查询SystemExceptionLog，返回easyui分页信息")
-	@ApiImplicitParams({ @ApiImplicitParam(name = "SystemExceptionLog", paramType = "form", value = "SystemExceptionLog的form信息", required = false, dataType = "string") })
 	@RequestMapping(value = "/listPage.action", method = { RequestMethod.GET, RequestMethod.POST })
 	public @ResponseBody String listPage(SystemExceptionLogDto systemExceptionLog, HttpServletRequest req) throws Exception {
 		if (StringUtils.isNotBlank(req.getHeader(SessionConstants.SESSION_ID))) {

@@ -46,15 +46,9 @@ import com.dili.uap.service.UserService;
 import com.dili.uap.utils.PinYinUtil;
 import com.google.common.collect.Maps;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-
 /**
  * 由MyBatis Generator工具自动生成 This file was generated on 2018-05-23 16:17:38.
  */
-@Api("/user")
 @Controller
 @RequestMapping("/user")
 public class UserController {
@@ -79,7 +73,6 @@ public class UserController {
 	 * @param modelMap
 	 * @return
 	 */
-	@ApiOperation("跳转到User页面")
 	@RequestMapping(value = "/index.html", method = RequestMethod.GET)
 	public String index(ModelMap modelMap) {
 		String firmCode = SessionContext.getSessionContext().getUserTicket().getFirmCode();
@@ -103,8 +96,6 @@ public class UserController {
 	 * @param user
 	 * @return
 	 */
-	@ApiOperation(value = "查询User", notes = "查询User，返回列表信息")
-	@ApiImplicitParams({ @ApiImplicitParam(name = "User", paramType = "form", value = "User的form信息", required = false, dataType = "string") })
 	@RequestMapping(value = "/list", method = { RequestMethod.GET, RequestMethod.POST })
 	@ResponseBody
 	public List<User> list(User user) {
@@ -118,8 +109,6 @@ public class UserController {
 	 * @return
 	 * @throws Exception
 	 */
-	@ApiOperation(value = "分页查询User", notes = "分页查询User，返回easyui分页信息")
-	@ApiImplicitParams({ @ApiImplicitParam(name = "User", paramType = "form", value = "User的form信息", required = false, dataType = "string") })
 	@RequestMapping(value = "/listPage.action", method = { RequestMethod.GET, RequestMethod.POST })
 	@ResponseBody
 	public String listPage(UserDto user) throws Exception {
@@ -132,7 +121,6 @@ public class UserController {
 	 * @param user
 	 * @return
 	 */
-	@ApiOperation("新增User")
 	@BusinessLogger(businessType = "user_management", content = "新增用户", operationType = "add", systemCode = "UAP")
 	@RequestMapping(value = "/insert.action", method = { RequestMethod.GET, RequestMethod.POST })
 	@ResponseBody
@@ -160,7 +148,6 @@ public class UserController {
 	 * @param user
 	 * @return
 	 */
-	@ApiOperation("修改User")
 	@BusinessLogger(businessType = "user_management", content = "修改用户", operationType = "edit", systemCode = "UAP")
 	@RequestMapping(value = "/update.action", method = { RequestMethod.GET, RequestMethod.POST })
 	@ResponseBody
@@ -188,8 +175,6 @@ public class UserController {
 	 * @param id
 	 * @return
 	 */
-	@ApiOperation("删除User")
-	@ApiImplicitParams({ @ApiImplicitParam(name = "id", paramType = "form", value = "User的主键", required = true, dataType = "long") })
 	@BusinessLogger(businessType = "user_management", content = "删除用户", operationType = "del", systemCode = "UAP")
 	@RequestMapping(value = "/delete.action", method = { RequestMethod.GET, RequestMethod.POST })
 	@ResponseBody
@@ -217,7 +202,6 @@ public class UserController {
 	 * @return
 	 * @throws Exception
 	 */
-	@ApiOperation(value = "根据角色id查询User", notes = "根据角色id查询User，返回列表信息")
 	@RequestMapping(value = "/findUserByRole.action", method = { RequestMethod.GET, RequestMethod.POST })
 	@ResponseBody
 	public String findUserByRole(Long roleId, User user) throws Exception {
@@ -232,7 +216,6 @@ public class UserController {
 	 * @param user
 	 * @return
 	 */
-	@ApiOperation(value = "修改密码", notes = "修改密码")
 	@BusinessLogger(businessType = "user_management", content = "修改用户密码", operationType = "changePassword", systemCode = "UAP")
 	@RequestMapping(value = "/changePwd.action", method = { RequestMethod.GET, RequestMethod.POST })
 	@ResponseBody
@@ -257,7 +240,6 @@ public class UserController {
 	 * @param name
 	 * @return
 	 */
-	@ApiOperation(value = "根据姓名转换邮箱信息", notes = "根据姓名转换邮箱信息")
 	@RequestMapping(value = "/getEmailByName.action", method = { RequestMethod.GET, RequestMethod.POST })
 	@ResponseBody
 	public BaseOutput getEmailByName(String name) {
@@ -270,7 +252,6 @@ public class UserController {
 	 * @param id
 	 * @return
 	 */
-	@ApiOperation(value = "重置密码", notes = "重置密码")
 	@BusinessLogger(businessType = "user_management", content = "重置用户密码", operationType = "resetPassword", systemCode = "UAP")
 	@RequestMapping(value = "/resetPass.action", method = { RequestMethod.GET, RequestMethod.POST })
 	@ResponseBody
@@ -296,9 +277,6 @@ public class UserController {
 	 * @param enable
 	 * @return
 	 */
-	@ApiOperation(value = "用户的禁启用", notes = "用户的禁启用")
-	@ApiImplicitParams({ @ApiImplicitParam(name = "id", paramType = "path", value = "用户ID", dataType = "long"),
-			@ApiImplicitParam(name = "enable", paramType = "path", value = "是否启用(true-启用)", dataType = "boolean") })
 	@BusinessLogger(businessType = "user_management", content = "启用用户", operationType = "enableUser", systemCode = "UAP")
 	@RequestMapping(value = "/doEnable.action", method = { RequestMethod.GET, RequestMethod.POST })
 	@ResponseBody
@@ -323,8 +301,6 @@ public class UserController {
 	 * @param id
 	 * @return
 	 */
-	@ApiOperation(value = "获取用户的角色信息", notes = "获取用户角色信息(tree结构)")
-	@ApiImplicitParams({ @ApiImplicitParam(name = "id", paramType = "path", value = "用户ID", dataType = "long"), })
 	@RequestMapping(value = "/getUserRolesForTree.action", method = { RequestMethod.GET, RequestMethod.POST })
 	@ResponseBody
 	public String getUserRolesForTree(Long id) {
@@ -339,9 +315,6 @@ public class UserController {
 	 * @param roleIds
 	 * @return
 	 */
-	@ApiOperation(value = "保存用户的角色信息", notes = "保存用户角色信息")
-	@ApiImplicitParams({ @ApiImplicitParam(name = "userId", paramType = "path", value = "用户ID", dataType = "long"),
-			@ApiImplicitParam(name = "roleIds", paramType = "path", value = "角色ID(包括市场ID)", dataType = "String"), })
 	@BusinessLogger(businessType = "user_management", content = "修改用户角色:${roleIds}", operationType = "editUserRole", systemCode = "UAP")
 	@RequestMapping(value = "/saveUserRoles.action", method = { RequestMethod.GET, RequestMethod.POST })
 	@ResponseBody
@@ -366,8 +339,6 @@ public class UserController {
 	 * 
 	 * @return
 	 */
-	@ApiOperation(value = "获取当前登录用户的信息", notes = "获取用户信息")
-	@ApiImplicitParams({})
 	@RequestMapping(value = "/fetchLoginUserInfo.action", method = { RequestMethod.GET, RequestMethod.POST })
 	@ResponseBody
 	public BaseOutput<Object> fetchLoginUserInfo() {
@@ -381,7 +352,6 @@ public class UserController {
 	 * @param id
 	 * @return
 	 */
-	@ApiOperation(value = "获取数据权限", notes = "获取用户数据权限")
 	@RequestMapping(value = "/getUserData.action", method = { RequestMethod.GET, RequestMethod.POST })
 	@ResponseBody
 	public BaseOutput<Map<String, Object>> getUserData(Long id) {
@@ -417,7 +387,6 @@ public class UserController {
 	 * @param id
 	 * @return
 	 */
-	@ApiOperation(value = "获取项目数据权限", notes = "获取用户项目数据权限")
 	@RequestMapping(value = "/getUserProjectData.action", method = { RequestMethod.GET, RequestMethod.POST })
 	@ResponseBody
 	public BaseOutput<Map<String, Object>> getUserProjectData(Long id) {
@@ -444,10 +413,6 @@ public class UserController {
 	 * @param dataRange
 	 * @return
 	 */
-	@ApiOperation(value = "保存用户的数据权限信息", notes = "保存用户的数据权限")
-	@ApiImplicitParams({ @ApiImplicitParam(name = "userId", paramType = "path", value = "用户ID", dataType = "long"),
-			@ApiImplicitParam(name = "dataIds", paramType = "path", value = "数据ID(包括市场ID)", dataType = "String"),
-			@ApiImplicitParam(name = "dataRange", paramType = "path", value = "数据权限范围ID", dataType = "long"), })
 	@BusinessLogger(businessType = "user_management", content = "修改用户数据权限:${dataAuths}", operationType = "editUserDataAuth", systemCode = "UAP")
 	@RequestMapping(value = "/saveUserDatas.action", method = { RequestMethod.GET, RequestMethod.POST })
 	@ResponseBody
@@ -473,8 +438,6 @@ public class UserController {
 	 * @param id
 	 * @return
 	 */
-	@ApiOperation(value = "解锁用户", notes = "解锁用户")
-	@ApiImplicitParams({ @ApiImplicitParam(name = "id", paramType = "path", value = "用户ID", dataType = "long"), })
 	@BusinessLogger(businessType = "user_management", content = "解锁用户", operationType = "unlockUser", systemCode = "UAP")
 	@RequestMapping(value = "/unlock.action", method = { RequestMethod.GET, RequestMethod.POST })
 	@ResponseBody
@@ -499,7 +462,6 @@ public class UserController {
 	 * @param modelMap
 	 * @return
 	 */
-	@ApiOperation("跳转到在线用户页面")
 	@RequestMapping(value = "/onlineList.html", method = RequestMethod.GET)
 	public String onlineList(ModelMap modelMap) {
 		String firmCode = SessionContext.getSessionContext().getUserTicket().getFirmCode();
@@ -524,8 +486,6 @@ public class UserController {
 	 * @return
 	 * @throws Exception
 	 */
-	@ApiOperation(value = "分页查询在线用户", notes = "分页查询在线用户，返回easyui分页信息")
-	@ApiImplicitParams({ @ApiImplicitParam(name = "user", paramType = "form", value = "User的form信息", required = false, dataType = "string") })
 	@RequestMapping(value = "/listOnlinePage.action", method = { RequestMethod.GET, RequestMethod.POST })
 	@ResponseBody
 	public String listOnlinePage(UserDto user) throws Exception {
@@ -538,8 +498,6 @@ public class UserController {
 	 * @param id
 	 * @return
 	 */
-	@ApiOperation("强制下线用户")
-	@ApiImplicitParams({ @ApiImplicitParam(name = "id", paramType = "form", value = "User的主键", required = true, dataType = "long") })
 	@BusinessLogger(businessType = "user_management", content = "解锁用户", operationType = "forcedOffline", systemCode = "UAP")
 	@RequestMapping(value = "/forcedOffline.action", method = { RequestMethod.GET, RequestMethod.POST })
 	public @ResponseBody BaseOutput forcedOffline(Long id) {

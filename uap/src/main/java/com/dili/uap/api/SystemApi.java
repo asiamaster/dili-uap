@@ -1,19 +1,19 @@
 package com.dili.uap.api;
 
-import com.dili.ss.domain.BaseOutput;
-import com.dili.ss.dto.DTOUtils;
-import com.dili.uap.sdk.domain.Systems;
-import com.dili.uap.sdk.domain.dto.SystemDto;
-import com.dili.uap.service.SystemService;
-import com.google.common.collect.Lists;
-import io.swagger.annotations.Api;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import com.dili.ss.domain.BaseOutput;
+import com.dili.ss.dto.DTOUtils;
+import com.dili.uap.sdk.domain.Systems;
+import com.dili.uap.sdk.domain.dto.SystemDto;
+import com.dili.uap.service.SystemService;
+import com.google.common.collect.Lists;
 
 /**
  * 系统api
@@ -21,7 +21,6 @@ import java.util.List;
  * @author jiang
  *
  */
-@Api("/systemApi")
 @RestController
 @RequestMapping("/systemApi")
 public class SystemApi {

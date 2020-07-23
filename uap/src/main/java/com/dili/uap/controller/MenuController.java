@@ -1,5 +1,20 @@
 package com.dili.uap.controller;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.util.CollectionUtils;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.dili.logger.sdk.annotation.BusinessLogger;
 import com.dili.logger.sdk.base.LoggerContext;
 import com.dili.logger.sdk.glossary.LoggerConstant;
@@ -15,29 +30,10 @@ import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.service.MenuService;
 import com.dili.uap.service.ResourceService;
 import com.google.common.collect.Lists;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 /**
  * 由MyBatis Generator工具自动生成 This file was generated on 2018-05-21 16:08:04.
  */
-@Api("/menu")
 @Controller
 @RequestMapping("/menu")
 public class MenuController {
@@ -53,7 +49,6 @@ public class MenuController {
 	 * @param modelMap
 	 * @return
 	 */
-	@ApiOperation("跳转到Menu页面")
 	@RequestMapping(value = "/index.html", method = RequestMethod.GET)
 	public String index(ModelMap modelMap) {
 		return "menu/index";
@@ -130,8 +125,6 @@ public class MenuController {
 	 * @param menuId
 	 * @return
 	 */
-	@ApiOperation(value = "查询菜单列表", notes = "查询Menu，返回列表信息")
-	@ApiImplicitParams({ @ApiImplicitParam(name = "menuId", paramType = "Long", value = "menuId", required = false, dataType = "Long") })
 	@RequestMapping(value = "/list.action", method = { RequestMethod.GET, RequestMethod.POST })
 	public @ResponseBody List<Menu> list(@RequestParam String menuId) {
 		Menu query = DTOUtils.newInstance(Menu.class);
@@ -152,8 +145,6 @@ public class MenuController {
 	 * @param menuId
 	 * @return
 	 */
-	@ApiOperation(value = "查询内部链接列表", notes = "查询内部链接，返回列表信息")
-	@ApiImplicitParams({ @ApiImplicitParam(name = "menuId", paramType = "String", value = "menuId", required = false, dataType = "String") })
 	@RequestMapping(value = "/listInternalLinks.action", method = { RequestMethod.GET, RequestMethod.POST })
 	public @ResponseBody List<Menu> listInternalLinks(@RequestParam String menuId) {
 		Menu query = DTOUtils.newInstance(Menu.class);
@@ -175,8 +166,6 @@ public class MenuController {
 	 * @param menu
 	 * @return
 	 */
-	@ApiOperation("新增Menu")
-	@ApiImplicitParams({ @ApiImplicitParam(name = "Menu", paramType = "form", value = "Menu的form信息", required = true, dataType = "string") })
 	@BusinessLogger(businessType = "menu_management", content = "新增菜单", operationType = "add", systemCode = "UAP")
 	@RequestMapping(value = "/insert.action", method = { RequestMethod.GET, RequestMethod.POST })
 	public @ResponseBody BaseOutput insert(Menu menu) {
@@ -206,8 +195,6 @@ public class MenuController {
 	 * @param menu
 	 * @return
 	 */
-	@ApiOperation("修改Menu")
-	@ApiImplicitParams({ @ApiImplicitParam(name = "Menu", paramType = "form", value = "Menu的form信息", required = true, dataType = "string") })
 	@BusinessLogger(businessType = "menu_management", content = "修改菜单", operationType = "edit", systemCode = "UAP")
 	@RequestMapping(value = "/update.action", method = { RequestMethod.GET, RequestMethod.POST })
 	public @ResponseBody BaseOutput update(Menu menu) {
@@ -249,8 +236,6 @@ public class MenuController {
 	 * @param id
 	 * @return
 	 */
-	@ApiOperation("删除Menu")
-	@ApiImplicitParams({ @ApiImplicitParam(name = "id", paramType = "form", value = "Menu的主键", required = true, dataType = "long") })
 	@RequestMapping(value = "/delete.action", method = { RequestMethod.GET, RequestMethod.POST })
 	public @ResponseBody BaseOutput delete(Long id) {
 		String msg = menuService.deleteMenu(id);
@@ -265,7 +250,6 @@ public class MenuController {
 	 * @param targetId
 	 * @return
 	 */
-	@ApiOperation("移动Menu")
 	@BusinessLogger(businessType = "menu_management", content = "移动菜单", operationType = "edit", systemCode = "UAP")
 	@RequestMapping(value = "/shiftMenu.action", method = { RequestMethod.GET, RequestMethod.POST })
 	public @ResponseBody BaseOutput shiftMenu(String sourceId, String targetId) {

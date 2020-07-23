@@ -1,6 +1,5 @@
 package com.dili.uap.controller;
 
-import javax.security.auth.login.LoginContext;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
@@ -18,7 +17,6 @@ import com.dili.logger.sdk.base.LoggerContext;
 import com.dili.logger.sdk.glossary.LoggerConstant;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
-import com.dili.uap.domain.LoginLog;
 import com.dili.uap.domain.dto.LoginDto;
 import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.session.SessionConstants;
@@ -28,18 +26,12 @@ import com.dili.uap.service.LoginService;
 import com.dili.uap.service.UserService;
 import com.dili.uap.utils.WebUtil;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-
 /**
  * 登录控制器
  * 
  * @author wangmi
  * @date 2018-5-22
  */
-@Api("/login")
 @Controller
 @RequestMapping("/login")
 public class LoginController {
@@ -61,7 +53,6 @@ public class LoginController {
 	 * @param modelMap
 	 * @return
 	 */
-	@ApiOperation("跳转到Login页面")
 	@RequestMapping(value = "/index.html", method = RequestMethod.GET)
 	public String index(ModelMap modelMap) {
 		return INDEX_PATH;
@@ -76,8 +67,6 @@ public class LoginController {
 	 * @param request
 	 * @return
 	 */
-	@ApiOperation("执行login请求，跳转到Main页面或者返回login页面")
-	@ApiImplicitParams({ @ApiImplicitParam(name = "loginDto", paramType = "form", value = "用户信息", required = false, dataType = "string") })
 	@RequestMapping(value = "/getLogin.action", method = { RequestMethod.GET, RequestMethod.POST })
 	public String getLoginAction(@RequestParam("userName") String userName, @RequestParam("password") String password, ModelMap modelMap, HttpServletRequest request) {
 		LoginDto loginDto = DTOUtils.newInstance(LoginDto.class);
@@ -94,8 +83,6 @@ public class LoginController {
 	 * @param request
 	 * @return
 	 */
-	@ApiOperation("执行login请求，跳转到Main页面或者返回login页面")
-	@ApiImplicitParams({ @ApiImplicitParam(name = "loginDto", paramType = "form", value = "用户信息", required = false, dataType = "string") })
 	@BusinessLogger(businessType = "login_management", content = "系统登录:${systemCode}", operationType = "login", systemCode = "UAP")
 	@RequestMapping(value = "/login.action", method = { RequestMethod.GET, RequestMethod.POST })
 	public String loginAction(LoginDto loginDto, ModelMap modelMap, HttpServletRequest request) {
@@ -159,7 +146,6 @@ public class LoginController {
 	 * @param request
 	 * @return
 	 */
-	@ApiOperation("执行logout请求，跳转login页面或者弹出错误")
 	@BusinessLogger(businessType = "login_management", content = "${msg}", operationType = "logout")
 	@RequestMapping(value = "/logout.action", produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody BaseOutput logoutAction(String systemCode, @RequestParam(required = false) Long userId, HttpServletRequest request) {
@@ -188,7 +174,6 @@ public class LoginController {
 	 * @param modelMap
 	 * @return
 	 */
-	@ApiOperation("跳转到登录页面")
 	@RequestMapping(value = "/toLogin.html", method = RequestMethod.GET)
 	public String toLogin(ModelMap modelMap) {
 		return "toLogin";

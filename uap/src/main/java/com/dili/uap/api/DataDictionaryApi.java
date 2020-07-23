@@ -1,5 +1,15 @@
 package com.dili.uap.api;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.dili.ss.domain.BaseOutput;
@@ -9,17 +19,10 @@ import com.dili.uap.sdk.domain.DataDictionary;
 import com.dili.uap.sdk.domain.DataDictionaryValue;
 import com.dili.uap.service.DataDictionaryService;
 import com.dili.uap.service.DataDictionaryValueService;
-import io.swagger.annotations.Api;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * 数据字典接口
  */
-@Api("/dataDictionaryApi")
 @Controller
 @RequestMapping("/dataDictionaryApi")
 public class DataDictionaryApi {

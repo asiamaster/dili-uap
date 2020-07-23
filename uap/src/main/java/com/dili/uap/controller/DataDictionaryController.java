@@ -1,5 +1,15 @@
 package com.dili.uap.controller;
 
+import java.util.Collections;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.dili.logger.sdk.annotation.BusinessLogger;
 import com.dili.logger.sdk.base.LoggerContext;
 import com.dili.logger.sdk.glossary.LoggerConstant;
@@ -12,24 +22,10 @@ import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.domain.dto.DataDictionaryLevel;
 import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.service.DataDictionaryService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import java.util.Collections;
-import java.util.List;
 
 /**
  * 由MyBatis Generator工具自动生成 This file was generated on 2018-05-21 10:39:45.
  */
-@Api("/dataDictionary")
 @Controller
 @RequestMapping("/dataDictionary")
 public class DataDictionaryController {
@@ -44,7 +40,6 @@ public class DataDictionaryController {
 	 * @param modelMap
 	 * @return
 	 */
-	@ApiOperation("跳转到DataDictionary页面")
 	@RequestMapping(value = "/index.html", method = RequestMethod.GET)
 	public String index(ModelMap modelMap) {
 		modelMap.addAttribute("firmCode", SessionContext.getSessionContext().getUserTicket().getFirmCode());
@@ -57,8 +52,6 @@ public class DataDictionaryController {
 	 * @param dataDictionary
 	 * @return
 	 */
-	@ApiOperation(value = "查询DataDictionary", notes = "查询DataDictionary，返回列表信息")
-	@ApiImplicitParams({ @ApiImplicitParam(name = "DataDictionary", paramType = "form", value = "DataDictionary的form信息", required = false, dataType = "string") })
 	@RequestMapping(value = "/list", method = { RequestMethod.GET, RequestMethod.POST })
 	public @ResponseBody List<DataDictionary> list(DataDictionary dataDictionary) {
 		return dataDictionaryService.list(dataDictionary);
@@ -70,8 +63,6 @@ public class DataDictionaryController {
 	 * @param dataDictionary
 	 * @return
 	 */
-	@ApiOperation(value = "分页查询DataDictionary", notes = "分页查询DataDictionary，返回easyui分页信息")
-	@ApiImplicitParams({ @ApiImplicitParam(name = "DataDictionary", paramType = "form", value = "DataDictionary的form信息", required = false, dataType = "string") })
 	@RequestMapping(value = "/listPage.action", method = { RequestMethod.GET, RequestMethod.POST })
 	public @ResponseBody String listPage(DataDictionaryDto dataDictionary) {
 		UserTicket user = SessionContext.getSessionContext().getUserTicket();
@@ -92,8 +83,6 @@ public class DataDictionaryController {
 	 * @param dataDictionary
 	 * @return
 	 */
-	@ApiOperation("新增DataDictionary")
-	@ApiImplicitParams({ @ApiImplicitParam(name = "DataDictionary", paramType = "form", value = "DataDictionary的form信息", required = true, dataType = "string") })
 	@BusinessLogger(businessType = "data_dictionary", content = "新增数据字典", operationType = "add", systemCode = "UAP")
 	@RequestMapping(value = "/insert.action", method = { RequestMethod.GET, RequestMethod.POST })
 	public @ResponseBody BaseOutput insert(DataDictionary dataDictionary) {
@@ -116,8 +105,6 @@ public class DataDictionaryController {
 	 * @param dataDictionary
 	 * @return
 	 */
-	@ApiOperation("修改DataDictionary")
-	@ApiImplicitParams({ @ApiImplicitParam(name = "DataDictionary", paramType = "form", value = "DataDictionary的form信息", required = true, dataType = "string") })
 	@BusinessLogger(businessType = "data_dictionary", content = "修改数据字典", operationType = "edit", systemCode = "UAP")
 	@RequestMapping(value = "/update.action", method = { RequestMethod.GET, RequestMethod.POST })
 	public @ResponseBody BaseOutput update(DataDictionary dataDictionary) {
@@ -140,8 +127,6 @@ public class DataDictionaryController {
 	 * @param id
 	 * @return
 	 */
-	@ApiOperation("删除DataDictionary")
-	@ApiImplicitParams({ @ApiImplicitParam(name = "id", paramType = "form", value = "DataDictionary的主键", required = true, dataType = "long") })
 	@BusinessLogger(businessType = "data_dictionary", content = "删除数据字典", operationType = "edit", systemCode = "UAP")
 	@RequestMapping(value = "/delete.action", method = { RequestMethod.GET, RequestMethod.POST })
 	public @ResponseBody BaseOutput delete(Long id) {

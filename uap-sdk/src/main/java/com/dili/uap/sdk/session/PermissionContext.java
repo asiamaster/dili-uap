@@ -166,7 +166,6 @@ public class PermissionContext {
         return;
     }
 
-
     public void noAccess() throws IOException {
         String requestType = req.getHeader("X-Requested-With");
         if (requestType == null) {
@@ -174,7 +173,7 @@ public class PermissionContext {
             return;
         }
         resp.setContentType("application/json;charset=UTF-8");
-        resp.getWriter().write(JSON.toJSONString(BaseOutput.failure("用户没有权限").setCode("401")));
+        resp.getWriter().write(JSON.toJSONString(BaseOutput.failure("登录超时").setCode("401")));
         resp.flushBuffer();
     }
 

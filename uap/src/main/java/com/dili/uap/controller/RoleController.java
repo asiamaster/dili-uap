@@ -2,14 +2,11 @@ package com.dili.uap.controller;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
@@ -45,17 +42,12 @@ import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.service.FirmService;
 import com.dili.uap.service.RoleService;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
 import tk.mybatis.mapper.entity.Example;
 import tk.mybatis.mapper.entity.Example.Criteria;
 
 /**
  * 由MyBatis Generator工具自动生成 This file was generated on 2018-05-18 11:45:41.
  */
-@Api("/role")
 @Controller
 @RequestMapping("/role")
 public class RoleController {
@@ -70,7 +62,6 @@ public class RoleController {
 	 * @param modelMap
 	 * @return
 	 */
-	@ApiOperation("跳转到Role页面")
 	@RequestMapping(value = "/index.html", method = RequestMethod.GET)
 	public String index(ModelMap modelMap) throws FileNotFoundException {
 		String firmCode = SessionContext.getSessionContext().getUserTicket().getFirmCode();
@@ -96,8 +87,6 @@ public class RoleController {
 	 * @return
 	 * @throws Exception
 	 */
-	@ApiOperation(value = "查询Role", notes = "查询Role，返回列表信息")
-	@ApiImplicitParams({ @ApiImplicitParam(name = "Role", paramType = "form", value = "Role的form信息", required = false, dataType = "string") })
 	@RequestMapping(value = "/list.action", method = { RequestMethod.GET, RequestMethod.POST })
 	@ResponseBody
 	public String list(Role role) throws Exception {
@@ -120,8 +109,6 @@ public class RoleController {
 	 * @return
 	 * @throws Exception
 	 */
-	@ApiOperation(value = "查询Role", notes = "查询Role，返回列表信息")
-	@ApiImplicitParams({ @ApiImplicitParam(name = "Role", paramType = "form", value = "Role的form信息", required = false, dataType = "string") })
 	@RequestMapping(value = "/listTreeGrid.action", method = { RequestMethod.GET, RequestMethod.POST })
 	@ResponseBody
 	public String listTreeGrid(Role role, @RequestParam(required = false, defaultValue = "false") Boolean queryModel) throws Exception {
@@ -200,8 +187,6 @@ public class RoleController {
 	 * @return
 	 * @throws Exception
 	 */
-	@ApiOperation(value = "分页查询Role", notes = "分页查询Role，返回easyui分页信息")
-	@ApiImplicitParams({ @ApiImplicitParam(name = "Role", paramType = "form", value = "Role的form信息", required = false, dataType = "string") })
 	@RequestMapping(value = "/listPage.action", method = { RequestMethod.GET, RequestMethod.POST })
 	public @ResponseBody Callable<String> listPage(Role role) throws Exception {
 		String firmCode = SessionContext.getSessionContext().getUserTicket().getFirmCode();
@@ -219,8 +204,6 @@ public class RoleController {
 	 * @param role
 	 * @return
 	 */
-	@ApiOperation("新增Role")
-	@ApiImplicitParams({ @ApiImplicitParam(name = "Role", paramType = "form", value = "Role的form信息", required = true, dataType = "string") })
 	@BusinessLogger(businessType = "role_management", content = "新增角色,市场编码：${firmCode}", operationType = "add", systemCode = "UAP")
 	@RequestMapping(value = "/insert.action", method = { RequestMethod.GET, RequestMethod.POST })
 	public @ResponseBody BaseOutput insert(@Validated Role role) {
@@ -250,8 +233,6 @@ public class RoleController {
 	 * @param role
 	 * @return
 	 */
-	@ApiOperation("修改Role")
-	@ApiImplicitParams({ @ApiImplicitParam(name = "Role", paramType = "form", value = "Role的form信息", required = true, dataType = "string") })
 	@BusinessLogger(businessType = "role_management", content = "新增角色,市场编码：${firmCode}", operationType = "edit", systemCode = "UAP")
 	@RequestMapping(value = "/update.action", method = { RequestMethod.GET, RequestMethod.POST })
 	public @ResponseBody BaseOutput update(@Validated Role role) {
@@ -284,8 +265,6 @@ public class RoleController {
 	 * @param id
 	 * @return
 	 */
-	@ApiOperation("删除Role")
-	@ApiImplicitParams({ @ApiImplicitParam(name = "id", paramType = "form", value = "Role的主键", required = true, dataType = "long") })
 	@BusinessLogger(businessType = "role_management", content = "新增角色,市场编码：${firmCode}", operationType = "del", systemCode = "UAP")
 	@RequestMapping(value = "/delete.action", method = { RequestMethod.GET, RequestMethod.POST })
 	public @ResponseBody BaseOutput delete(Long id) {
@@ -347,7 +326,6 @@ public class RoleController {
 	 * @param userId
 	 * @return
 	 */
-	@ApiOperation("解绑Role和User")
 	@BusinessLogger(businessType = "role_management", content = "解绑角色用户，用户id：${userId}", operationType = "unbindRoleUser", systemCode = "UAP")
 	@RequestMapping(value = "/unbindRoleUser.action", method = { RequestMethod.GET, RequestMethod.POST })
 	public @ResponseBody BaseOutput unbindRoleUser(Long roleId, Long userId) {

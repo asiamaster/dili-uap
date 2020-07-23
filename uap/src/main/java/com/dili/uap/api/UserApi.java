@@ -26,15 +26,9 @@ import com.dili.uap.sdk.domain.dto.UserQuery;
 import com.dili.uap.service.UserService;
 import com.github.pagehelper.Page;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-
 /**
  * 由MyBatis Generator工具自动生成 This file was generated on 2017-07-11 16:56:50.
  */
-@Api("/userApi")
 @Controller
 @RequestMapping("/userApi")
 public class UserApi {
@@ -53,8 +47,6 @@ public class UserApi {
 	 * @param id
 	 * @return
 	 */
-	@ApiOperation(value = "查询User实体接口", notes = "根据id查询User接口，返回User实体")
-	@ApiImplicitParams({ @ApiImplicitParam(name = "id", value = "User的id", required = true, dataType = "long") })
 	@RequestMapping(value = "/get.api", method = { RequestMethod.GET, RequestMethod.POST })
 	public @ResponseBody BaseOutput<User> get(@RequestBody Long id) {
 		return BaseOutput.success().setData(userService.get(id));
@@ -66,8 +58,6 @@ public class UserApi {
 	 * @param user
 	 * @return
 	 */
-	@ApiOperation(value = "查询User列表接口", notes = "查询User列表接口，返回列表信息")
-	@ApiImplicitParams({ @ApiImplicitParam(name = "User", paramType = "form", value = "User的form信息", required = false, dataType = "string") })
 	@RequestMapping(value = "/list.api", method = { RequestMethod.GET, RequestMethod.POST })
 	public @ResponseBody BaseOutput<List<User>> list(User user) {
 		return BaseOutput.success().setData(userService.list(user));

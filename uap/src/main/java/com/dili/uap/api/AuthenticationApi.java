@@ -41,13 +41,9 @@ import com.dili.uap.service.LoginService;
 import com.dili.uap.service.UserService;
 import com.dili.uap.utils.WebUtil;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-
 /**
  * Created by asiam on 2018/6/7 0007.
  */
-@Api("/authenticationApi")
 @Controller
 @RequestMapping("/authenticationApi")
 public class AuthenticationApi {
@@ -94,7 +90,6 @@ public class AuthenticationApi {
      * @param request
      * @return
      */
-    @ApiOperation("统一授权登录")
     @RequestMapping(value = "/login.api", method = { RequestMethod.POST })
     @ResponseBody
     public BaseOutput login(@RequestBody String json, HttpServletRequest request){
@@ -120,7 +115,6 @@ public class AuthenticationApi {
      * @param json
      * @return
      */
-    @ApiOperation("登录验证")
     @RequestMapping(value = "/validate.api", method = { RequestMethod.POST })
     @ResponseBody
     public BaseOutput validate(@RequestBody String json) {
@@ -144,7 +138,6 @@ public class AuthenticationApi {
      * @param json
      * @return
      */
-    @ApiOperation("鉴权")
     @RequestMapping(value = "/authentication.api", method = { RequestMethod.POST })
     @ResponseBody
     public BaseOutput authentication(@RequestBody String json){
@@ -166,7 +159,6 @@ public class AuthenticationApi {
      * @param request
      * @return
      */
-    @ApiOperation("统一授权登出")
     @RequestMapping(value = "/loginout.api", method = { RequestMethod.POST })
     @ResponseBody
     public BaseOutput loginout(@RequestBody String json, HttpServletRequest request){
@@ -199,7 +191,6 @@ public class AuthenticationApi {
      * @param json
      * @return
      */
-    @ApiOperation("获取系统权限列表")
     @RequestMapping(value = "/listSystems.api", method = { RequestMethod.POST })
     @ResponseBody
     public BaseOutput<List<Systems>> listSystems(@RequestBody String json){
@@ -219,7 +210,6 @@ public class AuthenticationApi {
      * @param json
      * @return
      */
-    @ApiOperation("获取菜单权限列表")
     @RequestMapping(value = "/listMenus.api", method = { RequestMethod.POST })
     @ResponseBody
     public BaseOutput<Object> listMenus(@RequestBody String json){
@@ -244,7 +234,6 @@ public class AuthenticationApi {
      * @param json
      * @return
      */
-    @ApiOperation("获取资源权限列表")
     @RequestMapping(value = "/listResources.api", method = { RequestMethod.POST })
     @ResponseBody
     public BaseOutput<List<Resource>> listResources(@RequestBody String json){
@@ -269,7 +258,6 @@ public class AuthenticationApi {
      * @param json
      * @return
      */
-    @ApiOperation("获取数据权限列表")
     @RequestMapping(value = "/listDataAuthes.api", method = { RequestMethod.POST })
     @ResponseBody
     public BaseOutput<List<Map>> listDataAuthes(@RequestBody String json){
@@ -292,7 +280,6 @@ public class AuthenticationApi {
      * @param json
      * @return
      */
-    @ApiOperation("获取数据权限详情列表")
     @RequestMapping(value = "/listDataAuthDetails.api", method = { RequestMethod.POST })
     @ResponseBody
     public BaseOutput<Map<String, Map>> listDataAuthDetails(@RequestBody String json){
@@ -332,7 +319,6 @@ public class AuthenticationApi {
      * @param json
      * @return
      */
-    @ApiOperation(value = "修改密码", notes = "修改密码")
     @RequestMapping(value = "/changePwd.api", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
     public BaseOutput changePwd(@RequestBody String json) {

@@ -1,10 +1,7 @@
 package com.dili.uap.api;
 
-import com.dili.ss.domain.BaseOutput;
-import com.dili.ss.dto.DTOUtils;
-import com.dili.uap.sdk.domain.SystemConfig;
-import com.dili.uap.service.SystemConfigService;
-import io.swagger.annotations.Api;
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,12 +10,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.List;
+import com.dili.ss.domain.BaseOutput;
+import com.dili.ss.dto.DTOUtils;
+import com.dili.uap.sdk.domain.SystemConfig;
+import com.dili.uap.service.SystemConfigService;
 
 /**
  * 数据字典接口
  */
-@Api("/systemConfigApi")
 @Controller
 @RequestMapping("/systemConfigApi")
 public class SystemConfigApi {

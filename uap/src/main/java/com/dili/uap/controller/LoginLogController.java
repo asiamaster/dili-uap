@@ -24,15 +24,9 @@ import com.dili.uap.domain.dto.LoginLogDto;
 import com.dili.uap.glossary.LoginType;
 import com.dili.uap.service.LoginLogService;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-
 /**
  * 由MyBatis Generator工具自动生成 This file was generated on 2018-05-22 15:30:02.
  */
-@Api("/loginLog")
 @Controller
 @RequestMapping("/loginLog")
 public class LoginLogController {
@@ -47,7 +41,6 @@ public class LoginLogController {
 	 * @param modelMap
 	 * @return
 	 */
-	@ApiOperation("跳转到LoginLog页面")
 	@RequestMapping(value = "/index.html", method = RequestMethod.GET)
 	public String index(ModelMap modelMap) {
 		return "loginLog/index";
@@ -59,8 +52,6 @@ public class LoginLogController {
 	 * @param loginLog
 	 * @return
 	 */
-	@ApiOperation(value = "查询LoginLog", notes = "查询LoginLog，返回列表信息")
-	@ApiImplicitParams({ @ApiImplicitParam(name = "LoginLog", paramType = "form", value = "LoginLog的form信息", required = false, dataType = "string") })
 	@RequestMapping(value = "/list", method = { RequestMethod.GET, RequestMethod.POST })
 	public @ResponseBody List<LoginLog> list(LoginLog loginLog) {
 		return loginLogService.list(loginLog);
@@ -73,8 +64,6 @@ public class LoginLogController {
 	 * @return
 	 * @throws Exception
 	 */
-	@ApiOperation(value = "分页查询LoginLog", notes = "分页查询LoginLog，返回easyui分页信息")
-	@ApiImplicitParams({ @ApiImplicitParam(name = "LoginLog", paramType = "form", value = "LoginLog的form信息", required = false, dataType = "string") })
 	@RequestMapping(value = "/listPage.action", method = { RequestMethod.GET, RequestMethod.POST })
 	public @ResponseBody String listPage(LoginLogDto loginLog) throws Exception {
 		BusinessLogQueryInput query = new BusinessLogQueryInput();
@@ -107,8 +96,6 @@ public class LoginLogController {
 	 * @param loginLog
 	 * @return
 	 */
-	@ApiOperation("新增LoginLog")
-	@ApiImplicitParams({ @ApiImplicitParam(name = "LoginLog", paramType = "form", value = "LoginLog的form信息", required = true, dataType = "string") })
 	@RequestMapping(value = "/insert.action", method = { RequestMethod.GET, RequestMethod.POST })
 	public @ResponseBody BaseOutput insert(LoginLog loginLog) {
 		loginLogService.insertSelective(loginLog);
@@ -121,8 +108,6 @@ public class LoginLogController {
 	 * @param loginLog
 	 * @return
 	 */
-	@ApiOperation("修改LoginLog")
-	@ApiImplicitParams({ @ApiImplicitParam(name = "LoginLog", paramType = "form", value = "LoginLog的form信息", required = true, dataType = "string") })
 	@RequestMapping(value = "/update.action", method = { RequestMethod.GET, RequestMethod.POST })
 	public @ResponseBody BaseOutput update(LoginLog loginLog) {
 		loginLogService.updateSelective(loginLog);
@@ -135,8 +120,6 @@ public class LoginLogController {
 	 * @param id
 	 * @return
 	 */
-	@ApiOperation("删除LoginLog")
-	@ApiImplicitParams({ @ApiImplicitParam(name = "id", paramType = "form", value = "LoginLog的主键", required = true, dataType = "long") })
 	@RequestMapping(value = "/delete.action", method = { RequestMethod.GET, RequestMethod.POST })
 	public @ResponseBody BaseOutput delete(Long id) {
 		loginLogService.delete(id);

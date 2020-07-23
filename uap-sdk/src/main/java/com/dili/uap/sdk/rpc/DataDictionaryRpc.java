@@ -40,7 +40,6 @@ public interface DataDictionaryRpc {
 	 * @param dataDictionaryValue
 	 * @return
 	 */
-	@ResponseBody
-	@RequestMapping(value = "/insertDataDictionaryDto.api", method = { RequestMethod.GET, RequestMethod.POST })
+	@POST("/insertDataDictionaryDto.api")
 	public BaseOutput<Object> insertDataDictionaryDto(@VOBody UapDataDictionaryDto dataDictionaryDto);
 }

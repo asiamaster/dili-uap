@@ -25,15 +25,9 @@ import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.service.ResourceLinkService;
 import com.dili.uap.service.ResourceService;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-
 /**
  * 由MyBatis Generator工具自动生成 This file was generated on 2018-05-21 16:46:27.
  */
-@Api("/resource")
 @Controller
 @RequestMapping("/resource")
 public class ResourceController {
@@ -48,7 +42,6 @@ public class ResourceController {
 	 * @param modelMap
 	 * @return
 	 */
-	@ApiOperation("跳转到Resource页面")
 	@RequestMapping(value = "/index.html", method = RequestMethod.GET)
 	public String index(ModelMap modelMap) {
 		return "resource/index";
@@ -60,8 +53,6 @@ public class ResourceController {
 	 * @param menuId
 	 * @return
 	 */
-	@ApiOperation(value = "查询资源列表", notes = "查询Menu，返回列表信息")
-	@ApiImplicitParams({ @ApiImplicitParam(name = "menuId", paramType = "Long", value = "menuId", required = false, dataType = "Long") })
 	@RequestMapping(value = "/list.action", method = { RequestMethod.GET, RequestMethod.POST })
 	public @ResponseBody List<Resource> list(@RequestParam String menuId) {
 		Resource query = DTOUtils.newInstance(Resource.class);
@@ -95,8 +86,6 @@ public class ResourceController {
 	 * @return
 	 * @throws Exception
 	 */
-	@ApiOperation(value = "查询资源列表", notes = "查询Menu，返回列表信息")
-	@ApiImplicitParams({ @ApiImplicitParam(name = "menuId", paramType = "Long", value = "menuId", required = false, dataType = "Long") })
 	@RequestMapping(value = "/listResourceLink.action", method = { RequestMethod.GET, RequestMethod.POST })
 	public @ResponseBody List<Map> listResourceLink(ResourceLink resourceLink) throws Exception {
 		List<ResourceLink> resourceLinks = this.resourceLinkService.list(resourceLink);
@@ -109,8 +98,6 @@ public class ResourceController {
 	 * @param resourceLink
 	 * @return
 	 */
-	@ApiOperation("新增ResourceLink")
-	@ApiImplicitParams({ @ApiImplicitParam(name = "Resource", paramType = "form", value = "Resource的form信息", required = true, dataType = "string") })
 	@BusinessLogger(businessType = "resource_management", content = "菜单资源绑定：菜单id${menuId}", operationType = "addResourceLink", systemCode = "UAP")
 	@RequestMapping(value = "/addResourceLink.action", method = { RequestMethod.GET, RequestMethod.POST })
 	public @ResponseBody BaseOutput addResourceLink(ResourceLink resourceLink) {
@@ -140,8 +127,6 @@ public class ResourceController {
 	 * @param id
 	 * @return
 	 */
-	@ApiOperation("删除ResourceLink")
-	@ApiImplicitParams({ @ApiImplicitParam(name = "Resource", paramType = "form", value = "Resource的form信息", required = true, dataType = "string") })
 	@BusinessLogger(businessType = "resource_management", content = "菜单资源绑定：菜单id${menuId}", operationType = "deleteResourceLink", systemCode = "UAP")
 	@RequestMapping(value = "/deleteResourceLink.action", method = { RequestMethod.GET, RequestMethod.POST })
 	public @ResponseBody BaseOutput deleteResourceLink(@RequestParam Long id) {
@@ -164,8 +149,6 @@ public class ResourceController {
 	 * @param resource
 	 * @return
 	 */
-	@ApiOperation("新增Resource")
-	@ApiImplicitParams({ @ApiImplicitParam(name = "Resource", paramType = "form", value = "Resource的form信息", required = true, dataType = "string") })
 	@BusinessLogger(businessType = "resource_management", content = "新增资源", operationType = "add", systemCode = "UAP")
 	@RequestMapping(value = "/insert.action", method = { RequestMethod.GET, RequestMethod.POST })
 	public @ResponseBody BaseOutput insert(Resource resource) {
@@ -191,8 +174,6 @@ public class ResourceController {
 	 * @param resource
 	 * @return
 	 */
-	@ApiOperation("修改Resource")
-	@ApiImplicitParams({ @ApiImplicitParam(name = "Resource", paramType = "form", value = "Resource的form信息", required = true, dataType = "string") })
 	@RequestMapping(value = "/update.action", method = { RequestMethod.GET, RequestMethod.POST })
 	public @ResponseBody BaseOutput update(Resource resource) {
 		String menuId = resource.aget("menuId").toString();
@@ -217,8 +198,6 @@ public class ResourceController {
 	 * @param id
 	 * @return
 	 */
-	@ApiOperation("删除Resource")
-	@ApiImplicitParams({ @ApiImplicitParam(name = "id", paramType = "form", value = "Resource的主键", required = true, dataType = "long") })
 	@RequestMapping(value = "/delete.action", method = { RequestMethod.GET, RequestMethod.POST })
 	public @ResponseBody BaseOutput delete(Long id) {
 		// 级联更新ResourceLink,先获取原始ResourceCode

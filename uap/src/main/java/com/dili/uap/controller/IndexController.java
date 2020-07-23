@@ -1,5 +1,19 @@
 package com.dili.uap.controller;
 
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.util.CollectionUtils;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
 import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.exception.AppException;
 import com.dili.uap.constants.UapConstants;
@@ -15,25 +29,10 @@ import com.dili.uap.sdk.util.WebContent;
 import com.dili.uap.service.MenuService;
 import com.dili.uap.service.SystemService;
 import com.dili.uap.service.UserService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 首页控制器
  */
-@Api("/index")
 @Controller
 @RequestMapping("/index")
 public class IndexController {
@@ -72,7 +71,6 @@ public class IndexController {
 	 * @param request
 	 * @return
 	 */
-	@ApiOperation("跳转到权限主页面")
 	@RequestMapping(value = "/index.html", method = { RequestMethod.GET, RequestMethod.POST })
 	public String index(ModelMap modelMap, HttpServletRequest request) {
 		UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
@@ -131,7 +129,6 @@ public class IndexController {
 	 * @param req
 	 * @return
 	 */
-	@ApiOperation("跳转到平台页面")
 	@RequestMapping(value = "/platform.html", method = RequestMethod.GET)
 	public String platform(ModelMap modelMap, HttpServletRequest req) {
 		UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
@@ -182,7 +179,6 @@ public class IndexController {
 	 * @param modelMap
 	 * @return
 	 */
-	@ApiOperation("跳转到功能列表页面")
 	@RequestMapping(value = "/featureList.html", method = RequestMethod.GET)
 	public String featureList(String systemCode, ModelMap modelMap) {
 		UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
@@ -198,7 +194,6 @@ public class IndexController {
 	 * @param modelMap
 	 * @return
 	 */
-	@ApiOperation("跳转到园区管理首页")
 	@RequestMapping(value = "/parkIndex.html", method = RequestMethod.GET)
 	public String parkIndex(ModelMap modelMap) {
 		return "index/parkIndex";
@@ -225,7 +220,6 @@ public class IndexController {
 	 * @param modelMap
 	 * @return
 	 */
-	@ApiOperation("跳转到个人信息页面")
 	@RequestMapping(value = "/userDetail.html", method = RequestMethod.GET)
 	public String userDetail(ModelMap modelMap) {
 		return USERDETAIL_PATH;
@@ -237,7 +231,6 @@ public class IndexController {
 	 * @param modelMap
 	 * @return
 	 */
-	@ApiOperation("跳转到修改密码页面")
 	@RequestMapping(value = "/changePwd.html", method = RequestMethod.GET)
 	public String changePwd(ModelMap modelMap) {
 		return CHANGEPWD_PATH;
