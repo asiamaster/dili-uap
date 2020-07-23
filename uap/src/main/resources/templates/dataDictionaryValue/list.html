@@ -20,7 +20,15 @@
                     <th  data-options="field:'ddCode',sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false', hidden:true">字典id</th>
                     <th width="25%" data-options="field:'name',sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false',editor:{type : 'textbox',options : {required : true,validType:'length[1,120]'}}">名称</th>
                     <th width="25%" data-options="field:'code', sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false',editor:{type : 'textbox',options : {required : true,validType:'length[1,120]'}}">编码</th>
-                    <th width="25%" data-options="field:'firmCode',sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false',editor:{type : 'combobox',options : {required : true,valueField:'code',textField:'name',url:'${contextPath!}/firm/listByLoggedUser.action',editable:false}}">归属市场</th>
+                    <th width="25%" data-options="field:'firmCode',sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false',editor:{type : 'combobox',
+                    options : {
+                    	valueField:'code',
+                    	textField:'name',
+                    	url:'${contextPath!}/firm/listByLoggedUser.action',
+                    	editable:false,
+                    	onLoadSuccess:selectFirm
+                    }
+                   }">归属市场</th>
                     <th width="13%" data-options="field:'orderNumber',sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false',
 						editor:{type : 'numberbox',options : {required : true,validType:'length[1,5]'}}">排序号</th>
 					<th width="10%" data-options="field:'state',sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false',

@@ -94,6 +94,12 @@ function openUpdateDdValue() {
 	}
 }
 
+function selectFirm(){
+	if (firmCode!=groupFirmCode) {
+		$(this).combobox('select',firmCode);
+	}
+}
+
 function onClickDdValueGridRow(index, row) {
     if (!ddValueGrid.datagrid('validateRow', ddValueEditIndex)) {
         return;

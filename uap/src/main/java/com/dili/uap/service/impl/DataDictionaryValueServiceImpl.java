@@ -13,6 +13,7 @@ import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import com.dili.ss.base.BaseServiceImpl;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
+import com.dili.ss.dto.IDTO;
 import com.dili.uap.constants.UapConstants;
 import com.dili.uap.dao.DataDictionaryMapper;
 import com.dili.uap.dao.DataDictionaryValueMapper;
@@ -139,8 +140,12 @@ public class DataDictionaryValueServiceImpl extends BaseServiceImpl<DataDictiona
 		}
 		DataDictionaryValue valueRecord = DTOUtils.newInstance(DataDictionaryValue.class);
 		valueRecord.setDdCode(model.getCode());
-		valueRecord.setFirmCode(StringUtils.isBlank(firmCode) ? UapConstants.GROUP_CODE : firmCode);
-		List<DataDictionaryValue> values = this.getActualDao().select(valueRecord);
+		if (StringUtils.isBlank(firmCode)) {
+			valueRecord.setMetadata(IDTO.AND_CONDITION_EXPR, "(firm_code = '" + UapConstants.GROUP_CODE + "' OR firm_code IS NULL)");
+		} else {
+			valueRecord.setFirmCode(StringUtils.isBlank(firmCode) ? UapConstants.GROUP_CODE : firmCode);
+		}
+		List<DataDictionaryValue> values = this.listByExample(valueRecord);
 		DataDictionaryDto dto = DTOUtils.as(model, DataDictionaryDto.class);
 		if (CollectionUtils.isNotEmpty(values)) {
 			List<DataDictionaryValue> dtos = new ArrayList<>(values.size());

@@ -1,4 +1,7 @@
 <script type="text/javascript">
+var firmCode='${firmCode}';
+var groupFirmCode='${@com.dili.uap.constants.UapConstants.GROUP_CODE}';
+
 // 编辑行索引
 var ddValueGrid = undefined;
 

@@ -47,6 +47,7 @@ public class DataDictionaryController {
 	@ApiOperation("跳转到DataDictionary页面")
 	@RequestMapping(value = "/index.html", method = RequestMethod.GET)
 	public String index(ModelMap modelMap) {
+		modelMap.addAttribute("firmCode", SessionContext.getSessionContext().getUserTicket().getFirmCode());
 		return "dataDictionary/index";
 	}
 
