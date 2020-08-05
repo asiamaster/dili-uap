@@ -2,10 +2,6 @@ package com.dili.uap.sdk.rpc;
 
 import java.util.List;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.retrofitful.annotation.POST;
 import com.dili.ss.retrofitful.annotation.ReqParam;
@@ -24,6 +20,16 @@ public interface DataDictionaryRpc {
 
 	@POST("/dataDictionaryApi/listDataDictionaryValue.api")
 	BaseOutput<List<DataDictionaryValue>> listDataDictionaryValue(@VOBody DataDictionaryValue dataDictionaryValue);
+
+	/**
+	 * 有firmId的情况下匹配firm_id in (#{firmId},#{groupId}) or firm_id is
+	 * null,有firmCode的情况下匹配firm_code in (#{firmCode},'group') or firm_code is null
+	 * 
+	 * @param dataDictionaryValue
+	 * @return
+	 */
+	@POST("/dataDictionaryApi/listDataDictionaryValueWithFirm.api")
+	BaseOutput<List<DataDictionaryValue>> listDataDictionaryValueWithFirm(@VOBody DataDictionaryValue dataDictionaryValue);
 
 	@POST("/dataDictionaryApi/listDataDictionary.api")
 	BaseOutput<List<DataDictionary>> listDataDictionary(@VOBody DataDictionary dataDictionary);

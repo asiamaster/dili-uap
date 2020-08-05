@@ -83,4 +83,11 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 		int rows = this.getActualDao().updateByPrimaryKeySelective(firm);
 		return rows > 0 ? BaseOutput.success("修改成功").setData(this.getActualDao().selectByPrimaryKey(dto.getId())) : BaseOutput.failure("修改失败");
 	}
+
+	@Override
+	public Firm getIdByCode(String firmCode) {
+		Firm record = DTOUtils.newInstance(Firm.class);
+		record.setCode(firmCode);
+		return this.getActualDao().selectOne(record);
+	}
 }

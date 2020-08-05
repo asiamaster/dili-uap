@@ -62,11 +62,13 @@ public class DataDictionaryValueServiceImpl extends BaseServiceImpl<DataDictiona
 		if (size > 0) {
 			return BaseOutput.failure("相同编码已经存在");
 		}
-		Firm firmQuery = DTOUtils.newInstance(Firm.class);
-		firmQuery.setCode(t.getFirmCode());
-		Firm firm = this.firmMapper.selectOne(firmQuery);
-		if (firm != null) {
-			t.setFirmId(firm.getId());
+		if (StringUtils.isNotBlank(t.getFirmCode())) {
+			Firm firmQuery = DTOUtils.newInstance(Firm.class);
+			firmQuery.setCode(t.getFirmCode());
+			Firm firm = this.firmMapper.selectOne(firmQuery);
+			if (firm != null) {
+				t.setFirmId(firm.getId());
+			}
 		}
 		this.insertSelective(t);
 		return BaseOutput.success("新增成功").setData(t.getId());
@@ -88,11 +90,13 @@ public class DataDictionaryValueServiceImpl extends BaseServiceImpl<DataDictiona
 		if (exists) {
 			return BaseOutput.failure("相同编码已经存在");
 		}
-		Firm firmQuery = DTOUtils.newInstance(Firm.class);
-		firmQuery.setCode(t.getFirmCode());
-		Firm firm = this.firmMapper.selectOne(firmQuery);
-		if (firm != null) {
-			t.setFirmId(firm.getId());
+		if (StringUtils.isNotBlank(t.getFirmCode())) {
+			Firm firmQuery = DTOUtils.newInstance(Firm.class);
+			firmQuery.setCode(t.getFirmCode());
+			Firm firm = this.firmMapper.selectOne(firmQuery);
+			if (firm != null) {
+				t.setFirmId(firm.getId());
+			}
 		}
 		this.updateSelective(t);
 		return BaseOutput.success("修改成功");
