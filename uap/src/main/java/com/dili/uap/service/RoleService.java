@@ -78,4 +78,10 @@ public interface RoleService extends BaseService<Role, Long> {
 	 * @return
 	 */
 	List<RoleUserDto> listRoleUserByRoleIds(List<Long> roleIds);
+
+	/**
+	 * 查询所有条数
+	 * @return
+	 */
+	Integer countAll();
 }

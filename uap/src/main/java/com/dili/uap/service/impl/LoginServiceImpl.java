@@ -1,6 +1,8 @@
 package com.dili.uap.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.dili.logger.sdk.base.LoggerContext;
+import com.dili.logger.sdk.glossary.LoggerConstant;
 import com.dili.ss.constant.ResultCode;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
@@ -20,6 +22,7 @@ import com.dili.uap.sdk.manager.SessionRedisManager;
 import com.dili.uap.sdk.session.DynaSessionConstants;
 import com.dili.uap.sdk.session.ManageConfig;
 import com.dili.uap.sdk.session.SessionConstants;
+import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.sdk.util.ManageRedisUtil;
 import com.dili.uap.sdk.util.WebContent;
 import com.dili.uap.service.LoginLogService;
@@ -36,6 +39,8 @@ import org.springframework.data.redis.core.BoundListOperations;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
+
+import javax.security.auth.login.LoginContext;
 
 /**
  * 登录服务 Created by asiam on 2018/5/18 0018.
@@ -87,9 +92,6 @@ public class LoginServiceImpl implements LoginService {
 
 	@Autowired
 	private SystemConfigMapper systemConfigMapper;
-
-	@Autowired
-	private LoginLogService loginLogService;
 
 	@Autowired
 	private SystemService systemService;
@@ -204,17 +206,17 @@ public class LoginServiceImpl implements LoginService {
 			loginDto.setFirmCode(user.getFirmCode());
 			// 用户状态为锁定和禁用不允许登录
 			if (user.getState().equals(UserState.LOCKED.getCode())) {
-				logLogin(loginDto, false, "用户已被锁定，请联系管理员");
+				logLogin(user, loginDto, false, "用户已被锁定，请联系管理员");
 				return BaseOutput.failure("用户已被锁定，请联系管理员").setCode(ResultCode.NOT_AUTH_ERROR);
 			}
 			if (user.getState().equals(UserState.DISABLED.getCode())) {
-				logLogin(loginDto, false, "用户已被禁用，请联系管理员");
+				logLogin(user, loginDto, false, "用户已被禁用，请联系管理员");
 				return BaseOutput.failure("用户已被禁用，请联系管理员!");
 			}
 			// 判断密码不正确，三次后锁定用户、锁定后的用户12小时后自动解锁
 			if (!StringUtils.equals(user.getPassword(), this.encryptPwd(loginDto.getPassword()))) {
 				lockUser(user);
-				logLogin(loginDto, false, "用户名或密码错误");
+				logLogin(user, loginDto, false, "用户名或密码错误");
 				return BaseOutput.failure("用户名或密码错误").setCode(ResultCode.NOT_AUTH_ERROR);
 			}
 			redisUtil.set("he", 12);
@@ -250,11 +252,11 @@ public class LoginServiceImpl implements LoginService {
 			loginResult.setUser(user);
 			loginResult.setSessionId(sessionId);
 			loginResult.setLoginPath(loginDto.getLoginPath());
-			logLogin(loginDto, true, "登录成功");
+			logLogin(user, loginDto, true, "登录成功");
 			return BaseOutput.success("登录成功").setData(loginResult);
 		} catch (Exception e) {
 			if (loginDto.getUserId() != null) {
-				logLogin(loginDto, false, e.getMessage());
+				logLogin(null, loginDto, false, e.getMessage());
 			}
 			return BaseOutput.failure("登录失败").setMessage("登录失败，参数不正确");
 		}
@@ -289,48 +291,30 @@ public class LoginServiceImpl implements LoginService {
 	/**
 	 * 异步记录登录日志
 	 */
-	private void logLogin(LoginDto loginDto, boolean isSuccess, String msg) {
-		new Thread() {
-			@Override
-			public void run() {
-				LoginLog loginLog = DTOUtils.as(loginDto, LoginLog.class);
-				loginLog.setSuccess(isSuccess ? Yn.YES.getCode() : Yn.NO.getCode());
-				loginLog.setMsg(msg);
-				loginLog.setType(LoginType.LOGIN.getCode());
-				// 设置系统名称
-				if (StringUtils.isNotBlank(loginLog.getSystemCode())) {
-					Systems system = DTOUtils.newInstance(Systems.class);
-					system.setCode(loginDto.getSystemCode());
-					List<Systems> systemList = systemService.listByExample(system);
-					loginLog.setSystemName(systemList.isEmpty() ? loginDto.getSystemCode() : systemList.get(0).getName());
-				}
-				loginLogService.insertSelective(loginLog);
-			}
-		}.start();
+	private void logLogin(User user, LoginDto loginDto, boolean isSuccess, String msg) {
+		// 设置系统名称
+		LoggerContext.put(LoggerConstant.LOG_SYSTEM_CODE_KEY, loginDto.getSystemCode());
+		LoggerContext.put(LoggerConstant.LOG_BUSINESS_CODE_KEY, loginDto.getUserName());
+		LoggerContext.put(LoggerConstant.LOG_BUSINESS_ID_KEY, loginDto.getUserId());
+		LoggerContext.put(LoggerConstant.LOG_OPERATOR_ID_KEY, loginDto.getUserId());
+		if (user != null) {
+			LoggerContext.put(LoggerConstant.LOG_NOTES_KEY, user.getRealName());
+			LoggerContext.put(LoggerConstant.LOG_MARKET_ID_KEY, user.getFirmCode());
+		}
+		LoggerContext.put("msg", msg);
 	}
 
 	/**
 	 * 异步记录登出日志
 	 */
 	@Override
-	public void logLogout(LoginLog loginLog) {
-		new Thread() {
-			@Override
-			public void run() {
-				loginLog.setSuccess(Yn.YES.getCode());
-				loginLog.setMsg("登出成功");
-				loginLog.setType(LoginType.LOGOUT.getCode());
-//				loginLog.setLoginTime(new Date());
-				// 设置系统名称
-				if (StringUtils.isNotBlank(loginLog.getSystemCode()) && loginLog.getSystemName() == null) {
-					Systems system = DTOUtils.newInstance(Systems.class);
-					system.setCode(loginLog.getSystemCode());
-					List<Systems> systemList = systemService.listByExample(system);
-					loginLog.setSystemName(systemList.isEmpty() ? loginLog.getSystemCode() : systemList.get(0).getName());
-				}
-				loginLogService.insertSelective(loginLog);
-			}
-		}.start();
+	public void logLogout(UserTicket user) {
+		LoggerContext.put(LoggerConstant.LOG_BUSINESS_CODE_KEY, user.getUserName());
+		LoggerContext.put(LoggerConstant.LOG_BUSINESS_ID_KEY, user.getId());
+		LoggerContext.put(LoggerConstant.LOG_OPERATOR_ID_KEY, user.getId());
+		LoggerContext.put(LoggerConstant.LOG_MARKET_ID_KEY, user.getFirmId());
+		LoggerContext.put(LoggerConstant.LOG_NOTES_KEY, user.getRealName());
+		LoggerContext.put("msg", "系统登出");
 	}
 
 	/**
@@ -374,13 +358,13 @@ public class LoginServiceImpl implements LoginService {
 	 */
 	private void makeRedisTag(User user, String sessionId) {
 		Map<String, Object> sessionData = new HashMap<>(1);
-		//根据firmCode查询firmId，放入UserTicket
+		// 根据firmCode查询firmId，放入UserTicket
 		Firm condition = DTOUtils.newInstance(Firm.class);
 		condition.setCode(user.getFirmCode());
 		Firm firm = firmMapper.selectOne(condition);
 		UserTicket userTicket = DTOUtils.asInstance(user, UserTicket.class);
-		if(firm != null){
-			//用于makeCookieTag中获取firmId
+		if (firm != null) {
+			// 用于makeCookieTag中获取firmId
 			WebContent.put("firmId", firm.getId());
 			userTicket.setFirmId(firm.getId());
 			userTicket.setFirmName(firm.getName());

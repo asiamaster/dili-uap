@@ -37,17 +37,11 @@
 				data-options="onLoadSuccess:gridLoadSuccess">
 				<thead>
 					<tr>
-						<th data-options="field:'ip', width:'10%',  sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">服务器ip</th>
-						<th data-options="field:'systemName',width:'10%',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">系统</th>
-						<th
-							data-options="field:'menuId',width:'12%'
-                        , _provider:'simpleBatchDisplayTextProvider',_escapeFileds:{'menuId':'name'},_fkField:'menuId',_relationTable:'menu',_relationTablePkField:'id', _queryParams:{}
-                        ,   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
-							功能模块</th>
-						<th data-options="field:'type',width:'8%',_provider:'exceptionTypeProvider', _queryParams:{},   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">异常类型</th>
-						<th data-options="field:'version',width:'8%',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">版本号</th>
-						<th data-options="field:'exceptionTime',width:'12%',  _provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">异常时间</th>
-						<th data-options="field:'msg',width:'40%',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">异常信息</th>
+						<th data-options="field:'serverIp', width:'10%',  sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">服务器ip</th>
+						<th data-options="field:'systemCode',width:'10%',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">系统</th>
+						<th data-options="field:'exceptionTypeText',width:'8%',  sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">异常类型</th>
+						<th data-options="field:'createTime',width:'12%',  _provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">异常时间</th>
+						<th data-options="field:'content',width:'40%',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">异常信息</th>
 					</tr>
 				</thead>
 			</table>

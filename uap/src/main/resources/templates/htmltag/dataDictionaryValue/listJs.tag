@@ -35,11 +35,13 @@ function onBeginEditDdValue(index, row) {
 }
 
 function onAfterEditDdValue(index, row, changes) {
+	if(row.id){
+		changes.$_firmCode=row.$_firmCode;
+	}
 	var isValid = ddValueGrid.datagrid('validateRow', index);
 	if (!isValid) {
 		return false;
 	}
-
 	insertOrUpdateDdValue(index, row, changes);
 	setOptValueBtnDisplay(false);
 }
@@ -49,6 +51,12 @@ function onCancelEditDdValue(index, row) {
 	if (!row.id) {
 		ddValueGrid.datagrid('deleteRow', index);
 	}
+}
+
+function onDdValueEndEdit(index, row, changes){
+	var editor=$(this).datagrid('getEditor',{index:index,field:'firmCode'});
+	changes.$_firmCode=$(editor.target).combobox('getValue');
+	changes.firmCode=$(editor.target).combobox('getText');
 }
 
 // 打开新增窗口
@@ -86,6 +94,12 @@ function openUpdateDdValue() {
 	}
 }
 
+function selectFirm(){
+	if (firmCode!=groupFirmCode) {
+		$(this).combobox('select',firmCode);
+	}
+}
+
 function onClickDdValueGridRow(index, row) {
     if (!ddValueGrid.datagrid('validateRow', ddValueEditIndex)) {
         return;
@@ -98,34 +112,30 @@ function onClickDdValueGridRow(index, row) {
 }
 
 function insertOrUpdateDdValue(index, row, changes) {
-    var oldRecord;
     var url = contextPath + '/dataDictionaryValue/';
     if (!row.id) {
         row.ddCode = ddCode;
         url += 'insert.action';
     } else {
-        oldRecord = new Object();
-        $.extend(true, oldRecord, row);
-        url += 'update.action'
+    	row.firmCode=row.$_firmCode
+        url += 'update.action';
     }
     $.post(url, row, function (data) {
         if (data.code != 200) {
-            if (oldRecord) {
-                ddValueGrid.datagrid('updateRow', {
-                    index: index,
-                    row: oldRecord
-                });
-            } else {
-                ddValueGrid.datagrid('deleteRow', index);
-            }
+            ddValueGrid.datagrid('rejectChanges');
             swal('提示', data.result, 'error');
             return;
         }
-
+        row.$_firmCode=changes.$_firmCode;
+        row.firmCode=changes.firmCode;
+        if (!row.id) {
+	        row.id=data.data;
+        }
         ddValueGrid.datagrid('updateRow', {
             index: index,
             row: row
         });
+        ddValueGrid.datagrid('acceptChanges');
         ddValueGrid.datagrid('refreshRow', index);
     }, 'json');
 }
@@ -165,6 +175,7 @@ function delDdValue() {
             success : function(data) {
                 if (data.success) {
                     ddValueGrid.datagrid('deleteRow', ddValueGrid.datagrid('getRowIndex', selected));
+                    ddValueGrid.datagrid('acceptChanges');
                     $('#dlg').dialog('close');
                 } else {
                     swal('修改失败！', '', 'error');
@@ -201,15 +212,16 @@ function setOptValueBtnDisplay(show){
 }
 
 /**
-* 绑定页面回车事件，以及初始化页面时的光标定位
-*
-* @formId 表单ID
-* @elementName 光标定位在指点表单元素的name属性的值
-* @submitFun 表单提交需执行的任务
-*/
+ * 绑定页面回车事件，以及初始化页面时的光标定位
+ * 
+ * @formId 表单ID
+ * @elementName 光标定位在指点表单元素的name属性的值
+ * @submitFun 表单提交需执行的任务
+ */
 $(function() {
 
-	var pager = $('#ddValueGrid').datagrid('getPager'); // get the pager of treegrid
+	var pager = $('#ddValueGrid').datagrid('getPager'); // get the pager of
+														// treegrid
 	pager.pagination({
 		<#controls_paginationOpts/>
 		,buttons:[
@@ -254,7 +266,7 @@ $(function() {
             }
 		]
 	});
-	//表格仅显示下边框
+	// 表格仅显示下边框
 	$('#ddValueGrid').datagrid('getPanel').removeClass('lines-both lines-no lines-right lines-bottom').addClass("lines-bottom");
 	queryDdValueGrid();
 	setOptValueBtnDisplay(false);

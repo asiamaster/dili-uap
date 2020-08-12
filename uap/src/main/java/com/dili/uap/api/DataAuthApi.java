@@ -1,5 +1,18 @@
 package com.dili.uap.api;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.dili.ss.domain.BaseOutput;
@@ -11,27 +24,10 @@ import com.dili.uap.sdk.service.DataAuthSourceService;
 import com.dili.uap.service.DataAuthRefService;
 import com.dili.uap.service.UserDataAuthService;
 import com.google.common.collect.Lists;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 数据权限Api
  */
-@Api("/dataAuthApi")
 @Controller
 @RequestMapping("/dataAuthApi")
 public class DataAuthApi {
@@ -50,7 +46,6 @@ public class DataAuthApi {
      * @param userDataAuth
      * @return
      */
-    @ApiOperation(value = "根据条件查询数据类型列表")
     @RequestMapping(value = "/listDataAuths.api", method = { RequestMethod.POST })
     @ResponseBody
     public BaseOutput<List<DataAuthRef>> listDataAuths(DataAuthRef dataAuthRef) {
@@ -62,8 +57,6 @@ public class DataAuthApi {
      * @param userDataAuth
      * @return
      */
-    @ApiOperation(value = "根据条件查询用户数据权限表信息")
-    @ApiImplicitParams({ @ApiImplicitParam(name = "UserDataAuth", value = "UserDataAuth", required = true, dataType = "UserDataAuth") })
     @RequestMapping(value = "/listUserDataAuth.api", method = { RequestMethod.POST })
     @ResponseBody
     public BaseOutput<List<UserDataAuth>> listUserDataAuth(UserDataAuth userDataAuth) {
@@ -78,8 +71,6 @@ public class DataAuthApi {
      * @param userDataAuth
      * @return
      */
-    @ApiOperation(value = "根据条件查询用户数据权限value列表")
-    @ApiImplicitParams({ @ApiImplicitParam(name = "UserDataAuth", value = "UserDataAuth", required = true, dataType = "UserDataAuth") })
     @RequestMapping(value = "/listUserDataAuthValues.api", method = { RequestMethod.POST })
     @ResponseBody
     public BaseOutput<List<String>> listUserDataAuthValues(UserDataAuth userDataAuth) {
@@ -99,8 +90,6 @@ public class DataAuthApi {
      * @param userDataAuth
      * @return  Map key为value, 值为转义后的行数据
      */
-    @ApiOperation(value = "根据条件查询用户数据权限")
-    @ApiImplicitParams({ @ApiImplicitParam(name = "UserDataAuth", value = "UserDataAuth", required = true, dataType = "UserDataAuth") })
     @RequestMapping(value = "/listUserDataAuthDetail.api", method = { RequestMethod.POST })
     @ResponseBody
     public BaseOutput<List<Map>> listUserDataAuthDetail(UserDataAuth userDataAuth) {
@@ -143,8 +132,6 @@ public class DataAuthApi {
      * @param json 包含reCode,value,userId
      * @return 
      */
-	@ApiOperation("添加用户数据权")
-	@ApiImplicitParams({ @ApiImplicitParam(name = "id", paramType = "form", value = "DataAuth的主键", required = true, dataType = "long") })
 	@ResponseBody
 	@RequestMapping(value = "/addUserDataAuth.api", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public BaseOutput<Object> addUserDataAuth(@RequestBody String json) {
@@ -167,8 +154,6 @@ public class DataAuthApi {
      * @param json 包含reCode,value,userId
      * @return 
      */
-	@ApiOperation("删除用户数据权")
-	@ApiImplicitParams({ @ApiImplicitParam(name = "id", paramType = "form", value = "DataAuth的主键", required = true, dataType = "long") })
 	@ResponseBody
 	@RequestMapping(value = "/deleteUserDataAuth.api", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public BaseOutput<Object> deleteUserDataAuth(@RequestBody String json) {

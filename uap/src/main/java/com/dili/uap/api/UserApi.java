@@ -1,8 +1,20 @@
 package com.dili.uap.api;
 
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.domain.PageOutput;
 import com.dili.ss.dto.DTOUtils;
+import com.dili.ss.dto.IDTO;
 import com.dili.uap.component.ResumeLockedUserJob;
 import com.dili.uap.dao.DepartmentMapper;
 import com.dili.uap.domain.ScheduleMessage;
@@ -13,20 +25,10 @@ import com.dili.uap.sdk.domain.User;
 import com.dili.uap.sdk.domain.dto.UserQuery;
 import com.dili.uap.service.UserService;
 import com.github.pagehelper.Page;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * 由MyBatis Generator工具自动生成 This file was generated on 2017-07-11 16:56:50.
  */
-@Api("/userApi")
 @Controller
 @RequestMapping("/userApi")
 public class UserApi {
@@ -45,8 +47,6 @@ public class UserApi {
 	 * @param id
 	 * @return
 	 */
-	@ApiOperation(value = "查询User实体接口", notes = "根据id查询User接口，返回User实体")
-	@ApiImplicitParams({ @ApiImplicitParam(name = "id", value = "User的id", required = true, dataType = "long") })
 	@RequestMapping(value = "/get.api", method = { RequestMethod.GET, RequestMethod.POST })
 	public @ResponseBody BaseOutput<User> get(@RequestBody Long id) {
 		return BaseOutput.success().setData(userService.get(id));
@@ -58,8 +58,6 @@ public class UserApi {
 	 * @param user
 	 * @return
 	 */
-	@ApiOperation(value = "查询User列表接口", notes = "查询User列表接口，返回列表信息")
-	@ApiImplicitParams({ @ApiImplicitParam(name = "User", paramType = "form", value = "User的form信息", required = false, dataType = "string") })
 	@RequestMapping(value = "/list.api", method = { RequestMethod.GET, RequestMethod.POST })
 	public @ResponseBody BaseOutput<List<User>> list(User user) {
 		return BaseOutput.success().setData(userService.list(user));
@@ -73,7 +71,24 @@ public class UserApi {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/listByExample.api", method = { RequestMethod.GET, RequestMethod.POST })
-	public PageOutput<List<User>> listByExample(UserQuery user) {
+	public BaseOutput<List<User>> listByExample(UserQuery user) {
+		if (StringUtils.isNotBlank(user.getKeyword())) {
+			user.setMetadata(IDTO.AND_CONDITION_EXPR,
+					"(user_name like '%" + user.getKeyword() + "%' or real_name like '%" + user.getKeyword() + "%' or serial_number like '%" + user.getKeyword() + "%')");
+		}
+		List<User> users = this.userService.listByExample(user);
+		return BaseOutput.success().setData(users);
+	}
+
+	/**
+	 * 查询用户
+	 * 
+	 * @param user
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/listPageByExample.api", method = { RequestMethod.GET, RequestMethod.POST })
+	public PageOutput<List<User>> listPageByExample(UserQuery user) {
 		List<User> users = this.userService.listByExample(user);
 		if (users instanceof Page) {
 			Page<User> page = (Page) users;
@@ -140,7 +155,7 @@ public class UserApi {
 	/**
 	 * 查询当前市场下具有特定权限编码的用户
 	 * 
-	 * @param firmCode 部门id
+	 * @param firmCode     部门id
 	 * @param resourceCode 权限编码
 	 * @return
 	 */
@@ -149,6 +164,19 @@ public class UserApi {
 	public BaseOutput<List<User>> findCurrentFirmUsersByResourceCode(@RequestParam String firmCode, @RequestParam String resourceCode) {
 		List<User> list = this.userService.findCurrentFirmUsersByResourceCode(firmCode, resourceCode);
 		return BaseOutput.success().setData(list);
+	}
+
+	/**
+	 * 验证用户密码
+	 * 
+	 * @param userId
+	 * @param password
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping("/validatePassword.api")
+	public BaseOutput<Object> validatePassword(@RequestParam Long userId, @RequestParam String password) {
+		return this.userService.validatePassword(userId, password);
 	}
 
 }

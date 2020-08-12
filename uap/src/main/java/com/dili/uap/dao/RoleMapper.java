@@ -1,17 +1,16 @@
 package com.dili.uap.dao;
 
-import com.dili.ss.base.MyMapper;
-import com.dili.uap.sdk.domain.Menu;
-import com.dili.uap.sdk.domain.Role;
-import com.dili.uap.sdk.domain.dto.RoleUserDto;
-import com.dili.uap.domain.RoleMenu;
-import com.dili.uap.domain.RoleResource;
-import com.dili.uap.domain.dto.SystemResourceDto;
-
 import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
+
+import com.dili.ss.base.MyMapper;
+import com.dili.uap.domain.RoleMenu;
+import com.dili.uap.domain.RoleResource;
+import com.dili.uap.domain.dto.SystemResourceDto;
+import com.dili.uap.sdk.domain.Role;
+import com.dili.uap.sdk.domain.dto.RoleUserDto;
 
 public interface RoleMapper extends MyMapper<Role> {
 

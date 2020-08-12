@@ -44,6 +44,13 @@ public interface DataDictionary extends IBaseDomain {
     String getSystemCode();
 
     void setSystemCode(String systemCode);
+    
+    @Column(name = "`level`")
+    @FieldDef(label="等级", maxLength = 4)
+    @EditMode(editor = FieldEditor.Number, required = false)
+    Integer getLevel();
+
+    void setLevel(Integer level);
 
     @Column(name = "`description`")
     @FieldDef(label="描述", maxLength = 255)

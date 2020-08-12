@@ -1,22 +1,27 @@
 package com.dili.uap.api;
 
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.domain.dto.RoleDto;
 import com.dili.uap.sdk.domain.Role;
 import com.dili.uap.sdk.domain.dto.RoleUserDto;
 import com.dili.uap.service.RoleService;
-import io.swagger.annotations.Api;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * 角色Api
  */
-@Api("/roleApi")
 @RestController
 @RequestMapping("/roleApi")
 public class RoleApi {

@@ -44,10 +44,28 @@
                 <tr>
                     <th data-options="field:'id',width:'6%',sortable:'true', order:'asc', align:'center', hidden:true,resizable:'true', fixed:'false'">ID</th>
                     <th data-options="field:'systemCode',formatter :systemCodeFormatter 
-                    ,width:'20%',sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false',editor : {type : 'combobox',options : {panelWidth:'auto'  ,panelHeight:'auto', url:'/dataDictionary/systemList.action',textField:'text',editable:false,valueField:'value',required : true}}">系统</th>
+                    ,width:'20%',sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false',editor : {type : 'combobox',options : {panelWidth:'auto'  ,panelHeight:'400', url:'/dataDictionary/systemList.action',textField:'text',editable:false,valueField:'value',required : true}}">系统</th>
                     <th data-options="field:'name',width:'14%',sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false', formatter:formatName,
 						editor : {type : 'textbox',options : {required : true,validType:'length[1,50]'}}">名称</th>
                     <th data-options="field:'code',width:'17%',sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false',editor : {type : 'textbox',options : {required : true,validType:'length[1,50]'}}">编码</th>
+                    <%if(firmCode==@com.dili.uap.constants.UapConstants.GROUP_CODE){%>
+                    <th data-options="field:'level',width:'17%',sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false',editor : {type : 'combobox',options : {
+                    required : true,
+                    textField:'name',
+                    valueField:'value',
+                    editable:false,
+                    data:[{name:'集团',value:0},{name:'商户',value:1}]
+                    }},
+                    formatter:function(value){
+                    	if(value==0){
+                    		return '集团';
+                    	}
+                    	if(value==1){
+                    		return '商户';
+                    	}
+                    	return '';
+                    }">级别</th>
+                    <%}%>                    
                     <th data-options="field:'description',width:'20%',sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false',
 						editor : {type : 'textbox',options : {validType:'length[0,50]'}}">备注</th>
                     <th data-options="field:'created',width:'15%',  _provider:'datetimeProvider', sortable:'true', order:'asc', align:'center', resizable:'true', fixed:'false'">创建时间</th>

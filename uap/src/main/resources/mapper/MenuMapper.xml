@@ -1,154 +1,291 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.dili.uap.dao.MenuMapper">
-  <resultMap id="BaseResultMap" type="com.dili.uap.sdk.domain.Menu">
-    <!--
-      WARNING - @mbg.generated
-    -->
-    <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="parent_id" jdbcType="BIGINT" property="parentId" />
-    <result column="system_id" jdbcType="BIGINT" property="systemId" />
-    <result column="order_number" jdbcType="INTEGER" property="orderNumber" />
-    <result column="url" jdbcType="VARCHAR" property="url" />
-    <result column="name" jdbcType="VARCHAR" property="name" />
-    <result column="description" jdbcType="VARCHAR" property="description" />
-    <result column="target" jdbcType="INTEGER" property="target" />
-    <result column="created" jdbcType="TIMESTAMP" property="created" />
-    <result column="modified" jdbcType="TIMESTAMP" property="modified" />
-    <result column="type" jdbcType="INTEGER" property="type" />
-    <result column="icon_cls" jdbcType="VARCHAR" property="iconCls" />
-  </resultMap>
-  <sql id="Base_Column_List">
-    <!--
-      WARNING - @mbg.generated
-    -->
-    id, parent_id, system_id, order_number, url, name, description, target, created, modified, type,
-    icon_cls
-  </sql>
-  <select id="selectBy" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    <!--
-      WARNING - @mbg.generated
-    -->
-    select 
-    <include refid="Base_Column_List" />
-    from menu
-    where id = #{id,jdbcType=BIGINT}
-  </select>
+	<resultMap id="BaseResultMap" type="com.dili.uap.sdk.domain.Menu">
+		<!-- WARNING - @mbg.generated -->
+		<id column="id" jdbcType="BIGINT" property="id" />
+		<result column="parent_id" jdbcType="BIGINT" property="parentId" />
+		<result column="system_id" jdbcType="BIGINT" property="systemId" />
+		<result column="order_number" jdbcType="INTEGER" property="orderNumber" />
+		<result column="url" jdbcType="VARCHAR" property="url" />
+		<result column="name" jdbcType="VARCHAR" property="name" />
+		<result column="description" jdbcType="VARCHAR" property="description" />
+		<result column="target" jdbcType="INTEGER" property="target" />
+		<result column="created" jdbcType="TIMESTAMP" property="created" />
+		<result column="modified" jdbcType="TIMESTAMP" property="modified" />
+		<result column="type" jdbcType="INTEGER" property="type" />
+		<result column="icon_cls" jdbcType="VARCHAR" property="iconCls" />
+	</resultMap>
 
 
-  <!-- ============================== SQL分割线 ============================== -->
+	<resultMap id="clientMenuRM" type="com.dili.uap.sdk.domain.dto.ClientMenuDto">
+		<!-- WARNING - @mbg.generated -->
+		<id column="id" jdbcType="VARCHAR" property="id" />
+		<result column="parent_id" jdbcType="VARCHAR" property="parentId" />
+		<result column="system_id" jdbcType="BIGINT" property="systemId" />
+		<result column="order_number" jdbcType="INTEGER" property="orderNumber" />
+		<result column="url" jdbcType="VARCHAR" property="url" />
+		<result column="name" jdbcType="VARCHAR" property="name" />
+		<result column="description" jdbcType="VARCHAR" property="description" />
+		<result column="target" jdbcType="INTEGER" property="target" />
+		<result column="created" jdbcType="TIMESTAMP" property="created" />
+		<result column="modified" jdbcType="TIMESTAMP" property="modified" />
+		<result column="type" jdbcType="INTEGER" property="type" />
+		<result column="icon_cls" jdbcType="VARCHAR" property="iconCls" />
+	</resultMap>
 
-  <sql id="column_List">
-    m.id
-    ,m.parent_id
-    ,m.system_id
-    ,m.order_number
-    ,m.url
-    ,m.`name`
-    ,m.description
-    ,m.target
-    ,m.created
-    ,m.modified
-    ,m.icon_cls
-    ,m.`type`
-    ,m.`shortcut`
-  </sql>
+	<sql id="Base_Column_List">
+		<!-- WARNING - @mbg.generated -->
+		id, parent_id, system_id, order_number, url, name, description, target, created, modified, type,
+		icon_cls
+	</sql>
+	<select id="selectBy" parameterType="java.lang.Long" resultMap="BaseResultMap">
+		<!-- WARNING - @mbg.generated -->
+		select
+		<include refid="Base_Column_List" />
+		from menu
+		where id = #{id,jdbcType=BIGINT}
+	</select>
 
-  <!--根据用户id查询所有菜单 -->
-  <select id="listByUserAndSystemId" parameterType="map" resultMap="BaseResultMap">
-    SELECT DISTINCT
-    <include refid="column_List" />
-    from menu m, role_menu rm, user_role ur
-    where m.id = rm.menu_id
-    and rm.role_id = ur.role_id
-    and ur.user_id = #{userId}
-    <if test="systemId != null">
-    and m.system_id = #{systemId}
-    </if>
-    union all
-    select DISTINCT
-    <include refid="column_List" />
-    from user_role ur, role_resource rr, resource_link rl, resource r, menu m
-    where ur.role_id = rr.role_id
-    and rr.resource_id = r.id
-    and r.code = rl.resource_code
-    and rl.menu_id = m.id
-    <if test="systemId != null">
-      and m.system_id = #{systemId}
-    </if>
-    and ur.user_id = #{userId}
-  </select>
 
-  <!--根据用户id查询目录和链接菜单 -->
-  <select id="listDirAndLinksByUserId" parameterType="map" resultMap="BaseResultMap">
-    SELECT DISTINCT
-    <include refid="column_List" />
-    from menu m, role_menu rm, user_role ur, `systems` s
-    where m.id = rm.menu_id
-    and rm.role_id = ur.role_id
-    and m.system_id = s.id
-    and ur.user_id = #{userId}
-    <if test="systemCode != null">
-      and s.code=#{systemCode}
-    </if>
-    <if test="systemId != null">
-      and s.id=#{systemId}
-    </if>
-    and (m.`type` = 0 or m.`type` = 1)
-    <if test="sort == null">
-    order by m.order_number
-    </if>
-    <if test="sort != null">
-      ORDER BY `${sort}`
-      <if test="order != null">
-        ${order}
-      </if>
-    </if>
-  </select>
+	<!-- ============================== SQL分割线 ============================== -->
 
-  <!-- 查询上级菜单 -->
-  <select id="getParentMenus" parameterType="java.lang.String" resultType="string">
-    select getParentMenus(#{id})
-  </select>
+	<sql id="column_List">
+		m.id
+		,m.parent_id
+		,m.system_id
+		,m.order_number
+		,m.url
+		,m.`name`
+		,m.description
+		,m.target
+		,m.created
+		,m.modified
+		,m.icon_cls
+		,m.`type`
+		,m.`shortcut`
+	</sql>
 
-  <!-- 查询菜单详情，包含系统信息 -->
-  <select id="getMenuDetailByUrl" parameterType="java.lang.String" resultType="map">
-    select m.id
-      ,m.parent_id
-      ,m.system_id
-      ,m.order_number
-      ,m.url
-      ,m.`name`
-      ,m.description
-      ,m.target
-      ,m.created
-      ,m.modified
-      ,m.icon_cls
-      ,m.`type`
-      ,m.`shortcut`
-      ,s.code system_code
-      ,s.name system_name
-      ,s.`type`
-      from menu m, `systems` s where m.system_id = s.id
-      and m.url=#{url}
-  </select>
+	<!--根据用户id查询所有菜单 -->
+	<select id="listByUserAndSystemId" parameterType="map" resultMap="BaseResultMap">
+		SELECT DISTINCT
+		<include refid="column_List" />
+		FROM
+		menu m
+		INNER JOIN role_menu rm ON m.id = rm.menu_id
+		INNER JOIN (
+		SELECT DISTINCT
+		r.id
+		FROM
+		role r
+		INNER JOIN user_role ur ON r.id = ur.role_id
+		WHERE
+		ur.user_id = #{userId}
+		OR FIND_IN_SET(
+		r.id,
+		getChildRoles (
+		ur.role_id ))) r ON rm.role_id = r.id
+		WHERE
+		1 = 1
+		<if test="systemId != null">
+			AND m.system_id =#{systemId}
+		</if>
+		UNION
+		SELECT DISTINCT
+		<include refid="column_List" />
+		FROM
+		menu m
+		INNER JOIN resource_link rl ON m.id = rl.menu_id
+		INNER JOIN resource r ON rl.resource_code = r.`code`
+		INNER JOIN role_resource rr ON r.id = rr.resource_id
+		INNER
+		JOIN (
+		SELECT DISTINCT
+		r.id
+		FROM
+		role r
+		INNER JOIN user_role ur ON r.id = ur.role_id
+		WHERE
+		ur.user_id = #{userId}
+		OR FIND_IN_SET(
+		r.id,
+		getChildRoles ( ur.role_id ))) t1 ON rr.role_id = t1.id
+		WHERE
+		1 = 1
+		<if test="systemId != null">
+			AND m.system_id =#{systemId}
+		</if>
+	</select>
 
-  <!-- 列出所有系统和菜单 -->
-  <select id="listSystemMenu" parameterType="java.lang.String" resultType="map">
-    (select concat('menu_',m.id) as id
-        , case when m.parent_id is null then concat('sys_',m.system_id) else concat('menu_',m.parent_id) end as parent_id
-        ,m.`name`
-        ,m.`type`
-        ,m.`system_id`
-        ,m.`order_number`
-        from menu m where `type` in( 0, 1) order by m.order_number)
-    union all
-        select concat('sys_',s.id) as id
-            , null as parent_id
-         ,s.name
-         ,4 as 'type'
-         ,s.id as system_id
-         ,null as order_number
-          from `systems` s
-  </select>
+	<select id="listClientMenus" parameterType="java.util.HashMap" resultMap="clientMenuRM">
+		SELECT DISTINCT
+		m.id,
+		( CASE WHEN m.parent_id IS NULL THEN s.`code` ELSE m.parent_id END ) AS parent_id,
+		m.system_id,
+		m.order_number,
+		m.url,
+		m.`name`,
+		m.description,
+		m.target,
+		m.created,
+		m.modified,
+		m.icon_cls,
+		m.`type`,
+		m.`shortcut`
+		FROM
+		menu m
+		INNER JOIN role_menu rm ON m.id = rm.menu_id
+		INNER JOIN (
+		SELECT DISTINCT
+		r.id
+		FROM
+		role r
+		INNER JOIN user_role ur ON r.id = ur.role_id
+		WHERE
+		ur.user_id = #{userId}
+		OR FIND_IN_SET(
+		r.id,
+		getChildRoles ( ur.role_id ))) r ON rm.role_id = r.id
+		INNER JOIN systems s ON m.system_id = s.id
+		WHERE
+		1 = 1
+		<if test="systemId != null">
+			AND m.system_id =#{systemId}
+		</if>
+		UNION
+		SELECT DISTINCT
+		m.id,
+		( CASE WHEN m.parent_id IS NULL THEN s.`code` ELSE m.parent_id END ) AS parent_id,
+		m.system_id,
+		m.order_number,
+		m.url,
+		m.`name`,
+		m.description,
+		m.target,
+		m.created,
+		m.modified,
+		m.icon_cls,
+		m.`type`,
+		m.`shortcut`
+		FROM
+		menu m
+		INNER JOIN resource_link rl ON m.id = rl.menu_id
+		INNER JOIN resource r ON rl.resource_code = r.`code`
+		INNER JOIN role_resource rr ON r.id = rr.resource_id
+		INNER JOIN (
+		SELECT DISTINCT
+		r.id
+		FROM
+		role r
+		INNER JOIN user_role ur ON r.id = ur.role_id
+		WHERE
+		ur.user_id = #{userId}
+		OR FIND_IN_SET(
+		r.id,
+		getChildRoles ( ur.role_id ))) t1 ON rr.role_id = t1.id
+		INNER JOIN
+		systems s ON m.system_id = s.id
+		WHERE
+		1 = 1
+		<if test="systemId != null">
+			AND m.system_id =#{systemId}
+		</if>
+		UNION ALL
+		SELECT
+		`code` AS id,
+		NULL AS parent_id,
+		NULL AS system_id,
+		order_number,
+		NULL AS url,
+		`name`,
+		description,
+		NULL AS target,
+		created,
+		modified,
+		NULL AS icon_cls,
+		4 AS `type`,
+		NULL AS `shortcut`
+		FROM
+		systems
+		WHERE
+		1 = 1
+		<if test="systemId != null">
+			AND id = #{systemId}
+		</if>
+	</select>
+
+	<!--根据用户id查询目录和链接菜单 -->
+	<select id="listDirAndLinksByUserId" parameterType="map" resultMap="BaseResultMap">
+		SELECT DISTINCT
+		<include refid="column_List" />
+		from menu m, role_menu rm, user_role ur, `systems` s
+		where m.id = rm.menu_id
+		and rm.role_id = ur.role_id
+		and m.system_id = s.id
+		and ur.user_id = #{userId}
+		<if test="systemCode != null">
+			and s.code=#{systemCode}
+		</if>
+		<if test="systemId != null">
+			and s.id=#{systemId}
+		</if>
+		and (m.`type` = 0 or m.`type` = 1)
+		<if test="sort == null">
+			order by m.order_number
+		</if>
+		<if test="sort != null">
+			ORDER BY `${sort}`
+			<if test="order != null">
+				${order}
+			</if>
+		</if>
+	</select>
+
+	<!-- 查询上级菜单 -->
+	<select id="getParentMenus" parameterType="java.lang.String" resultType="string">
+		select getParentMenus(#{id})
+	</select>
+
+	<!-- 查询菜单详情，包含系统信息 -->
+	<select id="getMenuDetailByUrl" parameterType="java.lang.String" resultType="map">
+		select m.id
+		,m.parent_id
+		,m.system_id
+		,m.order_number
+		,m.url
+		,m.`name`
+		,m.description
+		,m.target
+		,m.created
+		,m.modified
+		,m.icon_cls
+		,m.`type`
+		,m.`shortcut`
+		,s.code system_code
+		,s.name system_name
+		,s.`type`
+		from menu m, `systems` s where m.system_id = s.id
+		and m.url=#{url}
+	</select>
+
+	<!-- 列出所有系统和菜单 -->
+	<select id="listSystemMenu" parameterType="java.lang.String" resultType="map">
+		(select concat('menu_',m.id) as id
+		, case when m.parent_id is null then concat('sys_',m.system_id) else
+		concat('menu_',m.parent_id) end as parent_id
+		,m.`name`
+		,m.`type`
+		,m.`system_id`
+		,m.`order_number`
+		from menu m where `type` in( 0, 1) order by m.order_number)
+		union all
+		select concat('sys_',s.id) as id
+		,
+		null as parent_id
+		,s.name
+		,4 as 'type'
+		,s.id as system_id
+		,null as order_number
+		from `systems` s
+	</select>
 </mapper>

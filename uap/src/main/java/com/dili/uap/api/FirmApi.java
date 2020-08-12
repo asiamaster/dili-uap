@@ -1,12 +1,7 @@
 package com.dili.uap.api;
 
-import com.dili.ss.domain.BaseOutput;
-import com.dili.ss.dto.DTOUtils;
-import com.dili.uap.sdk.domain.Firm;
-import com.dili.uap.sdk.domain.dto.FirmDto;
-import com.dili.uap.service.FirmService;
-import com.google.common.collect.Lists;
-import io.swagger.annotations.Api;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,12 +9,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.List;
+import com.dili.ss.domain.BaseOutput;
+import com.dili.ss.dto.DTOUtils;
+import com.dili.uap.sdk.domain.Firm;
+import com.dili.uap.sdk.domain.dto.FirmDto;
+import com.dili.uap.service.FirmService;
+import com.google.common.collect.Lists;
 
 /**
  * 由MyBatis Generator工具自动生成 This file was generated on 2017-07-11 16:56:50.
  */
-@Api("/firmApi")
 @Controller
 @RequestMapping("/firmApi")
 public class FirmApi {

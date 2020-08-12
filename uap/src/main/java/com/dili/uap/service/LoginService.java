@@ -1,9 +1,9 @@
 package com.dili.uap.service;
 
 import com.dili.ss.domain.BaseOutput;
-import com.dili.uap.domain.LoginLog;
-import com.dili.uap.domain.dto.LoginResult;
 import com.dili.uap.domain.dto.LoginDto;
+import com.dili.uap.domain.dto.LoginResult;
+import com.dili.uap.sdk.domain.UserTicket;
 
 /**
  * Created by asiam on 2018/5/18 0018.
@@ -43,7 +43,7 @@ public interface LoginService {
      * 记录登出日志
      * @param loginLog
      */
-    void logLogout(LoginLog loginLog);
+    void logLogout(UserTicket user);
 
     /**
      * 根据sessionId登录

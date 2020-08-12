@@ -1,17 +1,9 @@
 package com.dili.uap.controller;
 
-import com.dili.ss.domain.BaseOutput;
-import com.dili.ss.domain.EasyuiPageOutput;
-import com.dili.ss.dto.DTOUtils;
-import com.dili.uap.constants.UapConstants;
-import com.dili.uap.sdk.domain.Department;
-import com.dili.uap.sdk.session.SessionContext;
-import com.dili.uap.service.DepartmentService;
-import com.dili.uap.service.FirmService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,176 +13,181 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import com.dili.logger.sdk.annotation.BusinessLogger;
+import com.dili.logger.sdk.base.LoggerContext;
+import com.dili.logger.sdk.glossary.LoggerConstant;
+import com.dili.ss.domain.BaseOutput;
+import com.dili.ss.domain.EasyuiPageOutput;
+import com.dili.ss.dto.DTOUtils;
+import com.dili.uap.constants.UapConstants;
+import com.dili.uap.sdk.domain.Department;
+import com.dili.uap.sdk.domain.UserTicket;
+import com.dili.uap.sdk.session.SessionContext;
+import com.dili.uap.service.DepartmentService;
+import com.dili.uap.service.FirmService;
 
 /**
- * 由MyBatis Generator工具自动生成
- * This file was generated on 2018-05-22 16:10:05.
+ * 由MyBatis Generator工具自动生成 This file was generated on 2018-05-22 16:10:05.
  */
-@Api("/department")
 @Controller
 @RequestMapping("/department")
 public class DepartmentController {
-    @Autowired
-    DepartmentService departmentService;
+	@Autowired
+	DepartmentService departmentService;
 
-    @Autowired
-    FirmService firmService;
+	@Autowired
+	FirmService firmService;
 
-    /**
-     * 跳转到Department页面
-     * @param modelMap
-     * @return
-     */
-    @ApiOperation("跳转到Department页面")
-    @RequestMapping(value = "/index.html", method = RequestMethod.GET)
-    public String index(ModelMap modelMap) {
-        // 是否是集团
-        boolean isGroup = SessionContext.getSessionContext().getUserTicket().getFirmCode().equalsIgnoreCase(UapConstants.GROUP_CODE);
+	/**
+	 * 跳转到Department页面
+	 * 
+	 * @param modelMap
+	 * @return
+	 */
+	@RequestMapping(value = "/index.html", method = RequestMethod.GET)
+	public String index(ModelMap modelMap) {
+		// 是否是集团
+		boolean isGroup = SessionContext.getSessionContext().getUserTicket().getFirmCode().equalsIgnoreCase(UapConstants.GROUP_CODE);
 
-        modelMap.addAttribute("isGroup", isGroup);
-        modelMap.addAttribute("firmCode",SessionContext.getSessionContext().getUserTicket().getFirmCode());
-        return "department/index";
-    }
+		modelMap.addAttribute("isGroup", isGroup);
+		modelMap.addAttribute("firmCode", SessionContext.getSessionContext().getUserTicket().getFirmCode());
+		return "department/index";
+	}
 
-    /**
-     * 查询Department
-     * @param department
-     * @return
-     */
-    @ApiOperation(value = "查询Department", notes = "查询Department，返回列表信息")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "Department", paramType = "form", value = "Department的form信息", required = false, dataType = "string")
-    })
-    @RequestMapping(value = "/list.action", method = {RequestMethod.GET, RequestMethod.POST})
-    public @ResponseBody
-    Object list(Department department) {
-//        // 首次进入
-//        if (StringUtils.isEmpty(department.getFirmCode())) {
-//            boolean isGroup = SessionContext.getSessionContext().getUserTicket().getFirmCode().equalsIgnoreCase(UapConstants.GROUP_CODE);
-//            // 集团用户
-//            if (isGroup) {
-//                department.setFirmCode("validator");
-//            } else {
-//                department.setFirmCode(SessionContext.getSessionContext().getUserTicket().getFirmCode());
-//            }
-//        } 
-    	List<Map> list=Collections.emptyList();
-    	//如果有选中市场，则以选中市场为过滤条件
-    	//如果没有选中市场，集团用户不显示任何数据，非集团用户显示其所属于市场数据(页面上没有市场选择框)
-    	if (StringUtils.isBlank(department.getFirmCode())) {
-    		boolean isGroup = SessionContext.getSessionContext().getUserTicket().getFirmCode().equalsIgnoreCase(UapConstants.GROUP_CODE);
-            // 非集团用户
-            if (!isGroup) {
-                department.setFirmCode(SessionContext.getSessionContext().getUserTicket().getFirmCode());
-                list=departmentService.listDepartments(department);
-            }
-    	}else {
-    		list=departmentService.listDepartments(department);
-    	}
-    	
-        return new EasyuiPageOutput(list.size(), list).toString();
-//        return list;
-    }
+	/**
+	 * 查询Department
+	 * 
+	 * @param department
+	 * @return
+	 */
+	@RequestMapping(value = "/list.action", method = { RequestMethod.GET, RequestMethod.POST })
+	public @ResponseBody Object list(Department department) {
+		List<Map> list = Collections.emptyList();
+		// 如果有选中市场，则以选中市场为过滤条件
+		// 如果没有选中市场，集团用户不显示任何数据，非集团用户显示其所属于市场数据(页面上没有市场选择框)
+		if (StringUtils.isBlank(department.getFirmCode())) {
+			boolean isGroup = SessionContext.getSessionContext().getUserTicket().getFirmCode().equalsIgnoreCase(UapConstants.GROUP_CODE);
+			// 非集团用户
+			if (!isGroup) {
+				department.setFirmCode(SessionContext.getSessionContext().getUserTicket().getFirmCode());
+				list = departmentService.listDepartments(department);
+			}
+		} else {
+			list = departmentService.listDepartments(department);
+		}
 
-    /**
-     * 分页查询Department
-     * @param department
-     * @return
-     * @throws Exception
-     */
-    @ApiOperation(value = "分页查询Department", notes = "分页查询Department，返回easyui分页信息")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "Department", paramType = "form", value = "Department的form信息", required = false, dataType = "string")
-    })
-    @RequestMapping(value = "/listPage", method = {RequestMethod.GET, RequestMethod.POST})
-    public @ResponseBody
-    String listPage(Department department) throws Exception {
-        return departmentService.listEasyuiPageByExample(department, true).toString();
-    }
+		return new EasyuiPageOutput(list.size(), list).toString();
+	}
 
-    /**
-     * 新增Department
-     * @param department
-     * @return
-     */
-    @ApiOperation("新增Department")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "Department", paramType = "form", value = "Department的form信息", required = true, dataType = "string")
-    })
-    @RequestMapping(value = "/insert.action", method = {RequestMethod.GET, RequestMethod.POST})
-    public @ResponseBody
-    BaseOutput insert(Department department) {
-    	 Department input=this.trimIdAndParentId(department);
-         BaseOutput<Department> out=departmentService.insertAfterCheck(input);
-         return this.resetIdAndParentId(out);
-    }
+	/**
+	 * 分页查询Department
+	 * 
+	 * @param department
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/listPage", method = { RequestMethod.GET, RequestMethod.POST })
+	public @ResponseBody String listPage(Department department) throws Exception {
+		return departmentService.listEasyuiPageByExample(department, true).toString();
+	}
 
-    /**
-     * 修改Department
-     * @param department
-     * @return
-     */
-    @ApiOperation("修改Department")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "Department", paramType = "form", value = "Department的form信息", required = true, dataType = "string")
-    })
-    @RequestMapping(value = "/update.action", method = {RequestMethod.GET, RequestMethod.POST})
-    public @ResponseBody
-    BaseOutput update(Department department) {
-    	Department input=this.trimIdAndParentId(department);
-    	BaseOutput<Department> out=departmentService.updateAfterCheck(input);
-    	return this.resetIdAndParentId(out);
-    }
+	/**
+	 * 新增Department
+	 * 
+	 * @param department
+	 * @return
+	 */
+	@BusinessLogger(businessType = "department_management", content = "新增部门", operationType = "add", systemCode = "UAP")
+	@RequestMapping(value = "/insert.action", method = { RequestMethod.GET, RequestMethod.POST })
+	public @ResponseBody BaseOutput insert(Department department) {
+		Department input = this.trimIdAndParentId(department);
+		BaseOutput<Department> out = departmentService.insertAfterCheck(input);
+		if (out.isSuccess()) {
+			LoggerContext.put(LoggerConstant.LOG_BUSINESS_CODE_KEY, department.getCode());
+			LoggerContext.put(LoggerConstant.LOG_BUSINESS_ID_KEY, department.getId());
+			UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
+			if (userTicket != null) {
+				LoggerContext.put(LoggerConstant.LOG_OPERATOR_ID_KEY, userTicket.getId());
+				LoggerContext.put(LoggerConstant.LOG_MARKET_ID_KEY, userTicket.getFirmId());
+			}
+		}
+		return this.resetIdAndParentId(out);
+	}
 
-    /**
-     * 删除Department
-     * @param id
-     * @return
-     */
-    @ApiOperation("删除Department")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "id", paramType = "form", value = "Department的主键", required = true, dataType = "long")
-    })
-    @RequestMapping(value = "/delete.action", method = {RequestMethod.GET, RequestMethod.POST})
-    public @ResponseBody
-    BaseOutput delete(String id) {
-        if(id.startsWith("firm_")){
-            return BaseOutput.failure("不允许删除市场");
-        }
-        if (id.startsWith("department_")) {
-            id = id.replace("department_", "");
-        }
-        Department department = DTOUtils.newInstance(Department.class);
-        department.setParentId(Long.valueOf(id));
-        List<Department> departments = departmentService.list(department);
-        if(!CollectionUtils.isEmpty(departments)){
-            return BaseOutput.failure("当前部门有下级部门，无法删除");
-        }
-        departmentService.delete(Long.valueOf(id));
-        return BaseOutput.success("删除成功");
-    }
+	/**
+	 * 修改Department
+	 * 
+	 * @param department
+	 * @return
+	 */
+	@BusinessLogger(businessType = "department_management", content = "修改部门", operationType = "edit", systemCode = "UAP")
+	@RequestMapping(value = "/update.action", method = { RequestMethod.GET, RequestMethod.POST })
+	public @ResponseBody BaseOutput update(Department department) {
+		Department input = this.trimIdAndParentId(department);
+		BaseOutput<Department> out = departmentService.updateAfterCheck(input);
+		if (out.isSuccess()) {
+			LoggerContext.put(LoggerConstant.LOG_BUSINESS_CODE_KEY, department.getCode());
+			LoggerContext.put(LoggerConstant.LOG_BUSINESS_ID_KEY, department.getId());
+			UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
+			if (userTicket != null) {
+				LoggerContext.put(LoggerConstant.LOG_OPERATOR_ID_KEY, userTicket.getId());
+				LoggerContext.put(LoggerConstant.LOG_MARKET_ID_KEY, userTicket.getFirmId());
+			}
+		}
+		return this.resetIdAndParentId(out);
+	}
 
-    /**
-     * 根据市场code查询Department
-     * @param department
-     * @return
-     */
-    @ApiOperation(value = "根据市场code查询Department", notes = "查询Department，返回列表信息")
-    @RequestMapping(value = "/listByCondition.action", method = {RequestMethod.GET, RequestMethod.POST})
-    @ResponseBody
-    public List<Department> listByCondition(Department department) {
-        return departmentService.list(department);
-    }
+	/**
+	 * 删除Department
+	 * 
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping(value = "/delete.action", method = { RequestMethod.GET, RequestMethod.POST })
+	public @ResponseBody BaseOutput delete(String id) {
+		if (id.startsWith("firm_")) {
+			return BaseOutput.failure("不允许删除市场");
+		}
+		if (id.startsWith("department_")) {
+			id = id.replace("department_", "");
+		}
+		Department department = DTOUtils.newInstance(Department.class);
+		department.setParentId(Long.valueOf(id));
+		List<Department> departments = departmentService.list(department);
+		if (!CollectionUtils.isEmpty(departments)) {
+			return BaseOutput.failure("当前部门有下级部门，无法删除");
+		}
+		department = this.departmentService.get(Long.valueOf(id));
+		departmentService.delete(Long.valueOf(id));
+		LoggerContext.put(LoggerConstant.LOG_BUSINESS_CODE_KEY, department.getCode());
+		LoggerContext.put(LoggerConstant.LOG_BUSINESS_ID_KEY, department.getId());
+		UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
+		if (userTicket != null) {
+			LoggerContext.put(LoggerConstant.LOG_OPERATOR_ID_KEY, userTicket.getId());
+			LoggerContext.put(LoggerConstant.LOG_MARKET_ID_KEY, userTicket.getFirmId());
+		}
+		return BaseOutput.success("删除成功");
+	}
 
-    /**
-     * 将id以及parentid的前辍去掉
-     * @param department
-     * @return
-     */
-    private Department trimIdAndParentId(Department department) {
+	/**
+	 * 根据市场code查询Department
+	 * 
+	 * @param department
+	 * @return
+	 */
+	@RequestMapping(value = "/listByCondition.action", method = { RequestMethod.GET, RequestMethod.POST })
+	@ResponseBody
+	public List<Department> listByCondition(Department department) {
+		return departmentService.list(department);
+	}
+
+	/**
+	 * 将id以及parentid的前辍去掉
+	 * 
+	 * @param department
+	 * @return
+	 */
+	private Department trimIdAndParentId(Department department) {
 		if (department.aget("id") != null) {
 			String id = department.aget("id").toString();
 			if (id.startsWith("department_")) {
@@ -207,13 +204,15 @@ public class DepartmentController {
 		}
 
 		return department;
-    }
-    /**
-     * 在返回数据前加上id以及parentId的前辍
-     * @param out
-     * @return
-     */
-    private BaseOutput<?> resetIdAndParentId(BaseOutput<Department> out) {
+	}
+
+	/**
+	 * 在返回数据前加上id以及parentId的前辍
+	 * 
+	 * @param out
+	 * @return
+	 */
+	private BaseOutput<?> resetIdAndParentId(BaseOutput<Department> out) {
 		if (!out.isSuccess()) {
 			return out;
 		}
@@ -227,5 +226,5 @@ public class DepartmentController {
 		}
 		Object obj = DTOUtils.go(department);
 		return BaseOutput.success().setData(obj);
-    }
+	}
 }

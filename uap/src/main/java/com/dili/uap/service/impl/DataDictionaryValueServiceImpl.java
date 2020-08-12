@@ -1,14 +1,7 @@
 package com.dili.uap.service.impl;
 
-import com.dili.ss.base.BaseServiceImpl;
-import com.dili.ss.domain.BaseOutput;
-import com.dili.ss.dto.DTOUtils;
-import com.dili.uap.dao.DataDictionaryMapper;
-import com.dili.uap.dao.DataDictionaryValueMapper;
-import com.dili.uap.domain.dto.DataDictionaryDto;
-import com.dili.uap.sdk.domain.DataDictionary;
-import com.dili.uap.sdk.domain.DataDictionaryValue;
-import com.dili.uap.service.DataDictionaryValueService;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -17,102 +10,116 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.management.RuntimeErrorException;
+import com.dili.ss.base.BaseServiceImpl;
+import com.dili.ss.domain.BaseOutput;
+import com.dili.ss.dto.DTOUtils;
+import com.dili.ss.dto.IDTO;
+import com.dili.uap.constants.UapConstants;
+import com.dili.uap.dao.DataDictionaryMapper;
+import com.dili.uap.dao.DataDictionaryValueMapper;
+import com.dili.uap.dao.FirmMapper;
+import com.dili.uap.domain.dto.DataDictionaryDto;
+import com.dili.uap.sdk.domain.DataDictionary;
+import com.dili.uap.sdk.domain.DataDictionaryValue;
+import com.dili.uap.sdk.domain.Firm;
+import com.dili.uap.service.DataDictionaryValueService;
 
 /**
- * 由MyBatis Generator工具自动生成
- * This file was generated on 2018-05-21 10:40:13.
+ * 由MyBatis Generator工具自动生成 This file was generated on 2018-05-21 10:40:13.
  */
+@Transactional
 @Service
 public class DataDictionaryValueServiceImpl extends BaseServiceImpl<DataDictionaryValue, Long> implements DataDictionaryValueService {
 
+	public DataDictionaryValueMapper getActualDao() {
+		return (DataDictionaryValueMapper) getDao();
+	}
 
-    public DataDictionaryValueMapper getActualDao() {
-        return (DataDictionaryValueMapper) getDao();
-    }
+	@Autowired
+	private DataDictionaryMapper dataDictionaryMapper;
+	@Autowired
+	private FirmMapper firmMapper;
 
-    @Autowired
-    private DataDictionaryMapper dataDictionaryMapper;
-    @Override
-    public List<DataDictionaryValue> listDictionaryValueByCode(String code) {
-        return null;
-    }
-    @Override
+	@Override
+	public List<DataDictionaryValue> listDictionaryValueByCode(String code) {
+		return null;
+	}
+
+	@Override
 	public BaseOutput<Object> insertAfterCheck(DataDictionaryValue t) {
-		
-		if(StringUtils.isBlank(t.getCode())){
+
+		if (StringUtils.isBlank(t.getCode())) {
 			return BaseOutput.failure("编码不能为空");
 		}
-		if(StringUtils.isBlank(t.getDdCode())){
-			return BaseOutput.failure("系统编码不能为空");
+		if (StringUtils.isBlank(t.getDdCode())) {
+			return BaseOutput.failure("数据字典编码不能为空");
 		}
-		DataDictionaryValue condition=DTOUtils.newInstance(DataDictionaryValue.class);
+		DataDictionaryValue condition = DTOUtils.newInstance(DataDictionaryValue.class);
 		condition.setCode(StringUtils.trim(t.getCode()));
+		condition.setFirmCode(t.getFirmCode());
 		condition.setDdCode(StringUtils.trim(t.getDdCode()));
-		int size=this.list(condition).size();
-		if(size>0) {
+		int size = this.list(condition).size();
+		if (size > 0) {
 			return BaseOutput.failure("相同编码已经存在");
+		}
+		if (StringUtils.isNotBlank(t.getFirmCode())) {
+			Firm firmQuery = DTOUtils.newInstance(Firm.class);
+			firmQuery.setCode(t.getFirmCode());
+			Firm firm = this.firmMapper.selectOne(firmQuery);
+			if (firm != null) {
+				t.setFirmId(firm.getId());
+			}
 		}
 		this.insertSelective(t);
-		return BaseOutput.success("新增成功");
+		return BaseOutput.success("新增成功").setData(t.getId());
 	}
+
 	@Override
 	public BaseOutput<Object> updateAfterCheck(DataDictionaryValue t) {
-		if(StringUtils.isBlank(t.getCode())){
+		if (StringUtils.isBlank(t.getCode())) {
 			return BaseOutput.failure("编码不能为空");
 		}
-		if(StringUtils.isBlank(t.getDdCode())){
+		if (StringUtils.isBlank(t.getDdCode())) {
 			return BaseOutput.failure("系统编码不能为空");
 		}
-		DataDictionaryValue condition=DTOUtils.newInstance(DataDictionaryValue.class);
+		DataDictionaryValue condition = DTOUtils.newInstance(DataDictionaryValue.class);
 		condition.setCode(StringUtils.trim(t.getCode()));
+		condition.setFirmCode(t.getFirmCode());
 		condition.setDdCode(StringUtils.trim(t.getDdCode()));
-		boolean exists=this.list(condition).stream().anyMatch((d)->!d.getId().equals(t.getId()));
-		if(exists) {
+		boolean exists = this.list(condition).stream().anyMatch((d) -> !d.getId().equals(t.getId()));
+		if (exists) {
 			return BaseOutput.failure("相同编码已经存在");
+		}
+		if (StringUtils.isNotBlank(t.getFirmCode())) {
+			Firm firmQuery = DTOUtils.newInstance(Firm.class);
+			firmQuery.setCode(t.getFirmCode());
+			Firm firm = this.firmMapper.selectOne(firmQuery);
+			if (firm != null) {
+				t.setFirmId(firm.getId());
+			}
 		}
 		this.updateSelective(t);
 		return BaseOutput.success("修改成功");
 	}
 
 	@Override
-	public DataDictionaryDto findByCode(String code,String systemCode) {	
-		DataDictionary record = DTOUtils.newInstance(DataDictionary.class);
-		record.setCode(code);
-		record.setSystemCode(systemCode);
-		DataDictionary model = this.dataDictionaryMapper.selectOne(record);
-		if (model == null) {
-			return null;
-		}
-		DataDictionaryValue valueRecord = DTOUtils.newInstance(DataDictionaryValue.class);
-		valueRecord.setDdCode(model.getCode());
-		List<DataDictionaryValue> values = this.getActualDao().select(valueRecord);
-		DataDictionaryDto dto = DTOUtils.as(model, DataDictionaryDto.class);
-		if (CollectionUtils.isNotEmpty(values)) {
-			List<DataDictionaryValue> dtos = new ArrayList<>(values.size());
-			for (DataDictionaryValue value : values) {
-				dtos.add(value);
-			}
-			dto.setDataDictionaryValues(dtos);
-		}
-		return dto;
+	public DataDictionaryDto findByCode(String code, String systemCode) {
+		return this.findByCode(code, systemCode, null);
 	}
+
 	@Override
 	@Transactional
 	public BaseOutput<Object> insertDataDictionaryDto(DataDictionaryDto dataDictionaryDto) {
 		try {
 			DataDictionary dataDictionary = DTOUtils.as(dataDictionaryDto, DataDictionary.class);
 			int insert = this.dataDictionaryMapper.insert(dataDictionary);
-			if(insert==0) {
+			if (insert == 0) {
 				throw new RuntimeException("添加失败");
 			}
 			List<DataDictionaryValue> deDataDictionaryValues = dataDictionaryDto.getDataDictionaryValues();
 			for (DataDictionaryValue dataDictionaryValue : deDataDictionaryValues) {
 				int insertValue = this.getActualDao().insert(dataDictionaryValue);
-				if(insertValue==0) {
+				if (insertValue == 0) {
 					throw new RuntimeException("添加失败");
 				}
 			}
@@ -122,8 +129,36 @@ public class DataDictionaryValueServiceImpl extends BaseServiceImpl<DataDictiona
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
 			return BaseOutput.failure(e.getMessage());
 		}
-		
+
 		return BaseOutput.success("添加成功");
+	}
+
+	@Override
+	public DataDictionaryDto findByCode(String code, String systemCode, String firmCode) {
+		DataDictionary record = DTOUtils.newInstance(DataDictionary.class);
+		record.setCode(code);
+		record.setSystemCode(systemCode);
+		DataDictionary model = this.dataDictionaryMapper.selectOne(record);
+		if (model == null) {
+			return null;
+		}
+		DataDictionaryValue valueRecord = DTOUtils.newInstance(DataDictionaryValue.class);
+		valueRecord.setDdCode(model.getCode());
+		if (StringUtils.isBlank(firmCode)) {
+			valueRecord.setMetadata(IDTO.AND_CONDITION_EXPR, "(firm_code = '" + UapConstants.GROUP_CODE + "' OR firm_code IS NULL)");
+		} else {
+			valueRecord.setFirmCode(StringUtils.isBlank(firmCode) ? UapConstants.GROUP_CODE : firmCode);
+		}
+		List<DataDictionaryValue> values = this.listByExample(valueRecord);
+		DataDictionaryDto dto = DTOUtils.as(model, DataDictionaryDto.class);
+		if (CollectionUtils.isNotEmpty(values)) {
+			List<DataDictionaryValue> dtos = new ArrayList<>(values.size());
+			for (DataDictionaryValue value : values) {
+				dtos.add(value);
+			}
+			dto.setDataDictionaryValues(dtos);
+		}
+		return dto;
 	}
 
 }

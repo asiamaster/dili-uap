@@ -19,33 +19,33 @@
 		</plugin>
 		<!-- Service生成插件 -->
 		<!-- targetProject和targetPackage必填 -->
-<!--		<plugin type="${myService.Plugin}">-->
-<!--			<property name="targetProject" value="${targetJavaProject}"></property>-->
-<!--			<property name="targetPackage" value="${targetServicePackage}"></property>-->
-<!--			&lt;!&ndash;如果不配置，则不会在类上继承&ndash;&gt;-->
-<!--			<property name="serviceSuperClass" value="com.dili.ss.base.BaseServiceImpl"></property>-->
-<!--			&lt;!&ndash;如果不配置，则不会在接口上继承&ndash;&gt;-->
-<!--			<property name="serviceSuperInterface" value="com.dili.ss.base.BaseService"></property>-->
-<!--		</plugin>-->
+		<!-- <plugin type="${myService.Plugin}">
+			<property name="targetProject" value="${targetJavaProject}"></property>
+			<property name="targetPackage" value="${targetServicePackage}"></property>
+			&lt;!&ndash;如果不配置，则不会在类上继承&ndash;&gt;
+			<property name="serviceSuperClass" value="com.dili.ss.base.BaseServiceImpl"></property>
+			&lt;!&ndash;如果不配置，则不会在接口上继承&ndash;&gt;
+			<property name="serviceSuperInterface" value="com.dili.ss.base.BaseService"></property>
+		</plugin> -->
 
 		<!-- Controller生成插件 -->
 		<!-- targetProject和targetPackage必填 -->
-		<!--<plugin type="${myController.Plugin}">-->
-			<!--<property name="targetProject" value="${targetJavaProject}"></property>-->
-			<!--<property name="targetPackage" value="${targetControllerPackage}"></property>-->
-			<!--&lt;!&ndash;&lt;!&ndash;如果不配置，则不会在类上继承&ndash;&gt;&ndash;&gt;-->
-			<!--&lt;!&ndash;&lt;!&ndash;<property name="controllerSuperClass" value="com.dili.ss.base.BaseControllerImpl"></property>&ndash;&gt;&ndash;&gt;-->
-			<!--&lt;!&ndash;&lt;!&ndash;如果不配置，则不会在接口上继承&ndash;&gt;&ndash;&gt;-->
-			<!--&lt;!&ndash;&lt;!&ndash;<property name="controllerSuperInterface" value="com.dili.ss.base.BaseController"></property>&ndash;&gt;&ndash;&gt;-->
-		<!--</plugin>-->
+		<!-- <plugin type="${myController.Plugin}">
+			<property name="targetProject" value="${targetJavaProject}"></property>
+			<property name="targetPackage" value="${targetControllerPackage}"></property>
+			&lt;!&ndash;&lt;!&ndash;如果不配置，则不会在类上继承&ndash;&gt;&ndash;&gt;
+			&lt;!&ndash;&lt;!&ndash;<property name="controllerSuperClass" value="com.dili.ss.base.BaseControllerImpl"></property>&ndash;&gt;&ndash;&gt;
+			&lt;!&ndash;&lt;!&ndash;如果不配置，则不会在接口上继承&ndash;&gt;&ndash;&gt;
+			&lt;!&ndash;&lt;!&ndash;<property name="controllerSuperInterface" value="com.dili.ss.base.BaseController"></property>&ndash;&gt;&ndash;&gt;
+		</plugin> -->
 
 		<!-- beetl模板文件生成插件 -->
-		<!--<plugin type="com.dili.ss.mbg.beetl.BeetlTemplatesPlugin">-->
-			<!--<property name="targetDir" value="${targetResourcesProject}"></property>-->
-			<!--<property name="templateRootDir" value="${templateRootDir}"></property>-->
-			<!--<property name="basePackage_dir" value="com/dili/utils" />-->
-			<!--<property name="overwrite" value="true" />-->
-		<!--</plugin>-->
+		<!-- <plugin type="com.dili.ss.mbg.beetl.BeetlTemplatesPlugin">
+			<property name="targetDir" value="${targetResourcesProject}"></property>
+			<property name="templateRootDir" value="${templateRootDir}"></property>
+			<property name="basePackage_dir" value="com/dili/utils" />
+			<property name="overwrite" value="true" />
+		</plugin> -->
 
 		<commentGenerator
 			type="org.mybatis.generator.internal.DefaultCommentGenerator">
@@ -69,7 +69,7 @@
 <!--			targetProject="${targetJavaProject}" type="XMLMAPPER" />-->
 
 		<!-- 生成所有表模型 -->
-		<table tableName="role">
+		<table tableName="firm">
 			<generatedKey column="id" sqlStatement="Mysql" identity="true" />
 		</table>
 		<!-- 生成指定表模型 -->
