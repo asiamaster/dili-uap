@@ -13,7 +13,7 @@
 		<targetServicePackage>com.dili.uap.service</targetServicePackage>
 		<targetControllerPackage>com.dili.uap.controller</targetControllerPackage>
 		<drools.version>7.28.0.Final</drools.version>
-		<java.version>1.8</java.version>
+		<java.version>13</java.version>
 	</properties>
 
 	<!-- 父工程定义 -->
@@ -66,17 +66,17 @@
 				<version>3.8.1</version>
 				<!-- 编译JDK版本 -->
 				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
+					<source>13</source>
+					<target>13</target>
 					<encoding>UTF-8</encoding>
 					<parameters>true</parameters>
-					<!-- <compilerArgs> -->
-					<!-- <arg>&#45;&#45;add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED</arg> -->
-					<!-- <arg>&#45;&#45;add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED</arg> -->
-					<!-- <arg>&#45;&#45;add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED</arg> -->
-					<!-- <arg>&#45;&#45;add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED</arg> -->
-					<!-- <arg>&#45;&#45;add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</arg> -->
-					<!-- </compilerArgs> -->
+					 <compilerArgs>
+					 <arg>--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED</arg>
+					 <arg>--add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED</arg>
+					 <arg>--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED</arg>
+					 <arg>--add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED</arg>
+					 <arg>--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</arg>
+					 </compilerArgs>
 				</configuration>
 			</plugin>
 		</plugins>
