@@ -31,7 +31,19 @@ public class UserUrlRedis {
         }
         // 去掉http和https前缀, 判断用户权限
         return checkRedisUserMenuUrl(userId, url.trim().replace("http://", "").replace("https://", ""));
+    }
 
+    /**
+     * 获取用户菜单权限
+     * @param userId
+     * @return
+     */
+    public Object getUserMenus(Long userId){
+        if (userId == null) {
+            throw new ParameterException("用户id不能为空");
+        }
+        String key = SessionConstants.USER_MENU_URL_KEY + userId;
+        return redisUtil.getRedisTemplate().boundSetOps(key).members();
     }
 
     /**
