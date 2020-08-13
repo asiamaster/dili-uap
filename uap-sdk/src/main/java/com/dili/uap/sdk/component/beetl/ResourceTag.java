@@ -59,9 +59,10 @@ public class ResourceTag extends Tag {
 			return;
 		}
 		if(StringUtils.isNotBlank(code)) {
+			//支持多个resourceCode，只要有一个code的权限就写出
 			String[] codes = code.split(",");
 			for (int i = 0; i < codes.length; i++) {
-				if(writeByCode(codes[i], checkMenu, userTicket)){
+				if(writeByCode(codes[i].trim(), checkMenu, userTicket)){
 					break;
 				}
 			}
@@ -81,8 +82,8 @@ public class ResourceTag extends Tag {
 		if (userResourceRedis.checkUserResourceRight(userTicket.getId(), code)) {
 			if(StringUtils.isBlank(checkMenu)) {
 				write();
+				return true;
 			}else{
-
 				//线程缓存中没有该用户的菜单权限，则从redis读取并缓存
 				if(get().isEmpty()){
 					set((Set)userUrlRedis.getUserMenus(userTicket.getId()));
@@ -91,9 +92,9 @@ public class ResourceTag extends Tag {
 				//判断当前访问的url是否是资源所属菜单的url
 				if(get().contains(pc.getUrl().trim().replace("http://", "").replace("https://", ""))){
 					write();
+					return true;
 				}
 			}
-			return true;
 		}
 		return false;
 	}
