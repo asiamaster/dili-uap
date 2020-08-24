@@ -52,4 +52,14 @@
 		ru.user_id=#{userId})rru 
 		ON r.id = rru.resource_id 	
   </select>
+
+  <select id="listResourceCodeByMenuUrl" parameterType="map" resultType="java.lang.String">
+		SELECT r.code
+        FROM `resource` r, `menu` m, `role_resource` rr, `user_role` ur
+        where r.menu_id = m.id
+        AND r.id = rr.resource_id
+        AND rr.role_id = ur.role_id
+        AND m.url=#{url}
+        AND ur.user_id=${userId}
+  </select>
 </mapper>

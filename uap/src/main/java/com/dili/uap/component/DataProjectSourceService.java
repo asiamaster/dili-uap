@@ -2,7 +2,6 @@ package com.dili.uap.component;
 
 import com.dili.ss.domain.BaseOutput;
 import com.dili.uap.domain.dto.UserDataDto;
-import com.dili.uap.glossary.DataRange;
 import com.dili.uap.rpc.ProjectRpc;
 import com.dili.uap.sdk.service.DataAuthSourceService;
 import com.google.common.collect.Lists;

@@ -1,8 +1,10 @@
 package com.dili.uap.sdk.component.beetl;
 
+import com.dili.ss.domain.BaseOutput;
 import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.redis.UserResourceRedis;
 import com.dili.uap.sdk.redis.UserUrlRedis;
+import com.dili.uap.sdk.rpc.ResourceRpc;
 import com.dili.uap.sdk.session.PermissionContext;
 import com.dili.uap.sdk.session.SessionConstants;
 import com.dili.uap.sdk.session.SessionContext;
@@ -13,9 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.LinkedHashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * 用户资源权限检查标签
@@ -29,11 +31,13 @@ public class ResourceTag extends Tag {
 
 	@Autowired
 	private UserUrlRedis userUrlRedis;
+	@Autowired
+	private ResourceRpc resourceRpc;
 
 	/**
 	 * 用户id: 有权限的menuUrl
 	 */
-	private static ThreadLocal<Set<String>> userMenuUrlMap = new ThreadLocal<>();
+	private static ThreadLocal<List<String>> userMenuUrlMap = new ThreadLocal<>();
 
 	//标签自定义属性
 	private static final String CODE_FIELD = "code";
@@ -84,13 +88,19 @@ public class ResourceTag extends Tag {
 				write();
 				return true;
 			}else{
+				PermissionContext pc = (PermissionContext) WebContent.get(SessionConstants.MANAGE_PERMISSION_CONTEXT);
+				String url = pc.getUrl().trim().replace("http://", "").replace("https://", "");
 				//线程缓存中没有该用户的菜单权限，则从redis读取并缓存
 				if(get().isEmpty()){
-					set((Set)userUrlRedis.getUserMenus(userTicket.getId()));
+					BaseOutput<List<String>> listBaseOutput = resourceRpc.listResourceCodeByMenuUrl(pc.getUrl().trim(), userTicket.getId());
+					if(!listBaseOutput.isSuccess()){
+						return false;
+					}
+					set(listBaseOutput.getData());
 				}
-				PermissionContext pc = (PermissionContext) WebContent.get(SessionConstants.MANAGE_PERMISSION_CONTEXT);
+
 				//判断当前访问的url是否是资源所属菜单的url
-				if(get().contains(pc.getUrl().trim().replace("http://", "").replace("https://", ""))){
+				if(get().contains(code)){
 					write();
 					return true;
 				}
@@ -103,14 +113,14 @@ public class ResourceTag extends Tag {
 		userMenuUrlMap.remove();
 	}
 
-	private static Set<String> get() {
+	private static List<String> get() {
 		if(userMenuUrlMap.get() == null){
-			set(new LinkedHashSet());
+			set(new ArrayList());
 		}
 		return userMenuUrlMap.get();
 	}
 
-	private static void set(Set<String> map){
+	private static void set(List<String> map){
 		userMenuUrlMap.set(map);
 	}
 

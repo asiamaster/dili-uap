@@ -1,9 +1,9 @@
 package com.dili.uap.service;
 
-import java.util.List;
-
 import com.dili.ss.base.BaseService;
 import com.dili.uap.domain.Resource;
+
+import java.util.List;
 
 /**
  * 由MyBatis Generator工具自动生成
@@ -16,4 +16,12 @@ public interface ResourceService extends BaseService<Resource, Long> {
      * @return  
      */
 	List<String> listResourceCodeByUserId(Long userId);
+
+	/**
+	 * 根据菜单url，查询资源id
+	 * @param url
+	 * @param userId
+	 * @return
+	 */
+	List<String> listResourceCodeByMenuUrl(String url, Long userId);
 }
