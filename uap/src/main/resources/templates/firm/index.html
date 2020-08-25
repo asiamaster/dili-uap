@@ -229,6 +229,7 @@
                 pager.pagination({
                     <#controls_paginationOpts/>,
                     buttons:[
+                    <#resource code="addFirm">
                     {
                         iconCls:'icon-add',
                         text:'新增',
@@ -236,6 +237,8 @@
                             openInsert();
                         }
                     },
+                    </#resource>
+                    <#resource code="updateFirm">
                     {
                         iconCls:'icon-edit',
                         text:'修改',
@@ -243,6 +246,8 @@
                             openUpdate();
                         }
                     },
+                    </#resource>
+                    <#resource code="deleteFirm">
                     {
                         iconCls:'icon-remove',
                         text:'删除',
@@ -250,6 +255,7 @@
                             del();
                         }
                     },
+                    </#resource>
                     {
                         iconCls:'icon-export',
                         text:'导出',

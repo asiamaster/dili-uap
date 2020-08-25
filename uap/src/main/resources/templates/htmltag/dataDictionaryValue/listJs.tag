@@ -35,9 +35,7 @@ function onBeginEditDdValue(index, row) {
 }
 
 function onAfterEditDdValue(index, row, changes) {
-	if(row.id){
-		changes.$_firmCode=row.$_firmCode;
-	}
+	debugger;
 	var isValid = ddValueGrid.datagrid('validateRow', index);
 	if (!isValid) {
 		return false;
@@ -117,7 +115,6 @@ function insertOrUpdateDdValue(index, row, changes) {
         row.ddCode = ddCode;
         url += 'insert.action';
     } else {
-    	row.firmCode=row.$_firmCode
         url += 'update.action';
     }
     $.post(url, row, function (data) {

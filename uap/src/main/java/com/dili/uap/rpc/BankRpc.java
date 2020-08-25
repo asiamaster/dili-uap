@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.dili.assets.sdk.dto.BankDto;
 import com.dili.ss.domain.BaseOutput;
 
-@FeignClient(name = "assets-service", contextId = "bankRpc", url = "localhost:8182")
+@FeignClient(name = "assets-service", contextId = "bankRpc", url = "${bankRpc.url:}")
 public interface BankRpc {
 
 	@RequestMapping(value = "/api/bank/list", method = RequestMethod.POST)
