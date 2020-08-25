@@ -12,10 +12,10 @@ import com.dili.uap.sdk.util.WebContent;
 import org.apache.commons.lang3.StringUtils;
 import org.beetl.core.tag.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -24,6 +24,7 @@ import java.util.Map;
  * Created by asiamaster on 2017/7/21 0021.
  */
 @Component("resource")
+@Scope("prototype")
 public class ResourceTag extends Tag {
 
 	@Autowired
@@ -33,11 +34,6 @@ public class ResourceTag extends Tag {
 	private UserUrlRedis userUrlRedis;
 	@Autowired
 	private ResourceRpc resourceRpc;
-
-	/**
-	 * 用户id: 有权限的menuUrl
-	 */
-	private static ThreadLocal<List<String>> userMenuUrlMap = new ThreadLocal<>();
 
 	//标签自定义属性
 	private static final String CODE_FIELD = "code";
@@ -89,39 +85,20 @@ public class ResourceTag extends Tag {
 				return true;
 			}else{
 				PermissionContext pc = (PermissionContext) WebContent.get(SessionConstants.MANAGE_PERMISSION_CONTEXT);
-				String url = pc.getUrl().trim().replace("http://", "").replace("https://", "");
-				//线程缓存中没有该用户的菜单权限，则从redis读取并缓存
-				if(get().isEmpty()){
-					BaseOutput<List<String>> listBaseOutput = resourceRpc.listResourceCodeByMenuUrl(pc.getUrl().trim(), userTicket.getId());
-					if(!listBaseOutput.isSuccess()){
-						return false;
-					}
-					set(listBaseOutput.getData());
+//				String url = pc.getUrl().trim().replace("http://", "").replace("https://", "");
+				BaseOutput<List<String>> listBaseOutput = resourceRpc.listResourceCodeByMenuUrl(pc.getUrl().trim(), userTicket.getId());
+				if(!listBaseOutput.isSuccess()){
+					return false;
 				}
 
 				//判断当前访问的url是否是资源所属菜单的url
-				if(get().contains(code)){
+				if(listBaseOutput.getData().contains(code)){
 					write();
 					return true;
 				}
 			}
 		}
 		return false;
-	}
-
-	private static void clean() {
-		userMenuUrlMap.remove();
-	}
-
-	private static List<String> get() {
-		if(userMenuUrlMap.get() == null){
-			set(new ArrayList());
-		}
-		return userMenuUrlMap.get();
-	}
-
-	private static void set(List<String> map){
-		userMenuUrlMap.set(map);
 	}
 
 	/**
