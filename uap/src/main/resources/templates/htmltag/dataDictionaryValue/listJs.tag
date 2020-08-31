@@ -35,7 +35,6 @@ function onBeginEditDdValue(index, row) {
 }
 
 function onAfterEditDdValue(index, row, changes) {
-	debugger;
 	var isValid = ddValueGrid.datagrid('validateRow', index);
 	if (!isValid) {
 		return false;
@@ -115,6 +114,7 @@ function insertOrUpdateDdValue(index, row, changes) {
         row.ddCode = ddCode;
         url += 'insert.action';
     } else {
+    	row.firmCode=row.$_firmCode
         url += 'update.action';
     }
     $.post(url, row, function (data) {
@@ -123,17 +123,7 @@ function insertOrUpdateDdValue(index, row, changes) {
             swal('提示', data.result, 'error');
             return;
         }
-        row.$_firmCode=changes.$_firmCode;
-        row.firmCode=changes.firmCode;
-        if (!row.id) {
-	        row.id=data.data;
-        }
-        ddValueGrid.datagrid('updateRow', {
-            index: index,
-            row: row
-        });
-        ddValueGrid.datagrid('acceptChanges');
-        ddValueGrid.datagrid('refreshRow', index);
+        ddValueGrid.datagrid('reload');
     }, 'json');
 }
 
