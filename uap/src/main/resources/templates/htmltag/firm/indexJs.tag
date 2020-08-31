@@ -19,6 +19,7 @@
         }
 
         function saveOrUpdate(){
+        	alert('asdfasdfasfsf');
             if(!$('#_form').form("validate")){
                 return;
             }

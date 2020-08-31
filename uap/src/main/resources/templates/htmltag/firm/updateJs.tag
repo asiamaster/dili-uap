@@ -5,6 +5,7 @@ function saveOrUpdate() {
 				msg : '正在加载数据......'
 			});
 	if (!$('#_form').form("validate")) {
+		$.messager.progress('close');
 		return;
 	}
 	var _formData = $("#_form").serializeObject();
