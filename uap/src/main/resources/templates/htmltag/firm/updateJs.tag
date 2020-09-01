@@ -142,7 +142,7 @@ function onBankDistrictChange(n, v) {
 	$('#depositBankUnionInfoId').combobox('setValue', '');
 	$('#depositBankUnionInfoId').combobox('enable');
 	$('#depositBankUnionInfoId').combobox('reload', '${contextPath!}/firm/bankUnionInfoList.action?districtId=' + n);
-	reloadBankUnionInfo();
+//	reloadBankUnionInfo();
 }
 
 // 清空表单
