@@ -8,6 +8,11 @@ function saveOrUpdate() {
 		$.messager.progress('close');
 		return;
 	}
+	$.messager.progress('close');
+	if ($('#failureTime').datebox('getValue') < $('#effectTime').datebox('getValue')) {
+		swal('错误', '生效日期不能大于失效日期', 'error');
+		return;
+	}
 	var _formData = $("#_form").serializeObject();
 	var _url = null;
 	// 没有id就新增
@@ -142,7 +147,7 @@ function onBankDistrictChange(n, v) {
 	$('#depositBankUnionInfoId').combobox('setValue', '');
 	$('#depositBankUnionInfoId').combobox('enable');
 	$('#depositBankUnionInfoId').combobox('reload', '${contextPath!}/firm/bankUnionInfoList.action?districtId=' + n);
-//	reloadBankUnionInfo();
+	// reloadBankUnionInfo();
 }
 
 // 清空表单

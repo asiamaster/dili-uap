@@ -56,7 +56,7 @@
 								valueField:'code'"
 								required="true" /> 
 							<input class="easyui-textbox" name="certificateNumber" id="certificateNumber" style="width: 55%" 
-								data-options="prompt:'证件号',validType:'length[0,20]'" required="true" /></td>
+								data-options="prompt:'证件号',validType:'length[0,18]'" required="true" /></td>
 					</tr>
 					<tr>
 						<td style="padding: 5px;">
@@ -95,7 +95,7 @@
 					<tr>
 						<td style="padding: 5px;">
 							<input class="easyui-textbox" name="registeredDetailAddress" id="registeredDetailAddress" style="width: 90%" 
-											data-options="label:'注册所在地详细地址:',labelWidth:145, validType:'length[0,30]'" required="true" />
+											data-options="label:'注册所在地详细地址:',labelWidth:145, validType:'length[0,50]'" required="true" />
 						</td>
 					</tr>
 					<tr>
@@ -129,7 +129,7 @@
 					<tr>
 						<td style="padding: 5px;">
 							<input class="easyui-textbox" name="actualDetailAddress" id="actualDetailAddress" style="width: 90%" 
-								data-options="label:'实际经营所在地详细地址:',labelWidth:170, validType:'length[0,30]'" required="true" />
+								data-options="label:'实际经营所在地详细地址:',labelWidth:170, validType:'length[0,50]'" required="true" />
 						</td>
 					</tr>
 					<tr>
@@ -150,7 +150,7 @@
 								url:'${contextPath!}/firm/legalPersonCertificateTypeList.action'"
 								required="true" /> 
 							<input class="easyui-textbox" name="legalPersonCertificateNumber" id="legalPersonCertificateNumber" style="width: 60%" 
-								data-options="prompt:'证件号:', validType:'length[0,20]'"
+								data-options="prompt:'证件号:', validType:'length[0,18]'"
 								required="true" />
 						</td>
 					</tr>
@@ -228,13 +228,13 @@
 						</td>
 					</tr> 
 					<tr>
-						<td style="padding: 5px;"><input class="easyui-textbox" name="bankAccount" id="bankAccount" style="width: 90%" data-options="label:'银行账号:', validType:'length[0,20]'" required="true" /></td>
+						<td style="padding: 5px;"><input class="easyui-numberbox" name="bankAccount" id="bankAccount" style="width: 90%" data-options="label:'银行账号:', validType:'length[12,19]'" required="true" /></td>
 					</tr>
 					<tr>
-						<td style="padding: 5px;"><input class="easyui-textbox" name="telephone" id="telephone" style="width: 90%" data-options="label:'绑定电话:', validType:'length[0,20]'" required="true" /></td>
+						<td style="padding: 5px;"><input class="easyui-textbox" name="telephone" id="telephone" style="width: 90%" data-options="label:'绑定电话:', validType:'length[0,12]'" required="true" /></td>
 					</tr>
 					<tr>
-						<td style="padding: 5px;"><input class="easyui-textbox" name="email" id="email" style="width: 90%" data-options="label:'邮箱:', validType:'length[0,20]'" required="true" /></td>
+						<td style="padding: 5px;"><input class="easyui-textbox" name="email" id="email" style="width: 90%" data-options="label:'邮箱:', validType:'email'" required="true" /></td>
 					</tr>
 					<tr>
 						<td style="padding: 5px;">

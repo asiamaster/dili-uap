@@ -39,15 +39,15 @@
 								valueField:'code'"
 								required="true" /> 
 							<input class="easyui-textbox" name="certificateNumber" id="certificateNumber" value="${firm.certificateNumber!}" style="width: 55%" 
-								data-options="prompt:'证件号',validType:'length[0,20]'" required="true" />
+								data-options="prompt:'证件号',validType:'length[0,18]'" required="true" />
 							</td>
 					</tr>
 					<tr>
 						<td style="padding: 5px;">
-							<input class="easyui-datebox" name="effectTime" id="effectTime" value="${firm.effectTime!}" style="width: 50%" 
+							<input class="easyui-datebox" name="effectTime" id="effectTime" value="${firm.effectTime!,dateFormat='yyyy-MM-dd'}" style="width: 50%" 
 								data-options="label:'营业期限:',prompt:'生效时间'" required="true" /> 
 							<input class="easyui-datebox"
-								name="failureTime" id="failureTime" value="${firm.failureTime!}"  style="width: 40%" data-options="prompt:'失效时间'" required="true" /></td>
+								name="failureTime" id="failureTime" value="${firm.failureTime!,dateFormat='yyyy-MM-dd'}"  style="width: 40%" data-options="prompt:'失效时间'" required="true" /></td>
 					</tr>
 					<tr>
 						<td style="padding: 5px;">
@@ -80,7 +80,7 @@
 						<td style="padding: 5px;">
 							<input class="easyui-textbox" name="registeredDetailAddress" id="registeredDetailAddress" 
 											value="${firm.registeredDetailAddress!}" style="width: 90%" 
-											data-options="label:'注册所在地详细地址:',labelWidth:145, validType:'length[0,30]'" required="true" />
+											data-options="label:'注册所在地详细地址:',labelWidth:145, validType:'length[0,50]'" required="true" />
 						</td>
 					</tr>
 					<tr>
@@ -114,7 +114,7 @@
 					<tr>
 						<td style="padding: 5px;">
 							<input class="easyui-textbox" name="actualDetailAddress" id="actualDetailAddress" value="${firm.actualDetailAddress!}" style="width: 90%" 
-								data-options="label:'实际经营所在地详细地址:',labelWidth:170, validType:'length[0,30]'" required="true" />
+								data-options="label:'实际经营所在地详细地址:',labelWidth:170, validType:'length[0,50]'" required="true" />
 						</td>
 					</tr>
 					<tr>
@@ -136,7 +136,7 @@
 								required="true" /> 
 							<input class="easyui-textbox" name="legalPersonCertificateNumber" id="legalPersonCertificateNumber" 
 								value="${firm.legalPersonCertificateNumber!}" style="width: 60%" 
-								data-options="prompt:'证件号:', validType:'length[0,20]'"
+								data-options="prompt:'证件号:', validType:'length[0,18]'"
 								required="true" />
 						</td>
 					</tr>
@@ -158,7 +158,7 @@
 									}],onChange:onLongTermEffictiveChange"
 								required="true" /> 
 							<input class="easyui-datebox" name="certificateValidityPeriod" id="certificateValidityPeriod" 
-								value="${firm.certificateValidityPeriod!}" style="width: 60%" 
+								value="${firm.certificateValidityPeriod!,dateFormat='yyyy-MM-dd'}" style="width: 60%" 
 								data-options="prompt:'证件有效期:',editable:false" required="true" />
 						</td>
 					</tr>
@@ -217,18 +217,18 @@
 					<tr>
 						<td style="padding: 5px;">
 							<input class="easyui-textbox" name="bankAccount" id="bankAccount"
-								value="${firm.bankAccount!}" style="width: 90%" data-options="label:'银行账号:', validType:'length[0,20]'" required="true" />
+								value="${firm.bankAccount!}" style="width: 90%" data-options="label:'银行账号:', validType:'length[12,19]'" required="true" />
 						</td>
 					</tr>
 					<tr>
 						<td style="padding: 5px;">
 							<input class="easyui-textbox" name="telephone" id="telephone"
-								value="${firm.telephone!}" style="width: 90%" data-options="label:'绑定电话:', validType:'length[0,20]'" required="true" />
+								value="${firm.telephone!}" style="width: 90%" data-options="label:'绑定电话:', validType:'length[0,12]'" required="true" />
 						</td>
 					</tr>
 					<tr>
 						<td style="padding: 5px;">
-							<input class="easyui-textbox" name="email" id="email" value="${firm.email!}" style="width: 90%" data-options="label:'邮箱:', validType:'length[0,20]'" required="true" />
+							<input class="easyui-textbox" name="email" id="email" value="${firm.email!}" style="width: 90%" data-options="label:'邮箱:', validType:'email'" required="true" />
 						</td>
 					</tr>
 					<tr>
