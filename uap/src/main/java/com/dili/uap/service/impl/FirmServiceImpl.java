@@ -88,7 +88,7 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 		Firm query = DTOUtils.newInstance(Firm.class);
 		query.setCertificateNumber(dto.getCertificateNumber());
 		Firm old = this.getActualDao().selectOne(query);
-		if (!dto.getId().equals(old.getId())) {
+		if (old != null && !dto.getId().equals(old.getId())) {
 			return BaseOutput.failure("企业证件号不能重复");
 		}
 		Firm firm = DTOUtils.as(dto, Firm.class);

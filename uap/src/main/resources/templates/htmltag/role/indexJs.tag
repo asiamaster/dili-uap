@@ -101,7 +101,8 @@
                 var ed = $("#roleGrid").treegrid('getEditor', {id:row.id,field:'firmCode'});
                 // 存在ID，数据编辑情况下,市场信息不可更改
                 var parentNode = $("#roleGrid").treegrid('getParent',row.id);
-                if (!isNaN(parentNode.id)) {
+                debugger;
+                if (!typeof parentNode.id == 'string') {
                 	row.parentId=parentNode.id;
                 }
                 row.firmCode = parentNode.$_firmCode?parentNode.$_firmCode:parentNode.id;
