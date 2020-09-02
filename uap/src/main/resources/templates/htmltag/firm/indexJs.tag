@@ -22,6 +22,10 @@
             if(!$('#_form').form("validate")){
                 return;
             }
+            if ($('#failureTime').datebox('getValue')<$('#effectTime').datebox('getValue')) {
+            	swal('错误','生效日期不能大于失效日期', 'error');
+            	return;
+            }
             var _formData = removeKeyStartWith($("#_form").serializeObject(),"_");
             var _url = null;
             // 没有id就新增

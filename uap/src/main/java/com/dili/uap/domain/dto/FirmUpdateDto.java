@@ -109,7 +109,6 @@ public interface FirmUpdateDto extends IDTO {
 
 	void setLegalPersonCertificateNumber(String legalPersonCertificateNumber);
 
-	@NotNull
 	Date getCertificateValidityPeriod();
 
 	void setCertificateValidityPeriod(Date certificateValidityPeriod);

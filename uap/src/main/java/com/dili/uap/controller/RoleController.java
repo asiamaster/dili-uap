@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
@@ -139,6 +141,19 @@ public class RoleController {
 		if (!queryModel) {
 			List<Firm> firmList = null;
 			firmList = this.firmService.list(firm);
+			firmList.forEach(f -> {
+				Map map = new HashMap();
+				map.put("id", f.getCode());
+				map.put("roleName", f.getName());
+				list.add(map);
+			});
+		} else {
+			list.forEach(m -> m.put("parentId", m.get("$_firmCode")));
+			Set<String> firmCodes = new HashSet<String>();
+			roleList.forEach(r -> firmCodes.add(r.getFirmCode()));
+			Example example = new Example(Firm.class);
+			example.createCriteria().andIn("code", firmCodes);
+			List<Firm> firmList = this.firmService.selectByExample(example);
 			firmList.forEach(f -> {
 				Map map = new HashMap();
 				map.put("id", f.getCode());

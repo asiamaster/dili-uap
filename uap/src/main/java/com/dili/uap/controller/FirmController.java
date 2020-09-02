@@ -142,11 +142,13 @@ public class FirmController {
 	public String updateView(Long id, ModelMap modelMap) {
 		Firm firm = this.firmService.get(id);
 		modelMap.addAttribute("firm", firm);
-		BankUnionInfoDto query = new BankUnionInfoDto();
-		query.setId(firm.getDepositBankUnionInfoId());
-		BaseOutput<List<BankUnionInfoDto>> output = this.bankUnionInfoRpc.list(query);
-		if (CollectionUtils.isNotEmpty(output.getData())) {
-			modelMap.addAttribute("bankUnionInfo", output.getData().get(0));
+		if (firm.getDepositBankUnionInfoId() != null) {
+			BankUnionInfoDto query = new BankUnionInfoDto();
+			query.setId(firm.getDepositBankUnionInfoId());
+			BaseOutput<List<BankUnionInfoDto>> output = this.bankUnionInfoRpc.list(query);
+			if (CollectionUtils.isNotEmpty(output.getData())) {
+				modelMap.addAttribute("bankUnionInfo", output.getData().get(0));
+			}
 		}
 		return "firm/update";
 	}

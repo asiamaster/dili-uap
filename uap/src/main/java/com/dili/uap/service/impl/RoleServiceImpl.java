@@ -78,6 +78,7 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements Role
 		if (!role.getLeaf()) {
 			return BaseOutput.failure("包含子角色不能删除");
 		}
+		delete(id);
 		if (role.getParentId() != null) {
 			Role query = DTOUtils.newInstance(Role.class);
 			query.setParentId(role.getParentId());
@@ -95,7 +96,6 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements Role
 		// 删除对应的角色-资源信息
 		getActualDao().deleteRoleResourceByRoleId(param);
 		// 删除角色信息
-		delete(id);
 		return BaseOutput.success();
 	}
 
