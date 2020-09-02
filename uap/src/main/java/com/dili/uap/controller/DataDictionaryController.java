@@ -1,15 +1,5 @@
 package com.dili.uap.controller;
 
-import java.util.Collections;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.dili.logger.sdk.annotation.BusinessLogger;
 import com.dili.logger.sdk.base.LoggerContext;
 import com.dili.logger.sdk.glossary.LoggerConstant;
@@ -22,6 +12,13 @@ import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.domain.dto.DataDictionaryLevel;
 import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.service.DataDictionaryService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * 由MyBatis Generator工具自动生成 This file was generated on 2018-05-21 10:39:45.
@@ -40,7 +37,7 @@ public class DataDictionaryController {
 	 * @param modelMap
 	 * @return
 	 */
-	@RequestMapping(value = "/index.html", method = RequestMethod.GET)
+	@GetMapping(value = "/index.html")
 	public String index(ModelMap modelMap) {
 		modelMap.addAttribute("firmCode", SessionContext.getSessionContext().getUserTicket().getFirmCode());
 		return "dataDictionary/index";
@@ -52,7 +49,7 @@ public class DataDictionaryController {
 	 * @param dataDictionary
 	 * @return
 	 */
-	@RequestMapping(value = "/list", method = { RequestMethod.GET, RequestMethod.POST })
+	@PostMapping(value = "/list")
 	public @ResponseBody List<DataDictionary> list(DataDictionary dataDictionary) {
 		return dataDictionaryService.list(dataDictionary);
 	}
