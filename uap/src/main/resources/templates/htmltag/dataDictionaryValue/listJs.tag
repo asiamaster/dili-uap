@@ -109,12 +109,13 @@ function onClickDdValueGridRow(index, row) {
 }
 
 function insertOrUpdateDdValue(index, row, changes) {
+	debugger;
     var url = contextPath + '/dataDictionaryValue/';
     if (!row.id) {
         row.ddCode = ddCode;
         url += 'insert.action';
     } else {
-    	row.firmCode=row.$_firmCode
+//    	row.firmCode=row.$_firmCode
         url += 'update.action';
     }
     $.post(url, row, function (data) {
