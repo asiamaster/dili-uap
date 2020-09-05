@@ -1,6 +1,7 @@
 package com.dili.uap.sdk.domain;
 
 import com.dili.ss.dto.IBaseDomain;
+import com.dili.ss.dto.IMybatisForceParams;
 import com.dili.ss.metadata.FieldEditor;
 import com.dili.ss.metadata.annotation.EditMode;
 import com.dili.ss.metadata.annotation.FieldDef;
@@ -15,7 +16,7 @@ import java.util.List;
  * This file was generated on 2018-05-23 14:31:07.
  */
 @Table(name = "`firm`")
-public interface Firm extends IBaseDomain {
+public interface Firm extends IBaseDomain, IMybatisForceParams {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "`id`")
@@ -241,6 +242,20 @@ public interface Firm extends IBaseDomain {
 	Integer getState();
 
 	void setState(Integer state);
+
+	@Column(name = "`user_id`")
+	@FieldDef(label = "管理员用户id")
+	@EditMode(editor = FieldEditor.Number, required = true)
+	Long getUserId();
+
+	void setUserId(Long userId);
+
+	@Column(name = "`roleId`")
+	@FieldDef(label = "管理员角色")
+	@EditMode(editor = FieldEditor.Number, required = true)
+	Long getRoleId();
+
+	void setRoleId(Long roleId);
 
 	List<String> getNames();
 

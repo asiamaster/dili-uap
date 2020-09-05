@@ -29,6 +29,7 @@ import com.dili.ss.dto.IDTO;
 import com.dili.uap.constants.UapConstants;
 import com.dili.uap.domain.dto.DataDictionaryDto;
 import com.dili.uap.domain.dto.FirmAddDto;
+import com.dili.uap.domain.dto.FirmQueryDto;
 import com.dili.uap.domain.dto.FirmUpdateDto;
 import com.dili.uap.rpc.BankRpc;
 import com.dili.uap.rpc.BankUnionInfoRpc;
@@ -90,7 +91,7 @@ public class FirmController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/listPage.action", method = { RequestMethod.GET, RequestMethod.POST })
-	public @ResponseBody String listPage(Firm firm) throws Exception {
+	public @ResponseBody String listPage(FirmQueryDto firm) throws Exception {
 		return firmService.listEasyuiPageByExample(firm, true).toString();
 	}
 
@@ -325,6 +326,10 @@ public class FirmController {
 		}
 		return output.getData();
 	}
+
+//	@GetMapping("/updateAdminUser.html")
+//	public String firmAdminUser() {
+//	}
 
 	/**
 	 * 查询银行联行信息

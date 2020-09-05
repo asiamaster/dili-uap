@@ -2,6 +2,7 @@ package com.dili.uap.api;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -73,8 +74,8 @@ public class UserApi {
 	@RequestMapping(value = "/listByExample.api", method = { RequestMethod.GET, RequestMethod.POST })
 	public BaseOutput<List<User>> listByExample(UserQuery user) {
 		if (StringUtils.isNotBlank(user.getKeyword())) {
-			user.setMetadata(IDTO.AND_CONDITION_EXPR,
-					"(user_name like '%" + user.getKeyword() + "%' or real_name like '%" + user.getKeyword() + "%' or serial_number like '%" + user.getKeyword() + "%')");
+			String keyword = StringEscapeUtils.escapeSql(user.getKeyword());
+			user.setMetadata(IDTO.AND_CONDITION_EXPR, "(user_name like '%" + keyword + "%' or real_name like '%" + keyword + "%' or serial_number like '%" + keyword + "%')");
 		}
 		List<User> users = this.userService.listByExample(user);
 		return BaseOutput.success().setData(users);

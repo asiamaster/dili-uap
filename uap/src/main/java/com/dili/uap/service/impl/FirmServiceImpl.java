@@ -92,7 +92,10 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 			return BaseOutput.failure("企业证件号不能重复");
 		}
 		Firm firm = DTOUtils.as(dto, Firm.class);
-		int rows = this.getActualDao().updateByPrimaryKeySelective(firm);
+		if (firm.getLongTermEffictive()) {
+			firm.setCertificateValidityPeriod(null);
+		}
+		int rows = this.getActualDao().updateByPrimaryKeyExact(firm);
 		return rows > 0 ? BaseOutput.success("修改成功").setData(this.getActualDao().selectByPrimaryKey(dto.getId())) : BaseOutput.failure("修改失败");
 	}
 

@@ -70,19 +70,25 @@
 					<target>13</target>
 					<encoding>UTF-8</encoding>
 					<parameters>true</parameters>
-					 <compilerArgs>
-					 <arg>--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED</arg>
-					 <arg>--add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED</arg>
-					 <arg>--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED</arg>
-					 <arg>--add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED</arg>
-					 <arg>--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</arg>
-					 </compilerArgs>
+					<compilerArgs>
+						<arg>--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED</arg>
+						<arg>--add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED</arg>
+						<arg>--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED</arg>
+						<arg>--add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED</arg>
+						<arg>--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</arg>
+					</compilerArgs>
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
 
 	<dependencies>
+		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-text -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-text</artifactId>
+			<version>1.9</version>
+		</dependency>
 		<dependency>
 			<groupId>com.dili</groupId>
 			<artifactId>assets-sdk</artifactId>
@@ -217,16 +223,16 @@
 			<version>3.0.0-alpha.3</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/com.alibaba.cloud/spring-cloud-starter-alibaba-sentinel -->
-<!--		<dependency>-->
-<!--			<groupId>com.alibaba.cloud</groupId>-->
-<!--			<artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>-->
-<!--			<version>2.2.0.RELEASE</version>-->
-<!--		</dependency>-->
-<!--		<dependency>-->
-<!--			<groupId>com.alibaba.csp</groupId>-->
-<!--			<artifactId>sentinel-datasource-nacos</artifactId>-->
-<!--			<version>1.7.1</version>-->
-<!--		</dependency>-->
+		<!-- <dependency> -->
+		<!-- <groupId>com.alibaba.cloud</groupId> -->
+		<!-- <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId> -->
+		<!-- <version>2.2.0.RELEASE</version> -->
+		<!-- </dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>com.alibaba.csp</groupId> -->
+		<!-- <artifactId>sentinel-datasource-nacos</artifactId> -->
+		<!-- <version>1.7.1</version> -->
+		<!-- </dependency> -->
 		<!-- 公共信息 -->
 		<dependency>
 			<groupId>com.dili</groupId>
