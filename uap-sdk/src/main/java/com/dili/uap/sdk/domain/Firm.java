@@ -250,7 +250,7 @@ public interface Firm extends IBaseDomain, IMybatisForceParams {
 
 	void setUserId(Long userId);
 
-	@Column(name = "`roleId`")
+	@Column(name = "`role_id`")
 	@FieldDef(label = "管理员角色")
 	@EditMode(editor = FieldEditor.Number, required = true)
 	Long getRoleId();

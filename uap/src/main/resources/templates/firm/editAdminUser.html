@@ -1,0 +1,57 @@
+
+<#body>
+<div class="easyui-layout" fit="true">
+	<!-- ====================================================================================================================== -->
+	<!-- 中央布局 -->
+	<!-- ====================================================================================================================== -->
+	<!-- 表格 -->
+	<div region="center" style="width: 100%;" height="auto">
+		<!-- 隐藏编辑框 -->
+		<div id="dlg" class="easyui-panel" resizable="false" constrain="true" shadow="true" draggable="false" title="商户管理" style="padding: 20px" border="thin" data-options="">
+			<form id="_form" class="easyui-form" method="post" fit="true">
+				<input name="id" id="id" value="${firm.id!}" type="hidden">
+				<input name="userId" id="userId" value="${user.id!}" type="hidden">
+				<input name="roleId" id="roleId" value="${role.id!}" type="hidden">
+				<table width="800px">
+					<tr>
+						<td style="padding: 5px;"><input class="easyui-textbox" name="userName" id="userName" value="${user.userName!}" style="width: 90%" data-options="label:'账号名:', validType:'length[0,20]'"
+							required="true" /></td>
+					</tr>
+					<tr>
+						<td style="padding: 5px;"><input class="easyui-textbox" name="cellphone" id="cellphone" value="${user.cellphone!}" style="width: 90%" data-options="label:'联系电话:', validType:'length[0,12]'"
+							required="true" /></td>
+					</tr>
+					<tr>
+						<td style="padding: 5px;"><input class="easyui-textbox" name="email" id="email" value="${user.email!}" style="width: 90%" data-options="label:'联系邮箱:', validType:['length[0,40]','email']"
+							required="true" /></td>
+					</tr>
+					<tr>
+						<td style="padding: 5px; height: auto;">
+							<!-- 隐藏的权限编辑框 -->
+							<table title="资源列表" class="easyui-treegrid" noheader="true" style="width: 100%; height: auto;" id="roleMenuAndResourceGrid"
+								data-options="pagination:false, checkbox: true,rownumbers: false,idField:'treeId',treeField:'name',_parentIdField:'parentId',loadFilter:treegridLoadFilter,cascadeCheck:false,onLoadSuccess:roleMenuTreeLoadsuccess">
+								<thead>
+									<tr>
+										<th width="30%" data-options="field:'name',resizable:'true'">名称</th>
+										<th width="20%" data-options="field:'type',resizable:'true'">权限类型</th>
+										<th width="50%" data-options="field:'description',resizable:'true'">描述</th>
+									</tr>
+								</thead>
+							</table>
+						</td>
+					</tr>
+					<tr>
+						<td style="padding: 5px;"><a id="btn" href="javascript:void(0);" class="easyui-linkbutton" style="margin-left: 40%" data-options="iconCls:'icon-save',onClick:saveOrUpdate">提交</a> <a
+							id="btn" href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'icon-search',onClick:function(){window.location.href='${contextPath!}/firm/index.html';}">返回</a></td>
+					</tr>
+				</table>
+			</form>
+
+		</div>
+	</div>
+</div>
+
+<!-- ====================================================================================================================== --> <!-- style & script 分隔线 --> <!-- ====================================================================================================================== -->
+<script type="text/javascript">
+	<#firm_editAdminUserJs />
+</script> </#body>
