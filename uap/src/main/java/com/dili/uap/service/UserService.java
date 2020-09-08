@@ -177,4 +177,12 @@ public interface UserService extends BaseService<User, Long> {
 	 */
 	BaseOutput<Object> validatePassword(Long userId, String password);
 
+	/**
+	 * 保存用户的角色信息
+	 *
+	 * @param userId  用户ID
+	 * @param roleId 角色ID
+	 * @return
+	 */
+	BaseOutput saveUserRole(Long userId, Long roleId);
 }

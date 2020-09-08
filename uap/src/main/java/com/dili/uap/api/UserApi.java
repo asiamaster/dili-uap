@@ -2,8 +2,13 @@ package com.dili.uap.api;
 
 import java.util.List;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.dili.uap.service.RoleService;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,6 +45,9 @@ public class UserApi {
 
 	@Autowired
 	ResumeLockedUserJob resumeLockedUserJob;
+	
+	@Autowired
+	RoleService roleService;
 
 	/**
 	 * 查询User实体接口
@@ -73,8 +81,8 @@ public class UserApi {
 	@RequestMapping(value = "/listByExample.api", method = { RequestMethod.GET, RequestMethod.POST })
 	public BaseOutput<List<User>> listByExample(UserQuery user) {
 		if (StringUtils.isNotBlank(user.getKeyword())) {
-			user.setMetadata(IDTO.AND_CONDITION_EXPR,
-					"(user_name like '%" + user.getKeyword() + "%' or real_name like '%" + user.getKeyword() + "%' or serial_number like '%" + user.getKeyword() + "%')");
+			String keyword = StringEscapeUtils.escapeSql(user.getKeyword());
+			user.setMetadata(IDTO.AND_CONDITION_EXPR, "(user_name like '%" + keyword + "%' or real_name like '%" + keyword + "%' or serial_number like '%" + keyword + "%')");
 		}
 		List<User> users = this.userService.listByExample(user);
 		return BaseOutput.success().setData(users);
@@ -178,5 +186,32 @@ public class UserApi {
 	public BaseOutput<Object> validatePassword(@RequestParam Long userId, @RequestParam String password) {
 		return this.userService.validatePassword(userId, password);
 	}
-
+	
+	/**
+	 * 添加用户角色关联
+	 * @param json 包含userId，roleId
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/saveUserRoles.api", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public BaseOutput<Object> saveUserRoles(@RequestBody String json) {
+		// @RequestParam Long userId, @RequestParam Long roleId
+		JSONObject jo = JSON.parseObject(json);
+		Long userId = jo.getLong("userId");
+		Long roleId = jo.getLong("roleId");
+		return userService.saveUserRole(userId, roleId);
+	}
+	/**
+	 * 删除用户角色关联
+	 * @param json 包含userId，roleId
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/unbindUserRole.api", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public BaseOutput<Object> unbindUserRole(@RequestBody String json) {
+		JSONObject jo = JSON.parseObject(json);
+		Long userId = jo.getLong("userId");
+		Long roleId = jo.getLong("roleId");
+		return roleService.unbindRoleUser(roleId, userId);
+	}
 }

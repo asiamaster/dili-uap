@@ -176,7 +176,7 @@
             </tr>
             <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-combobox" name="_firmCode" id="_firmCode" panelWidth="auto" panelHeight="auto" required="true" editable="false"  style="width:85%;height:28px;" data-options="labelAlign:'right',label:'&lowast;归属市场:',valueField:'code',textField:'name',
+                    <input class="easyui-combobox" name="_firmCode" id="_firmCode" panelWidth="auto" panelHeight="300" required="true" editable="false"  style="width:85%;height:28px;" data-options="labelAlign:'right',label:'&lowast;归属市场:',valueField:'code',textField:'name',
                                         onLoadSuccess:function(){
                                            $('#_firmCode').combobox('select',firmCode);
                                            loadDepartments(firmCode,'_departmentId');
@@ -187,7 +187,7 @@
             </tr>
             <tr>
                 <td style="padding:5px;">
-                    <input class="easyui-combotree" name="_departmentId" panelWidth="auto" panelHeight="100%"  editable="false" id="_departmentId" style="width:85%;height:28px;" data-options="labelAlign:'right',label:'归属部门:',_idField:'id',_textField:'name',_parentIdField:'parentId',loadFilter:treeLoadFilter,onLoadSuccess:editDepartmentLoadSuccess">
+                    <input class="easyui-combotree" name="_departmentId" panelWidth="auto" panelHeight="300"  editable="false" id="_departmentId" style="width:85%;height:28px;" data-options="labelAlign:'right',label:'归属部门:',_idField:'id',_textField:'name',_parentIdField:'parentId',loadFilter:treeLoadFilter,onLoadSuccess:editDepartmentLoadSuccess">
                 </td>
             </tr>
             <tr>

@@ -1,28 +1,35 @@
 package com.dili.uap.service.impl;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.dili.ss.base.BaseServiceImpl;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
-import com.dili.ss.util.BeanConver;
+import com.dili.ss.exception.AppException;
 import com.dili.uap.constants.UapConstants;
 import com.dili.uap.dao.FirmMapper;
 import com.dili.uap.dao.UserDataAuthMapper;
+import com.dili.uap.dao.UserRoleMapper;
+import com.dili.uap.domain.UserRole;
+import com.dili.uap.domain.dto.EditFirmAdminUserDto;
 import com.dili.uap.domain.dto.FirmAddDto;
 import com.dili.uap.domain.dto.FirmUpdateDto;
 import com.dili.uap.rpc.UidRpc;
 import com.dili.uap.sdk.domain.Firm;
+import com.dili.uap.sdk.domain.FirmState;
+import com.dili.uap.sdk.domain.Role;
+import com.dili.uap.sdk.domain.User;
 import com.dili.uap.sdk.domain.UserDataAuth;
 import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.glossary.DataAuthType;
 import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.service.FirmService;
-
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import com.dili.uap.service.RoleService;
+import com.dili.uap.service.UserService;
 
 /**
  * 由MyBatis Generator工具自动生成 This file was generated on 2018-05-23 14:31:07.
@@ -34,6 +41,12 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 	private UserDataAuthMapper userDataAuthMapper;
 	@Autowired
 	private UidRpc uidRpc;
+	@Autowired
+	private UserService userService;
+	@Autowired
+	private RoleService roleSerice;
+	@Autowired
+	private UserRoleMapper userRoleMapper;
 
 	public FirmMapper getActualDao() {
 		return (FirmMapper) getDao();
@@ -92,7 +105,10 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 			return BaseOutput.failure("企业证件号不能重复");
 		}
 		Firm firm = DTOUtils.as(dto, Firm.class);
-		int rows = this.getActualDao().updateByPrimaryKeySelective(firm);
+		if (firm.getLongTermEffictive()) {
+			firm.setCertificateValidityPeriod(null);
+		}
+		int rows = this.getActualDao().updateByPrimaryKeyExact(firm);
 		return rows > 0 ? BaseOutput.success("修改成功").setData(this.getActualDao().selectByPrimaryKey(dto.getId())) : BaseOutput.failure("修改失败");
 	}
 
@@ -101,5 +117,112 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 		Firm record = DTOUtils.newInstance(Firm.class);
 		record.setCode(firmCode);
 		return this.getActualDao().selectOne(record);
+	}
+
+	@Transactional(rollbackFor = Exception.class)
+	@Override
+	public BaseOutput<Object> updateAdminUser(EditFirmAdminUserDto dto) {
+		Firm firm = this.getActualDao().selectByPrimaryKey(dto.getId());
+		if (firm == null) {
+			return BaseOutput.failure("商户不存在");
+		}
+		boolean firmUpdate = false;
+		User adminUser = null;
+		if (dto.getUserId() != null) {
+			adminUser = this.userService.get(dto.getUserId());
+		}
+		if (adminUser == null) {
+			adminUser = DTOUtils.newInstance(User.class);
+			adminUser.setUserName(dto.getUserName());
+			adminUser.setCellphone(dto.getCellphone());
+			adminUser.setEmail(dto.getEmail());
+			adminUser.setFirmCode(firm.getCode());
+			adminUser.setRealName(firm.getSimpleName());
+			BaseOutput output = this.userService.save(adminUser);
+			if (!output.isSuccess()) {
+				return output;
+			}
+			firm.setUserId(adminUser.getId());
+			firmUpdate = true;
+		} else {
+			adminUser.setUserName(dto.getUserName());
+			adminUser.setCellphone(dto.getCellphone());
+			adminUser.setEmail(dto.getEmail());
+			adminUser.setFirmCode(firm.getCode());
+			BaseOutput output = this.userService.save(adminUser);
+			if (!output.isSuccess()) {
+				return output;
+			}
+		}
+		Role role = null;
+		if (dto.getRoleId() != null) {
+			role = this.roleSerice.get(dto.getRoleId());
+		}
+		if (role == null) {
+			role = DTOUtils.newInstance(Role.class);
+			role.setRoleName(firm.getName() + "管理员");
+			role.setFirmCode(firm.getCode());
+			int rows = this.roleSerice.insertSelective(role);
+			if (rows <= 0) {
+				throw new AppException("更新角色失败");
+			}
+			firm.setRoleId(role.getId());
+			firmUpdate = true;
+		}
+		BaseOutput output = this.roleSerice.saveRoleMenuAndResource(role.getId(), dto.getResourceIds().toArray(new String[] {}));
+		if (!output.isSuccess()) {
+			throw new AppException(output.getMessage());
+		}
+		UserRole urQuery = DTOUtils.newInstance(UserRole.class);
+		urQuery.setUserId(adminUser.getId());
+		urQuery.setRoleId(role.getId());
+		int count = this.userRoleMapper.selectCount(urQuery);
+		if (count <= 0) {
+			int rows = this.userRoleMapper.insertSelective(urQuery);
+			if (rows <= 0) {
+				throw new AppException("绑定用户角色失败");
+			}
+		}
+		if (firmUpdate) {
+			int rows = this.getActualDao().updateByPrimaryKeySelective(firm);
+			if (rows <= 0) {
+				throw new AppException("更新商户失败");
+			}
+		}
+		return BaseOutput.success();
+	}
+
+	@Override
+	public BaseOutput<Object> enable(Long id) {
+		Firm firm = this.getActualDao().selectByPrimaryKey(id);
+		if (firm.getState().equals(FirmState.ENABLED.getValue())) {
+			return BaseOutput.failure("该商户状态为已启用状态，请勿重复操作");
+		}
+		firm.setState(FirmState.ENABLED.getValue());
+		int rows = this.getActualDao().updateByPrimaryKeySelective(firm);
+		if (firm.getUserId() != null) {
+			BaseOutput output = this.userService.upateEnable(firm.getUserId(), true);
+			if (!output.isSuccess()) {
+				return output;
+			}
+		}
+		return rows > 0 ? BaseOutput.success() : BaseOutput.failure("更新状态失败");
+	}
+
+	@Override
+	public BaseOutput<Object> disable(Long id) {
+		Firm firm = this.getActualDao().selectByPrimaryKey(id);
+		if (firm.getState().equals(FirmState.DISABLED.getValue())) {
+			return BaseOutput.failure("该商户状态为已禁用状态，请勿重复操作");
+		}
+		firm.setState(FirmState.DISABLED.getValue());
+		int rows = this.getActualDao().updateByPrimaryKeySelective(firm);
+		if (firm.getUserId() != null) {
+			BaseOutput output = this.userService.upateEnable(firm.getUserId(), false);
+			if (!output.isSuccess()) {
+				return output;
+			}
+		}
+		return rows > 0 ? BaseOutput.success() : BaseOutput.failure("更新状态失败");
 	}
 }

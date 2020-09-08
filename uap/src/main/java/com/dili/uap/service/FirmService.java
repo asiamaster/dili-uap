@@ -2,6 +2,7 @@ package com.dili.uap.service;
 
 import com.dili.ss.base.BaseService;
 import com.dili.ss.domain.BaseOutput;
+import com.dili.uap.domain.dto.EditFirmAdminUserDto;
 import com.dili.uap.domain.dto.FirmAddDto;
 import com.dili.uap.domain.dto.FirmUpdateDto;
 import com.dili.uap.sdk.domain.Firm;
@@ -34,4 +35,28 @@ public interface FirmService extends BaseService<Firm, Long> {
 	 * @return
 	 */
 	Firm getIdByCode(String firmCode);
+
+	/**
+	 * 设置超级管理员用户
+	 * 
+	 * @param dto
+	 * @return
+	 */
+	BaseOutput<Object> updateAdminUser(EditFirmAdminUserDto dto);
+
+	/**
+	 * 启用
+	 * 
+	 * @param id
+	 * @return
+	 */
+	BaseOutput<Object> enable(Long id);
+
+	/**
+	 * 禁用
+	 * 
+	 * @param id
+	 * @return
+	 */
+	BaseOutput<Object> disable(Long id);
 }

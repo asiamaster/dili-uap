@@ -38,11 +38,15 @@ public class DataDictionaryValueServiceImpl extends BaseServiceImpl<DataDictiona
 	@Autowired
 	private DataDictionaryMapper dataDictionaryMapper;
 	@Autowired
+	private DataDictionaryValueMapper ddValueMapper;
+	@Autowired
 	private FirmMapper firmMapper;
 
 	@Override
 	public List<DataDictionaryValue> listDictionaryValueByCode(String code) {
-		return null;
+		DataDictionaryValue query = DTOUtils.newInstance(DataDictionaryValue.class);
+		query.setDdCode(code);
+		return this.ddValueMapper.select(query);
 	}
 
 	@Override
