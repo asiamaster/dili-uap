@@ -590,4 +590,24 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 		}
 		return BaseOutput.success();
 	}
+	
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public BaseOutput saveUserRole(Long userId, Long roleId) {
+		if (null == userId) {
+			return BaseOutput.failure("用户数据丢失");
+		}
+		UserRole userRole = DTOUtils.newInstance(UserRole.class);
+		userRole.setUserId(userId);
+		userRole.setRoleId(roleId);
+		int count = userRoleMapper.selectCount(userRole);
+		// 查询当前用户与角色是否已有关联，不存在则保存用户角色信息
+		if(count == 0)  {
+			Long id = userRole.getId();
+			if(id == null){
+				userRoleMapper.insert(userRole);
+			}
+		}
+		return BaseOutput.success("添加用户角色关联成功");
+	}
 }

@@ -2,15 +2,11 @@ package com.dili.uap.sdk.rpc;
 
 import java.util.List;
 
+import com.dili.ss.retrofitful.annotation.*;
 import com.dili.uap.sdk.domain.dto.UserQuery;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.domain.PageOutput;
-import com.dili.ss.retrofitful.annotation.POST;
-import com.dili.ss.retrofitful.annotation.ReqParam;
-import com.dili.ss.retrofitful.annotation.Restful;
-import com.dili.ss.retrofitful.annotation.VOBody;
 import com.dili.uap.sdk.domain.User;
 import com.dili.uap.sdk.domain.dto.UserDepartmentRole;
 import com.dili.uap.sdk.domain.dto.UserDepartmentRoleQuery;
@@ -54,4 +50,24 @@ public interface UserRpc {
 
 	@POST("/userApi/validatePassword.api")
 	BaseOutput<Object> validatePassword(@ReqParam("userId") Long userId, @ReqParam("password") String password);
+	
+	/**
+	 * 添加用户角色关联
+	 *
+	 * @param userId
+	 * @param roleId
+	 * @return
+	 */
+	@POST("/userApi/saveUserRoles.api")
+	BaseOutput<Object> saveUserRoles(@VOField("userId") Long userId, @VOField("roleId") String roleId);
+
+	/**
+	 * 删除用户角色关联
+	 *
+	 * @param userId
+	 * @param roleId
+	 * @return
+	 */
+	@POST("/userApi/unbindUserRole.api")
+	BaseOutput<Object> unbindUserRole(@VOField("userId") Long userId, @VOField("roleId") String roleId);
 }
