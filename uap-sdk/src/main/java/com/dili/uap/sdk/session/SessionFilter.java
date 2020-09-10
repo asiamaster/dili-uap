@@ -1,35 +1,9 @@
 package com.dili.uap.sdk.session;
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.security.auth.login.LoginException;
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import com.dili.logger.sdk.domain.ExceptionLog;
-import com.dili.logger.sdk.rpc.ExceptionLogRpc;
 import com.dili.ss.domain.BaseOutput;
+import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.sdk.domain.Menu;
+import com.dili.uap.sdk.domain.SystemExceptionLog;
 import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.exception.NotAccessPermissionException;
 import com.dili.uap.sdk.exception.NotLoginException;
@@ -37,8 +11,22 @@ import com.dili.uap.sdk.exception.RedirectException;
 import com.dili.uap.sdk.glossary.ExceptionType;
 import com.dili.uap.sdk.redis.UserUrlRedis;
 import com.dili.uap.sdk.rpc.MenuRpc;
+import com.dili.uap.sdk.rpc.SystemExceptionLogRpc;
 import com.dili.uap.sdk.util.WebContent;
 import com.google.common.collect.Lists;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import javax.security.auth.login.LoginException;
+import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * 权限统一拦截器
@@ -60,7 +48,7 @@ public class SessionFilter implements Filter {
 	private UserUrlRedis userResRedis;
 
 	@Autowired
-	private ExceptionLogRpc logRpc;
+	private SystemExceptionLogRpc systemExceptionLogRpc;
 
 	@Override
 	public void destroy() {
@@ -154,22 +142,26 @@ public class SessionFilter implements Filter {
 	 */
 	private void systemExceptionLog(PermissionContext pc, Exception e) {
 		BaseOutput<Map<String, Object>> output = menuRpc.getMenuDetailByUrl(pc.getUrl());
-		if (output.isSuccess()) {
+		if(output.isSuccess()){
 			Map<String, Object> menu1 = output.getData();
-			if (menu1 == null || menu1.isEmpty()) {
-				ExceptionLog log = new ExceptionLog();
-				log.setExceptionType(ExceptionType.NOT_AUTH_ERROR.getCode());
-				log.setContent(e.getMessage() + ",url:" + pc.getUrl());
-				log.setRemoteIp(pc.getReq().getRemoteAddr());
-				this.logRpc.save(log, pc.getReferer());
+			if(menu1 == null || menu1.isEmpty()) {
+				SystemExceptionLog systemExceptionLog = DTOUtils.newDTO(SystemExceptionLog.class);
+				systemExceptionLog.setMsg(e.getMessage()+",url:" + pc.getUrl());
+				systemExceptionLog.setType(ExceptionType.NOT_AUTH_ERROR.getCode());
+				systemExceptionLog.setExceptionTime(new Date());
+				systemExceptionLog.setIp(pc.getReq().getRemoteAddr());
+				systemExceptionLogRpc.insert(systemExceptionLog);
 				return;
 			}
-			ExceptionLog log = new ExceptionLog();
-			log.setExceptionType(ExceptionType.NOT_AUTH_ERROR.getCode());
-			log.setContent(e.getMessage() + ",url:" + pc.getUrl());
-			log.setRemoteIp(pc.getReq().getRemoteAddr());
-			log.setSystemCode(menu1.get("system_code").toString());
-			this.logRpc.save(log, pc.getReferer());
+			SystemExceptionLog systemExceptionLog = DTOUtils.newDTO(SystemExceptionLog.class);
+			systemExceptionLog.setMenuId(Long.parseLong(menu1.get("id").toString()));
+			systemExceptionLog.setMsg(e.getMessage());
+			systemExceptionLog.setSystemCode(menu1.get("system_code").toString());
+			systemExceptionLog.setSystemName(menu1.get("system_name").toString());
+			systemExceptionLog.setType(ExceptionType.NOT_AUTH_ERROR.getCode());
+			systemExceptionLog.setExceptionTime(new Date());
+			systemExceptionLog.setIp(pc.getReq().getRemoteAddr());
+			systemExceptionLogRpc.insert(systemExceptionLog);
 		}
 	}
 

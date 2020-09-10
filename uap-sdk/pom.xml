@@ -21,11 +21,6 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.dili</groupId>
-			<artifactId>logger-sdk</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>com.dili</groupId>
 			<artifactId>ss-beetl</artifactId>
 			<version>${sharp-sword.version}</version>
 		</dependency>

@@ -10,22 +10,20 @@ import com.dili.uap.constants.UapConstants;
 import com.dili.uap.dao.FirmMapper;
 import com.dili.uap.dao.SystemConfigMapper;
 import com.dili.uap.dao.UserMapper;
-import com.dili.uap.domain.LoginLog;
 import com.dili.uap.domain.dto.LoginDto;
 import com.dili.uap.domain.dto.LoginResult;
-import com.dili.uap.glossary.LoginType;
 import com.dili.uap.glossary.UserState;
-import com.dili.uap.glossary.Yn;
 import com.dili.uap.manager.*;
-import com.dili.uap.sdk.domain.*;
+import com.dili.uap.sdk.domain.Firm;
+import com.dili.uap.sdk.domain.SystemConfig;
+import com.dili.uap.sdk.domain.User;
+import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.manager.SessionRedisManager;
 import com.dili.uap.sdk.session.DynaSessionConstants;
 import com.dili.uap.sdk.session.ManageConfig;
 import com.dili.uap.sdk.session.SessionConstants;
-import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.sdk.util.ManageRedisUtil;
 import com.dili.uap.sdk.util.WebContent;
-import com.dili.uap.service.LoginLogService;
 import com.dili.uap.service.LoginService;
 import com.dili.uap.service.SystemService;
 import com.dili.uap.utils.MD5Util;
@@ -39,8 +37,6 @@ import org.springframework.data.redis.core.BoundListOperations;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
-
-import javax.security.auth.login.LoginContext;
 
 /**
  * 登录服务 Created by asiam on 2018/5/18 0018.
@@ -219,8 +215,6 @@ public class LoginServiceImpl implements LoginService {
 				logLogin(user, loginDto, false, "用户名或密码错误");
 				return BaseOutput.failure("用户名或密码错误").setCode(ResultCode.NOT_AUTH_ERROR);
 			}
-			redisUtil.set("he", 12);
-			java.lang.System.out.println(redisUtil.get("he"));
 			// 登录成功后清除锁定计时
 			clearUserLock(user.getId());
 			// 加载用户系统
