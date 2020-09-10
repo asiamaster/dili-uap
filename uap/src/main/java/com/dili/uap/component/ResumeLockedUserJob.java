@@ -11,6 +11,7 @@ import com.dili.uap.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
@@ -34,6 +35,9 @@ public class ResumeLockedUserJob implements ApplicationListener<ContextRefreshed
 
 	@Override
 	public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
+		if(!(contextRefreshedEvent.getApplicationContext() instanceof AnnotationConfigServletWebServerApplicationContext)) {
+			return;
+		}
 		//系统启动时扫描一次锁定用户
         resumeLockedUser();
 	}
