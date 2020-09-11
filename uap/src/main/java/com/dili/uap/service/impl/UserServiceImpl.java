@@ -25,6 +25,7 @@ import com.dili.uap.sdk.domain.*;
 import com.dili.uap.sdk.glossary.DataAuthType;
 import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.service.DataAuthRefService;
+import com.dili.uap.service.LoginService;
 import com.dili.uap.service.UserService;
 import com.dili.uap.utils.MD5Util;
 import com.github.pagehelper.Page;
@@ -81,6 +82,9 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 	private String aesKey;
 	@Autowired
 	DataAuthRefService dataAuthRefService;
+	@Autowired
+	private LoginService loginService;
+
 	public static final String ALM_PROJECT_PREFIX = "alm_";
 
 	@Override
@@ -586,11 +590,12 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 		}
 		// 判断密码不正确，三次后锁定用户、锁定后的用户12小时后自动解锁
 		if (!StringUtils.equals(user.getPassword(), this.encryptPwd(password))) {
+			this.loginService.lockUser(user);
 			return BaseOutput.failure("用户名或密码错误").setCode(ResultCode.NOT_AUTH_ERROR);
 		}
 		return BaseOutput.success();
 	}
-	
+
 	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public BaseOutput saveUserRole(Long userId, Long roleId) {
@@ -602,9 +607,9 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 		userRole.setRoleId(roleId);
 		int count = userRoleMapper.selectCount(userRole);
 		// 查询当前用户与角色是否已有关联，不存在则保存用户角色信息
-		if(count == 0)  {
+		if (count == 0) {
 			Long id = userRole.getId();
-			if(id == null){
+			if (id == null) {
 				userRoleMapper.insert(userRole);
 			}
 		}

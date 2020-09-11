@@ -403,7 +403,8 @@ public class LoginServiceImpl implements LoginService {
 	 * 
 	 * @param user
 	 */
-	private void lockUser(User user) {
+	@Override
+	public void lockUser(User user) {
 		// 判断是否要进行密码错误检查，不检查就不需要锁定用户了
 		if (!pwdErrorCheck) {
 			return;
