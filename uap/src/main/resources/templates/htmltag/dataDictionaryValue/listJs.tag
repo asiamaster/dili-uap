@@ -26,15 +26,19 @@ function cancelEditDdValue() {
 
 
 function onBeginEditDdValue(index, row) {
+	console.log(row);
 	 <#resource code="updateDataDictionaryValue">
 		var editors = ddValueGrid.datagrid('getEditors', index);
 		editors[0].target.trigger('focus');
 	    setOptValueBtnDisplay(true);
+	    editors[2].target.combobox('setValue',row.$_firmCode);
 	</#resource>
 
 }
 
 function onAfterEditDdValue(index, row, changes) {
+	console.log(row);
+	console.log(changes);
 	var isValid = ddValueGrid.datagrid('validateRow', index);
 	if (!isValid) {
 		return false;
@@ -115,7 +119,9 @@ function insertOrUpdateDdValue(index, row, changes) {
         row.ddCode = ddCode;
         url += 'insert.action';
     } else {
-//    	row.firmCode=row.$_firmCode
+    	if (row.firmCode==row.$_firmCode) {
+    		row.firmCode=null;
+    	}
         url += 'update.action';
     }
     $.post(url, row, function (data) {
