@@ -1,4 +1,4 @@
-
+<script type="text/javascript">
 /**
  * 绑定页面回车事件，以及初始化页面时的光标定位
  * 
@@ -92,3 +92,4 @@ function roleMenuTreeLoadsuccess() {
 	var opts = $('#roleMenuAndResourceGrid').treegrid("options");
 	opts.cascadeCheck = true;
 }
+</script>

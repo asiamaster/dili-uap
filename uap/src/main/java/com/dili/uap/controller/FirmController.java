@@ -1,24 +1,5 @@
 package com.dili.uap.controller;
 
-import java.util.List;
-
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.dili.assets.sdk.dto.BankDto;
 import com.dili.assets.sdk.dto.BankUnionInfoDto;
 import com.dili.assets.sdk.dto.CityDto;
@@ -30,11 +11,7 @@ import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.dto.IDTO;
 import com.dili.uap.constants.UapConstants;
-import com.dili.uap.domain.dto.DataDictionaryDto;
-import com.dili.uap.domain.dto.EditFirmAdminUserDto;
-import com.dili.uap.domain.dto.FirmAddDto;
-import com.dili.uap.domain.dto.FirmQueryDto;
-import com.dili.uap.domain.dto.FirmUpdateDto;
+import com.dili.uap.domain.dto.*;
 import com.dili.uap.rpc.BankRpc;
 import com.dili.uap.rpc.BankUnionInfoRpc;
 import com.dili.uap.rpc.CityRpc;
@@ -46,6 +23,18 @@ import com.dili.uap.service.DataDictionaryValueService;
 import com.dili.uap.service.FirmService;
 import com.dili.uap.service.RoleService;
 import com.dili.uap.service.UserService;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 由MyBatis Generator工具自动生成 This file was generated on 2019-04-09 14:35:13.
@@ -102,6 +91,7 @@ public class FirmController {
 	 */
 	@RequestMapping(value = "/listPage.action", method = { RequestMethod.GET, RequestMethod.POST })
 	public @ResponseBody String listPage(FirmQueryDto firm) throws Exception {
+		firm.setDeleted(false);
 		return firmService.listEasyuiPageByExample(firm, true).toString();
 	}
 
@@ -118,17 +108,17 @@ public class FirmController {
 	/**
 	 * 新增Firm
 	 * 
-	 * @param firm
+	 * @param firmAddDto
 	 * @return
 	 */
 	@BusinessLogger(businessType = "firm_management", content = "新增市场", operationType = "add", systemCode = "UAP")
 	@RequestMapping(value = "/insert.action", method = { RequestMethod.GET, RequestMethod.POST })
-	public @ResponseBody BaseOutput insert(@Validated FirmAddDto dto) {
-		String validator = (String) dto.aget(IDTO.ERROR_MSG_KEY);
+	public @ResponseBody BaseOutput insert(@Validated FirmAddDto firmAddDto) {
+		String validator = (String) firmAddDto.aget(IDTO.ERROR_MSG_KEY);
 		if (StringUtils.isNotBlank(validator)) {
 			return BaseOutput.failure(validator);
 		}
-		BaseOutput<Object> output = firmService.insertAndBindUserDataAuth(dto);
+		BaseOutput<Object> output = firmService.insertAndBindUserDataAuth(firmAddDto);
 		if (output.isSuccess()) {
 			Firm firm = (Firm) output.getData();
 			LoggerContext.put(LoggerConstant.LOG_BUSINESS_CODE_KEY, firm.getCode());
@@ -171,7 +161,7 @@ public class FirmController {
 	 * @return
 	 */
 	@RequestMapping(value = "/update.action", method = { RequestMethod.GET, RequestMethod.POST })
-	@BusinessLogger(businessType = "test", content = "业务id:${businessId!},用户id:${operatorId!}, 市场id:${marketId!}，公司名:${name!}。", operationType = "edit", notes = "备注", systemCode = "UAP")
+	@BusinessLogger(businessType = "firm", content = "业务id:${businessId!},用户id:${operatorId!}, 市场id:${marketId!}，公司名:${name!}。", operationType = "edit", notes = "修改企业", systemCode = "UAP")
 	public @ResponseBody BaseOutput update(FirmUpdateDto dto) {
 		String validator = (String) dto.aget(IDTO.ERROR_MSG_KEY);
 		if (StringUtils.isNotBlank(validator)) {
@@ -408,5 +398,16 @@ public class FirmController {
 	@RequestMapping(value = "/disable.action", method = { RequestMethod.GET, RequestMethod.POST })
 	public BaseOutput<Object> disable(@RequestParam Long id) {
 		return this.firmService.disable(id);
+	}
+
+	/**
+	 * 逻辑删除
+	 * @param id
+	 * @return
+	 */
+	@ResponseBody
+	@PostMapping(value = "/logicalDelete.action")
+	public BaseOutput<Object> logicalDelete(@RequestParam Long id) {
+		return this.firmService.logicalDelete(id);
 	}
 }

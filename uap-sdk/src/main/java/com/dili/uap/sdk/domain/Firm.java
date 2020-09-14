@@ -1,5 +1,6 @@
 package com.dili.uap.sdk.domain;
 
+import com.dili.ss.domain.annotation.Like;
 import com.dili.ss.dto.IBaseDomain;
 import com.dili.ss.dto.IMybatisForceParams;
 import com.dili.ss.metadata.FieldEditor;
@@ -7,6 +8,7 @@ import com.dili.ss.metadata.annotation.EditMode;
 import com.dili.ss.metadata.annotation.FieldDef;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -29,6 +31,7 @@ public interface Firm extends IBaseDomain, IMybatisForceParams {
 	@Column(name = "`name`")
 	@FieldDef(label = "名称", maxLength = 20)
 	@EditMode(editor = FieldEditor.Text, required = true)
+	@Like
 	String getName();
 
 	void setName(String name);
@@ -53,6 +56,11 @@ public interface Firm extends IBaseDomain, IMybatisForceParams {
 	String getCode();
 
 	void setCode(String code);
+
+	@Column(name = "`serial_number`")
+	@FieldDef(label = "商户号", maxLength = 20)
+	Long getSerialNumber();
+	void setSerialNumber(Long serialNumber);
 
 	@Column(name = "`description`")
 	@FieldDef(label = "描述", maxLength = 255)
@@ -256,6 +264,16 @@ public interface Firm extends IBaseDomain, IMybatisForceParams {
 	Long getRoleId();
 
 	void setRoleId(Long roleId);
+
+	@Column(name = "`deleted`")
+	@FieldDef(label = "逻辑删除")
+	Boolean getDeleted();
+	void setDeleted(Boolean deleted);
+
+	@Column(name = "`close_time`")
+	@FieldDef(label = "关闭时间")
+	LocalDateTime getCloseTime();
+	void setCloseTime(LocalDateTime localDateTime);
 
 	List<String> getNames();
 

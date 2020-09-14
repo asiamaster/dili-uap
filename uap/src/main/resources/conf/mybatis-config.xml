@@ -18,6 +18,8 @@
   <objectFactory type="com.dili.ss.dao.DtoInstObjectFactory">
     <!--<property name="someProperty" value="100"/>-->
   </objectFactory>
-
+  <plugins>
+    <plugin interceptor="com.dili.ss.dao.PerformanceInterceptor"/>
+  </plugins>
 
 </configuration>
