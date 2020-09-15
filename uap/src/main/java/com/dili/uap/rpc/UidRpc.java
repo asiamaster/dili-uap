@@ -9,7 +9,11 @@ import com.dili.ss.domain.BaseOutput;
 @FeignClient(name = "dili-uid", contextId = "uidRpc")
 public interface UidRpc {
 
+	/**
+	 * 获取商户编号
+	 * @return
+	 */
 	@RequestMapping(value = "/api/bizNumber/sid53", method = RequestMethod.GET)
-	BaseOutput<String> getFirmCode();
+	BaseOutput<String> getFirmSerialNumber();
 
 }

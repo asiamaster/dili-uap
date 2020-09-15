@@ -59,4 +59,11 @@ public interface FirmService extends BaseService<Firm, Long> {
 	 * @return
 	 */
 	BaseOutput<Object> disable(Long id);
+
+	/**
+	 * 逻辑删除
+	 * @param id
+	 * @return
+	 */
+	BaseOutput<Object> logicalDelete(Long id);
 }

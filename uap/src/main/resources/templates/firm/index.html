@@ -1,10 +1,20 @@
-
 <#body>
+
+<style>
+	.l-btn-text{
+		font-size: 18px;
+	}
+	.l-btn-plain-selected{
+		background:#FFF;
+		color:#0d7fe0;
+		font-weight: bold;
+	}
+</style>
 <div class="easyui-layout" fit="true">
 	<!-- ====================================================================================================================== -->
 	<!-- 上方布局 -->
 	<!-- ====================================================================================================================== -->
-	<div region="north" height="auto" align="center">
+	<div region="north" height="auto" align="center" border="false">
 		<div id="nav" style="padding-left: 15px; padding-top: 10px;" align="left">
 			<#nav />
 		</div>
@@ -13,20 +23,20 @@
 			<form id="form" class="easyui-form" method="post" fit="true">
 				<div class="search-wrap">
 					<div class="search-item">
-						<input class="easyui-textbox" name="name" id="name" style="width: 100%" labelAlign="right" data-options="label:'名称:', validType:'length[0,20]'" />
-					</div>
-					<div class="search-item">
-						<input class="easyui-textbox" name="code" id="code" style="width: 100%" labelAlign="right" data-options="label:'编号:', validType:'length[0,20]'" />
+						<input class="easyui-textbox" name="name" id="name" style="width: 100%" labelAlign="right" data-options="label:'企业名称:', validType:'length[0,20]'" />
 					</div>
 					<div class="search-item">
 						<input class="easyui-textbox" name="industry" id="industry" style="width: 100%" labelAlign="right" data-options="label:'所属行业:', editable:false" />
 						<#comboProvider _id="industry" _provider="dataDictionaryValueProvider" _queryParams='{dd_code:"industry",emptyText:"-- 全部 --"}' />
 					</div>
 					<div class="search-item">
+						<input class="easyui-textbox" name="serialNumber" id="serialNumber" style="width: 100%" labelAlign="right" data-options="label:'商户号:', validType:'length[0,20]'" />
+					</div>
+					<div class="search-item">
 						<input class="easyui-datebox" name="createdStart" id="createdStart" style="width: 100%" data-options="labelAlign:'right',editable:false,labelWidth:100" panelHeight="auto" label="创建日期:" />
 					</div>
 					<div class="search-item">
-						<input class="easyui-datebox" name="createdEnd" id="createdEnd" style="width: 100%" data-options="labelAlign:'right',editable:false,labelWidth:60" panelHeight="auto" label="-" />
+						<input class="easyui-datebox" name="createdEnd" id="createdEnd" style="width: 100%" data-options="labelAlign:'center',editable:false" panelHeight="auto" label="-" />
 					</div>
 					<div class="search-wrap-btn">
 						<a href="#" class="easyui-linkbutton" iconCls="icon-search" id="queryBtn" onclick="queryGrid()">查询</a>&nbsp;&nbsp; <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-clear"
@@ -40,19 +50,26 @@
 	<!-- 中央布局 -->
 	<!-- ====================================================================================================================== -->
 	<!-- 表格 -->
-	<div region="center" style="width: 100%;" height="auto">
+	<div region="center" style="width: 100%;" height="auto" border="false">
+<!--		<div>-->
+<!--		<a href="#" class="easyui-linkbutton" data-options="toggle:true,group:'g1',plain:true,selected:true">全部</a>-->
+<!--		<a href="#" class="easyui-linkbutton" data-options="toggle:true,group:'g1',plain:true">开通</a>-->
+<!--		<a href="#" class="easyui-linkbutton" data-options="toggle:true,group:'g1',plain:true">关闭</a>-->
+<!--		</div>-->
 		<!-- =========================================================表格========================================================= -->
 		<table class="easyui-datagrid" title="市场列表" id="grid" fitColumns="true" noheader="true" pagination="true" pageSize="30" pageNumber="1" pagePosition="top" rownumbers="false" remoteSort="false"
 			loadMsg="数据加载中..." singleSelect="true" method="post" multiSort="false" sortName="name" align="center" fit="true" striped="true" idField="id"
 			data-options="onDblClickRow:openUpdate, onHeaderContextMenu:headerContextMenu">
 			<thead>
 				<tr>
-					<th width="10%" data-options="field:'parentId',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">上级id</th>
-					<th width="15%" data-options="field:'name',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">名称</th>
-					<th width="15%" data-options="field:'code',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">编号</th>
-					<th width="20%" data-options="field:'description',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">描述</th>
-					<th width="20%" data-options="field:'created',  _provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">创建时间</th>
-					<th width="20%" data-options="field:'modified',  _provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">操作时间</th>
+					<th width="15%" data-options="field:'serialNumber',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">商户号</th>
+					<th width="15%" data-options="field:'name',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">企业名称</th>
+					<th width="10%" data-options="field:'simpleName',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">企业简称</th>
+					<th width="10%" data-options="field:'code',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">企业简码</th>
+					<th width="15%" data-options="field:'industry', _provider:'dataDictionaryValueProvider', _queryParams:{'dd_code':'industry'}, sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">所属行业</th>
+					<th width="10%" data-options="field:'telephone',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">联系电话</th>
+					<th width="15%" data-options="field:'created',  _provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">创建时间</th>
+					<th width="10%" data-options="field:'state', _provider:'firmStateProvider',  sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">状态</th>
 				</tr>
 			</thead>
 		</table>
@@ -152,10 +169,10 @@
                 swal('警告','请选中一条数据', 'warning');
                 return;
             }
-            <#swalConfirm swalTitle="您确认想要删除记录吗？">
+            <#swalConfirm swalTitle="您确认想要删除该内容吗？">
                     $.ajax({
                         type: "POST",
-                        url: "${contextPath}/firm/delete.action",
+                        url: "${contextPath}/firm/logicalDelete.action",
                         data: {id:selected.id},
                         processData:true,
                         dataType: "json",
@@ -255,28 +272,27 @@
              	}
              	// json对象再转换成json字符串
          		$.ajax({
-         					type : "POST",
-         					url : url,
-         					data : {id: selected.id},
-         					dataType : "json",
-         					processData : true,
-         					async : true,
-         					success : function(ret) {
-         						$.messager.progress('close');
-         						if (ret.success) {
-         							swal('提示', ret.result, 'success');
-         							window.location.href = '${contextPath!}/firm/index.html';
-         						} else {
-         							swal('错误', ret.result, 'error');
-         						}
-         					},
-         					error : function() {
-         						$.messager.progress('close');
-         						swal('错误', '远程访问失败', 'error');
-         					}
-         				});
+					type : "POST",
+					url : url,
+					data : {id: selected.id},
+					dataType : "json",
+					processData : true,
+					async : true,
+					success : function(ret) {
+						$.messager.progress('close');
+						if (ret.success) {
+							swal('提示', ret.result, 'success');
+							window.location.href = '${contextPath!}/firm/index.html';
+						} else {
+							swal('错误', ret.result, 'error');
+						}
+					},
+					error : function() {
+						$.messager.progress('close');
+						swal('错误', '远程访问失败', 'error');
+					}
+				});
              });
-             
         }
         
         /**

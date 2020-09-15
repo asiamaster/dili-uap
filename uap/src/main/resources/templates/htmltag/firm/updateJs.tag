@@ -1,3 +1,4 @@
+<script type="text/javascript">
 var firmId = '${firm.id!}';
 
 function saveOrUpdate() {
@@ -104,10 +105,6 @@ function reloadBankUnionInfo() {
 	$('#depositBankUnionInfoId').combobox('enable');
 	var n = $('#depositBank').combobox('getValue');
 	var cityId = $('#bankCityId').combobox('getValue');
-	var districtId = $('#bankDistrictId').combobox('getValue');
-	if (districtId) {
-		$('#depositBankUnionInfoId').combobox('reload', '${contextPath!}/firm/bankUnionInfoList.action?districtId=' + districtId + '&bankId=' + n);
-	}
 	if (cityId) {
 		$('#depositBankUnionInfoId').combobox('reload', '${contextPath!}/firm/bankUnionInfoList.action?cityId=' + cityId + '&bankId=' + n);
 	}
@@ -115,7 +112,6 @@ function reloadBankUnionInfo() {
 
 function onBankProvinceChange(n, v) {
 	$('#bankCityId').combobox('disable');
-	$('#bankDistrictId').combobox('disable');
 	$('#bankCityId').combobox('setValue', '');
 	$('#bankCityId').combobox('setText', '');
 	$('#bankCityId').combobox('enable');
@@ -125,21 +121,13 @@ function onBankProvinceChange(n, v) {
 }
 
 function onBankCityChange(n, v) {
-	if (!n) {
-		$('#bankDistrictId').combobox('setValue', '');
-		$('#bankDistrictId').combobox('setText', '');
-		return;
-	}
+
 	var bankId = $('#depositBank').combobox('getValue');
 	if (bankId) {
 		$('#depositBankUnionInfoId').combobox('setValue', '');
 		$('#depositBankUnionInfoId').combobox('reload', '${contextPath!}/firm/bankUnionInfoList.action?cityId=' + n + '&bankId=' + bankId);
 		$('#depositBankUnionInfoId').combobox('enable');
 	}
-	$('#bankDistrictId').combobox('setValue', '');
-	$('#bankDistrictId').combobox('setText', '');
-	$('#bankDistrictId').combobox('enable');
-	$('#bankDistrictId').combobox('reload', '${contextPath!}/firm/districtList.action?parentId=' + n);
 	reloadBankUnionInfo();
 }
 
@@ -185,9 +173,8 @@ $(function() {
 				$('#depositBank').combobox('select', '${firm.depositBank!}');
 				$('#bankProvinceId').combobox('select', '${bankUnionInfo.provinceId!}');
 				$('#bankCityId').combobox('select', '${bankUnionInfo.cityId!}');
-				$('#bankDistrictId').combobox('select', '${bankUnionInfo.districtId!}');
 				$('#depositBankUnionInfoId').combobox('select', '${firm.depositBankUnionInfoId!}');
-
 			}
 			$.messager.progress('close');
 		});
+</script>
