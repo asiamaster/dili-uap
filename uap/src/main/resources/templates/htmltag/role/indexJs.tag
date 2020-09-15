@@ -107,7 +107,11 @@
                 row.firmCode = parentNode.$_firmCode?parentNode.$_firmCode:parentNode.id;
                 setOptBtnDisplay(true);
             },
-            onEndEdit: function () {
+            onEndEdit: function (row,data) {
+            	var parentNode = $("#roleGrid").treegrid('getParent',row.id);
+            	if (parentNode && !typeof parentNode.id != 'string') {
+                	row.parentId=null;
+                }
                 setOptBtnDisplay(false);
             },
             onSaveSuccess: function (row, data) {

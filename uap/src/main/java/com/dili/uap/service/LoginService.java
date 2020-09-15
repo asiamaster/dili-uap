@@ -62,6 +62,7 @@ public interface LoginService {
 	 * 锁定用户
 	 * 
 	 * @param user
+	 * @return 是否被锁定
 	 */
-	void lockUser(User user);
+	boolean lockUser(User user);
 }
