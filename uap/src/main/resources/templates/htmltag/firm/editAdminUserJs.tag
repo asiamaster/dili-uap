@@ -95,7 +95,7 @@ function roleMenuTreeLoadsuccess() {
 
 $(function(){
     $.extend($.fn.validatebox.defaults.rules, {
-        checkUsername : {// 验证用户名
+        checkUserName : {// 验证用户名
             validator : function(value) {
                 return /^[A-Za-z0-9\u4e00-\u9fa5]+$/gi.test(value);
             },
