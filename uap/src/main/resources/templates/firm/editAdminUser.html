@@ -23,11 +23,11 @@
 						</td>
 					</tr>
 					<tr>
-						<td style="padding: 5px;"><input class="easyui-textbox" name="userName" id="userName" value="${user.userName!}" style="width: 90%" data-options="label:'账号名:', validType:'length[0,20]'"
+						<td style="padding: 5px;"><input class="easyui-textbox" name="userName" id="userName" value="${user.userName!}" style="width: 90%" data-options="label:'账号名:', validType:['length[0,20]','checkUsername']"
 							required="true" /></td>
 					</tr>
 					<tr>
-						<td style="padding: 5px;"><input class="easyui-textbox" name="cellphone" id="cellphone" value="${user.cellphone!}" style="width: 90%" data-options="label:'联系电话:', validType:'length[0,12]'"
+						<td style="padding: 5px;"><input class="easyui-textbox" name="cellphone" id="cellphone" value="${user.cellphone!}" type="number" style="width: 90%" data-options="label:'联系电话:', validType:'length[0,12]'"
 							required="true" /></td>
 					</tr>
 					<tr>
@@ -59,7 +59,6 @@
 		</div>
 	</div>
 </div>
-
 <!-- ====================================================================================================================== --> <!-- style & script 分隔线 --> <!-- ====================================================================================================================== -->
 
 <#firm_editAdminUserJs />
