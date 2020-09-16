@@ -12,6 +12,8 @@ import com.dili.uap.domain.UserRole;
 import com.dili.uap.domain.dto.EditFirmAdminUserDto;
 import com.dili.uap.domain.dto.FirmAddDto;
 import com.dili.uap.domain.dto.FirmUpdateDto;
+import com.dili.uap.domain.dto.PaymentFirmDto;
+import com.dili.uap.rpc.PayRpc;
 import com.dili.uap.rpc.UidRpc;
 import com.dili.uap.sdk.domain.*;
 import com.dili.uap.sdk.glossary.DataAuthType;
@@ -31,6 +33,11 @@ import java.time.LocalDateTime;
 @Service
 public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements FirmService {
 
+	/**
+	 * 调用支付系统商户注册接口默认密码
+	 */
+	private static final String PASSWORD = "123456";
+
 	@Autowired
 	private UserDataAuthMapper userDataAuthMapper;
 	@Autowired
@@ -41,6 +48,8 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 	private RoleService roleSerice;
 	@Autowired
 	private UserRoleMapper userRoleMapper;
+	@Autowired
+	private PayRpc payRpc;
 
 	public FirmMapper getActualDao() {
 		return (FirmMapper) getDao();
@@ -72,6 +81,21 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 		if (rows <= 0) {
 			return BaseOutput.failure("插入市场信息失败");
 		}
+		//调用支付系统商户注册接口
+		PaymentFirmDto paymentFirmDto = new PaymentFirmDto();
+		paymentFirmDto.setMchId(firmDto.getId());
+		paymentFirmDto.setCode(firmDto.getCode());
+		paymentFirmDto.setName(firmDto.getName());
+		paymentFirmDto.setAddress(firmDto.getActualDetailAddress());
+		paymentFirmDto.setContact(firmDto.getLegalPersonName());
+		paymentFirmDto.setMobile(firmDto.getTelephone());
+		paymentFirmDto.setPassword(PASSWORD);
+		BaseOutput<PaymentFirmDto> registerMerchant = payRpc.registerMerchant(paymentFirmDto);
+		if (!registerMerchant.isSuccess()) {
+			BaseOutput.failure(registerMerchant.getMessage());
+			LOGGER.error(registerMerchant.getMessage());
+			throw new AppException(registerMerchant.getMessage());
+		}
 		//为当前用户设置数据权限，当前用户得看到新增的市场
 		UserDataAuth userDataAuth = DTOUtils.newInstance(UserDataAuth.class);
 		userDataAuth.setRefCode(DataAuthType.MARKET.getCode());
@@ -100,8 +124,23 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 		int rows = 0;
 		try {
 			rows = this.updateExactSimple(dto);
+
+			//调用支付系统修改商户接口
+			PaymentFirmDto paymentFirmDto = new PaymentFirmDto();
+			paymentFirmDto.setMchId(dto.getId());
+			paymentFirmDto.setCode(dto.getCode());
+			paymentFirmDto.setName(dto.getName());
+			paymentFirmDto.setAddress(dto.getActualDetailAddress());
+			paymentFirmDto.setContact(dto.getLegalPersonName());
+			paymentFirmDto.setMobile(dto.getTelephone());
+			BaseOutput<PaymentFirmDto> modifyMerchant = payRpc.modifyMerchant(paymentFirmDto);
+			if (!modifyMerchant.isSuccess()) {
+				BaseOutput.failure(modifyMerchant.getMessage());
+				LOGGER.error(modifyMerchant.getMessage());
+				throw new AppException(modifyMerchant.getMessage());
+			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new AppException(e.getMessage());
 		}
 		return rows > 0 ? BaseOutput.success("修改成功").setData(this.getActualDao().selectByPrimaryKey(dto.getId())) : BaseOutput.failure("修改失败");
 	}

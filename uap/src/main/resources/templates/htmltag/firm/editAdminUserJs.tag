@@ -98,4 +98,15 @@ function roleMenuTreeLoadsuccess() {
 	var opts = $('#roleMenuAndResourceGrid').treegrid("options");
 	opts.cascadeCheck = true;
 }
+
+$(function(){
+    $.extend($.fn.validatebox.defaults.rules, {
+        checkUserName : {// 验证用户名
+            validator : function(value) {
+                return /^[A-Za-z0-9\u4e00-\u9fa5]+$/gi.test(value);
+            },
+            message : '只允许输入数字，拼音，中文，不包含特殊字符'
+        }
+    });
+});
 </script>
