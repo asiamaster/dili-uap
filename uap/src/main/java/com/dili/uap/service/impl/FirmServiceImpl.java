@@ -130,6 +130,7 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 			adminUser.setUserName(dto.getUserName());
 			adminUser.setCellphone(dto.getCellphone());
 			adminUser.setEmail(dto.getEmail());
+			adminUser.setPassword(dto.getPassword());
 			adminUser.setFirmCode(firm.getCode());
 			adminUser.setRealName(firm.getSimpleName());
 			BaseOutput output = this.userService.save(adminUser);
@@ -142,6 +143,7 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 			adminUser.setUserName(dto.getUserName());
 			adminUser.setCellphone(dto.getCellphone());
 			adminUser.setEmail(dto.getEmail());
+			adminUser.setPassword(dto.getPassword());
 			adminUser.setFirmCode(firm.getCode());
 			BaseOutput output = this.userService.save(adminUser);
 			if (!output.isSuccess()) {
@@ -167,6 +169,17 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 		if (!output.isSuccess()) {
 			throw new AppException(output.getMessage());
 		}
+
+		//为当前用户设置数据权限，当前用户得看到新增的市场
+		UserDataAuth userDataAuth = DTOUtils.newInstance(UserDataAuth.class);
+		userDataAuth.setRefCode(DataAuthType.MARKET.getCode());
+		userDataAuth.setUserId(adminUser.getId());
+		userDataAuth.setValue(firm.getCode());
+		int row = this.userDataAuthMapper.insertSelective(userDataAuth);
+		if (row <= 0) {
+			throw new RuntimeException("绑定用户市场数据权限失败");
+		}
+
 		UserRole urQuery = DTOUtils.newInstance(UserRole.class);
 		urQuery.setUserId(adminUser.getId());
 		urQuery.setRoleId(role.getId());

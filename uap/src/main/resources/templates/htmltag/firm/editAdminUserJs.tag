@@ -27,6 +27,12 @@ function editRoleMenuAndResource() {
 			});
 }
 
+// 重置密码
+function resetPassword() {
+    $(":input[name=password]").attr("value","12345678");
+    $("#password").textbox("setValue","12345678");
+}
+
 /**
  * 保存角色-菜单-资源新
  */
