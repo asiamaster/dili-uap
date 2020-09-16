@@ -21,6 +21,7 @@
 		<!-- =========================================================表单========================================================= -->
 		<div class="easyui-panel" style="width: 100%;" align="left">
 			<form id="form" class="easyui-form" method="post" fit="true">
+				<input  name="state" id="state" hidden/>
 				<div class="search-wrap">
 					<div class="search-item">
 						<input class="easyui-textbox" name="name" id="name" style="width: 100%" labelAlign="right" data-options="label:'企业名称:', validType:'length[0,20]'" />
@@ -129,7 +130,7 @@
             window.location.href='${contextPath!}/firm/update.html?id='+selected.id;
         }
 
-        function saveOrUpdate(){
+		function saveOrUpdate(){
             if(!$('#_form').form("validate")){
                 return;
             }
@@ -191,6 +192,21 @@
                     });
             </#swalConfirm>
         }
+
+		//通过状态按钮查询列表
+		function queryGridByState(stateFlag){
+        	if(stateFlag==0){
+        		$('#state').val('');
+				queryGrid();
+			}else if(stateFlag==1){
+				$('#state').val('1');
+				queryGrid();
+			}else{
+				$('#state').val('0');
+				queryGrid();
+			}
+		}
+
         //表格查询
         function queryGrid() {
             var opts = $("#grid").datagrid("options");
@@ -348,7 +364,7 @@
                     <#resource code="updateFirm">
                     {
                         iconCls:'icon-play',
-                        text:'启用',
+                        text:'开通',
                         id:'play_btn',
                         handler:function(){
                             doEnable(true);
@@ -358,7 +374,7 @@
                     <#resource code="updateFirm">
                     {
                         iconCls:'icon-stop',
-                        text:'禁用',
+                        text:'关闭',
                         id:'stop_btn',
                         handler:function(){
                             doEnable(false);

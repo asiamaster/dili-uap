@@ -45,6 +45,15 @@ public interface EditFirmAdminUserDto extends IDTO {
 	@Size(max = 64, message = "邮箱长度不能超过64个字符", groups = { AddView.class, ModifyView.class })
 	String getEmail();
 
+	@Column(name = "`password`")
+	@FieldDef(label = "密码", maxLength = 8)
+	@EditMode(editor = FieldEditor.Text)
+	@NotNull(message = "密码不能为空", groups = { AddView.class, ModifyView.class })
+	@Size(min = 0, max = 8, message = "密码长度介于0-8之间", groups = { AddView.class })
+	String getPassword();
+
+	void setPassword(String password);
+
 	void setEmail(String email);
 
 	List<String> getResourceIds();
