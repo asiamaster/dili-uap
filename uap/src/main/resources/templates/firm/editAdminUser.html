@@ -7,12 +7,21 @@
 	<!-- 表格 -->
 	<div region="center" style="width: 100%;" height="auto">
 		<!-- 隐藏编辑框 -->
-		<div id="dlg" class="easyui-panel" resizable="false" constrain="true" shadow="true" draggable="false" title="商户管理" style="padding: 20px" border="thin" data-options="">
-			<form id="_form" class="easyui-form" method="post" fit="true">
+		<form id="dlg" class="easyui-panel" resizable="false" constrain="true" shadow="true" draggable="false" title="商户管理" style="padding: 20px" border="thin" data-options="">
+			<div id="_form" class="easyui-form" method="post" fit="true">
 				<input name="id" id="id" value="${firm.id!}" type="hidden">
 				<input name="userId" id="userId" value="${user.id!}" type="hidden">
 				<input name="roleId" id="roleId" value="${role.id!}" type="hidden">
+				<div class="row" width="800px">
+					<label width="400px" style="font-weight: bold;font-size: large;color: red" for="">${firm.serialNumber!}</label>
+					<label width="400px" style="padding-left: 50px;font-weight: bold;font-size: large;color: red" for="">${firm.name!}</label>
+				</div>
 				<table width="800px">
+					<tr>
+						<td style="padding: 5px;">
+							<label class="warning-icon"><img src="${contextPath}/resources/images/light.png" alt=""><span style="color:red">:高级管理员为敏感信息，请注意修改！</span></label>
+						</td>
+					</tr>
 					<tr>
 						<td style="padding: 5px;"><input class="easyui-textbox" name="userName" id="userName" value="${user.userName!}" style="width: 90%" data-options="label:'账号名:', validType:'length[0,20]'"
 							required="true" /></td>
