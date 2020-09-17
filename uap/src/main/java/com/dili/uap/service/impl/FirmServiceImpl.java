@@ -26,6 +26,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 由MyBatis Generator工具自动生成 This file was generated on 2018-05-23 14:31:07.
@@ -189,6 +191,40 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 				return output;
 			}
 		}
+
+		//默认设置用户的权限
+		if(firmUpdate){
+			//为当前用户设置数据权限，当前用户得看到新增的市场
+			UserDataAuth userDataAuth = DTOUtils.newInstance(UserDataAuth.class);
+			userDataAuth.setRefCode(DataAuthType.MARKET.getCode());
+			userDataAuth.setUserId(adminUser.getId());
+			userDataAuth.setValue(firm.getCode());
+			int row = this.userDataAuthMapper.insertSelective(userDataAuth);
+			if (row <= 0) {
+				throw new RuntimeException("绑定用户市场数据权限失败");
+			}
+		}else{
+			//先判断该用户有无当前市场权限，如果没有则默认新增权限
+			List<Map> ranges = SessionContext.getSessionContext().dataAuth(DataAuthType.MARKET.getCode());
+			boolean rangFlag=false;
+			for (Map rangMap : ranges) {
+				if(rangMap.get("value").toString().equals(String.valueOf(firm.getCode()))){
+					rangFlag=true;
+				}
+			}
+			if(!rangFlag){
+				//为当前用户设置数据权限，当前用户得看到新增的市场
+				UserDataAuth userDataAuth = DTOUtils.newInstance(UserDataAuth.class);
+				userDataAuth.setRefCode(DataAuthType.MARKET.getCode());
+				userDataAuth.setUserId(adminUser.getId());
+				userDataAuth.setValue(firm.getCode());
+				int row = this.userDataAuthMapper.insertSelective(userDataAuth);
+				if (row <= 0) {
+					throw new RuntimeException("绑定用户市场数据权限失败");
+				}
+			}
+		}
+
 		Role role = null;
 		if (dto.getRoleId() != null) {
 			role = this.roleSerice.get(dto.getRoleId());
@@ -208,17 +244,6 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 		if (!output.isSuccess()) {
 			throw new AppException(output.getMessage());
 		}
-
-		//为当前用户设置数据权限，当前用户得看到新增的市场
-		UserDataAuth userDataAuth = DTOUtils.newInstance(UserDataAuth.class);
-		userDataAuth.setRefCode(DataAuthType.MARKET.getCode());
-		userDataAuth.setUserId(adminUser.getId());
-		userDataAuth.setValue(firm.getCode());
-		int row = this.userDataAuthMapper.insertSelective(userDataAuth);
-		if (row <= 0) {
-			throw new RuntimeException("绑定用户市场数据权限失败");
-		}
-
 		UserRole urQuery = DTOUtils.newInstance(UserRole.class);
 		urQuery.setUserId(adminUser.getId());
 		urQuery.setRoleId(role.getId());

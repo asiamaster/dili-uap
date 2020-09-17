@@ -7,8 +7,8 @@
 	<!-- 表格 -->
 	<div region="center" style="width: 100%;" height="auto">
 		<!-- 隐藏编辑框 -->
-		<form id="dlg" class="easyui-panel" resizable="false" constrain="true" shadow="true" draggable="false" title="商户管理" style="padding: 20px" border="thin" data-options="">
-			<div id="_form" class="easyui-form" method="post" fit="true">
+		<div id="dlg" class="easyui-panel" resizable="false" constrain="true" shadow="true" draggable="false" title="商户管理" style="padding: 20px" border="thin" data-options="">
+			<form id="_form" class="easyui-form" method="post" fit="true">
 				<input name="id" id="id" value="${firm.id!}" type="hidden">
 				<input name="userId" id="userId" value="${user.id!}" type="hidden">
 				<input name="roleId" id="roleId" value="${role.id!}" type="hidden">
