@@ -203,14 +203,15 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 					return BaseOutput.failure("手机号码已存在");
 				}
 			}
-
-			// 修改密码
-			User updatePwd = DTOUtils.asInstance(user, User.class);
-			updatePwd.setPassword(this.encryptPwd(user.getPassword()));
-			updatePwd.setUserName(user.getUserName());
-			String json = JSON.toJSONString(updatePwd);
-			json = AESUtils.encrypt(json, aesKey);
-			amqpTemplate.convertAndSend(RabbitConfiguration.UAP_TOPIC_EXCHANGE, RabbitConfiguration.UAP_CHANGE_PASSWORD_KEY, json);
+			if (StringUtils.isNotBlank(user.getPassword())) {
+				// 修改密码
+				User updatePwd = DTOUtils.asInstance(user, User.class);
+				updatePwd.setPassword(this.encryptPwd(user.getPassword()));
+				updatePwd.setUserName(user.getUserName());
+				String json = JSON.toJSONString(updatePwd);
+				json = AESUtils.encrypt(json, aesKey);
+				amqpTemplate.convertAndSend(RabbitConfiguration.UAP_TOPIC_EXCHANGE, RabbitConfiguration.UAP_CHANGE_PASSWORD_KEY, json);
+			}
 
 			User update = DTOUtils.asInstance(user, User.class);
 			DTO go = DTOUtils.go(update);
