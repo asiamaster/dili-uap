@@ -12,8 +12,6 @@ import com.dili.uap.domain.UserRole;
 import com.dili.uap.domain.dto.EditFirmAdminUserDto;
 import com.dili.uap.domain.dto.FirmAddDto;
 import com.dili.uap.domain.dto.FirmUpdateDto;
-import com.dili.uap.domain.dto.PaymentFirmDto;
-import com.dili.uap.rpc.PayRpc;
 import com.dili.uap.rpc.UidRpc;
 import com.dili.uap.sdk.domain.*;
 import com.dili.uap.sdk.glossary.DataAuthType;
@@ -26,19 +24,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 由MyBatis Generator工具自动生成 This file was generated on 2018-05-23 14:31:07.
  */
 @Service
 public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements FirmService {
-
-	/**
-	 * 调用支付系统商户注册接口默认密码
-	 */
-	private static final String PASSWORD = "123456";
 
 	@Autowired
 	private UserDataAuthMapper userDataAuthMapper;
@@ -50,8 +41,6 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 	private RoleService roleSerice;
 	@Autowired
 	private UserRoleMapper userRoleMapper;
-	@Autowired
-	private PayRpc payRpc;
 
 	public FirmMapper getActualDao() {
 		return (FirmMapper) getDao();
@@ -83,21 +72,6 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 		if (rows <= 0) {
 			return BaseOutput.failure("插入市场信息失败");
 		}
-		//调用支付系统商户注册接口
-		PaymentFirmDto paymentFirmDto = new PaymentFirmDto();
-		paymentFirmDto.setMchId(firmDto.getId());
-		paymentFirmDto.setCode(firmDto.getCode());
-		paymentFirmDto.setName(firmDto.getName());
-		paymentFirmDto.setAddress(firmDto.getActualDetailAddress());
-		paymentFirmDto.setContact(firmDto.getLegalPersonName());
-		paymentFirmDto.setMobile(firmDto.getTelephone());
-		paymentFirmDto.setPassword(PASSWORD);
-		BaseOutput<PaymentFirmDto> registerMerchant = payRpc.registerMerchant(paymentFirmDto);
-		if (!registerMerchant.isSuccess()) {
-			BaseOutput.failure(registerMerchant.getMessage());
-			LOGGER.error(registerMerchant.getMessage());
-			throw new AppException(registerMerchant.getMessage());
-		}
 		//为当前用户设置数据权限，当前用户得看到新增的市场
 		UserDataAuth userDataAuth = DTOUtils.newInstance(UserDataAuth.class);
 		userDataAuth.setRefCode(DataAuthType.MARKET.getCode());
@@ -126,23 +100,8 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 		int rows = 0;
 		try {
 			rows = this.updateExactSimple(dto);
-
-			//调用支付系统修改商户接口
-			PaymentFirmDto paymentFirmDto = new PaymentFirmDto();
-			paymentFirmDto.setMchId(dto.getId());
-			paymentFirmDto.setCode(dto.getCode());
-			paymentFirmDto.setName(dto.getName());
-			paymentFirmDto.setAddress(dto.getActualDetailAddress());
-			paymentFirmDto.setContact(dto.getLegalPersonName());
-			paymentFirmDto.setMobile(dto.getTelephone());
-			BaseOutput<PaymentFirmDto> modifyMerchant = payRpc.modifyMerchant(paymentFirmDto);
-			if (!modifyMerchant.isSuccess()) {
-				BaseOutput.failure(modifyMerchant.getMessage());
-				LOGGER.error(modifyMerchant.getMessage());
-				throw new AppException(modifyMerchant.getMessage());
-			}
 		} catch (Exception e) {
-			throw new AppException(e.getMessage());
+			e.printStackTrace();
 		}
 		return rows > 0 ? BaseOutput.success("修改成功").setData(this.getActualDao().selectByPrimaryKey(dto.getId())) : BaseOutput.failure("修改失败");
 	}
@@ -171,7 +130,6 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 			adminUser.setUserName(dto.getUserName());
 			adminUser.setCellphone(dto.getCellphone());
 			adminUser.setEmail(dto.getEmail());
-			adminUser.setPassword(dto.getPassword());
 			adminUser.setFirmCode(firm.getCode());
 			adminUser.setRealName(firm.getSimpleName());
 			BaseOutput output = this.userService.save(adminUser);
@@ -184,47 +142,12 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 			adminUser.setUserName(dto.getUserName());
 			adminUser.setCellphone(dto.getCellphone());
 			adminUser.setEmail(dto.getEmail());
-			adminUser.setPassword(dto.getPassword());
 			adminUser.setFirmCode(firm.getCode());
 			BaseOutput output = this.userService.save(adminUser);
 			if (!output.isSuccess()) {
 				return output;
 			}
 		}
-
-		//默认设置用户的权限
-		if(firmUpdate){
-			//为当前用户设置数据权限，当前用户得看到新增的市场
-			UserDataAuth userDataAuth = DTOUtils.newInstance(UserDataAuth.class);
-			userDataAuth.setRefCode(DataAuthType.MARKET.getCode());
-			userDataAuth.setUserId(adminUser.getId());
-			userDataAuth.setValue(firm.getCode());
-			int row = this.userDataAuthMapper.insertSelective(userDataAuth);
-			if (row <= 0) {
-				throw new RuntimeException("绑定用户市场数据权限失败");
-			}
-		}else{
-			//先判断该用户有无当前市场权限，如果没有则默认新增权限
-			List<Map> ranges = SessionContext.getSessionContext().dataAuth(DataAuthType.MARKET.getCode());
-			boolean rangFlag=false;
-			for (Map rangMap : ranges) {
-				if(rangMap.get("value").toString().equals(String.valueOf(firm.getCode()))){
-					rangFlag=true;
-				}
-			}
-			if(!rangFlag){
-				//为当前用户设置数据权限，当前用户得看到新增的市场
-				UserDataAuth userDataAuth = DTOUtils.newInstance(UserDataAuth.class);
-				userDataAuth.setRefCode(DataAuthType.MARKET.getCode());
-				userDataAuth.setUserId(adminUser.getId());
-				userDataAuth.setValue(firm.getCode());
-				int row = this.userDataAuthMapper.insertSelective(userDataAuth);
-				if (row <= 0) {
-					throw new RuntimeException("绑定用户市场数据权限失败");
-				}
-			}
-		}
-
 		Role role = null;
 		if (dto.getRoleId() != null) {
 			role = this.roleSerice.get(dto.getRoleId());
