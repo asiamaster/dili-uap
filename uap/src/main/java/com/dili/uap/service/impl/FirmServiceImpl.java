@@ -22,6 +22,7 @@ import com.dili.uap.service.FirmService;
 import com.dili.uap.service.RoleService;
 import com.dili.uap.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,6 +40,12 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 	 * 调用支付系统商户注册接口默认密码
 	 */
 	private static final String PASSWORD = "123456";
+
+	/**
+	 * 市场信息同步支付系统的标识
+	 */
+	@Value("${uap.firm.to.payment.flag:false}")
+	private String paymentFlag;
 
 	@Autowired
 	private UserDataAuthMapper userDataAuthMapper;
@@ -83,20 +90,22 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 		if (rows <= 0) {
 			return BaseOutput.failure("插入市场信息失败");
 		}
-		//调用支付系统商户注册接口
-		PaymentFirmDto paymentFirmDto = new PaymentFirmDto();
-		paymentFirmDto.setMchId(firmDto.getId());
-		paymentFirmDto.setCode(firmDto.getCode());
-		paymentFirmDto.setName(firmDto.getName());
-		paymentFirmDto.setAddress(firmDto.getActualDetailAddress());
-		paymentFirmDto.setContact(firmDto.getLegalPersonName());
-		paymentFirmDto.setMobile(firmDto.getTelephone());
-		paymentFirmDto.setPassword(PASSWORD);
-		BaseOutput<PaymentFirmDto> registerMerchant = payRpc.registerMerchant(paymentFirmDto);
-		if (!registerMerchant.isSuccess()) {
-			BaseOutput.failure(registerMerchant.getMessage());
-			LOGGER.error(registerMerchant.getMessage());
-			throw new AppException(registerMerchant.getMessage());
+		//如果nacos配置项uap.firm.to.payment.flag的值不为false,则市场信息同步到支付系统；调用支付系统商户注册接口
+		if(!"false".equalsIgnoreCase(paymentFlag)) {
+			PaymentFirmDto paymentFirmDto = new PaymentFirmDto();
+			paymentFirmDto.setMchId(firmDto.getId());
+			paymentFirmDto.setCode(firmDto.getCode());
+			paymentFirmDto.setName(firmDto.getName());
+			paymentFirmDto.setAddress(firmDto.getActualDetailAddress());
+			paymentFirmDto.setContact(firmDto.getLegalPersonName());
+			paymentFirmDto.setMobile(firmDto.getTelephone());
+			paymentFirmDto.setPassword(PASSWORD);
+			BaseOutput<PaymentFirmDto> registerMerchant = payRpc.registerMerchant(paymentFirmDto);
+			if (!registerMerchant.isSuccess()) {
+				BaseOutput.failure(registerMerchant.getMessage());
+				LOGGER.error(registerMerchant.getMessage());
+				throw new AppException(registerMerchant.getMessage());
+			}
 		}
 		//为当前用户设置数据权限，当前用户得看到新增的市场
 		UserDataAuth userDataAuth = DTOUtils.newInstance(UserDataAuth.class);
@@ -127,19 +136,21 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 		try {
 			rows = this.updateExactSimple(dto);
 
-			//调用支付系统修改商户接口
-			PaymentFirmDto paymentFirmDto = new PaymentFirmDto();
-			paymentFirmDto.setMchId(dto.getId());
-			paymentFirmDto.setCode(dto.getCode());
-			paymentFirmDto.setName(dto.getName());
-			paymentFirmDto.setAddress(dto.getActualDetailAddress());
-			paymentFirmDto.setContact(dto.getLegalPersonName());
-			paymentFirmDto.setMobile(dto.getTelephone());
-			BaseOutput<PaymentFirmDto> modifyMerchant = payRpc.modifyMerchant(paymentFirmDto);
-			if (!modifyMerchant.isSuccess()) {
-				BaseOutput.failure(modifyMerchant.getMessage());
-				LOGGER.error(modifyMerchant.getMessage());
-				throw new AppException(modifyMerchant.getMessage());
+			//如果nacos配置项uap.firm.to.payment.flag的值不为false,则市场信息同步到支付系统；调用支付系统修改商户接口
+			if(!"false".equalsIgnoreCase(paymentFlag)) {
+				PaymentFirmDto paymentFirmDto = new PaymentFirmDto();
+				paymentFirmDto.setMchId(dto.getId());
+				paymentFirmDto.setCode(dto.getCode());
+				paymentFirmDto.setName(dto.getName());
+				paymentFirmDto.setAddress(dto.getActualDetailAddress());
+				paymentFirmDto.setContact(dto.getLegalPersonName());
+				paymentFirmDto.setMobile(dto.getTelephone());
+				BaseOutput<PaymentFirmDto> modifyMerchant = payRpc.modifyMerchant(paymentFirmDto);
+				if (!modifyMerchant.isSuccess()) {
+					BaseOutput.failure(modifyMerchant.getMessage());
+					LOGGER.error(modifyMerchant.getMessage());
+					throw new AppException(modifyMerchant.getMessage());
+				}
 			}
 		} catch (Exception e) {
 			throw new AppException(e.getMessage());
