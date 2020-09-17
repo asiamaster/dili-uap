@@ -7,8 +7,10 @@
  * @submitFun 表单提交需执行的任务
  */
 $(function() {
-			editRoleMenuAndResource();
-		});
+    editRoleMenuAndResource();
+    spaceHidden();
+
+});
 
 /**
  * 打开权限设置页面
@@ -119,4 +121,11 @@ $(function(){
         }
     });
 });
+//隐藏空格
+function spaceHidden(){
+    var serialNumber = document.getElementById('serialNumber').innerHTML;
+    if (serialNumber == '' || serialNumber == null || typeof(serialNumber) == 'undefined' ) {
+        $("#space").hide();
+    }
+}
 </script>
