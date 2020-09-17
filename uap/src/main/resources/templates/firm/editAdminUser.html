@@ -13,7 +13,7 @@
 				<input name="userId" id="userId" value="${user.id!}" type="hidden">
 				<input name="roleId" id="roleId" value="${role.id!}" type="hidden">
 				<div class="row" width="800px">
-					<label width="400px" style="font-weight: bold;font-size: large;color: red" for="">${firm.serialNumber!}</label>
+					<label width="400px" style="padding-left: 5px;font-weight: bold;font-size: large;color: red" for="">${firm.serialNumber!}</label>
 					<label width="400px" style="padding-left: 50px;font-weight: bold;font-size: large;color: red" for="">${firm.name!}</label>
 				</div>
 				<table width="800px">
@@ -27,7 +27,7 @@
 							required="true" /></td>
 					</tr>
 					<tr>
-						<td style="padding: 5px;"><input class="easyui-textbox" name="cellphone" id="cellphone" value="${user.cellphone!}" type="number" style="width: 90%" data-options="label:'联系电话:', validType:'length[0,12]'"
+						<td style="padding: 5px;"><input class="easyui-textbox" name="cellphone" id="cellphone" value="${user.cellphone!}" type="tel" style="width: 90%" data-options="label:'联系电话:', validType:['length[0,12]','checkCellphone']"
 							required="true" /></td>
 					</tr>
 					<tr>

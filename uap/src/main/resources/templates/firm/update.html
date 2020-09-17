@@ -1,5 +1,13 @@
 
 <#body>
+<style>
+	.order_number{
+		height:36px; line-height:35px; font-size:22px; color:dodgerblue; float:left;
+	}
+	.information{
+		height:36px; line-height:41px; font-size:16px; float:left;font-family: 'Microsoft Tai Le Bold', 'Microsoft Tai Le';color: rgba(0, 0, 0, 0.847058823529412);font-weight: 700;font-style: normal;
+	}
+</style>
 <div class="easyui-layout" fit="true">
 	<!-- ====================================================================================================================== -->
 	<!-- 中央布局 -->
@@ -10,6 +18,12 @@
 			<form id="_form" class="easyui-form" method="post" fit="true">
 				<input name="id" id="id" value="${firm.id!}" type="hidden">
 				<table width="800px">
+					<tr>
+						<td style="padding: 5px;">
+							<div class="order_number">❶&nbsp</div>
+							<div class="information">基本信息</div>
+						</td>
+					</tr>
 					<tr>
 						<td style="padding: 5px;"><input class="easyui-textbox" name="name" id="name" value="${firm.name!}" style="width: 90%" data-options="label:'企业名称:', validType:'length[0,50]'" required="true" /></td>
 					</tr>
@@ -128,6 +142,12 @@
 					</tr>
 					<tr>
 						<td style="padding: 5px;">
+							<div class="order_number">❷&nbsp</div>
+							<div class="information">法人信息</div>
+						</td>
+					</tr>
+					<tr>
+						<td style="padding: 5px;">
 							<input class="easyui-textbox" name="legalPersonName" id="legalPersonName" value="${firm.legalPersonName!}" style="width: 90%" 
 								data-options="label:'法人 名称:', validType:'length[0,20]'" required="true" />
 						</td>
@@ -171,6 +191,12 @@
 							<input class="easyui-datebox" name="certificateValidityPeriod" id="certificateValidityPeriod" 
 								value="${firm.certificateValidityPeriod!,dateFormat='yyyy-MM-dd'}" style="width: 60%" 
 								data-options="prompt:'证件有效期:',editable:false" required="true" />
+						</td>
+					</tr>
+					<tr>
+						<td style="padding: 5px;">
+							<div class="order_number">❸&nbsp</div>
+							<div class="information">对公账户信息</div>
 						</td>
 					</tr>
 					<tr>
@@ -222,6 +248,12 @@
 						<td style="padding: 5px;">
 							<input class="easyui-textbox" name="bankAccount" id="bankAccount"
 								value="${firm.bankAccount!}" style="width: 90%" data-options="label:'银行账号:', validType:'length[12,19]'" required="true" />
+						</td>
+					</tr>
+					<tr>
+						<td style="padding: 5px;">
+							<div class="order_number">❹&nbsp</div>
+							<div class="information">安全信息</div>
 						</td>
 					</tr>
 					<tr>

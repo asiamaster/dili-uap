@@ -3,6 +3,14 @@
 <script>
 <#firm_indexJs />
 </script>
+<style>
+	.order_number{
+		height:36px; line-height:35px; font-size:22px; color:dodgerblue; float:left;
+	}
+	.information{
+		height:36px; line-height:41px; font-size:16px; float:left;font-family: 'Microsoft Tai Le Bold', 'Microsoft Tai Le';color: rgba(0, 0, 0, 0.847058823529412);font-weight: 700;font-style: normal;
+	}
+</style>
 <div class="easyui-layout" fit="true">
 	<!-- ====================================================================================================================== -->
 	<!-- 中央布局 -->
@@ -30,7 +38,10 @@
 				<input name="id" id="id" type="hidden">
 				<table width="800px">
 					<tr>
-						<td style="padding: 5px;"><h3><span style="font-size: xx-large;color: dodgerblue">❶</span>基本信息</h3></td>
+						<td style="padding: 5px;">
+							<div class="order_number">❶&nbsp</div>
+							<div class="information">基本信息</div>
+						</td>
 					</tr>
 					<tr>
 						<td style="padding: 5px;"><input class="easyui-textbox" name="name" id="name" style="width: 90%" data-options="label:'企业名称:', validType:'length[0,50]'" required="true" /></td>
@@ -147,7 +158,10 @@
 						</td>
 					</tr>
 					<tr>
-						<td style="padding: 5px;"><h3><span style="font-size: xx-large;color: dodgerblue">❷</span>法人信息</h3></td>
+						<td style="padding: 5px;">
+							<div class="order_number">❷&nbsp</div>
+							<div class="information">法人信息</div>
+						</td>
 					</tr>
 					<tr>
 						<td style="padding: 5px;">
@@ -195,7 +209,10 @@
 						</td>
 					</tr>
 					<tr>
-						<td style="padding: 5px;"><h3><span style="font-size: xx-large;color: dodgerblue">❸</span>对公账户信息</h3></td>
+						<td style="padding: 5px;">
+							<div class="order_number">❸&nbsp</div>
+							<div class="information">对公账户信息</div>
+						</td>
 					</tr>
 					<tr>
 						<td style="padding: 5px;">
@@ -246,7 +263,10 @@
 						<td style="padding: 5px;"><input class="easyui-numberbox" name="bankAccount" id="bankAccount" style="width: 90%" data-options="label:'银行账号:', validType:'length[12,19]'" required="true" /></td>
 					</tr>
 					<tr>
-						<td style="padding: 5px;"><h3><span style="font-size: xx-large;color: dodgerblue">❹</span>安全信息</h3></td>
+						<td style="padding: 5px;">
+							<div class="order_number">❹&nbsp</div>
+							<div class="information">安全信息</div>
+						</td>
 					</tr>
 					<tr>
 						<td style="padding: 5px;"><input class="easyui-textbox" name="telephone" id="telephone" style="width: 90%" data-options="label:'绑定电话:', validType:'length[0,12]'" required="true" /></td>
