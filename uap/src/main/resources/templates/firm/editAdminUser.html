@@ -13,15 +13,16 @@
 				<input name="userId" id="userId" value="${user.id!}" type="hidden">
 				<input name="roleId" id="roleId" value="${role.id!}" type="hidden">
 				<div class="row" width="800px">
-					<label width="400px" style="padding-left: 5px;font-weight: bold;font-size: large;color: red" for="">${firm.serialNumber!}</label>
-					<label width="400px" style="padding-left: 50px;font-weight: bold;font-size: large;color: red" for="">${firm.name!}</label>
+					<p style="font-family: 'Arial Negreta', 'Arial Normal', 'Arial';font-weight: 700;font-style: normal;font-size: 16px;color: #FF0000;line-height: 20px;">
+						<span style="padding-left: 5px;">${firm.serialNumber!}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+						<span>${firm.name!}</span>
+					</p>
+					<p>
+						<span style="padding-left: 5px;font-family:'Apple Color Emoji Regular', 'Apple Color Emoji';">💡</span>
+						<span style="font-family:'Monaco Regular', 'Monaco';font-size: 14px;color: #FF0000;line-height: 22px;">:高级管理员为敏感信息，请注意修改！</span>
+					</p>
 				</div>
 				<table width="800px">
-					<tr>
-						<td style="padding: 5px;">
-							<label class="warning-icon"><img src="${contextPath}/resources/images/light.png" alt=""><span style="color:red">:高级管理员为敏感信息，请注意修改！</span></label>
-						</td>
-					</tr>
 					<tr>
 						<td style="padding: 5px;"><input class="easyui-textbox" name="userName" id="userName" value="${user.userName!}" style="width: 90%" data-options="label:'账号名:', validType:['length[0,20]','checkUserName']"
 							required="true" /></td>

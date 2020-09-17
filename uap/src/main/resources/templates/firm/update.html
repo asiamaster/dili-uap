@@ -5,7 +5,7 @@
 		height:36px; line-height:35px; font-size:22px; color:dodgerblue; float:left;
 	}
 	.information{
-		height:36px; line-height:41px; font-size:16px; float:left;font-family: 'Microsoft Tai Le Bold', 'Microsoft Tai Le';color: rgba(0, 0, 0, 0.847058823529412);font-weight: 700;font-style: normal;
+		height:36px; line-height:40px; font-size:16px; float:left;font-family: 'Microsoft Tai Le Bold', 'Microsoft Tai Le';color: rgba(0, 0, 0, 0.847058823529412);font-weight: 700;font-style: normal;
 	}
 </style>
 <div class="easyui-layout" fit="true">
@@ -14,7 +14,7 @@
 	<!-- ====================================================================================================================== -->
 	<!-- 表格 -->
 	<div region="center" style="width: 100%;padding-left: 20px;padding-bottom: 20px;padding-top: 5px;" title="编辑商户"  height="auto">
-		<div style="color:red;font-weight: bold;font-size: 20px;">${firm.serialNumber!}</div>
+		<div style="padding-left: 5px;color:red;font-weight: bold;font-size: 20px;">${firm.serialNumber!}</div>
 			<form id="_form" class="easyui-form" method="post" fit="true">
 				<input name="id" id="id" value="${firm.id!}" type="hidden">
 				<table width="800px">
