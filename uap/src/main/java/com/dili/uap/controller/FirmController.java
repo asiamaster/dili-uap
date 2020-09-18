@@ -21,19 +21,15 @@ import com.dili.uap.sdk.domain.Firm;
 import com.dili.uap.sdk.domain.User;
 import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.session.SessionContext;
-import com.dili.uap.sdk.util.EncryptUtils;
 import com.dili.uap.service.DataDictionaryValueService;
 import com.dili.uap.service.FirmService;
 import com.dili.uap.service.RoleService;
 import com.dili.uap.service.UserService;
-import com.dili.uap.utils.MD5Util;
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -65,10 +61,6 @@ public class FirmController {
 	private UserService userService;
 	@Autowired
 	private RoleService roleService;
-	@Autowired
-	private EncryptUtils encryptUtils;
-	@Value("${rsaPrivateKey:}")
-	private String rsaPrivateKey;
 
 	/**
 	 * 跳转到Firm页面
@@ -348,20 +340,12 @@ public class FirmController {
 	public String editAdminUserView(@RequestParam Long id, ModelMap modelMap) {
 		Firm firm = this.firmService.get(id);
 		if (firm.getUserId() != null) {
-			User user = this.userService.get(firm.getUserId());
-			try {
-//				String pwd = this.decryptRSA(user.getPassword());
-//				user.setPassword(pwd);
-				modelMap.addAttribute("user", user);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			modelMap.addAttribute("user", this.userService.get(firm.getUserId()));
 		} else {
 			User user = DTOUtils.newInstance(User.class);
 			user.setCellphone(firm.getTelephone());
 			user.setEmail(firm.getEmail());
 			modelMap.addAttribute("user", user);
-
 		}
 		if (firm.getRoleId() != null) {
 			modelMap.addAttribute("role", this.roleService.get(firm.getRoleId()));
@@ -370,14 +354,6 @@ public class FirmController {
 		return "firm/editAdminUser";
 	}
 
-	/**
-	 * RSA解密
-	 * @param code
-	 * @return
-	 */
-	private String decryptRSA(String code) throws Exception {
-		return new String(RSAUtils.decryptByPrivateKey(Base64.decodeBase64(code), Base64.decodeBase64(rsaPrivateKey)));
-	}
 
 
 

@@ -182,7 +182,6 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 			adminUser.setUserName(dto.getUserName());
 			adminUser.setCellphone(dto.getCellphone());
 			adminUser.setEmail(dto.getEmail());
-			adminUser.setPassword(dto.getPassword());
 			adminUser.setFirmCode(firm.getCode());
 			adminUser.setRealName(firm.getSimpleName());
 			BaseOutput output = this.userService.save(adminUser);
@@ -195,7 +194,6 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 			adminUser.setUserName(dto.getUserName());
 			adminUser.setCellphone(dto.getCellphone());
 			adminUser.setEmail(dto.getEmail());
-			adminUser.setPassword(dto.getPassword());
 			adminUser.setFirmCode(firm.getCode());
 			BaseOutput output = this.userService.save(adminUser);
 			if (!output.isSuccess()) {

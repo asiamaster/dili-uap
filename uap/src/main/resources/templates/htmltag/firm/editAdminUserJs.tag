@@ -31,8 +31,47 @@ function editRoleMenuAndResource() {
 
 // 重置密码
 function resetPassword() {
-    $(":input[name=password]").attr("value","12345678");
-    $("#password").textbox("setValue","12345678");
+    var paramArray = $('#_form').serializeArray();
+    var userId = paramArray[1].value;
+    if (userId == '' || userId == null || typeof(userId) == 'undefined' ) {
+        swal('警告', '该市场下还没有设置管理员，清先设置管理员', 'warning');
+        return;
+    }
+    var msg = '账号密码重置后将无法再通过旧密码登陆系统，请确认是否要重置密码？';
+    swal({
+        title : msg,
+        type : 'question',
+        showCancelButton : true,
+        confirmButtonColor : '#3085d6',
+        cancelButtonColor : '#d33',
+        confirmButtonText : '确定',
+        cancelButtonText : '取消',
+        confirmButtonClass : 'btn btn-success',
+        cancelButtonClass : 'btn btn-danger'
+    }).then(function(flag) {
+        if (flag.dismiss == 'cancel') {
+            return;
+        }
+        $.ajax({
+            type : "POST",
+            url : "${contextPath}/user/resetPass.action",
+            data : {id:userId},
+            processData : true,
+            dataType : "json",
+            async : true,
+            success : function(data) {
+                if (data.success) {
+                    swal('提示', data.result, 'success');
+                } else {
+                    swal('错误', data.result, 'error');
+                }
+            },
+            error : function() {
+                swal('错误', '远程访问失败', 'error');
+            }
+        });
+    });
+
 }
 
 /**
