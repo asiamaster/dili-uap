@@ -2,7 +2,6 @@
 var firmId = '${firm.id!}';
 
 function saveOrUpdate() {
-    debugger
 	$.messager.progress({
 				msg : '正在加载数据......'
 			});
@@ -167,7 +166,6 @@ $(function() {
 						msg : '正在加载数据......'
 					});
 			var longTermEffictive = '${firm.longTermEffictive!}';
-			debugger
 			if (longTermEffictive == 'true') {
 				$('#longTermEffictive').combobox('select', 1);
 			} else {
