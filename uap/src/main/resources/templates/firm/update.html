@@ -40,6 +40,7 @@
 								url:'${contextPath!}/firm/industryList.action', 
 								textField:'name',
 								panelHeight:'auto',
+								panelMaxHeight:200,
 								valueField:'code', 
 								editable:false"
 							required="true" /></td>
@@ -53,6 +54,7 @@
 								editable:false,
 								textField:'name',
 								panelHeight:'auto',
+								panelMaxHeight:200,
 								valueField:'code'"
 								required="true" /> 
 							<input class="easyui-textbox" name="certificateNumber" id="certificateNumber" value="${firm.certificateNumber!}" style="width: 55%" 
@@ -77,6 +79,7 @@
 									textField:'name',
 									valueField:'id',
 									panelHeight:'auto',
+									panelMaxHeight:200,
 									onChange:onRegProvinceChange"
 								required="true" /> 
 							<input class="easyui-combobox" name="registeredCityId" id="registeredCityId" style="width: 27%"
@@ -86,6 +89,7 @@
 									textField:'name',
 									valueField:'id',
 									panelHeight:'auto',
+									panelMaxHeight:200,
 									onChange:onRegCityChange" required="true" /> 
 							<input class="easyui-combobox" name="registeredDistrictId" id="registeredDistrictId" style="width: 27%"
 								data-options="
@@ -93,6 +97,7 @@
 										disabled:true,
 										textField:'name',
 										panelHeight:'auto',
+										panelMaxHeight:200,
 										valueField:'id'" required="true" /> 
 						</td>
 					</tr>
@@ -114,6 +119,7 @@
 									textField:'name',
 									valueField:'id',
 									panelHeight:'auto',
+									panelMaxHeight:200,
 									onChange:onActProvinceChange"
 								required="true" /> 
 							<input class="easyui-combobox" name="actualCityId" id="actualCityId" style="width: 27%"
@@ -123,6 +129,7 @@
 									textField:'name',
 									valueField:'id',
 									panelHeight:'auto',
+									panelMaxHeight:200,
 									onChange:onActCityChange" required="true" /> 
 							<input class="easyui-combobox" name="actualDistrictId" id="actualDistrictId" style="width: 27%"
 								data-options="
@@ -130,6 +137,7 @@
 										disabled:true,
 										textField:'name',
 										panelHeight:'auto',
+										panelMaxHeight:200,
 										valueField:'id'"
 								required="true" /> 
 						</td>
@@ -161,6 +169,7 @@
 								textField:'name',
 								valueField:'code',
 								panelHeight:'auto',
+								panelMaxHeight:200,
 								editable:false,
 								url:'${contextPath!}/firm/legalPersonCertificateTypeList.action'"
 								required="true" /> 
@@ -179,6 +188,7 @@
 									textField:'text',
 									valueField:'value',
 									panelHeight:'auto',
+									panelMaxHeight:200,
 									editable:false,
 									data:[{
 										text:'否',
@@ -208,6 +218,7 @@
 										editable:false,
 										textField:'name',
 										panelHeight:'auto',
+										panelMaxHeight:200,
 										valueField:'id',
 										onChange:onBankChange"
 								required="true" />
@@ -221,6 +232,7 @@
 										disabled:true,
 										editable:false,
 										panelHeight:'auto',
+										panelMaxHeight:200,
 										textField:'name',
 										valueField:'id',
 										url:'${contextPath!}/firm/provinceList.action',
@@ -233,6 +245,7 @@
 										textField:'name',
 										valueField:'id',
 										panelHeight:'auto',
+										panelMaxHeight:200,
 										onChange:onBankCityChange" required="true" />
 							<input class="easyui-combobox" name="depositBankUnionInfoId" id="depositBankUnionInfoId" style="width: 30%"
 								   data-options="
@@ -240,6 +253,7 @@
 											disabled:true,
 											prompt:'开户支行',
 											panelHeight:'auto',
+											panelMaxHeight:200,
 											textField:'bankName',
 											valueField:'id'" required="true" />
 						</td>

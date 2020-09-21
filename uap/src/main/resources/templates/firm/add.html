@@ -59,6 +59,7 @@
 								url:'${contextPath!}/firm/industryList.action', 
 								textField:'name',
 								panelHeight:'auto',
+								panelMaxHeight:200,
 								valueField:'code', 
 								editable:false"
 							required="true" /></td>
@@ -72,6 +73,7 @@
 								editable:false,
 								textField:'name',
 								panelHeight:'auto',
+								panelMaxHeight:200,
 								valueField:'code'"
 								required="true" /> 
 							<input class="easyui-textbox" name="certificateNumber" id="certificateNumber" style="width: 55%" 
@@ -93,6 +95,7 @@
 									url:'${contextPath!}/firm/provinceList.action',
 									editable:false,
 									panelHeight:'auto',
+									panelMaxHeight:200,
 									textField:'name',
 									valueField:'id',
 									onChange:onRegProvinceChange"
@@ -103,6 +106,7 @@
 									editable:false,
 									textField:'name',
 									panelHeight:'auto',
+									panelMaxHeight:200,
 									valueField:'id',
 									onChange:onRegCityChange" required="true" /> 
 							<input class="easyui-combobox" name="registeredDistrictId" id="registeredDistrictId" style="width: 27%"
@@ -111,6 +115,7 @@
 										disabled:true,
 										textField:'name',
 										panelHeight:'auto',
+										panelMaxHeight:200,
 										valueField:'id'" required="true" /> 
 						</td>
 					</tr>
@@ -129,6 +134,7 @@
 									url:'${contextPath!}/firm/provinceList.action',
 									editable:false,
 									panelHeight:'auto',
+									panelMaxHeight:200,
 									textField:'name',
 									valueField:'id',
 									onChange:onActProvinceChange"
@@ -138,6 +144,7 @@
 									disabled:true,
 									editable:false,
 									panelHeight:'auto',
+									panelMaxHeight:200,
 									textField:'name',
 									valueField:'id',
 									onChange:onActCityChange" required="true" /> 
@@ -146,6 +153,7 @@
 										editable:false,
 										disabled:true,
 										panelHeight:'auto',
+										panelMaxHeight:200,
 										textField:'name',
 										valueField:'id'"
 								required="true" /> 
@@ -176,6 +184,7 @@
 								label:'法人证件:',
 								prompt:'证件类型',
 								panelHeight:'auto',
+								panelMaxHeight:200,
 								textField:'name',
 								valueField:'code',
 								editable:false,
@@ -193,6 +202,7 @@
 									label:'是否长期有效:',
 									labelWidth:95,
 									panelHeight:'auto',
+									panelMaxHeight:200,
 									textField:'text',
 									valueField:'value',
 									editable:false,
@@ -220,6 +230,7 @@
 								data-options="
 										label:'开户银行:',
 										panelHeight:'auto',
+										panelMaxHeight:200,
 										url:'${contextPath!}/firm/bankList.action',
 										editable:false,
 										textField:'name',
@@ -234,6 +245,7 @@
 								data-options="
 										label:'开户行地区:',
 										panelHeight:'auto',
+										panelMaxHeight:200,
 										disabled:true,
 										editable:false,
 										textField:'name',
@@ -246,6 +258,7 @@
 										disabled:true,
 										editable:false,
 										panelHeight:'auto',
+										panelMaxHeight:200,
 										textField:'name',
 										valueField:'id',
 										onChange:onBankCityChange" required="true" />
@@ -255,6 +268,7 @@
 											disabled:true,
 											prompt:'开户支行',
 											panelHeight:'auto',
+											panelMaxHeight:200,
 											textField:'bankName',
 											valueField:'id'" required="true" />
 						</td>
