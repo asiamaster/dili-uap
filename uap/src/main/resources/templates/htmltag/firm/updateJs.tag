@@ -2,6 +2,7 @@
 var firmId = '${firm.id!}';
 
 function saveOrUpdate() {
+    debugger
 	$.messager.progress({
 				msg : '正在加载数据......'
 			});
@@ -15,6 +16,10 @@ function saveOrUpdate() {
 		return;
 	}
 	var _formData = $("#_form").serializeObject();
+	//判断是否为1，为给true，否则不处理
+    if(_formData.longTermEffictive && _formData.longTermEffictive=='1'){
+        _formData.longTermEffictive='true';
+    }
 	var _url = null;
 	// 没有id就新增
 	if (_formData.id == null || _formData.id == "") {
@@ -162,6 +167,7 @@ $(function() {
 						msg : '正在加载数据......'
 					});
 			var longTermEffictive = '${firm.longTermEffictive!}';
+			debugger
 			if (longTermEffictive == 'true') {
 				$('#longTermEffictive').combobox('select', 1);
 			} else {
