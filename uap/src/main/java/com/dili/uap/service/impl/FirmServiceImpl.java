@@ -331,14 +331,14 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 		if (firm.getDeleted()) {
 			return BaseOutput.failure("商户为已删除状态，请勿重复操作");
 		}
-		if (firm.getState().equals(FirmState.ENABLED.getValue())) {
-			return BaseOutput.failure("商户状态为已开通状态，无法关闭");
+		if (firm.getState().equals(FirmState.ENABLED.getValue()) && firm.getUserId() != null) {
+			return BaseOutput.failure("商户状态为已开通状态且设置了管理员，无法删除");
 		}
-		LocalDateTime closeTime = firm.getCloseTime();
+		/*LocalDateTime closeTime = firm.getCloseTime();
 		LocalDateTime beforeCloseTimeOneYear = closeTime.plusYears(1L);
 		if(beforeCloseTimeOneYear.isAfter(LocalDateTime.now())) {
 			return BaseOutput.failure("关闭了时间超过1年以上可以删除");
-		}
+		}*/
 		firm.setDeleted(true);
 		int rows = this.getActualDao().updateByPrimaryKeySelective(firm);
 		return rows > 0 ? BaseOutput.success() : BaseOutput.failure("删除失败");
