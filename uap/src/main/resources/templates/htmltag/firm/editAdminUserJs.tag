@@ -146,7 +146,7 @@ $(function(){
             validator : function(value) {
                 return /^[A-Za-z0-9_\u4e00-\u9fa5]+$/gi.test(value);
             },
-            message : '只允许输入数字，拼音，中文，不包含特殊字符'
+            message : '只能包含中文、英文、数字、下划线'
         }
     });
 });
