@@ -64,9 +64,9 @@
 					<tr>
 						<td style="padding: 5px;">
 							<input class="easyui-datebox" name="effectTime" id="effectTime" value="${firm.effectTime!,dateFormat='yyyy-MM-dd'}" style="width: 50%" 
-								data-options="label:'营业期限:',prompt:'生效时间'" required="true" /> 
+								data-options="label:'营业期限:',prompt:'生效时间',onSelect:onChangeDate" required="true" />
 							<input class="easyui-datebox"
-								name="failureTime" id="failureTime" value="${firm.failureTime!,dateFormat='yyyy-MM-dd'}"  style="width: 40%" data-options="prompt:'失效时间'" required="true" /></td>
+								name="failureTime" id="failureTime" value="${firm.failureTime!,dateFormat='yyyy-MM-dd'}"  style="width: 40%" data-options="prompt:'失效时间',onSelect:onChangeDate" required="true" /></td>
 					</tr>
 					<tr>
 						<td style="padding: 5px;">

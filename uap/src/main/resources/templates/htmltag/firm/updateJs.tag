@@ -138,6 +138,13 @@ function onBankDistrictChange(n, v) {
 	// reloadBankUnionInfo();
 }
 
+function onChangeDate() {
+    var longTermEffictive = $('#longTermEffictive').combobox('getValue');
+    if(longTermEffictive == "true" || longTermEffictive == "1"){
+        $('#longTermEffictive').combobox('setValue',false);
+    }
+}
+
 // 清空表单
 function clearForm() {
 	$('#form').form('clear');
