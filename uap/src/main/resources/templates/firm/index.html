@@ -21,7 +21,7 @@
 		<!-- =========================================================表单========================================================= -->
 		<div class="easyui-panel" style="width: 100%;" align="left">
 			<form id="form" class="easyui-form" method="post" fit="true">
-				<input  name="state" id="state" hidden/>
+<!--				<input  name="state" id="state" hidden/>-->
 				<div class="search-wrap">
 					<div class="search-item">
 						<input class="easyui-textbox" name="name" id="name" style="width: 100%" labelAlign="right" data-options="label:'企业名称:', validType:'length[0,20]'" />
@@ -39,6 +39,10 @@
 					<div class="search-item">
 						<input class="easyui-datebox" name="createdEnd" id="createdEnd" style="width: 100%" data-options="labelAlign:'center',editable:false" panelHeight="auto" label="-" />
 					</div>
+					<div class="search-item">
+						<input class="easyui-textbox" name="state" id="state" style="width: 100%" labelAlign="right" data-options="label:'状态:', editable:false" />
+						<#comboProvider _id="state" _provider="firmStateProvider" _queryParams='{dd_code:"state",emptyText:"-- 全部 --"}' />
+					</div>
 					<div class="search-wrap-btn">
 						<a href="#" class="easyui-linkbutton" iconCls="icon-search" id="queryBtn" onclick="queryGrid()">查询</a>&nbsp;&nbsp; <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-clear"
 							onclick="clearForm()">清除</a>
@@ -51,12 +55,12 @@
 	<!-- 中央布局 -->
 	<!-- ====================================================================================================================== -->
 	<!-- 表格 -->
-	<div region="center" style="width: 100%;overflow-y: scroll" height="auto" border="false" >
-		<div>
-			<a href="#" class="easyui-linkbutton" onclick="queryGridByState(0)" data-options="toggle:true,group:'g1',plain:true,selected:true">全部</a>
-			<a href="#" class="easyui-linkbutton" onclick="queryGridByState(1)" data-options="toggle:true,group:'g1',plain:true">开通</a>
-			<a href="#" class="easyui-linkbutton" onclick="queryGridByState(2)" data-options="toggle:true,group:'g1',plain:true">关闭</a>
-		</div>
+	<div region="center" style="width: 100%" height="auto" border="false" >
+<!--		<div>-->
+<!--			<a href="#" class="easyui-linkbutton" onclick="queryGridByState(0)" data-options="toggle:true,group:'g1',plain:true,selected:true">全部</a>-->
+<!--			<a href="#" class="easyui-linkbutton" onclick="queryGridByState(1)" data-options="toggle:true,group:'g1',plain:true">开通</a>-->
+<!--			<a href="#" class="easyui-linkbutton" onclick="queryGridByState(2)" data-options="toggle:true,group:'g1',plain:true">关闭</a>-->
+<!--		</div>-->
 		<!-- =========================================================表格========================================================= -->
 		<table class="easyui-datagrid" title="市场列表" id="grid" fitColumns="true" noheader="true" pagination="true" pageSize="30" pageNumber="1" pagePosition="top" rownumbers="false" remoteSort="false"
 			loadMsg="数据加载中..." singleSelect="true" method="post" multiSort="false" sortName="created" sortOrder="desc" align="center" fit="true" striped="true" idField="id"
@@ -194,18 +198,18 @@
         }
 
 		//通过状态按钮查询列表
-		function queryGridByState(stateFlag){
-        	if(stateFlag==0){
-        		$('#state').val('');
-				queryGrid();
-			}else if(stateFlag==1){
-				$('#state').val('1');
-				queryGrid();
-			}else{
-				$('#state').val('0');
-				queryGrid();
-			}
-		}
+		// function queryGridByState(stateFlag){
+        // 	if(stateFlag==0){
+        // 		$('#state').val('');
+		// 		queryGrid();
+		// 	}else if(stateFlag==1){
+		// 		$('#state').val('1');
+		// 		queryGrid();
+		// 	}else{
+		// 		$('#state').val('0');
+		// 		queryGrid();
+		// 	}
+		// }
 
         //表格查询
         function queryGrid() {
