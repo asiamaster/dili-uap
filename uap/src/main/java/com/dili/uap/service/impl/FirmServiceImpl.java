@@ -235,8 +235,9 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 			List<Map> ranges = SessionContext.getSessionContext().dataAuth(DataAuthType.MARKET.getCode());
 			boolean rangFlag=false;
 			for (Map rangMap : ranges) {
-				if(rangMap.get("value").toString().equals(String.valueOf(firm.getCode()))){
+				if(rangMap.get("value") !=null && rangMap.get("value").toString().equals(String.valueOf(firm.getCode()))){
 					rangFlag=true;
+					break;
 				}
 			}
 			if(!rangFlag){
