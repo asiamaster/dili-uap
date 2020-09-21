@@ -51,15 +51,15 @@
 	<!-- 中央布局 -->
 	<!-- ====================================================================================================================== -->
 	<!-- 表格 -->
-	<div region="center" style="width: 100%;" height="auto" border="false">
+	<div region="center" style="width: 100%;overflow-y: scroll" height="auto" border="false" >
 		<div>
-		<a href="#" class="easyui-linkbutton" onclick="queryGridByState(0)" data-options="toggle:true,group:'g1',plain:true,selected:true">全部</a>
-		<a href="#" class="easyui-linkbutton" onclick="queryGridByState(1)" data-options="toggle:true,group:'g1',plain:true">开通</a>
-		<a href="#" class="easyui-linkbutton" onclick="queryGridByState(2)" data-options="toggle:true,group:'g1',plain:true">关闭</a>
+			<a href="#" class="easyui-linkbutton" onclick="queryGridByState(0)" data-options="toggle:true,group:'g1',plain:true,selected:true">全部</a>
+			<a href="#" class="easyui-linkbutton" onclick="queryGridByState(1)" data-options="toggle:true,group:'g1',plain:true">开通</a>
+			<a href="#" class="easyui-linkbutton" onclick="queryGridByState(2)" data-options="toggle:true,group:'g1',plain:true">关闭</a>
 		</div>
 		<!-- =========================================================表格========================================================= -->
 		<table class="easyui-datagrid" title="市场列表" id="grid" fitColumns="true" noheader="true" pagination="true" pageSize="30" pageNumber="1" pagePosition="top" rownumbers="false" remoteSort="false"
-			loadMsg="数据加载中..." singleSelect="true" method="post" multiSort="false" sortName="name" align="center" fit="true" striped="true" idField="id"
+			loadMsg="数据加载中..." singleSelect="true" method="post" multiSort="false" sortName="created" sortOrder="desc" align="center" fit="true" striped="true" idField="id"
 			data-options="onDblClickRow:openUpdate, onHeaderContextMenu:headerContextMenu">
 			<thead>
 				<tr>
@@ -265,7 +265,7 @@
                  return;
              }
              
-             var msg = (flag || 'true' == flag) ? '商户被启用后，将可继续在各系统使用，请确认是否启用该商户?' : '商户被禁用后，将不可再继续在各系统使用，请确认是否禁用该商户?';
+             var msg = (flag || 'true' == flag) ? '商户被开通后，将可继续在各系统使用，请确认是否开通该商户?' : '商户被关闭后，将不可再继续在各系统使用，请确认是否关闭该商户?';
              swal({
                  title : msg,
                  type : 'question',
