@@ -21,12 +21,14 @@ import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.service.FirmService;
 import com.dili.uap.service.RoleService;
 import com.dili.uap.service.UserService;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -195,6 +197,18 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 			firm.setUserId(adminUser.getId());
 			firmUpdate = true;
 		} else {
+			//校验用户账号是否存在
+			List<User> userList = new ArrayList<User>();
+			User query = DTOUtils.newInstance(User.class);
+			query.setUserName(dto.getUserName());
+			userList = userService.listByExample(query);
+			if (CollectionUtils.isNotEmpty(userList)) {
+				// 匹配是否有用户ID不等当前修改记录的用户
+				boolean result = userList.stream().anyMatch(u -> !u.getId().equals(dto.getUserId()));
+				if (result) {
+					return BaseOutput.failure("用户账号已存在");
+				}
+			}
 			adminUser.setUserName(dto.getUserName());
 			adminUser.setCellphone(dto.getCellphone());
 			adminUser.setEmail(dto.getEmail());
