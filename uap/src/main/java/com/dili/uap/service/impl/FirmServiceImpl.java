@@ -184,6 +184,10 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 			adminUser.setEmail(dto.getEmail());
 			adminUser.setFirmCode(firm.getCode());
 			adminUser.setRealName(firm.getSimpleName());
+			//先判断市场的简称存不存在，不存在则用市场名称，老市场的简称可能不存在
+			if(firm.getSimpleName() == null || "".equals(firm.getSimpleName())){
+				adminUser.setRealName(firm.getName());
+			}
 			BaseOutput output = this.userService.save(adminUser);
 			if (!output.isSuccess()) {
 				return output;
