@@ -188,4 +188,15 @@ $(function() {
 			}
 			$.messager.progress('close');
 		});
+
+$(function(){
+    $.extend($.fn.validatebox.defaults.rules, {
+        checkCellphone : {// 验证手机号
+            validator : function(value) {
+                return /^[0-9]+$/gi.test(value);
+            },
+            message : '只允许输入数字'
+        }
+    });
+});
 </script>
