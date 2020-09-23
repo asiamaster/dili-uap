@@ -12,18 +12,32 @@
 				<input name="id" id="id" value="${firm.id!}" type="hidden">
 				<input name="userId" id="userId" value="${user.id!}" type="hidden">
 				<input name="roleId" id="roleId" value="${role.id!}" type="hidden">
+				<div class="row" width="800px">
+					<p style="font-family: 'Arial Negreta', 'Arial Normal', 'Arial';font-weight: 700;font-style: normal;font-size: 16px;color: #FF0000;line-height: 20px;">
+						<span style="padding-left: 5px;" id="serialNumber">${firm.serialNumber!}</span>
+						<span id="space" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+						<span>${firm.name!}</span>
+					</p>
+					<p>
+						<span style="padding-left: 5px;font-family:'Apple Color Emoji Regular', 'Apple Color Emoji';">💡</span>
+						<span style="font-family:'Monaco Regular', 'Monaco';font-size: 14px;color: #FF0000;line-height: 22px;">:高级管理员为敏感信息，请注意修改！</span>
+					</p>
+				</div>
 				<table width="800px">
 					<tr>
-						<td style="padding: 5px;"><input class="easyui-textbox" name="userName" id="userName" value="${user.userName!}" style="width: 90%" data-options="label:'账号名:', validType:'length[0,20]'"
+						<td style="padding: 5px;"><input class="easyui-textbox" name="userName" id="userName" value="${user.userName!}" style="width: 90%" data-options="label:'账号名:', validType:['length[0,20]','checkUserName']"
 							required="true" /></td>
 					</tr>
 					<tr>
-						<td style="padding: 5px;"><input class="easyui-textbox" name="cellphone" id="cellphone" value="${user.cellphone!}" style="width: 90%" data-options="label:'联系电话:', validType:'length[0,12]'"
+						<td style="padding: 5px;"><input class="easyui-textbox" name="cellphone" id="cellphone" value="${user.cellphone!}" type="tel" style="width: 90%" data-options="label:'联系电话:', validType:['length[0,12]','checkCellphone']"
 							required="true" /></td>
 					</tr>
 					<tr>
 						<td style="padding: 5px;"><input class="easyui-textbox" name="email" id="email" value="${user.email!}" style="width: 90%" data-options="label:'联系邮箱:', validType:['length[0,40]','email']"
 							required="true" /></td>
+					</tr>
+					<tr>
+						<td><a href="#" class="easyui-linkbutton" onclick="resetPassword()">重置密码</a></td>
 					</tr>
 					<tr>
 						<td style="padding: 5px; height: auto;">

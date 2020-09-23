@@ -275,6 +275,12 @@ public class LoginServiceImpl implements LoginService {
 		User record = DTOUtils.newInstance(User.class);
 		record.setId(Long.valueOf(userId));
 		User user = this.userMapper.selectOne(record);
+		Firm firmQuery = DTOUtils.newInstance(Firm.class);
+		firmQuery.setCode(user.getFirmCode());
+		Firm firm = this.firmMapper.selectOne(firmQuery);
+		if (firm != null) {
+			WebContent.put("firmId", firm.getId());
+		}
 		makeCookieTag(user, sessionId);
 		return BaseOutput.success("登录成功");
 	}
