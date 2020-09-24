@@ -273,12 +273,12 @@
 					<tr>
 						<td style="padding: 5px;">
 							<input class="easyui-textbox" name="telephone" id="telephone"
-								value="${firm.telephone!}" style="width: 90%" data-options="label:'绑定电话:', validType:'length[0,12]'" required="true" />
+								value="${firm.telephone!}" style="width: 90%" data-options="label:'绑定电话:', validType:['length[0,12]','checkCellphone']" required="true" />
 						</td>
 					</tr>
 					<tr>
 						<td style="padding: 5px;">
-							<input class="easyui-textbox" name="email" id="email" value="${firm.email!}" style="width: 90%" data-options="label:'邮箱:', validType:'email'" required="true" />
+							<input class="easyui-textbox" name="email" id="email" value="${firm.email!}" style="width: 90%" data-options="label:'邮箱:', validType:['length[0,40]','email']" required="true" />
 						</td>
 					</tr>
 					<tr>
