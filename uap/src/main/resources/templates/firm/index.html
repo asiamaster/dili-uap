@@ -134,7 +134,7 @@
             window.location.href='${contextPath!}/firm/update.html?id='+selected.id;
         }
 
-		function saveOrUpdate(){
+        function saveOrUpdate(){
             if(!$('#_form').form("validate")){
                 return;
             }
@@ -368,7 +368,7 @@
                     <#resource code="updateFirm">
                     {
                         iconCls:'icon-play',
-                        text:'开通',
+                        text:'启用',
                         id:'play_btn',
                         handler:function(){
                             doEnable(true);
@@ -378,7 +378,7 @@
                     <#resource code="updateFirm">
                     {
                         iconCls:'icon-stop',
-                        text:'关闭',
+                        text:'禁用',
                         id:'stop_btn',
                         handler:function(){
                             doEnable(false);

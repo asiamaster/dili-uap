@@ -1,5 +1,23 @@
 package com.dili.uap.controller;
 
+import java.util.List;
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.dili.assets.sdk.dto.BankDto;
 import com.dili.assets.sdk.dto.BankUnionInfoDto;
 import com.dili.assets.sdk.dto.CityDto;
@@ -10,9 +28,12 @@ import com.dili.logger.sdk.glossary.LoggerConstant;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.dto.IDTO;
-import com.dili.ss.util.RSAUtils;
 import com.dili.uap.constants.UapConstants;
-import com.dili.uap.domain.dto.*;
+import com.dili.uap.domain.dto.DataDictionaryDto;
+import com.dili.uap.domain.dto.EditFirmAdminUserDto;
+import com.dili.uap.domain.dto.FirmAddDto;
+import com.dili.uap.domain.dto.FirmQueryDto;
+import com.dili.uap.domain.dto.FirmUpdateDto;
 import com.dili.uap.rpc.BankRpc;
 import com.dili.uap.rpc.BankUnionInfoRpc;
 import com.dili.uap.rpc.CityRpc;
@@ -25,18 +46,6 @@ import com.dili.uap.service.DataDictionaryValueService;
 import com.dili.uap.service.FirmService;
 import com.dili.uap.service.RoleService;
 import com.dili.uap.service.UserService;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * 由MyBatis Generator工具自动生成 This file was generated on 2019-04-09 14:35:13.
@@ -354,9 +363,6 @@ public class FirmController {
 		return "firm/editAdminUser";
 	}
 
-
-
-
 	/**
 	 * 设置超级管理员视图
 	 * 
@@ -412,6 +418,7 @@ public class FirmController {
 
 	/**
 	 * 逻辑删除
+	 * 
 	 * @param id
 	 * @return
 	 */

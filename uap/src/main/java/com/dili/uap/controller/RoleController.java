@@ -136,7 +136,7 @@ public class RoleController {
 			}
 			if (rm.get("parentId") == null) {
 				rm.put("parentId", rm.get("$_firmCode"));
-			}
+			} 
 		});
 		if (!queryModel) {
 			List<Firm> firmList = null;

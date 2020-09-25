@@ -53,7 +53,7 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, Long> implements Menu
 		Map param = Maps.newHashMap();
 		param.put("userId", userId);
 		param.put("systemCode", systemCode);
-		param.put("sort", "order_number");
+//		param.put("sort", "order_number");
 		List<Menu> menus = this.menuMapper.listDirAndLinksByUserId(param);
 		return parentToChildren(menus);
 	}
@@ -63,7 +63,7 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, Long> implements Menu
 		Map param = Maps.newHashMap();
 		param.put("userId", userId);
 		param.put("systemId", systemId);
-		param.put("sort", "order_number");
+//		param.put("sort", "order_number");
 		param.put("order", "asc");
 		return menuMapper.listDirAndLinksByUserId(param);
 	}
