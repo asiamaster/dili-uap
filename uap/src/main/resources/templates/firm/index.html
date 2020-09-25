@@ -385,20 +385,24 @@
                         }
                     },
                     </#resource>
-                    {
-                    	iconCls:'icon-edit',
-                        text:'设置管理员',
-                        handler:function(){
-                            updateAdminUser();
-                        }
-                    },
-                    {
-                        iconCls:'icon-export',
-                        text:'导出',
-                        handler:function(){
-                            doExport('grid');
-                        }
-                    }
+					<#resource code="editFirmAdmin">
+					{
+						iconCls:'icon-edit',
+						text:'设置管理员',
+						handler:function(){
+							updateAdminUser();
+						}
+					},
+					</#resource>
+					<#resource code="exportFirm">
+					{
+						iconCls:'icon-export',
+						text:'导出',
+						handler:function(){
+							doExport('grid');
+						}
+					}
+					</#resource>
                 ]
             });
             //表格仅显示下边框
