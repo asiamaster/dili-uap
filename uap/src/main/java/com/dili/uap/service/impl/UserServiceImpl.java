@@ -1,5 +1,20 @@
 package com.dili.uap.service.impl;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.alibaba.fastjson.JSON;
 import com.dili.ss.base.BaseServiceImpl;
 import com.dili.ss.constant.ResultCode;
@@ -12,7 +27,12 @@ import com.dili.ss.util.AESUtils;
 import com.dili.ss.util.POJOUtils;
 import com.dili.uap.boot.RabbitConfiguration;
 import com.dili.uap.constants.UapConstants;
-import com.dili.uap.dao.*;
+import com.dili.uap.dao.DepartmentMapper;
+import com.dili.uap.dao.FirmMapper;
+import com.dili.uap.dao.RoleMapper;
+import com.dili.uap.dao.UserDataAuthMapper;
+import com.dili.uap.dao.UserMapper;
+import com.dili.uap.dao.UserRoleMapper;
 import com.dili.uap.domain.UserRole;
 import com.dili.uap.domain.dto.UserDataDto;
 import com.dili.uap.domain.dto.UserDepartmentRole;
@@ -21,29 +41,22 @@ import com.dili.uap.domain.dto.UserDto;
 import com.dili.uap.glossary.UserState;
 import com.dili.uap.manager.UserManager;
 import com.dili.uap.rpc.ProjectRpc;
-import com.dili.uap.sdk.domain.*;
+import com.dili.uap.sdk.domain.Department;
+import com.dili.uap.sdk.domain.Firm;
+import com.dili.uap.sdk.domain.Role;
+import com.dili.uap.sdk.domain.User;
+import com.dili.uap.sdk.domain.UserDataAuth;
+import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.glossary.DataAuthType;
 import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.service.DataAuthRefService;
+import com.dili.uap.service.LoginService;
 import com.dili.uap.service.UserService;
 import com.dili.uap.utils.MD5Util;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-
-import tk.mybatis.mapper.entity.Example;
-
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.amqp.core.AmqpTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * 由MyBatis Generator工具自动生成 This file was generated on 2018-05-18 10:46:46.
@@ -81,6 +94,9 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 	private String aesKey;
 	@Autowired
 	DataAuthRefService dataAuthRefService;
+	@Autowired
+	private LoginService loginService;
+
 	public static final String ALM_PROJECT_PREFIX = "alm_";
 
 	@Override
@@ -202,7 +218,6 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 					return BaseOutput.failure("手机号码已存在");
 				}
 			}
-
 			User update = DTOUtils.asInstance(user, User.class);
 			DTO go = DTOUtils.go(update);
 			go.remove("userName");
@@ -211,7 +226,6 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 			go.remove("created");
 			go.remove("modified");
 			this.updateExactSimple(update);
-
 		}
 		return BaseOutput.success("操作成功");
 	}
@@ -588,11 +602,16 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 		}
 		// 判断密码不正确，三次后锁定用户、锁定后的用户12小时后自动解锁
 		if (!StringUtils.equals(user.getPassword(), this.encryptPwd(password))) {
-			return BaseOutput.failure("用户名或密码错误").setCode(ResultCode.NOT_AUTH_ERROR);
+			boolean locked = this.loginService.lockUser(user);
+			return BaseOutput.failure("用户名或密码错误").setCode(ResultCode.NOT_AUTH_ERROR).setData(new HashMap<String, Object>() {
+				{
+					put("locked", locked);
+				}
+			});
 		}
 		return BaseOutput.success();
 	}
-	
+
 	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public BaseOutput saveUserRole(Long userId, Long roleId) {
@@ -604,9 +623,9 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 		userRole.setRoleId(roleId);
 		int count = userRoleMapper.selectCount(userRole);
 		// 查询当前用户与角色是否已有关联，不存在则保存用户角色信息
-		if(count == 0)  {
+		if (count == 0) {
 			Long id = userRole.getId();
-			if(id == null){
+			if (id == null) {
 				userRoleMapper.insert(userRole);
 			}
 		}

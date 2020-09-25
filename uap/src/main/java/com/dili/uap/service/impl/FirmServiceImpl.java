@@ -1,5 +1,16 @@
 package com.dili.uap.service.impl;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.dili.ss.base.BaseServiceImpl;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
@@ -15,22 +26,17 @@ import com.dili.uap.domain.dto.FirmUpdateDto;
 import com.dili.uap.domain.dto.PaymentFirmDto;
 import com.dili.uap.rpc.PayRpc;
 import com.dili.uap.rpc.UidRpc;
-import com.dili.uap.sdk.domain.*;
+import com.dili.uap.sdk.domain.Firm;
+import com.dili.uap.sdk.domain.FirmState;
+import com.dili.uap.sdk.domain.Role;
+import com.dili.uap.sdk.domain.User;
+import com.dili.uap.sdk.domain.UserDataAuth;
+import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.glossary.DataAuthType;
 import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.service.FirmService;
 import com.dili.uap.service.RoleService;
 import com.dili.uap.service.UserService;
-import org.apache.commons.collections4.CollectionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 由MyBatis Generator工具自动生成 This file was generated on 2018-05-23 14:31:07.
@@ -155,7 +161,7 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 				}
 			}
 		} catch (Exception e) {
-			throw new AppException(e.getMessage());
+			e.printStackTrace();
 		}
 		return rows > 0 ? BaseOutput.success("修改成功").setData(this.getActualDao().selectByPrimaryKey(dto.getId())) : BaseOutput.failure("修改失败");
 	}

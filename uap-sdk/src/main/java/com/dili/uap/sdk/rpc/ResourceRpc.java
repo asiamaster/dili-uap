@@ -1,9 +1,7 @@
 package com.dili.uap.sdk.rpc;
 
 import com.dili.ss.domain.BaseOutput;
-import com.dili.ss.retrofitful.annotation.GET;
-import com.dili.ss.retrofitful.annotation.ReqParam;
-import com.dili.ss.retrofitful.annotation.Restful;
+import com.dili.ss.retrofitful.annotation.*;
 
 import java.util.List;
 
@@ -16,4 +14,6 @@ public interface ResourceRpc {
 	@GET("/resourceApi/listResourceCodeByMenuUrl.api")
 	BaseOutput<List<String>> listResourceCodeByMenuUrl(@ReqParam("url") String url, @ReqParam("userId")Long userId);
 
+	@POST("/resourceApi/listResourceCodeByUserId")
+	BaseOutput<List<String>> listResourceCodeByUserId(@VOBody Long id);
 }

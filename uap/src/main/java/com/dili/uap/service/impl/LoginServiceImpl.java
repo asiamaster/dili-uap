@@ -409,13 +409,14 @@ public class LoginServiceImpl implements LoginService {
 	 * 
 	 * @param user
 	 */
-	private void lockUser(User user) {
+	@Override
+	public boolean lockUser(User user) {
 		// 判断是否要进行密码错误检查，不检查就不需要锁定用户了
 		if (!pwdErrorCheck) {
-			return;
+			return false;
 		}
 		if (user == null) {
-			return;
+			return false;
 		}
 		String key = SessionConstants.USER_PWD_ERROR_KEY + user.getId();
 		BoundListOperations<Object, Object> ops = redisUtil.getRedisTemplate().boundListOps(key);
@@ -446,7 +447,7 @@ public class LoginServiceImpl implements LoginService {
 		}
 		// 在锁定次数范围内不锁定
 		if (ops.size() < Integer.parseInt(systemConfig.getValue())) {
-			return;
+			return false;
 		}
 		// 如果当前用户不是锁定状态，则进行锁定
 		if (!user.getState().equals(UserState.LOCKED.getCode())) {
@@ -457,7 +458,9 @@ public class LoginServiceImpl implements LoginService {
 			this.userMapper.updateByPrimaryKeySelective(updateUser);
 			// 清空计时器
 			redisUtil.getRedisTemplate().delete(key);
+			return true;
 		}
+		return false;
 	}
 
 }

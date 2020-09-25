@@ -26,7 +26,6 @@ function cancelEditDdValue() {
 
 
 function onBeginEditDdValue(index, row) {
-	console.log(row);
 	 <#resource code="updateDataDictionaryValue">
 		var editors = ddValueGrid.datagrid('getEditors', index);
 		editors[0].target.trigger('focus');
@@ -37,8 +36,6 @@ function onBeginEditDdValue(index, row) {
 }
 
 function onAfterEditDdValue(index, row, changes) {
-	console.log(row);
-	console.log(changes);
 	var isValid = ddValueGrid.datagrid('validateRow', index);
 	if (!isValid) {
 		return false;
@@ -119,9 +116,7 @@ function insertOrUpdateDdValue(index, row, changes) {
         row.ddCode = ddCode;
         url += 'insert.action';
     } else {
-    	if (row.firmCode==row.$_firmCode) {
-    		row.firmCode=null;
-    	}
+    	row.firmCode=changes.$_firmCode;
         url += 'update.action';
     }
     $.post(url, row, function (data) {
