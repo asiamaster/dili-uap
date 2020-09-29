@@ -1,5 +1,16 @@
 package com.dili.uap.service.impl;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.dili.ss.base.BaseServiceImpl;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
@@ -12,24 +23,37 @@ import com.dili.uap.domain.UserRole;
 import com.dili.uap.domain.dto.EditFirmAdminUserDto;
 import com.dili.uap.domain.dto.FirmAddDto;
 import com.dili.uap.domain.dto.FirmUpdateDto;
+import com.dili.uap.domain.dto.PaymentFirmDto;
+import com.dili.uap.rpc.PayRpc;
 import com.dili.uap.rpc.UidRpc;
-import com.dili.uap.sdk.domain.*;
+import com.dili.uap.sdk.domain.Firm;
+import com.dili.uap.sdk.domain.FirmState;
+import com.dili.uap.sdk.domain.Role;
+import com.dili.uap.sdk.domain.User;
+import com.dili.uap.sdk.domain.UserDataAuth;
+import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.glossary.DataAuthType;
 import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.service.FirmService;
 import com.dili.uap.service.RoleService;
 import com.dili.uap.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
 
 /**
  * 由MyBatis Generator工具自动生成 This file was generated on 2018-05-23 14:31:07.
  */
 @Service
 public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements FirmService {
+
+	/**
+	 * 调用支付系统商户注册接口默认密码
+	 */
+	private static final String PASSWORD = "123456";
+
+	/**
+	 * 市场信息同步支付系统的标识
+	 */
+	@Value("${uap.firm.to.payment.flag:false}")
+	private String paymentFlag;
 
 	@Autowired
 	private UserDataAuthMapper userDataAuthMapper;
@@ -41,6 +65,8 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 	private RoleService roleSerice;
 	@Autowired
 	private UserRoleMapper userRoleMapper;
+	@Autowired
+	private PayRpc payRpc;
 
 	public FirmMapper getActualDao() {
 		return (FirmMapper) getDao();
@@ -72,6 +98,23 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 		if (rows <= 0) {
 			return BaseOutput.failure("插入市场信息失败");
 		}
+		//如果nacos配置项uap.firm.to.payment.flag的值不为false,则市场信息同步到支付系统；调用支付系统商户注册接口
+		if(!"false".equalsIgnoreCase(paymentFlag)) {
+			PaymentFirmDto paymentFirmDto = new PaymentFirmDto();
+			paymentFirmDto.setMchId(firmDto.getId());
+			paymentFirmDto.setCode(firmDto.getCode());
+			paymentFirmDto.setName(firmDto.getName());
+			paymentFirmDto.setAddress(firmDto.getActualDetailAddress());
+			paymentFirmDto.setContact(firmDto.getLegalPersonName());
+			paymentFirmDto.setMobile(firmDto.getTelephone());
+			paymentFirmDto.setPassword(PASSWORD);
+			BaseOutput<PaymentFirmDto> registerMerchant = payRpc.registerMerchant(paymentFirmDto);
+			if (!registerMerchant.isSuccess()) {
+				BaseOutput.failure(registerMerchant.getMessage());
+				LOGGER.error(registerMerchant.getMessage());
+				throw new AppException(registerMerchant.getMessage());
+			}
+		}
 		//为当前用户设置数据权限，当前用户得看到新增的市场
 		UserDataAuth userDataAuth = DTOUtils.newInstance(UserDataAuth.class);
 		userDataAuth.setRefCode(DataAuthType.MARKET.getCode());
@@ -100,6 +143,23 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 		int rows = 0;
 		try {
 			rows = this.updateExactSimple(dto);
+
+			//如果nacos配置项uap.firm.to.payment.flag的值不为false,则市场信息同步到支付系统；调用支付系统修改商户接口
+			if(!"false".equalsIgnoreCase(paymentFlag)) {
+				PaymentFirmDto paymentFirmDto = new PaymentFirmDto();
+				paymentFirmDto.setMchId(dto.getId());
+				paymentFirmDto.setCode(dto.getCode());
+				paymentFirmDto.setName(dto.getName());
+				paymentFirmDto.setAddress(dto.getActualDetailAddress());
+				paymentFirmDto.setContact(dto.getLegalPersonName());
+				paymentFirmDto.setMobile(dto.getTelephone());
+				BaseOutput<PaymentFirmDto> modifyMerchant = payRpc.modifyMerchant(paymentFirmDto);
+				if (!modifyMerchant.isSuccess()) {
+					BaseOutput.failure(modifyMerchant.getMessage());
+					LOGGER.error(modifyMerchant.getMessage());
+					throw new AppException(modifyMerchant.getMessage());
+				}
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -132,6 +192,10 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 			adminUser.setEmail(dto.getEmail());
 			adminUser.setFirmCode(firm.getCode());
 			adminUser.setRealName(firm.getSimpleName());
+			//先判断市场的简称存不存在，不存在则用市场名称，老市场的简称可能不存在
+			if(firm.getSimpleName() == null || "".equals(firm.getSimpleName())){
+				adminUser.setRealName(firm.getName());
+			}
 			BaseOutput output = this.userService.save(adminUser);
 			if (!output.isSuccess()) {
 				return output;
@@ -139,6 +203,18 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 			firm.setUserId(adminUser.getId());
 			firmUpdate = true;
 		} else {
+			//校验用户账号是否存在
+			List<User> userList = new ArrayList<User>();
+			User query = DTOUtils.newInstance(User.class);
+			query.setUserName(dto.getUserName());
+			userList = userService.listByExample(query);
+			if (CollectionUtils.isNotEmpty(userList)) {
+				// 匹配是否有用户ID不等当前修改记录的用户
+				boolean result = userList.stream().anyMatch(u -> !u.getId().equals(dto.getUserId()));
+				if (result) {
+					return BaseOutput.failure("用户账号已存在");
+				}
+			}
 			adminUser.setUserName(dto.getUserName());
 			adminUser.setCellphone(dto.getCellphone());
 			adminUser.setEmail(dto.getEmail());
@@ -148,6 +224,41 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 				return output;
 			}
 		}
+
+		//默认设置用户的权限
+		if(firmUpdate){
+			//为当前用户设置数据权限，当前用户得看到新增的市场
+			UserDataAuth userDataAuth = DTOUtils.newInstance(UserDataAuth.class);
+			userDataAuth.setRefCode(DataAuthType.MARKET.getCode());
+			userDataAuth.setUserId(adminUser.getId());
+			userDataAuth.setValue(firm.getCode());
+			int row = this.userDataAuthMapper.insertSelective(userDataAuth);
+			if (row <= 0) {
+				throw new RuntimeException("绑定用户市场数据权限失败");
+			}
+		}else{
+			//先判断该用户有无当前市场权限，如果没有则默认新增权限
+			List<Map> ranges = SessionContext.getSessionContext().dataAuth(DataAuthType.MARKET.getCode());
+			boolean rangFlag=false;
+			for (Map rangMap : ranges) {
+				if(rangMap.get("value") !=null && rangMap.get("value").toString().equals(String.valueOf(firm.getCode()))){
+					rangFlag=true;
+					break;
+				}
+			}
+			if(!rangFlag){
+				//为当前用户设置数据权限，当前用户得看到新增的市场
+				UserDataAuth userDataAuth = DTOUtils.newInstance(UserDataAuth.class);
+				userDataAuth.setRefCode(DataAuthType.MARKET.getCode());
+				userDataAuth.setUserId(adminUser.getId());
+				userDataAuth.setValue(firm.getCode());
+				int row = this.userDataAuthMapper.insertSelective(userDataAuth);
+				if (row <= 0) {
+					throw new RuntimeException("绑定用户市场数据权限失败");
+				}
+			}
+		}
+
 		Role role = null;
 		if (dto.getRoleId() != null) {
 			role = this.roleSerice.get(dto.getRoleId());
@@ -227,14 +338,14 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 		if (firm.getDeleted()) {
 			return BaseOutput.failure("商户为已删除状态，请勿重复操作");
 		}
-		if (firm.getState().equals(FirmState.ENABLED.getValue())) {
-			return BaseOutput.failure("商户状态为已开通状态，无法关闭");
+		if (firm.getState().equals(FirmState.ENABLED.getValue()) && firm.getUserId() != null) {
+			return BaseOutput.failure("商户状态为已开通状态且设置了管理员，无法删除");
 		}
-		LocalDateTime closeTime = firm.getCloseTime();
+		/*LocalDateTime closeTime = firm.getCloseTime();
 		LocalDateTime beforeCloseTimeOneYear = closeTime.plusYears(1L);
 		if(beforeCloseTimeOneYear.isAfter(LocalDateTime.now())) {
 			return BaseOutput.failure("关闭了时间超过1年以上可以删除");
-		}
+		}*/
 		firm.setDeleted(true);
 		int rows = this.getActualDao().updateByPrimaryKeySelective(firm);
 		return rows > 0 ? BaseOutput.success() : BaseOutput.failure("删除失败");

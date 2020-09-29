@@ -7,8 +7,10 @@
  * @submitFun 表单提交需执行的任务
  */
 $(function() {
-			editRoleMenuAndResource();
-		});
+    editRoleMenuAndResource();
+    spaceHidden();
+
+});
 
 /**
  * 打开权限设置页面
@@ -25,6 +27,51 @@ function editRoleMenuAndResource() {
 	$('#roleMenuAndResourceGrid').treegrid("load", {
 				roleId : $('#roleId').val()
 			});
+}
+
+// 重置密码
+function resetPassword() {
+    var paramArray = $('#_form').serializeArray();
+    var userId = paramArray[1].value;
+    if (userId == '' || userId == null || typeof(userId) == 'undefined' ) {
+        swal('警告', '该市场下还没有设置管理员，清先设置管理员', 'warning');
+        return;
+    }
+    var msg = '账号密码重置后将无法再通过旧密码登陆系统，请确认是否要重置密码？';
+    swal({
+        title : msg,
+        type : 'question',
+        showCancelButton : true,
+        confirmButtonColor : '#3085d6',
+        cancelButtonColor : '#d33',
+        confirmButtonText : '确定',
+        cancelButtonText : '取消',
+        confirmButtonClass : 'btn btn-success',
+        cancelButtonClass : 'btn btn-danger'
+    }).then(function(flag) {
+        if (flag.dismiss == 'cancel') {
+            return;
+        }
+        $.ajax({
+            type : "POST",
+            url : "${contextPath}/user/resetPass.action",
+            data : {id:userId},
+            processData : true,
+            dataType : "json",
+            async : true,
+            success : function(data) {
+                if (data.success) {
+                    swal('提示', data.result, 'success');
+                } else {
+                    swal('错误', data.result, 'error');
+                }
+            },
+            error : function() {
+                swal('错误', '远程访问失败', 'error');
+            }
+        });
+    });
+
 }
 
 /**
@@ -91,5 +138,33 @@ function saveOrUpdate() {
 function roleMenuTreeLoadsuccess() {
 	var opts = $('#roleMenuAndResourceGrid').treegrid("options");
 	opts.cascadeCheck = true;
+}
+
+$(function(){
+    $.extend($.fn.validatebox.defaults.rules, {
+        checkUserName : {// 验证用户名
+            validator : function(value) {
+                return /^[A-Za-z0-9_\u4e00-\u9fa5]+$/gi.test(value);
+            },
+            message : '只能包含中文、英文、数字、下划线'
+        }
+    });
+});
+$(function(){
+    $.extend($.fn.validatebox.defaults.rules, {
+        checkCellphone : {// 验证手机号
+            validator : function(value) {
+                return /^[0-9]+$/gi.test(value);
+            },
+            message : '只允许输入数字'
+        }
+    });
+});
+//隐藏空格
+function spaceHidden(){
+    var serialNumber = document.getElementById('serialNumber').innerHTML;
+    if (serialNumber == '' || serialNumber == null || typeof(serialNumber) == 'undefined' ) {
+        $("#space").hide();
+    }
 }
 </script>

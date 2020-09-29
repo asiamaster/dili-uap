@@ -100,8 +100,9 @@
                 // 获取市场字段的编辑框
                 var ed = $("#roleGrid").treegrid('getEditor', {id:row.id,field:'firmCode'});
                 // 存在ID，数据编辑情况下,市场信息不可更改
+                debugger
                 var parentNode = $("#roleGrid").treegrid('getParent',row.id);
-                if (parentNode && !typeof parentNode.id != 'string') {
+                if (parentNode && typeof (parentNode.id) != 'string') {
                 	row.parentId=parentNode.id;
                 }
                 row.firmCode = parentNode.$_firmCode?parentNode.$_firmCode:parentNode.id;

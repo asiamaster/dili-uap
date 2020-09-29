@@ -15,6 +15,10 @@ function saveOrUpdate() {
 		return;
 	}
 	var _formData = $("#_form").serializeObject();
+	//判断是否为1，为给true，否则不处理
+    if(_formData.longTermEffictive && _formData.longTermEffictive=='1'){
+        _formData.longTermEffictive='true';
+    }
 	var _url = null;
 	// 没有id就新增
 	if (_formData.id == null || _formData.id == "") {
@@ -138,6 +142,13 @@ function onBankDistrictChange(n, v) {
 	// reloadBankUnionInfo();
 }
 
+function onChangeDate() {
+    var longTermEffictive = $('#longTermEffictive').combobox('getValue');
+    if(longTermEffictive == "true" || longTermEffictive == "1"){
+        $('#longTermEffictive').combobox('setValue',false);
+    }
+}
+
 // 清空表单
 function clearForm() {
 	$('#form').form('clear');
@@ -177,4 +188,15 @@ $(function() {
 			}
 			$.messager.progress('close');
 		});
+
+$(function(){
+    $.extend($.fn.validatebox.defaults.rules, {
+        checkCellphone : {// 验证手机号
+            validator : function(value) {
+                return /^[0-9]+$/gi.test(value);
+            },
+            message : '只允许输入数字'
+        }
+    });
+});
 </script>
