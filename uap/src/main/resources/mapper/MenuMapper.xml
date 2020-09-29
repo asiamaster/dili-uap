@@ -211,6 +211,7 @@
 		<if test="systemId != null">
 			AND id = #{systemId}
 		</if>
+		ORDER BY order_number
 	</select>
 
 	<!--根据用户id查询目录和链接菜单 -->
