@@ -242,7 +242,7 @@
 		<dependency>
 			<groupId>com.dili</groupId>
 			<artifactId>commons-web</artifactId>
-			<version>1.3.3-SNAPSHOT</version>
+			<version>1.3.4-SNAPSHOT</version>
 		</dependency>
 
 	</dependencies>
