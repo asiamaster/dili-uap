@@ -126,11 +126,25 @@ public class AuthenticationApi {
 		} catch (Exception e) {
 			return BaseOutput.failure(e.getMessage());
 		}
+		BaseOutput output = systemConfigRpc.list(null);
+		java.lang.System.out.println(output);
 		JSONObject jsonObject = JSONObject.parseObject(json);
 		LoginDto loginDto = DTOUtils.newInstance(LoginDto.class);
 		loginDto.setUserName(jsonObject.getString("userName"));
 		loginDto.setPassword(jsonObject.getString("password"));
-		BaseOutput output = loginService.validateSaveSession(loginDto);
+		return loginService.validateSaveSession(loginDto);
+	}
+
+	/**
+	 * 用户登录验证，返回新的sessionId
+	 * 
+	 * @param json
+	 * @return
+	 */
+	@RequestMapping(value = "/validateAndGetUserInfo.api", method = { RequestMethod.POST })
+	@ResponseBody
+	public BaseOutput validateAndGetUserInfo(@RequestBody String json) {
+		BaseOutput output = this.validate(json);
 		if (!output.isSuccess()) {
 			return output;
 		}
