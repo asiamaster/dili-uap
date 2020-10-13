@@ -12,6 +12,7 @@ import com.dili.uap.domain.ScheduleMessage;
 import com.dili.uap.domain.dto.UserDepartmentRole;
 import com.dili.uap.domain.dto.UserDepartmentRoleQuery;
 import com.dili.uap.domain.dto.UserDto;
+import com.dili.uap.glossary.UserState;
 import com.dili.uap.sdk.domain.User;
 import com.dili.uap.sdk.domain.dto.UserQuery;
 import com.dili.uap.service.RoleService;
@@ -209,5 +210,16 @@ public class UserApi {
 		Long userId = jo.getLong("userId");
 		Long roleId = jo.getLong("roleId");
 		return roleService.unbindRoleUser(roleId, userId);
+	}
+	/**
+	 *通过app注册用户
+	 * @param  user
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/registeryByApp.api")
+	public BaseOutput<Object> registeryByApp(@RequestBody User user) {
+		user.setState(UserState.DISABLED.getCode());
+		return userService.save(user);
 	}
 }
