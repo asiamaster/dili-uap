@@ -193,4 +193,14 @@ public interface UserService extends BaseService<User, Long> {
 	 * @return
 	 */
 	List<User> findUsersByResourceCode(String resourceCode);
+
+	/**
+	 * 通过app注册用户
+	 *
+	 * @param user
+	 * 
+	 * @return
+	 */
+	BaseOutput registeryByApp(User user);
+
 }

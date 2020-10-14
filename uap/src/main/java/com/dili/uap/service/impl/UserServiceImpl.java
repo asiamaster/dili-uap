@@ -636,4 +636,18 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 	public List<User> findUsersByResourceCode(String resourceCode) {
 		return this.getActualDao().findUsersByResourceCode(resourceCode);
 	}
+
+	@Transactional(rollbackFor = Exception.class)
+	public BaseOutput registeryByApp(User user) {
+		if (user == null) {
+			return BaseOutput.failure("用户数据丢失");
+		}
+		BaseOutput save = this.save(user);
+		if (!save.isSuccess()) {
+			return BaseOutput.failure(save.getMessage());
+		}
+		user.setState(UserState.DISABLED.getCode());
+		this.updateSelective(user);
+		return BaseOutput.success("注册用户成功");
+	}
 }

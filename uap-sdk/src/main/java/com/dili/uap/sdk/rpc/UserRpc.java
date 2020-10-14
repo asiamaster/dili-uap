@@ -10,6 +10,8 @@ import com.dili.ss.domain.PageOutput;
 import com.dili.uap.sdk.domain.User;
 import com.dili.uap.sdk.domain.dto.UserDepartmentRole;
 import com.dili.uap.sdk.domain.dto.UserDepartmentRoleQuery;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * <B>Description</B> <B>Copyright:本软件源代码版权归农丰时代所有,未经许可不得任意复制与传播.</B>
@@ -94,4 +96,20 @@ public interface UserRpc {
 	 */
 	@POST("/userApi/unbindUserRole.api")
 	BaseOutput<Object> unbindUserRole(@VOField("userId") Long userId, @VOField("roleId") String roleId);
+
+	/**
+	 *通过app注册用户
+	 * @param  userName
+	 * @param  realName
+	 * @param  cellphone
+	 * @param  email
+	 * @param  position
+	 * @param  cardNumber
+	 * @param  firmCode
+	 * @param  departmentId
+	 * @param  description
+	 * @return
+	 */
+	@POST("/userApi/registeryByApp.api")
+	BaseOutput<Object> registeryByApp(@VOField("userName") String userName, @VOField("realName") String realName, @VOField("cellphone") String cellphone, @VOField("email") String email, @VOField("position") String position, @VOField("cardNumber") String cardNumber, @VOField("firmCode") String firmCode, @VOField("departmentId") Long departmentId, @VOField("description") String description);
 }
