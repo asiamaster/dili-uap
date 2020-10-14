@@ -40,7 +40,7 @@ public class UserApi {
 
 	@Autowired
 	ResumeLockedUserJob resumeLockedUserJob;
-	
+
 	@Autowired
 	RoleService roleService;
 
@@ -159,7 +159,7 @@ public class UserApi {
 	/**
 	 * 查询当前市场下具有特定权限编码的用户
 	 * 
-	 * @param firmCode     部门id
+	 * @param firmCode     市场编码
 	 * @param resourceCode 权限编码
 	 * @return
 	 */
@@ -167,6 +167,19 @@ public class UserApi {
 	@ResponseBody
 	public BaseOutput<List<User>> findCurrentFirmUsersByResourceCode(@RequestParam String firmCode, @RequestParam String resourceCode) {
 		List<User> list = this.userService.findCurrentFirmUsersByResourceCode(firmCode, resourceCode);
+		return BaseOutput.success().setData(list);
+	}
+
+	/**
+	 * 查询具有特定权限编码的用户
+	 * 
+	 * @param resourceCode 权限编码
+	 * @return
+	 */
+	@RequestMapping("/findUsersByResourceCode.api")
+	@ResponseBody
+	public BaseOutput<List<User>> findUsersByResourceCode(@RequestParam String resourceCode) {
+		List<User> list = this.userService.findUsersByResourceCode(resourceCode);
 		return BaseOutput.success().setData(list);
 	}
 
@@ -182,9 +195,10 @@ public class UserApi {
 	public BaseOutput<Object> validatePassword(@RequestParam Long userId, @RequestParam String password) {
 		return this.userService.validatePassword(userId, password);
 	}
-	
+
 	/**
 	 * 添加用户角色关联
+	 * 
 	 * @param json 包含userId，roleId
 	 * @return
 	 */
@@ -197,8 +211,10 @@ public class UserApi {
 		Long roleId = jo.getLong("roleId");
 		return userService.saveUserRole(userId, roleId);
 	}
+
 	/**
 	 * 删除用户角色关联
+	 * 
 	 * @param json 包含userId，roleId
 	 * @return
 	 */

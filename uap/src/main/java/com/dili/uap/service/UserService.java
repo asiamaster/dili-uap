@@ -180,9 +180,17 @@ public interface UserService extends BaseService<User, Long> {
 	/**
 	 * 保存用户的角色信息
 	 *
-	 * @param userId  用户ID
+	 * @param userId 用户ID
 	 * @param roleId 角色ID
 	 * @return
 	 */
 	BaseOutput saveUserRole(Long userId, Long roleId);
+
+	/**
+	 * 查询具有特定权限编码的用户
+	 * 
+	 * @param resourceCode 权限编码
+	 * @return
+	 */
+	List<User> findUsersByResourceCode(String resourceCode);
 }

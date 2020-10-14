@@ -45,12 +45,36 @@ public interface UserRpc {
 	@POST("/userApi/findUserContainDepartmentAndRole.api")
 	BaseOutput<List<UserDepartmentRole>> findUserContainDepartmentAndRole(@VOBody(required = false) UserDepartmentRoleQuery dto);
 
+	/**
+	 * 查询市场下具有按钮权限的用户
+	 * 
+	 * @param firmCode     市场编码
+	 * @param resourceCode 权限编码
+	 * @return
+	 */
 	@POST("/userApi/findCurrentFirmUsersByResourceCode.api")
 	BaseOutput<List<User>> findCurrentFirmUsersByResourceCode(@ReqParam("firmCode") String firmCode, @ReqParam("resourceCode") String resourceCode);
 
+	/**
+	 * 查询市场下具有按钮权限的用户
+	 * 
+	 * @param firmCode     市场编码
+	 * @param resourceCode 权限编码
+	 * @return
+	 */
+	@POST("/userApi/findUsersByResourceCode.api")
+	BaseOutput<List<User>> findUsersByResourceCode(@ReqParam("resourceCode") String resourceCode);
+
+	/**
+	 * 验证用户密码
+	 * 
+	 * @param userId   用户id
+	 * @param password 密码
+	 * @return
+	 */
 	@POST("/userApi/validatePassword.api")
 	BaseOutput<Object> validatePassword(@ReqParam("userId") Long userId, @ReqParam("password") String password);
-	
+
 	/**
 	 * 添加用户角色关联
 	 *

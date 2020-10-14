@@ -631,4 +631,9 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 		}
 		return BaseOutput.success("添加用户角色关联成功");
 	}
+
+	@Override
+	public List<User> findUsersByResourceCode(String resourceCode) {
+		return this.getActualDao().findUsersByResourceCode(resourceCode);
+	}
 }

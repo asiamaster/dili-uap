@@ -174,5 +174,17 @@
 		u.firm_code = #{firmCode}
 		AND r.`code` = #{resourceCode}
 	</select>
+	
+	<select id="findUsersByResourceCode" resultMap="BaseResultMap">
+		SELECT DISTINCT
+		u.*
+		FROM
+		`user` u
+		INNER JOIN user_role ur ON u.id = ur.user_id
+		INNER JOIN role_resource rr ON ur.role_id = rr.role_id
+		INNER JOIN resource r ON r.id = rr.resource_id
+		WHERE
+		r.`code` = #{resourceCode}
+	</select>
 
 </mapper>
