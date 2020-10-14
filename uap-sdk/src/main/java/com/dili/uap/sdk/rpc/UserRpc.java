@@ -75,9 +75,17 @@ public interface UserRpc {
 
 	/**
 	 *通过app注册用户
-	 * @param  user
+	 * @param  userName
+	 * @param  realName
+	 * @param  cellphone
+	 * @param  email
+	 * @param  position
+	 * @param  cardNumber
+	 * @param  firmCode
+	 * @param  departmentId
+	 * @param  description
 	 * @return
 	 */
-	@POST(value = "/userApi/registeryByApp.api")
-	BaseOutput<Object> registeryByApp(@VOBody User user);
+	@POST("/userApi/registeryByApp.api")
+	BaseOutput<Object> registeryByApp(@VOField("userName") String userName, @VOField("realName") String realName, @VOField("cellphone") String cellphone, @VOField("email") String email, @VOField("position") String position, @VOField("cardNumber") String cardNumber, @VOField("firmCode") String firmCode, @VOField("departmentId") Long departmentId, @VOField("description") String description);
 }

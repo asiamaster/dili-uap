@@ -631,4 +631,19 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 		}
 		return BaseOutput.success("添加用户角色关联成功");
 	}
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public BaseOutput registeryByApp(User user){
+		if(user==null){
+			return BaseOutput.failure("用户数据丢失");
+		}
+		BaseOutput save =this.save(user);
+		if(!save.isSuccess()){
+			return BaseOutput.failure(save.getMessage());
+		}
+		user.setState(UserState.DISABLED.getCode());
+		this.updateSelective(user);
+		return BaseOutput.success("注册用户成功");
+	}
 }

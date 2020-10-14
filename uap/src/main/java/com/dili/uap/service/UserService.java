@@ -185,4 +185,13 @@ public interface UserService extends BaseService<User, Long> {
 	 * @return
 	 */
 	BaseOutput saveUserRole(Long userId, Long roleId);
+
+	/**
+	 * 通过app注册用户
+	 *
+	 * @param user
+	 * @return
+	 */
+	BaseOutput registeryByApp(User user);
+
 }
