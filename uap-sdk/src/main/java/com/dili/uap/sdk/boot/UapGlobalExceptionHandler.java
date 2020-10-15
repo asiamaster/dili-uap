@@ -87,7 +87,7 @@ public class UapGlobalExceptionHandler {
             exMsg = "服务开启限流保护,请稍后再试!";
         }
         //判断请求类型是json
-        if(request.getHeader("content-type").equals("application/json")){
+        if("application/json".equals(request.getHeader("content-type"))){
             response.setContentType("application/json;charset=UTF-8");
             response.getWriter().write(JSON.toJSONString(BaseOutput.failure(exMsg)));
             return null;
@@ -99,7 +99,7 @@ public class UapGlobalExceptionHandler {
 //            response.sendRedirect(basePath + SpringUtil.getProperty("error.page.default", "error/default"));
             return SpringUtil.getProperty("error.page.default", "error/default");
         }
-        response.setContentType("application/json;charset=UTF-8");
+        response.setContentType("application/SentinelInvocationHandlerjson;charset=UTF-8");
         response.getWriter().write(JSON.toJSONString(BaseOutput.failure(exMsg)));
         return null;
     }
