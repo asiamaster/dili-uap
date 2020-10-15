@@ -110,8 +110,10 @@
             },
             onEndEdit: function (row,data) {
             	var parentNode = $("#roleGrid").treegrid('getParent',row.id);
-            	if (parentNode && !typeof parentNode.id != 'string') {
-                	row.parentId=null;
+                if (parentNode && typeof(parentNode.id) == 'string') {
+                    row.parentId=null;
+                }else if (parentNode && typeof(parentNode.id) == 'number') {
+                    row.parentId=parentNode.id;
                 }
                 setOptBtnDisplay(false);
             },
