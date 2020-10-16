@@ -148,7 +148,8 @@ public class RoleController {
 				list.add(map);
 			});
 		} else {
-			list.forEach(m -> m.put("parentId", m.get("$_firmCode")));
+			//下面这行代码引起条件查询时子角色会重复显示，所以注释掉
+//			list.forEach(m -> m.put("parentId", m.get("$_firmCode")));
 			Set<String> firmCodes = new HashSet<String>();
 			roleList.forEach(r -> firmCodes.add(r.getFirmCode()));
 			Example example = new Example(Firm.class);
