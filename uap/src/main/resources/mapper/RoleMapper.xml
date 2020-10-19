@@ -268,11 +268,15 @@
 		FROM
 		menu
 		WHERE
-		id IN (
+		(0=1
+		<if test="roleMenus != null and roleMenus.size() >0">
+		or id IN (
 		<foreach collection="roleMenus" item="rm" separator=",">
 			#{rm.menuId}
 		</foreach>
-		) UNION
+		)
+		</if>)
+		UNION
 		SELECT
 		rm.menu_id,
 		m.`name`
@@ -305,11 +309,15 @@
 		FROM
 		resource
 		WHERE
-		id IN (
+		(0=1
+		<if test="roleResources != null and roleResources.size() >0">
+		or id IN (
 		<foreach collection="roleResources" item="rr" separator=",">
 			#{rr.resourceId}
 		</foreach>
-		) UNION
+		)
+		</if>)
+		UNION
 		SELECT
 		rr.resource_id,
 		r.`name`
