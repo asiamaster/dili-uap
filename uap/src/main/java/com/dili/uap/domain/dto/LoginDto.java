@@ -56,4 +56,10 @@ public interface LoginDto extends IDTO {
     String getFirmCode();
     void setFirmCode(String firmCode);
 
+    String getPushId();
+	void setPushId(String pushId);
+	
+	String getDeviceType();
+	void setDeviceType(String deviceType);
+
 }

@@ -6,6 +6,7 @@ import com.dili.logger.sdk.glossary.LoggerConstant;
 import com.dili.ss.constant.ResultCode;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
+import com.dili.ss.exception.AppException;
 import com.dili.uap.constants.UapConstants;
 import com.dili.uap.dao.FirmMapper;
 import com.dili.uap.dao.SystemConfigMapper;
@@ -35,6 +36,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.BoundListOperations;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -249,6 +251,7 @@ public class LoginServiceImpl implements LoginService {
 			logLogin(user, loginDto, true, "登录成功");
 			return BaseOutput.success("登录成功").setData(loginResult);
 		} catch (Exception e) {
+			LOG.error(e.getMessage());
 			if (loginDto.getUserId() != null) {
 				logLogin(null, loginDto, false, e.getMessage());
 			}
@@ -461,6 +464,24 @@ public class LoginServiceImpl implements LoginService {
 			return true;
 		}
 		return false;
+	}
+
+	@Transactional(rollbackFor = Exception.class)
+	@Override
+	public BaseOutput<LoginResult> loginFromApp(LoginDto loginDto) {
+		BaseOutput<LoginResult> result = this.login(loginDto);
+		if (!result.isSuccess()) {
+			return result;
+		}
+//		if (StringUtils.isNotBlank(loginDto.getPushId())) {
+//			User user = this.userMapper.selectByPrimaryKey(result.getData().getUser().getId());
+//			int rows = this.userMapper.updateByPrimaryKeySelective(user);
+//			if (rows <= 0) {
+//				throw new AppException("更新推送id失败");
+//			}
+//		}
+		return result;
+
 	}
 
 }

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.dili.ss.constant.ResultCode;
 import com.dili.ss.domain.BaseOutput;
@@ -38,9 +39,11 @@ import com.dili.uap.sdk.domain.dto.ClientMenuDto;
 import com.dili.uap.sdk.redis.DataAuthRedis;
 import com.dili.uap.sdk.redis.UserRedis;
 import com.dili.uap.sdk.redis.UserSystemRedis;
+import com.dili.uap.sdk.rpc.ResourceRpc;
 import com.dili.uap.sdk.rpc.SystemConfigRpc;
 import com.dili.uap.service.DataAuthRefService;
 import com.dili.uap.service.LoginService;
+import com.dili.uap.service.ResourceService;
 import com.dili.uap.service.UserService;
 import com.dili.uap.utils.WebUtil;
 
@@ -133,24 +136,24 @@ public class AuthenticationApi {
 		LoginDto loginDto = DTOUtils.newInstance(LoginDto.class);
 		loginDto.setUserName(jsonObject.getString("userName"));
 		loginDto.setPassword(jsonObject.getString("password"));
+		loginDto.setPushId(jsonObject.getString("pushId"));
+		loginDto.setPushId(jsonObject.getString("deviceType"));
 		// 设置登录后需要返回的上一页URL,用于记录登录地址到Cookie
 		loginDto.setLoginPath(WebUtil.fetchReferer(request));
 		// 设置ip和hosts,用于记录登录日志
 		loginDto.setIp(WebUtil.getRemoteIP(request));
 		loginDto.setHost(request.getRemoteHost());
-		BaseOutput<LoginResult> output = loginService.login(loginDto);
+		BaseOutput<LoginResult> output = loginService.loginFromApp(loginDto);
 		if (!output.isSuccess()) {
 			return output;
 		}
-		UserTicket userTicket = this.userRedis.getUser(output.getData().toString());
+		UserTicket userTicket = this.userRedis.getUser(output.getData().getSessionId());
 		Map param = new HashMap(2);
 		param.put("userId", output.getData().getUser().getId());
-		List<ClientMenuDto> menus = this.menuMapper.listClientMenus(param);
 		return BaseOutput.successData(new HashMap<String, Object>() {
 			{
 				put("sessionId", output.getData().getSessionId());
 				put("user", userTicket);
-				put("menus", menus);
 			}
 		});
 	}
