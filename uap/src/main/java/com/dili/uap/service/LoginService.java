@@ -65,4 +65,12 @@ public interface LoginService {
 	 * @return 是否被锁定
 	 */
 	boolean lockUser(User user);
+
+	/**
+	 * 移动端登录
+	 * 
+	 * @param loginDto
+	 * @return
+	 */
+	BaseOutput<LoginResult> loginFromApp(LoginDto loginDto);
 }

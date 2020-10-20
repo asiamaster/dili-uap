@@ -11,15 +11,14 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 由MyBatis Generator工具自动生成
- * This file was generated on 2018-05-21 16:46:27.
+ * 由MyBatis Generator工具自动生成 This file was generated on 2018-05-21 16:46:27.
  */
 @Service
 public class ResourceServiceImpl extends BaseServiceImpl<Resource, Long> implements ResourceService {
 
-    public ResourceMapper getActualDao() {
-        return (ResourceMapper)getDao();
-    }
+	public ResourceMapper getActualDao() {
+		return (ResourceMapper) getDao();
+	}
 
 	@Override
 	public List<String> listResourceCodeByUserId(Long userId) {
@@ -32,5 +31,10 @@ public class ResourceServiceImpl extends BaseServiceImpl<Resource, Long> impleme
 		param.put("url", url);
 		param.put("userId", userId);
 		return this.getActualDao().listResourceCodeByMenuUrl(param);
+	}
+
+	@Override
+	public List<String> listResourceCodesByUserId(Long userId, List<String> resourceCodes) {
+		return this.getActualDao().listResourceCodesByUserId(userId, resourceCodes);
 	}
 }

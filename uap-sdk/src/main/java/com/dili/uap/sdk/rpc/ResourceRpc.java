@@ -2,6 +2,7 @@ package com.dili.uap.sdk.rpc;
 
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.retrofitful.annotation.*;
+import com.dili.uap.sdk.domain.dto.UserResourceQueryDto;
 
 import java.util.List;
 
@@ -12,8 +13,11 @@ import java.util.List;
 public interface ResourceRpc {
 
 	@GET("/resourceApi/listResourceCodeByMenuUrl.api")
-	BaseOutput<List<String>> listResourceCodeByMenuUrl(@ReqParam("url") String url, @ReqParam("userId")Long userId);
+	BaseOutput<List<String>> listResourceCodeByMenuUrl(@ReqParam("url") String url, @ReqParam("userId") Long userId);
 
 	@POST("/resourceApi/listResourceCodeByUserId")
 	BaseOutput<List<String>> listResourceCodeByUserId(@VOBody Long id);
+
+	@POST("/resourceApi/listResourceCodesByUserId")
+	BaseOutput<List<String>> listResourceCodesByUserId(@VOBody UserResourceQueryDto dto);
 }
