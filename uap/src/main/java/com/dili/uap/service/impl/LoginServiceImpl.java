@@ -11,6 +11,7 @@ import com.dili.uap.constants.UapConstants;
 import com.dili.uap.dao.FirmMapper;
 import com.dili.uap.dao.SystemConfigMapper;
 import com.dili.uap.dao.UserMapper;
+import com.dili.uap.dao.UserPushInfoMapper;
 import com.dili.uap.domain.dto.LoginDto;
 import com.dili.uap.domain.dto.LoginResult;
 import com.dili.uap.glossary.UserState;
@@ -18,6 +19,7 @@ import com.dili.uap.manager.*;
 import com.dili.uap.sdk.domain.Firm;
 import com.dili.uap.sdk.domain.SystemConfig;
 import com.dili.uap.sdk.domain.User;
+import com.dili.uap.sdk.domain.UserPushInfo;
 import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.manager.SessionRedisManager;
 import com.dili.uap.sdk.session.DynaSessionConstants;
@@ -102,6 +104,9 @@ public class LoginServiceImpl implements LoginService {
 
 	@Autowired
 	private DynaSessionConstants dynaSessionConstants;
+
+	@Autowired
+	private UserPushInfoMapper userPushInfoMapper;
 
 	@Override
 	public BaseOutput<String> validate(LoginDto loginDto) {
@@ -473,13 +478,29 @@ public class LoginServiceImpl implements LoginService {
 		if (!result.isSuccess()) {
 			return result;
 		}
-//		if (StringUtils.isNotBlank(loginDto.getPushId())) {
-//			User user = this.userMapper.selectByPrimaryKey(result.getData().getUser().getId());
-//			int rows = this.userMapper.updateByPrimaryKeySelective(user);
-//			if (rows <= 0) {
-//				throw new AppException("更新推送id失败");
-//			}
-//		}
+		if (StringUtils.isNotBlank(loginDto.getDeviceType()) && StringUtils.isNotBlank(loginDto.getPushId())) {
+			UserPushInfo upiQuery = DTOUtils.newInstance(UserPushInfo.class);
+			upiQuery.setUserId(result.getData().getUser().getId());
+			UserPushInfo pushInfo = this.userPushInfoMapper.selectOne(upiQuery);
+			if (pushInfo == null) {
+				pushInfo = DTOUtils.newInstance(UserPushInfo.class);
+				pushInfo.setPlatform(loginDto.getDeviceType());
+				pushInfo.setPushId(loginDto.getPushId());
+				pushInfo.setUserId(result.getData().getUser().getId());
+				int rows = this.userPushInfoMapper.insertSelective(pushInfo);
+				if (rows <= 0) {
+					return BaseOutput.failure("更新移动端推送信息失败");
+				}
+			} else {
+				pushInfo.setPushId(loginDto.getPushId());
+				pushInfo.setPlatform(loginDto.getDeviceType());
+				pushInfo.setPushId(loginDto.getPushId());
+				int rows = this.userPushInfoMapper.updateByPrimaryKeySelective(pushInfo);
+				if (rows <= 0) {
+					return BaseOutput.failure("更新移动端推送信息失败");
+				}
+			}
+		}
 		return result;
 
 	}

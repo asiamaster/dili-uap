@@ -137,7 +137,7 @@ public class AuthenticationApi {
 		loginDto.setUserName(jsonObject.getString("userName"));
 		loginDto.setPassword(jsonObject.getString("password"));
 		loginDto.setPushId(jsonObject.getString("pushId"));
-		loginDto.setPushId(jsonObject.getString("deviceType"));
+		loginDto.setDeviceType(jsonObject.getString("deviceType") != null ? jsonObject.getString("deviceType").toLowerCase() : null);
 		// 设置登录后需要返回的上一页URL,用于记录登录地址到Cookie
 		loginDto.setLoginPath(WebUtil.fetchReferer(request));
 		// 设置ip和hosts,用于记录登录日志
