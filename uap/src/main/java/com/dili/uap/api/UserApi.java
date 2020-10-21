@@ -1,5 +1,18 @@
 package com.dili.uap.api;
 
+import java.util.List;
+
+import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.dili.ss.domain.BaseOutput;
@@ -17,14 +30,6 @@ import com.dili.uap.sdk.domain.dto.UserQuery;
 import com.dili.uap.service.RoleService;
 import com.dili.uap.service.UserService;
 import com.github.pagehelper.Page;
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * 由MyBatis Generator工具自动生成 This file was generated on 2017-07-11 16:56:50.
@@ -40,13 +45,13 @@ public class UserApi {
 
 	@Autowired
 	ResumeLockedUserJob resumeLockedUserJob;
-	
+
 	@Autowired
 	RoleService roleService;
 
 	/**
 	 * 查询User实体接口
-	 * 
+	 *
 	 * @param id
 	 * @return
 	 */
@@ -58,7 +63,7 @@ public class UserApi {
 
 	/**
 	 * 查询User列表接口
-	 * 
+	 *
 	 * @param user
 	 * @return
 	 */
@@ -69,7 +74,7 @@ public class UserApi {
 
 	/**
 	 * 查询用户
-	 * 
+	 *
 	 * @param user
 	 * @return
 	 */
@@ -86,7 +91,7 @@ public class UserApi {
 
 	/**
 	 * 查询用户
-	 * 
+	 *
 	 * @param user
 	 * @return
 	 */
@@ -105,7 +110,7 @@ public class UserApi {
 
 	/**
 	 * 根据ids查询用户
-	 * 
+	 *
 	 * @param ids
 	 * @return
 	 */
@@ -119,7 +124,7 @@ public class UserApi {
 
 	/**
 	 * 根据角色roleId查询用户集合
-	 * 
+	 *
 	 * @param roleId
 	 * @return
 	 */
@@ -131,7 +136,7 @@ public class UserApi {
 
 	/**
 	 * 根据用户，查询用户对应角色，部门信息
-	 * 
+	 *
 	 * @param query
 	 * @return
 	 */
@@ -144,7 +149,7 @@ public class UserApi {
 
 	/**
 	 * 扫描并解锁锁定的用户
-	 * 
+	 *
 	 * @param scheduleMessage
 	 * @return
 	 * @throws Exception
@@ -159,11 +164,12 @@ public class UserApi {
 	/**
 	 * 查询当前市场下具有特定权限编码的用户
 	 * 
-	 * @param firmCode     部门id
+	 * @param firmCode     市场编码
 	 * @param resourceCode 权限编码
 	 * @return
 	 */
 	@RequestMapping("/findCurrentFirmUsersByResourceCode.api")
+
 	@ResponseBody
 	public BaseOutput<List<User>> findCurrentFirmUsersByResourceCode(@RequestParam String firmCode, @RequestParam String resourceCode) {
 		List<User> list = this.userService.findCurrentFirmUsersByResourceCode(firmCode, resourceCode);
@@ -171,8 +177,22 @@ public class UserApi {
 	}
 
 	/**
-	 * 验证用户密码
+	 * 查询具有特定权限编码的用户
 	 * 
+	 * @param resourceCode 权限编码
+	 * @return
+	 */
+	@RequestMapping("/findUsersByResourceCode.api")
+
+	@ResponseBody
+	public BaseOutput<List<User>> findUsersByResourceCode(@RequestParam String resourceCode) {
+		List<User> list = this.userService.findUsersByResourceCode(resourceCode);
+		return BaseOutput.success().setData(list);
+	}
+
+	/**
+	 * 验证用户密码
+	 *
 	 * @param userId
 	 * @param password
 	 * @return
@@ -182,9 +202,10 @@ public class UserApi {
 	public BaseOutput<Object> validatePassword(@RequestParam Long userId, @RequestParam String password) {
 		return this.userService.validatePassword(userId, password);
 	}
-	
+
 	/**
 	 * 添加用户角色关联
+	 *
 	 * @param json 包含userId，roleId
 	 * @return
 	 */
@@ -197,8 +218,10 @@ public class UserApi {
 		Long roleId = jo.getLong("roleId");
 		return userService.saveUserRole(userId, roleId);
 	}
+
 	/**
 	 * 删除用户角色关联
+	 *
 	 * @param json 包含userId，roleId
 	 * @return
 	 */
@@ -209,5 +232,56 @@ public class UserApi {
 		Long userId = jo.getLong("userId");
 		Long roleId = jo.getLong("roleId");
 		return roleService.unbindRoleUser(roleId, userId);
+	}
+
+	/**
+	 * 通过app注册用户
+	 *
+	 * @param json
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/registeryByApp.api", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public BaseOutput registeryByApp(@RequestBody String json) {
+		JSONObject jo = JSON.parseObject(json);
+		String userName = jo.getString("userName");
+		String realName = jo.getString("realName");
+		String cellphone = jo.getString("cellphone");
+		String email = jo.getString("email");
+		String position = jo.getString("position");
+		String cardNumber = jo.getString("cardNumber");
+		String firmCode = jo.getString("firmCode");
+		Long departmentId = jo.getLong("departmentId");
+		String description = jo.getString("description");
+		User user = this.setUser(userName, realName, cellphone, email, position, cardNumber, firmCode, departmentId, description);
+		return userService.registeryByApp(user);
+	}
+
+	/**
+	 * 设置用户对象
+	 *
+	 * @param userName     用户名
+	 * @param realName     真实姓名
+	 * @param cellphone    手机号码
+	 * @param email        邮箱
+	 * @param position     职位
+	 * @param cardNumber   卡号
+	 * @param firmCode     归属市场编码
+	 * @param departmentId 归属部门
+	 * @param description  备注
+	 * @return
+	 */
+	private User setUser(String userName, String realName, String cellphone, String email, String position, String cardNumber, String firmCode, Long departmentId, String description) {
+		UserDto user = DTOUtils.newInstance(UserDto.class);
+		user.setUserName(userName);
+		user.setRealName(realName);
+		user.setCellphone(cellphone);
+		user.setEmail(email);
+		user.setPosition(position);
+		user.setCardNumber(cardNumber);
+		user.setFirmCode(firmCode);
+		user.setDepartmentId(departmentId);
+		user.setDescription(description);
+		return user;
 	}
 }
