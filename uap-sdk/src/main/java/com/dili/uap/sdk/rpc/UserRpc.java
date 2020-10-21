@@ -70,4 +70,32 @@ public interface UserRpc {
 	 */
 	@POST("/userApi/unbindUserRole.api")
 	BaseOutput<Object> unbindUserRole(@VOField("userId") Long userId, @VOField("roleId") String roleId);
+
+	/**
+	 *通过app注册用户
+	 * @param  userName
+	 * @param  realName
+	 * @param  cellphone
+	 * @param  email
+	 * @param  position
+	 * @param  cardNumber
+	 * @param  firmCode
+	 * @param  departmentId
+	 * @param  description
+	 * @return
+	 */
+	@POST("/userApi/registeryByApp.api")
+	BaseOutput<Object> registeryByApp(@VOField("userName") String userName, @VOField("realName") String realName, @VOField("cellphone") String cellphone, @VOField("email") String email, @VOField("position") String position, @VOField("cardNumber") String cardNumber, @VOField("firmCode") String firmCode, @VOField("departmentId") Long departmentId, @VOField("description") String description);
+
+	/**
+	 * 小程序修改密码
+	 *
+	 * @param userId
+	 * @param oldPassword
+	 * @param newPassword
+	 * @param confirmPassword
+	 * @return
+	 */
+	@POST("/userApi/changePwdForApp.api")
+	BaseOutput<Object> changePwdForApp(@VOField("userId") Long userId, @VOField("oldPassword") String oldPassword, @VOField("newPassword") String newPassword, @VOField("confirmPassword") String confirmPassword);
 }
