@@ -320,12 +320,16 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements Role
 			sb.append("当前登录用户权限不足，以下权限修改不成功：");
 			resources.forEach(s -> sb.append(s.getName()).append(','));
 		}
-		List<Long> menuIds = new ArrayList<>(toInsertRoleMenus.size());
-		toInsertRoleMenus.forEach(rm -> menuIds.add(rm.getMenuId()));
-		LoggerContext.put("roleMenus", JSON.toJSONString(toInsertRoleMenus));
-		List<Long> logResourceIds = new ArrayList<>(toInsertRoleResources.size());
-		toInsertRoleResources.forEach(rr -> logResourceIds.add(rr.getResourceId()));
-		LoggerContext.put("roleResources", JSON.toJSONString(toInsertRoleResources));
+		if(CollectionUtils.isNotEmpty(toInsertRoleMenus)){
+			List<Long> menuIds = new ArrayList<>(toInsertRoleMenus.size());
+			toInsertRoleMenus.forEach(rm -> menuIds.add(rm.getMenuId()));
+			LoggerContext.put("roleMenus", JSON.toJSONString(toInsertRoleMenus));
+		}
+		if(CollectionUtils.isNotEmpty(toInsertRoleResources)){
+			List<Long> logResourceIds = new ArrayList<>(toInsertRoleResources.size());
+			toInsertRoleResources.forEach(rr -> logResourceIds.add(rr.getResourceId()));
+			LoggerContext.put("roleResources", JSON.toJSONString(toInsertRoleResources));
+		}
 		return BaseOutput.success(StringUtils.isEmpty(sb) ? "操作成功" : sb.substring(0, sb.length() - 1));
 	}
 
