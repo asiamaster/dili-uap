@@ -2,6 +2,15 @@ package com.dili.uap.api;
 
 import java.util.List;
 
+import com.dili.logger.sdk.annotation.BusinessLogger;
+import com.dili.logger.sdk.base.LoggerContext;
+import com.dili.logger.sdk.glossary.LoggerConstant;
+import com.dili.uap.domain.dto.LoginDto;
+import com.dili.uap.glossary.UserState;
+import com.dili.uap.sdk.domain.UserTicket;
+import com.dili.uap.sdk.session.SessionContext;
+import com.dili.uap.service.LoginService;
+import com.dili.uap.utils.WebUtil;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +40,8 @@ import com.dili.uap.service.RoleService;
 import com.dili.uap.service.UserService;
 import com.github.pagehelper.Page;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * 由MyBatis Generator工具自动生成 This file was generated on 2017-07-11 16:56:50.
  */
@@ -48,6 +59,9 @@ public class UserApi {
 
 	@Autowired
 	RoleService roleService;
+
+	@Autowired
+	LoginService loginService;
 
 	/**
 	 * 查询User实体接口
@@ -283,5 +297,36 @@ public class UserApi {
 		user.setDepartmentId(departmentId);
 		user.setDescription(description);
 		return user;
+	}
+	/**
+	 * 小程序修改密码
+	 *
+	 * @param json
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/changePwdForApp.api", method = { RequestMethod.GET, RequestMethod.POST })
+	public BaseOutput changePwdForApp(@RequestBody String json) {
+		JSONObject jo = JSON.parseObject(json);
+		Long userId = jo.getLong("userId");
+		String oldPassword = jo.getString("oldPassword");
+		String newPassword = jo.getString("newPassword");
+		String confirmPassword = jo.getString("confirmPassword");
+		UserDto user = DTOUtils.newInstance(UserDto.class);
+		user.setOldPassword(oldPassword);
+		user.setNewPassword(newPassword);
+		user.setConfirmPassword(confirmPassword);
+		User userInDB = userService.get(userId);
+		if (userInDB == null) {
+			return BaseOutput.failure("修改密码失败");
+		}
+		if(!UserState.INACTIVE.getCode().equals(userInDB.getState())){
+			return BaseOutput.failure("修改密码失败");
+		}
+		BaseOutput output = userService.changePwd(userId, user);
+		if (!output.isSuccess()) {
+			return BaseOutput.failure(output.getMessage());
+		}
+		return output;
 	}
 }
