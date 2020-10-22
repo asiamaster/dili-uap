@@ -48,7 +48,7 @@ public interface UserRpc {
 	@POST("/userApi/findCurrentFirmUsersByResourceCode.api")
 	BaseOutput<List<User>> findCurrentFirmUsersByResourceCode(@ReqParam("firmCode") String firmCode, @ReqParam("resourceCode") String resourceCode);
 
-	@POST("/userApi/findCurrentFirmUsersByResourceCode.api")
+	@POST("/userApi/findUsersByResourceCode.api")
 	BaseOutput<List<User>> findUsersByResourceCode(@ReqParam("resourceCode") String resourceCode, @ReqParam("marketId") Long marketId);
 
 	@POST("/userApi/validatePassword.api")
