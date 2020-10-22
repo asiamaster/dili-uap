@@ -59,7 +59,8 @@ public interface UserMapper extends MyMapper<User> {
 	 * 查询具有特定权限编码的用户
 	 * 
 	 * @param resourceCode 权限编码
+	 * @param marketId TODO
 	 * @return
 	 */
-	List<User> findUsersByResourceCode(String resourceCode);
+	List<User> findUsersByResourceCode(String resourceCode, Long marketId);
 }

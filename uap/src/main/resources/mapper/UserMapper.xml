@@ -183,8 +183,10 @@
 		INNER JOIN user_role ur ON u.id = ur.user_id
 		INNER JOIN role_resource rr ON ur.role_id = rr.role_id
 		INNER JOIN resource r ON r.id = rr.resource_id
+		INNER JOIN firm f ON u.firm_code = f.`code`
 		WHERE
 		r.`code` = #{resourceCode}
+		AND f.id = #{marketId}
 	</select>
 
 </mapper>

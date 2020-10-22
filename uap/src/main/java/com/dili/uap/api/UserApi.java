@@ -169,7 +169,6 @@ public class UserApi {
 	 * @return
 	 */
 	@RequestMapping("/findCurrentFirmUsersByResourceCode.api")
-
 	@ResponseBody
 	public BaseOutput<List<User>> findCurrentFirmUsersByResourceCode(@RequestParam String firmCode, @RequestParam String resourceCode) {
 		List<User> list = this.userService.findCurrentFirmUsersByResourceCode(firmCode, resourceCode);
@@ -180,13 +179,14 @@ public class UserApi {
 	 * 查询具有特定权限编码的用户
 	 * 
 	 * @param resourceCode 权限编码
+	 * @param marketId     市场id
 	 * @return
 	 */
 	@RequestMapping("/findUsersByResourceCode.api")
 
 	@ResponseBody
-	public BaseOutput<List<User>> findUsersByResourceCode(@RequestParam String resourceCode) {
-		List<User> list = this.userService.findUsersByResourceCode(resourceCode);
+	public BaseOutput<List<User>> findUsersByResourceCode(@RequestParam String resourceCode, @RequestParam Long marketId) {
+		List<User> list = this.userService.findUsersByResourceCode(resourceCode, marketId);
 		return BaseOutput.success().setData(list);
 	}
 

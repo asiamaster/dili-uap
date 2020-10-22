@@ -633,8 +633,8 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 	}
 
 	@Override
-	public List<User> findUsersByResourceCode(String resourceCode) {
-		return this.getActualDao().findUsersByResourceCode(resourceCode);
+	public List<User> findUsersByResourceCode(String resourceCode, Long marketId) {
+		return this.getActualDao().findUsersByResourceCode(resourceCode, marketId);
 	}
 
 	@Transactional(rollbackFor = Exception.class)
