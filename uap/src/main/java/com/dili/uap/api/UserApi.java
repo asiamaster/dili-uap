@@ -1,16 +1,8 @@
 package com.dili.uap.api;
 
 import java.util.List;
-
-import com.dili.logger.sdk.annotation.BusinessLogger;
-import com.dili.logger.sdk.base.LoggerContext;
-import com.dili.logger.sdk.glossary.LoggerConstant;
-import com.dili.uap.domain.dto.LoginDto;
 import com.dili.uap.glossary.UserState;
-import com.dili.uap.sdk.domain.UserTicket;
-import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.service.LoginService;
-import com.dili.uap.utils.WebUtil;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.dili.ss.domain.BaseOutput;
@@ -40,7 +31,6 @@ import com.dili.uap.service.RoleService;
 import com.dili.uap.service.UserService;
 import com.github.pagehelper.Page;
 
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * 由MyBatis Generator工具自动生成 This file was generated on 2017-07-11 16:56:50.
@@ -318,10 +308,10 @@ public class UserApi {
 		user.setConfirmPassword(confirmPassword);
 		User userInDB = userService.get(userId);
 		if (userInDB == null) {
-			return BaseOutput.failure("修改密码失败");
+			return BaseOutput.failure("用户不存在");
 		}
 		if(!UserState.INACTIVE.getCode().equals(userInDB.getState())){
-			return BaseOutput.failure("修改密码失败");
+			return BaseOutput.failure("用户当前状态不能修改密码");
 		}
 		BaseOutput output = userService.changePwd(userId, user);
 		if (!output.isSuccess()) {
