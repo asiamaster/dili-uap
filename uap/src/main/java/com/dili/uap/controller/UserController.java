@@ -1,21 +1,5 @@
 package com.dili.uap.controller;
 
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Resource;
-
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.dili.logger.sdk.annotation.BusinessLogger;
@@ -29,11 +13,7 @@ import com.dili.ss.metadata.ValueProviderUtils;
 import com.dili.uap.constants.UapConstants;
 import com.dili.uap.domain.dto.UserDto;
 import com.dili.uap.sdk.component.DataAuthSource;
-import com.dili.uap.sdk.domain.DataAuthRef;
-import com.dili.uap.sdk.domain.Firm;
-import com.dili.uap.sdk.domain.User;
-import com.dili.uap.sdk.domain.UserDataAuth;
-import com.dili.uap.sdk.domain.UserTicket;
+import com.dili.uap.sdk.domain.*;
 import com.dili.uap.sdk.glossary.DataAuthType;
 import com.dili.uap.sdk.service.DataAuthSourceService;
 import com.dili.uap.sdk.session.SessionContext;
@@ -45,6 +25,20 @@ import com.dili.uap.service.UserDataAuthService;
 import com.dili.uap.service.UserService;
 import com.dili.uap.utils.PinYinUtil;
 import com.google.common.collect.Maps;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.annotation.Resource;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 由MyBatis Generator工具自动生成 This file was generated on 2018-05-23 16:17:38.
@@ -207,7 +201,7 @@ public class UserController {
 	public String findUserByRole(Long roleId, User user) throws Exception {
 		List<User> retList = userService.findUserByRole(roleId);
 		List results = ValueProviderUtils.buildDataByProvider(user, retList);
-		return new EasyuiPageOutput(results.size(), results).toString();
+		return new EasyuiPageOutput((long)results.size(), results).toString();
 	}
 
 	/**

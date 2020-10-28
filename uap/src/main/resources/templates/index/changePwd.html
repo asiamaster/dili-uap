@@ -46,8 +46,12 @@
 			async : true,
 			success : function(data) {
 				if (data.code == "200") {
-					$('#changePwdForm').form("clear");
-					window.location.href="${contextPath!}/index/platform.html";
+					if(typeof callbackObj != "undefined"){
+						swal('提示', "修改密码成功", 'success');
+					}else {
+						$('#changePwdForm').form("clear");
+						window.location.href="${contextPath!}/index/platform.html";
+					}
                 } else {
                 	$('#errorTxt').html(data.result)
 				}

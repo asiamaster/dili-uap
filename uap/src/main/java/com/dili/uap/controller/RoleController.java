@@ -1,22 +1,5 @@
 package com.dili.uap.controller;
 
-import java.io.FileNotFoundException;
-import java.util.*;
-import java.util.concurrent.Callable;
-import java.util.stream.Collectors;
-
-import javax.annotation.Resource;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.dili.logger.sdk.annotation.BusinessLogger;
@@ -36,9 +19,23 @@ import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.service.FirmService;
 import com.dili.uap.service.RoleService;
-
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import tk.mybatis.mapper.entity.Example;
 import tk.mybatis.mapper.entity.Example.Criteria;
+
+import javax.annotation.Resource;
+import java.io.FileNotFoundException;
+import java.util.*;
+import java.util.concurrent.Callable;
+import java.util.stream.Collectors;
 
 /**
  * 由MyBatis Generator工具自动生成 This file was generated on 2018-05-18 11:45:41.
@@ -169,7 +166,7 @@ public class RoleController {
         Map footer = new HashMap(1);
         footer.put("roleName", "共有" + this.roleService.countAll() + "条记录");
         footers.add(footer);
-        EasyuiPageOutput result = new EasyuiPageOutput(list.size(), list);
+        EasyuiPageOutput result = new EasyuiPageOutput((long)list.size(), list);
         result.setFooter(footers);
         return result.toString();
     }
@@ -316,7 +313,7 @@ public class RoleController {
     public @ResponseBody
     String getRoleMenuAndResource(Long roleId) {
         List<SystemResourceDto> list = roleService.getRoleMenuAndResource(roleId);
-        return new EasyuiPageOutput(list.size(), list).toString();
+        return new EasyuiPageOutput((long)list.size(), list).toString();
     }
 
     /**

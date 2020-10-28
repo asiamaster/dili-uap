@@ -1,12 +1,14 @@
 package com.dili.uap.service.impl;
 
+import com.alibaba.csp.sentinel.EntryType;
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
+import com.alibaba.csp.sentinel.slots.block.BlockException;
 import com.alibaba.fastjson.JSON;
 import com.dili.logger.sdk.base.LoggerContext;
 import com.dili.logger.sdk.glossary.LoggerConstant;
 import com.dili.ss.constant.ResultCode;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
-import com.dili.ss.exception.AppException;
 import com.dili.uap.constants.UapConstants;
 import com.dili.uap.dao.FirmMapper;
 import com.dili.uap.dao.SystemConfigMapper;
@@ -16,11 +18,7 @@ import com.dili.uap.domain.dto.LoginDto;
 import com.dili.uap.domain.dto.LoginResult;
 import com.dili.uap.glossary.UserState;
 import com.dili.uap.manager.*;
-import com.dili.uap.sdk.domain.Firm;
-import com.dili.uap.sdk.domain.SystemConfig;
-import com.dili.uap.sdk.domain.User;
-import com.dili.uap.sdk.domain.UserPushInfo;
-import com.dili.uap.sdk.domain.UserTicket;
+import com.dili.uap.sdk.domain.*;
 import com.dili.uap.sdk.manager.SessionRedisManager;
 import com.dili.uap.sdk.session.DynaSessionConstants;
 import com.dili.uap.sdk.session.ManageConfig;
@@ -264,7 +262,17 @@ public class LoginServiceImpl implements LoginService {
 		}
 	}
 
+	/**
+	 * blockHandler 对应处理 BlockException 的函数名称，可选项。blockHandler 函数访问范围需要是 public，返回类型需要与原方法相匹配，参数类型需要和原方法相匹配并且最后加一个额外的参数，类型为 BlockException
+	 * @param e
+	 * @return
+	 */
+	public BaseOutput<Boolean> loginAndTagBlockHandler(LoginDto loginDto, BlockException e){
+		return BaseOutput.failure("限流阻塞:"+e.getRule()).setCode(ResultCode.FLOW_LIMIT);
+	}
+
 	@Override
+	@SentinelResource(value="LoginServiceImpl.loginAndTag", entryType = EntryType.IN, blockHandler = "loginAndTagBlockHandler")
 	public BaseOutput<Boolean> loginAndTag(LoginDto loginDto) {
 		BaseOutput<LoginResult> output = this.login(loginDto);
 		if (!output.isSuccess()) {

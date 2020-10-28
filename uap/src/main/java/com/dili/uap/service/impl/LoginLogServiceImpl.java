@@ -9,10 +9,9 @@ import com.dili.uap.domain.dto.LoginLogDto;
 import com.dili.uap.service.LoginLogService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-
-import org.springframework.stereotype.Service;
 
 /**
  * 由MyBatis Generator工具自动生成
@@ -33,6 +32,6 @@ public class LoginLogServiceImpl extends BaseServiceImpl<LoginLog, Long> impleme
 		List list = this.getActualDao().findByLoginLogDto(loginLog);
 		long total = list instanceof Page ? ((Page) list).getTotal() : (long) list.size();
 		List results = useProvider ? ValueProviderUtils.buildDataByProvider(loginLog, list) : list;
-		return new EasyuiPageOutput(Integer.valueOf(Integer.parseInt(String.valueOf(total))), results);
+		return new EasyuiPageOutput(total, results);
 	}
 }
