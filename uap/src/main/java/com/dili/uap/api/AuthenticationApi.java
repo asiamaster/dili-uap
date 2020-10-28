@@ -127,15 +127,19 @@ public class AuthenticationApi {
 	@RequestMapping(value = "/loginFromApp.api", method = { RequestMethod.POST })
 	@ResponseBody
 	public BaseOutput loginFromApp(@RequestBody String json, HttpServletRequest request) {
-		try {
-			json = decryptRSA(json);
-		} catch (Exception e) {
-			return BaseOutput.failure(e.getMessage());
-		}
+//		try {
+//			json = decryptRSA(json);
+//		} catch (Exception e) {
+//			return BaseOutput.failure(e.getMessage());
+//		}
 		JSONObject jsonObject = JSONObject.parseObject(json);
 		LoginDto loginDto = DTOUtils.newInstance(LoginDto.class);
 		loginDto.setUserName(jsonObject.getString("userName"));
-		loginDto.setPassword(jsonObject.getString("password"));
+		try {
+			loginDto.setPassword(decryptRSA(jsonObject.getString("password")));
+		} catch (Exception e) {
+			return BaseOutput.failure(e.getMessage());
+		}
 		loginDto.setPushId(jsonObject.getString("pushId"));
 		loginDto.setDeviceType(jsonObject.getString("deviceType") != null ? jsonObject.getString("deviceType").toLowerCase() : null);
 		// 设置登录后需要返回的上一页URL,用于记录登录地址到Cookie
