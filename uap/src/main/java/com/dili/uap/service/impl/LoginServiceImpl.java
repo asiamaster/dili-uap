@@ -9,6 +9,7 @@ import com.dili.logger.sdk.glossary.LoggerConstant;
 import com.dili.ss.constant.ResultCode;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
+import com.dili.ss.exception.AppException;
 import com.dili.uap.constants.UapConstants;
 import com.dili.uap.dao.FirmMapper;
 import com.dili.uap.dao.SystemConfigMapper;
@@ -263,16 +264,18 @@ public class LoginServiceImpl implements LoginService {
 	}
 
 	/**
-	 * blockHandler 对应处理 BlockException 的函数名称，可选项。blockHandler 函数访问范围需要是 public，返回类型需要与原方法相匹配，参数类型需要和原方法相匹配并且最后加一个额外的参数，类型为 BlockException
+	 * blockHandler 对应处理 BlockException 的函数名称，可选项。blockHandler 函数访问范围需要是
+	 * public，返回类型需要与原方法相匹配，参数类型需要和原方法相匹配并且最后加一个额外的参数，类型为 BlockException
+	 * 
 	 * @param e
 	 * @return
 	 */
-	public BaseOutput<Boolean> loginAndTagBlockHandler(LoginDto loginDto, BlockException e){
-		return BaseOutput.failure("限流阻塞:"+e.getRule()).setCode(ResultCode.FLOW_LIMIT);
+	public BaseOutput<Boolean> loginAndTagBlockHandler(LoginDto loginDto, BlockException e) {
+		return BaseOutput.failure("限流阻塞:" + e.getRule()).setCode(ResultCode.FLOW_LIMIT);
 	}
 
 	@Override
-	@SentinelResource(value="LoginServiceImpl.loginAndTag", entryType = EntryType.IN, blockHandler = "loginAndTagBlockHandler")
+	@SentinelResource(value = "LoginServiceImpl.loginAndTag", entryType = EntryType.IN, blockHandler = "loginAndTagBlockHandler")
 	public BaseOutput<Boolean> loginAndTag(LoginDto loginDto) {
 		BaseOutput<LoginResult> output = this.login(loginDto);
 		if (!output.isSuccess()) {
@@ -487,26 +490,19 @@ public class LoginServiceImpl implements LoginService {
 			return result;
 		}
 		if (StringUtils.isNotBlank(loginDto.getDeviceType()) && StringUtils.isNotBlank(loginDto.getPushId())) {
-			UserPushInfo upiQuery = DTOUtils.newInstance(UserPushInfo.class);
-			upiQuery.setUserId(result.getData().getUser().getId());
-			UserPushInfo pushInfo = this.userPushInfoMapper.selectOne(upiQuery);
-			if (pushInfo == null) {
-				pushInfo = DTOUtils.newInstance(UserPushInfo.class);
-				pushInfo.setPlatform(loginDto.getDeviceType());
-				pushInfo.setPushId(loginDto.getPushId());
-				pushInfo.setUserId(result.getData().getUser().getId());
-				int rows = this.userPushInfoMapper.insertSelective(pushInfo);
-				if (rows <= 0) {
-					return BaseOutput.failure("更新移动端推送信息失败");
-				}
-			} else {
-				pushInfo.setPushId(loginDto.getPushId());
-				pushInfo.setPlatform(loginDto.getDeviceType());
-				pushInfo.setPushId(loginDto.getPushId());
-				int rows = this.userPushInfoMapper.updateByPrimaryKeySelective(pushInfo);
-				if (rows <= 0) {
-					return BaseOutput.failure("更新移动端推送信息失败");
-				}
+			UserPushInfo condition = DTOUtils.newInstance(UserPushInfo.class);
+			condition.setUserId(result.getData().getUser().getId());
+			this.userPushInfoMapper.delete(condition);
+			condition = DTOUtils.newInstance(UserPushInfo.class);
+			condition.setPushId(loginDto.getPushId());
+			this.userPushInfoMapper.delete(condition);
+			condition = DTOUtils.newInstance(UserPushInfo.class);
+			condition.setUserId(result.getData().getUser().getId());
+			condition.setPushId(loginDto.getPushId());
+			condition.setPlatform(loginDto.getDeviceType());
+			int rows = this.userPushInfoMapper.insert(condition);
+			if (rows <= 0) {
+				throw new AppException("更新移动端推送信息失败");
 			}
 		}
 		return result;
