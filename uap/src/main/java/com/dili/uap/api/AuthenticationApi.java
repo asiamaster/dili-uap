@@ -34,6 +34,7 @@ import com.dili.uap.manager.DataAuthManager;
 import com.dili.uap.sdk.component.DataAuthSource;
 import com.dili.uap.sdk.domain.DataAuthRef;
 import com.dili.uap.sdk.domain.Systems;
+import com.dili.uap.sdk.domain.UserPushInfo;
 import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.domain.dto.ClientMenuDto;
 import com.dili.uap.sdk.redis.DataAuthRedis;
@@ -44,6 +45,7 @@ import com.dili.uap.sdk.rpc.SystemConfigRpc;
 import com.dili.uap.service.DataAuthRefService;
 import com.dili.uap.service.LoginService;
 import com.dili.uap.service.ResourceService;
+import com.dili.uap.service.UserPushInfoService;
 import com.dili.uap.service.UserService;
 import com.dili.uap.utils.WebUtil;
 
@@ -89,6 +91,8 @@ public class AuthenticationApi {
 
 	@Autowired
 	private SystemConfigRpc systemConfigRpc;
+	@Autowired
+	private UserPushInfoService userPushInfoService;
 
 	/**
 	 * 统一授权登录，返回登录用户信息LoginResult
@@ -226,6 +230,31 @@ public class AuthenticationApi {
 			return BaseOutput.failure("会话id不存在").setCode(ResultCode.PARAMS_ERROR);
 		}
 		return userRedis.getSessionUserId(sessionId) == null ? BaseOutput.failure("未登录").setCode(ResultCode.NOT_AUTH_ERROR) : BaseOutput.success("已登录");
+	}
+
+	/**
+	 * 移动端登出
+	 * 
+	 * @param json
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/appLoginout.api", method = { RequestMethod.POST })
+	@ResponseBody
+	public BaseOutput appLoginout(@RequestBody String json, HttpServletRequest request) {
+		String sessionId = getSessionIdByJson(json);
+		if (StringUtils.isBlank(sessionId)) {
+			return BaseOutput.failure("会话id不存在").setCode(ResultCode.PARAMS_ERROR);
+		}
+		UserTicket userTicket = this.userRedis.getUser(sessionId);
+		if (userTicket == null) {
+			return BaseOutput.failure("未获取到登录用户信息");
+		}
+		UserPushInfo condition = DTOUtils.newInstance(UserPushInfo.class);
+		condition.setUserId(userTicket.getId());
+		this.userPushInfoService.deleteByExample(condition);
+		userService.logout(sessionId);
+		return BaseOutput.success("登出成功");
 	}
 
 	/**

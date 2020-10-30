@@ -110,7 +110,6 @@ function onClickDdValueGridRow(index, row) {
 }
 
 function insertOrUpdateDdValue(index, row, changes) {
-	debugger;
     var url = contextPath + '/dataDictionaryValue/';
     if (!row.id) {
         row.ddCode = ddCode;
