@@ -238,12 +238,12 @@
         }
 
         function renderPage(title, url) {
-            var content = '<iframe scrolling="auto" frameborder="0" src="'+url+'" onLoad="" style="width:100%; height: 99.2%;"></iframe>';
+            var content = '<iframe scrolling="auto" id="mainPanelIframe" frameborder="0" src="'+url+'" onLoad="" style="width:100%; height: 99.2%;"></iframe>';
             $('#mainPanel').panel({
                 content:content,
                 cache:false
             });
-
+            $("#mainPanelIframe")[0].contentWindow.focus();
         }
 
         function logout() {
