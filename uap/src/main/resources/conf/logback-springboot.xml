@@ -16,7 +16,6 @@
     </appender>
 
     <!-- 日志文件输出 -->
-
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOG_HOME}/${LOG_NAME}.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
@@ -28,7 +27,7 @@
             <maxFileSize>10MB</maxFileSize>
         </rollingPolicy>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <pattern>[${LOG_NAME}-${build.profile.id}] %d |-%highlight(%-5level) [%t] [%c:%L] -| %msg%n</pattern>
+            <pattern>%d %-5level [${LOG_NAME}-${build.profile.id}] [%t] [%c:%L] -| %msg%n</pattern>
         </encoder>
     </appender>
 
@@ -36,7 +35,7 @@
     <springProfile name="dev">
         <root level="INFO">
             <appender-ref ref="CONSOLE"/>
-            <appender-ref ref="FILE"/>
+<!--            <appender-ref ref="FILE"/>-->
         </root>
     </springProfile>
     <!-- 测试环境 -->

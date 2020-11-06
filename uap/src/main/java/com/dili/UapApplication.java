@@ -13,8 +13,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.client.RestTemplate;
-
 import tk.mybatis.spring.annotation.MapperScan;
+
+import java.text.DecimalFormat;
 
 //import com.ulisesbocchio.jasyptspringboot.annotation.EncryptablePropertySource;
 
@@ -71,7 +72,8 @@ public class UapApplication extends SpringBootServletInitializer implements Comm
 		long maxMemory = Runtime.getRuntime().maxMemory();
 		long totalMemory = Runtime.getRuntime().totalMemory();
 		long freeMemory = Runtime.getRuntime().freeMemory();
-		System.out.println("maxMemory:" + maxMemory + ",totalMemory:" + totalMemory + ",freeMemory:" + freeMemory);
+		DecimalFormat decimalFormat = new DecimalFormat("#,###");
+		System.out.println("maxMemory:" + decimalFormat.format(maxMemory) + ",totalMemory:" + decimalFormat.format(totalMemory) + ",freeMemory:" + decimalFormat.format(freeMemory));
 		System.out.println("项目启动完成!");
 	}
 }
