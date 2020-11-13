@@ -43,7 +43,7 @@ $(function () {
         //验证手机号规则
         phoneNum: {
             validator: function(value, param){
-                return /^1[3-8]\d{9}$/.test(value);
+                return /^1[3-9]\d{9}$/.test(value);
             },
             message: '请输入正确的手机号码。'
         },
