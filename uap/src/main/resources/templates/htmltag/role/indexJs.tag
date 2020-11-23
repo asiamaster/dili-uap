@@ -151,14 +151,7 @@
 
     // 清空表单
     function clearForm() {
-        var firmCode;
-        if(jQuery("#firmCodeHidden").length>0){
-            firmCode=$('#firmCodeHidden').val();
-        }
         $('#form').form('clear');
-        if(jQuery("#firmCodeHidden").length>0){
-            $('#firmCodeHidden').val(firmCode);
-        }
         queryGrid();
     }
 
