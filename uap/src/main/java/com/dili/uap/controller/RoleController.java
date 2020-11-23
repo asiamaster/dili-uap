@@ -16,6 +16,7 @@ import com.dili.uap.domain.dto.SystemResourceDto;
 import com.dili.uap.sdk.domain.Firm;
 import com.dili.uap.sdk.domain.Role;
 import com.dili.uap.sdk.domain.UserTicket;
+import com.dili.uap.sdk.exception.NotLoginException;
 import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.service.FirmService;
 import com.dili.uap.service.RoleService;
@@ -104,22 +105,24 @@ public class RoleController {
     @RequestMapping(value = "/listTreeGrid.action", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
     public String listTreeGrid(Role role, @RequestParam(required = false, defaultValue = "false") Boolean queryModel) throws Exception {
+        UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
+        if(userTicket == null){
+            throw new NotLoginException();
+        }
+
         List<Role> roleList = null;
         if (!queryModel) {
             Example example = new Example(Role.class);
             Criteria criteria = example.createCriteria().andIsNull("parentId");
-            if (StringUtils.isNotBlank(role.getFirmCode())) {
-                criteria.andEqualTo("firmCode", role.getFirmCode());
-            }
+            criteria.andEqualTo("firmCode", userTicket.getFirmCode());
             roleList = this.roleService.selectByExample(example);
         } else {
+            role.setFirmCode(userTicket.getFirmCode());
             roleList = roleService.listByExample(role);
         }
         List<Map> list = ValueProviderUtils.buildDataByProvider(getRoleMetadata(), roleList);
         Firm firm = DTOUtils.newInstance(Firm.class);
-        if (StringUtils.isNotBlank(role.getFirmCode())) {
-            firm.setCode(role.getFirmCode());
-        }
+        firm.setCode(userTicket.getFirmCode());
         list.forEach(rm -> {
             if (!(Boolean) rm.get("leaf")) {
                 rm.put("state", "closed");
