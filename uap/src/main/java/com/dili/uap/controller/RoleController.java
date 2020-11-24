@@ -114,7 +114,9 @@ public class RoleController {
         if (!queryModel) {
             Example example = new Example(Role.class);
             Criteria criteria = example.createCriteria().andIsNull("parentId");
-            criteria.andEqualTo("firmCode", userTicket.getFirmCode());
+            if(!"group".equals(userTicket.getFirmCode())){
+                criteria.andEqualTo("firmCode", userTicket.getFirmCode());
+            }
             roleList = this.roleService.selectByExample(example);
         } else {
             role.setFirmCode(userTicket.getFirmCode());
@@ -167,7 +169,7 @@ public class RoleController {
         }
         List<Map> footers = new ArrayList<Map>();
         Map footer = new HashMap(1);
-        footer.put("roleName", "共有" + this.roleService.countAll() + "条记录");
+        footer.put("roleName", "共有" + roleList==null ? 0 : roleList.size() + "条记录");
         footers.add(footer);
         EasyuiPageOutput result = new EasyuiPageOutput((long)list.size(), list);
         result.setFooter(footers);
