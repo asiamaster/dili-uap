@@ -109,23 +109,30 @@ public class RoleController {
         if(userTicket == null){
             throw new NotLoginException();
         }
+        //校验传进来的firmCode跟userTicket里的是否相等
+        if(null == role.getFirmCode()){
+            if(!"group".equals(userTicket.getFirmCode())){
+                role.setFirmCode(userTicket.getFirmCode());
+            }
+        }else if(!role.getFirmCode().equals(userTicket.getFirmCode())&&!"group".equals(userTicket.getFirmCode())){
+                role.setFirmCode(userTicket.getFirmCode());
+        }
 
         List<Role> roleList = null;
         if (!queryModel) {
             Example example = new Example(Role.class);
             Criteria criteria = example.createCriteria().andIsNull("parentId");
-            if(!"group".equals(userTicket.getFirmCode())){
-                criteria.andEqualTo("firmCode", userTicket.getFirmCode());
+            if (StringUtils.isNotBlank(role.getFirmCode())) {
+                criteria.andEqualTo("firmCode", role.getFirmCode());
             }
             roleList = this.roleService.selectByExample(example);
         } else {
-            role.setFirmCode(userTicket.getFirmCode());
             roleList = roleService.listByExample(role);
         }
         List<Map> list = ValueProviderUtils.buildDataByProvider(getRoleMetadata(), roleList);
         Firm firm = DTOUtils.newInstance(Firm.class);
-        if(!"group".equals(userTicket.getFirmCode())){
-            firm.setCode(userTicket.getFirmCode());
+        if (StringUtils.isNotBlank(role.getFirmCode())) {
+            firm.setCode(role.getFirmCode());
         }
         list.forEach(rm -> {
             if (!(Boolean) rm.get("leaf")) {
