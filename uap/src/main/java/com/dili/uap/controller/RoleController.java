@@ -124,7 +124,9 @@ public class RoleController {
         }
         List<Map> list = ValueProviderUtils.buildDataByProvider(getRoleMetadata(), roleList);
         Firm firm = DTOUtils.newInstance(Firm.class);
-        firm.setCode(userTicket.getFirmCode());
+        if(!"group".equals(userTicket.getFirmCode())){
+            firm.setCode(userTicket.getFirmCode());
+        }
         list.forEach(rm -> {
             if (!(Boolean) rm.get("leaf")) {
                 rm.put("state", "closed");
