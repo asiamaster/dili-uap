@@ -68,4 +68,9 @@ public class UapConstants {
 	 */
 	public static final String DD_CODE_LEGAL_PERSON_CERTIFICATE_TYPE = "legalPersonCertificateType";
 
+	/**
+	 * 交易厅数据权限前缀
+	 */
+	public static final String TRADING_HALL_PREFIX = "trading_hall_";
+
 }

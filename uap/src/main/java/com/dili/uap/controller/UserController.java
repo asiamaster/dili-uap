@@ -201,7 +201,7 @@ public class UserController {
 	public String findUserByRole(Long roleId, User user) throws Exception {
 		List<User> retList = userService.findUserByRole(roleId);
 		List results = ValueProviderUtils.buildDataByProvider(user, retList);
-		return new EasyuiPageOutput((long)results.size(), results).toString();
+		return new EasyuiPageOutput((long) results.size(), results).toString();
 	}
 
 	/**
@@ -396,6 +396,30 @@ public class UserController {
 		BaseOutput<Map<String, Object>> output = BaseOutput.success();
 		Map map = Maps.newHashMap();
 		map.put("dataProject", userService.getUserDataProjectAuthForTree(id));
+		return output.setData(map);
+	}
+
+	/**
+	 * 获取交易厅数据权限
+	 * 
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping(value = "/getUserTradingDataAuth.action", method = { RequestMethod.GET, RequestMethod.POST })
+	@ResponseBody
+	public BaseOutput<Map<String, Object>> getUserTradingDataAuth(Long id) {
+		UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
+		if (userTicket == null) {
+			return BaseOutput.failure("用户未登录");
+		}
+		// 获取需要分配数据权限的用户信息
+		User user = userService.get(id);
+		if (null == user) {
+			return BaseOutput.failure("没有该用户");
+		}
+		BaseOutput<Map<String, Object>> output = BaseOutput.success();
+		Map map = Maps.newHashMap();
+		map.put("tradingHallDataAuth", userService.getUserTradingDataAuth(id));
 		return output.setData(map);
 	}
 

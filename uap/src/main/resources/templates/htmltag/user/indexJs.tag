@@ -617,11 +617,17 @@
             if (ret && ret.success) {
                 //data 中存有 数据权限范围选项，数据权限本身，当前所属的数据权限
                 var data = ret.data;
-                console.log(data);
                 $('#projectDateTree').tree("loadData", data.dataProject);
             }
          }, 'json');
          </#resource>
+         $.post('${contextPath!}/user/getUserTradingDataAuth.action', {id: selected.id}, function (ret) {
+            if (ret && ret.success) {
+                //data 中存有 数据权限范围选项，数据权限本身，当前所属的数据权限
+                var data = ret.data;
+                $('#tradingHallTree').tree("loadData", data.tradingHallDataAuth);
+            }
+         }, 'json');
     }
 
     /**
@@ -632,6 +638,7 @@
         <#resource code="projectDataAuth">
         var nodes2 = $('#projectDateTree').tree('getChecked');
         </#resource>
+         var nodes3 = $('#tradingHallTree').tree('getChecked');
         //节点选中的ID，包括 市场，角色
         var ids = [];
         for (var i = 0; i < nodes.length; i++) {
@@ -642,6 +649,9 @@
             ids.push(nodes2[i].id);
         }
         </#resource>
+        for (var i = 0; i < nodes3.length; i++) {
+            ids.push(nodes3[i].id);
+        }
         var dataRange=$('input:radio[name="dataRange"]:checked').val();
         var selected = userGrid.datagrid("getSelected");
         $.ajax({

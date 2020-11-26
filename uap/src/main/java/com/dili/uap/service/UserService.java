@@ -190,7 +190,7 @@ public interface UserService extends BaseService<User, Long> {
 	 * 查询具有特定权限编码的用户
 	 * 
 	 * @param resourceCode 权限编码
-	 * @param marketId TODO
+	 * @param marketId     TODO
 	 * @return
 	 */
 	List<User> findUsersByResourceCode(String resourceCode, Long marketId);
@@ -203,5 +203,13 @@ public interface UserService extends BaseService<User, Long> {
 	 * @return
 	 */
 	BaseOutput registeryByApp(User user);
+
+	/**
+	 * 获取进厅数据权限
+	 * 
+	 * @param id
+	 * @return
+	 */
+	List<UserDataDto> getUserTradingDataAuth(Long id);
 
 }

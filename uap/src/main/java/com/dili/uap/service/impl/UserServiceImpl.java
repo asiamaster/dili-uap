@@ -4,6 +4,10 @@ import com.alibaba.csp.sentinel.EntryType;
 import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.alibaba.csp.sentinel.slots.block.BlockException;
 import com.alibaba.fastjson.JSON;
+import com.dili.assets.sdk.dto.TradeRoomDto;
+import com.dili.assets.sdk.dto.TradeRoomQuery;
+import com.dili.assets.sdk.rpc.TradeRoomRpc;
+import com.dili.commons.bstable.TableResult;
 import com.dili.ss.base.BaseServiceImpl;
 import com.dili.ss.constant.ResultCode;
 import com.dili.ss.domain.BaseOutput;
@@ -44,6 +48,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 由MyBatis Generator工具自动生成 This file was generated on 2018-05-18 10:46:46.
@@ -83,8 +88,8 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 	DataAuthRefService dataAuthRefService;
 	@Autowired
 	private LoginService loginService;
-
-	public static final String ALM_PROJECT_PREFIX = "alm_";
+	@Autowired
+	private TradeRoomRpc tradeRoomRpc;
 
 	@Override
 	public void logout(String sessionId) {
@@ -327,16 +332,18 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 	}
 
 	/**
-	 * blockHandler 对应处理 BlockException 的函数名称，可选项。blockHandler 函数访问范围需要是 public，返回类型需要与原方法相匹配，参数类型需要和原方法相匹配并且最后加一个额外的参数，类型为 BlockException
+	 * blockHandler 对应处理 BlockException 的函数名称，可选项。blockHandler 函数访问范围需要是
+	 * public，返回类型需要与原方法相匹配，参数类型需要和原方法相匹配并且最后加一个额外的参数，类型为 BlockException
+	 * 
 	 * @param e
 	 * @return
 	 */
-	public EasyuiPageOutput selectForEasyuiPageBlockHandler(UserDto domain, boolean useProvider, BlockException e){
+	public EasyuiPageOutput selectForEasyuiPageBlockHandler(UserDto domain, boolean useProvider, BlockException e) {
 		return new EasyuiPageOutput(0L, null);
 	}
 
 	@Override
-	@SentinelResource(value="UserServiceImpl.selectForEasyuiPage", entryType = EntryType.IN, blockHandler = "selectForEasyuiPageBlockHandler")
+	@SentinelResource(value = "UserServiceImpl.selectForEasyuiPage", entryType = EntryType.IN, blockHandler = "selectForEasyuiPageBlockHandler")
 	public EasyuiPageOutput selectForEasyuiPage(UserDto domain, boolean useProvider) throws Exception {
 		if (domain.getRows() != null && domain.getRows() >= 1) {
 			PageHelper.startPage(domain.getPage(), domain.getRows());
@@ -452,7 +459,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 						ud.setValue(value);
 						saveDatas.add(ud);
 					}
-				} else {
+				} else if (id.startsWith(UapConstants.FIRM_PREFIX)) {
 					if (id.startsWith(UapConstants.FIRM_PREFIX)) {
 						ud.setRefCode(DataAuthType.MARKET.getCode());
 						ud.setValue(id.replace(UapConstants.FIRM_PREFIX, ""));
@@ -461,6 +468,13 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 						ud.setValue(id);
 					}
 					saveDatas.add(ud);
+				} else {
+					String value = id.replace(UapConstants.TRADING_HALL_PREFIX, "");
+					if (!value.equals("0")) {
+						ud.setRefCode(DataAuthType.TRADING_HALL.getCode());
+						ud.setValue(value);
+						saveDatas.add(ud);
+					}
 				}
 			}
 		}
@@ -561,7 +575,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 			if (selectUserDataAuthValue != null && selectUserDataAuthValue.size() > 0) {
 				// 判断选中
 				for (UserDataDto userDataDto : selectAll) {
-					String replace = userDataDto.getTreeId().replace(ALM_PROJECT_PREFIX, "");
+					String replace = userDataDto.getTreeId().replace(UapConstants.ALM_PROJECT_PREFIX, "");
 					boolean isChecked = selectUserDataAuthValue.contains(replace);
 					if (!isRootChecked && isChecked) {
 						isRootChecked = true;
@@ -572,7 +586,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 
 		}
 		UserDataDto almDataDto = DTOUtils.newInstance(UserDataDto.class);
-		almDataDto.setTreeId(ALM_PROJECT_PREFIX + 0);
+		almDataDto.setTreeId(UapConstants.ALM_PROJECT_PREFIX + 0);
 		almDataDto.setName("项目生命周期管理");
 		almDataDto.setChecked(isRootChecked);
 		selectAll.add(almDataDto);
@@ -646,5 +660,66 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 		user.setState(UserState.DISABLED.getCode());
 		this.updateSelective(user);
 		return BaseOutput.success("注册用户成功");
+	}
+
+	@Override
+	public List<UserDataDto> getUserTradingDataAuth(Long id) {
+		// 获取需要分配数据权限的用户信息
+		User user = this.get(id);
+		if (null == user) {
+			return null;
+		}
+		// 获取用户的数据权限
+
+		TradeRoomQuery query = new TradeRoomQuery();
+		query.setPageNum(1);
+		query.setPageSize(Integer.MAX_VALUE);
+		TableResult<TradeRoomDto> result = this.tradeRoomRpc.query(query);
+		List<UserDataDto> selectAll = new ArrayList<UserDataDto>();
+		UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
+		if (userTicket.getUserName().equalsIgnoreCase(adminName)) {
+			result.getRows().forEach(t -> {
+				UserDataDto dataDto = DTOUtils.newInstance(UserDataDto.class);
+				dataDto.setName(t.getName());
+				dataDto.setTreeId(UapConstants.TRADING_HALL_PREFIX + t.getId());
+				dataDto.setParentId(UapConstants.TRADING_HALL_PREFIX + 0);
+				selectAll.add(dataDto);
+			});
+		} else {
+			List<String> selectUserDataAuthValue = userDataAuthMapper.selectUserDataAuthValue(userTicket.getId(), DataAuthType.TRADING_HALL.getCode());
+			result.getRows().forEach(t -> {
+				if (!selectUserDataAuthValue.contains(t.getId().toString())) {
+					return;
+				}
+				UserDataDto dataDto = DTOUtils.newInstance(UserDataDto.class);
+				dataDto.setName(t.getName());
+				dataDto.setTreeId(UapConstants.TRADING_HALL_PREFIX + t.getId());
+				dataDto.setParentId(UapConstants.TRADING_HALL_PREFIX + 0);
+				selectAll.add(dataDto);
+			});
+		}
+
+		List<String> selectUserDataAuthValue = userDataAuthMapper.selectUserDataAuthValue(id, DataAuthType.TRADING_HALL.getCode());
+		boolean isRootChecked = false;
+		if (CollectionUtils.isNotEmpty(selectAll)) {
+			if (CollectionUtils.isNotEmpty(selectUserDataAuthValue)) {
+				// 判断选中
+				for (UserDataDto userDataDto : selectAll) {
+					String replace = userDataDto.getTreeId().replace(UapConstants.TRADING_HALL_PREFIX, "");
+					boolean isChecked = selectUserDataAuthValue.contains(replace);
+					if (!isRootChecked && isChecked) {
+						isRootChecked = true;
+					}
+					userDataDto.setChecked(isChecked);
+				}
+			}
+
+		}
+		UserDataDto tradingHallDataDto = DTOUtils.newInstance(UserDataDto.class);
+		tradingHallDataDto.setTreeId(UapConstants.TRADING_HALL_PREFIX + 0);
+		tradingHallDataDto.setName("进门收费交易厅");
+		tradingHallDataDto.setChecked(isRootChecked);
+		selectAll.add(tradingHallDataDto);
+		return selectAll;
 	}
 }

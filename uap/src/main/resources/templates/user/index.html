@@ -306,10 +306,15 @@
 			    <#resource code="projectDataAuth">
 			    <div title="项目权限" style="width: 95%">
 			         <div class="easyui-panel" style="margin-left:20px;padding:10px;width: 95%;height: 350px;">
-			             <ui id="projectDateTree" class="easyui-tree" style="width: 90%;" data-options="checkbox:true,_idField:'treeId',_textField:'name',_parentIdField:'parentId',loadFilter:treeLoadFilter,cascadeCheck:false"></ui>
+			             <ui id="projectDateTree" class="easyui-tree" style="width: 90%;" data-options="checkbox:true,_idField:'treeId',_textField:'name',_parentIdField:'parentId',loadFilter:treeLoadFilter,cascadeCheck:true"></ui>
 			         </div>
 			    </div>
 			    </#resource>
+			    <div title="交易厅权限" style="width: 95%">
+                     <div class="easyui-panel" style="margin-left:20px;padding:10px;width: 95%;height: 350px;">
+                         <ui id="tradingHallTree" class="easyui-tree" style="width: 90%;" data-options="checkbox:true,_idField:'treeId',_textField:'name',_parentIdField:'parentId',loadFilter:treeLoadFilter,cascadeCheck:true"></ui>
+                     </div>
+                </div>
 		</div>
      </div>
     <!-- ====================================================================================================================== -->
