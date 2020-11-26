@@ -21,4 +21,9 @@ public class UidRpcFallBack implements UidRpc {
     public BaseOutput<String> getFirmSerialNumber() {
         return BaseOutput.failure("服务熔断").setCode(ResultCode.FLOW_LIMIT);
     }
+
+    @Override
+    public BaseOutput<String> getBizNumber(String type) {
+        return BaseOutput.failure("服务熔断").setCode(ResultCode.FLOW_LIMIT);
+    }
 }
