@@ -1,31 +1,30 @@
 <script type="application/javascript">
 
-    //是否是修改用户。目前用于判断用户编辑页面，部门数据的初始值显示问题
+    // 是否是修改用户。目前用于判断用户编辑页面，部门数据的初始值显示问题
     var isUpdateUser = true;
 
     /**
-     * datagrid行点击事件
-     * 目前用于来判断 启禁用是否可点
-     */
+	 * datagrid行点击事件 目前用于来判断 启禁用是否可点
+	 */
     function onClickRow(index,row) {
         var state = row.$_state;
         if (state == ${@com.dili.uap.glossary.UserState.DISABLED.getCode()}){
-            //当用户状态为 禁用，可操作 启用
+            // 当用户状态为 禁用，可操作 启用
             $('#play_btn').linkbutton('enable');
             $('#stop_btn').linkbutton('disable');
             $('#unlock_btn').linkbutton('disable');
         }else if(state == ${@com.dili.uap.glossary.UserState.NORMAL.getCode()}){
-            //当用户状态为正常时，则只能操作 禁用
+            // 当用户状态为正常时，则只能操作 禁用
             $('#stop_btn').linkbutton('enable');
             $('#play_btn').linkbutton('disable');
             $('#unlock_btn').linkbutton('disable');
         }else if(state == ${@com.dili.uap.glossary.UserState.LOCKED.getCode()}){
-            //当用户状态为 锁定时，只能操作 解锁
+            // 当用户状态为 锁定时，只能操作 解锁
             $('#play_btn').linkbutton('disable');
             $('#stop_btn').linkbutton('disable');
             $('#unlock_btn').linkbutton('enable');
         } else{
-            //其它情况，按钮不可用
+            // 其它情况，按钮不可用
             $('#stop_btn').linkbutton('disable');
             $('#play_btn').linkbutton('disable');
             $('#unlock_btn').linkbutton('disable');
@@ -33,9 +32,11 @@
     }
 
     /**
-     * 禁启用操作
-     * @param enable 是否启用:true-启用
-     */
+	 * 禁启用操作
+	 * 
+	 * @param enable
+	 *            是否启用:true-启用
+	 */
     function doEnable(enable) {
         var selected = userGrid.datagrid("getSelected");
         if (null == selected) {
@@ -84,8 +85,8 @@
     }
 
     /**
-     * 解锁操作
-     */
+	 * 解锁操作
+	 */
     function doUnlock() {
         var selected = userGrid.datagrid("getSelected");
         if (null == selected) {
@@ -108,7 +109,8 @@
             if (flag.dismiss == 'cancel') {
                 return;
             }
-            // var index = $('#userListGrid').datagrid("getRowIndex", selectedUser);
+            // var index = $('#userListGrid').datagrid("getRowIndex",
+			// selectedUser);
             $.ajax({
                 type: "POST",
                 url: "${contextPath}/user/unlock.action",
@@ -134,8 +136,8 @@
     }
 
     /**
-     * 查看用户信息
-     */
+	 * 查看用户信息
+	 */
     function openDetail() {
         var selected = userGrid.datagrid("getSelected");
         if (null == selected) {
@@ -153,7 +155,7 @@
 
     }
     
-    //打开新增用户的窗口
+    // 打开新增用户的窗口
     function openInsert(){
         $('#editDlg').dialog('open');
         $('#editDlg').dialog('center');
@@ -165,7 +167,7 @@
         isUpdateUser = false;
     }
 
-    //打开修改窗口
+    // 打开修改窗口
     function openUpdate(){
 
         <%if(!hasResource("updateUser")) {%>
@@ -192,8 +194,8 @@
     }
 
     /**
-     * 重置密码
-     */
+	 * 重置密码
+	 */
     function resetPass() {
         var selected = userGrid.datagrid("getSelected");
         if (null == selected) {
@@ -241,9 +243,8 @@
     }
 
     /**
-     * 根据姓名自动加载邮箱信息
-     * 如果姓名为空，或者邮箱本身已有值，则不做更改
-     */
+	 * 根据姓名自动加载邮箱信息 如果姓名为空，或者邮箱本身已有值，则不做更改
+	 */
     function getEmailByName() {
         var name = $('#_realName').textbox("getValue");
         if (null == name || '' == $.trim(name)) {
@@ -260,8 +261,8 @@
     }
 
     /**
-     * 保存或修改数据
-     */
+	 * 保存或修改数据
+	 */
     function saveOrUpdate(){
         if(!$('#_form').form("validate")){
             return;
@@ -269,10 +270,10 @@
         $("#saveUser").linkbutton("disable");
         var _formData = removeKeyStartWith($("#_form").serializeObject(true),"_");
         var _url = null;
-        //没有id就新增
+        // 没有id就新增
         if(_formData.id == null || _formData.id==""){
             _url = "${contextPath}/user/insert.action";
-        }else{//有id就修改
+        }else{// 有id就修改
             _url = "${contextPath}/user/update.action";
         }
         $.ajax({
@@ -298,7 +299,7 @@
         });
     }
 
-    //根据主键删除
+    // 根据主键删除
     function del() {
         var selected = userGrid.datagrid("getSelected");
         if (null == selected) {
@@ -341,11 +342,11 @@
     }
 
     /**
-     * 初始化用户列表组件
-     */
+	 * 初始化用户列表组件
+	 */
     function initUserGrid() {
         var pager = userGrid.datagrid('getPager');
-        //如果是窄边距(<1300像素)，使用工具栏
+        // 如果是窄边距(<1300像素)，使用工具栏
         var narrowWidth = document.body.clientWidth < 1300 ? true : false;
         if(narrowWidth){
             userGrid.datagrid({toolbar: "#toolbar"});
@@ -461,14 +462,14 @@
             ]
         });
         }
-        //表格仅显示下边框
+        // 表格仅显示下边框
         userGrid.datagrid('getPanel').removeClass('lines-both lines-no lines-right lines-bottom').addClass("lines-bottom");
     }
-    //全局按键事件
+    // 全局按键事件
     function getKey(e){
         e = e || window.event;
         var keycode = e.which ? e.which : e.keyCode;
-        if(keycode == 46){ //如果按下删除键
+        if(keycode == 46){ // 如果按下删除键
             var selected = $("#userGrid").datagrid("getSelected");
             if(selected && selected!= null){
                 del();
@@ -477,24 +478,22 @@
     }
 
     /**
-     * 绑定页面回车事件，以及初始化页面时的光标定位
-     * @formId
-     *          表单ID
-     * @elementName
-     *          光标定位在指点表单元素的name属性的值
-     * @submitFun
-     *          表单提交需执行的任务
-     */
+	 * 绑定页面回车事件，以及初始化页面时的光标定位
+	 * 
+	 * @formId 表单ID
+	 * @elementName 光标定位在指点表单元素的name属性的值
+	 * @submitFun 表单提交需执行的任务
+	 */
     $(function () {
         window.userGrid = $('#userGrid');
         /**
-         * 加载部门信息
-         */
+		 * 加载部门信息
+		 */
         <% if (has(isGroup) && isGroup){ %>
             var obj={code:"",name:'-- 全部 --'};
-            //为了不改变原值，所以复制一遍数组
+            // 为了不改变原值，所以复制一遍数组
             var firmData = firms.slice();
-            //动态添加'请选择'
+            // 动态添加'请选择'
             firmData.unshift(obj);
             $("#firmCode").combobox("loadData", firmData);
         <%}else{%>
@@ -515,7 +514,7 @@
         queryGrid();
     });
 
-    //表格查询
+    // 表格查询
     function queryGrid() {
         var opts = userGrid.datagrid("options");
         if (null == opts.url || "" == opts.url) {
@@ -525,8 +524,8 @@
     }
 
     /**
-     * 编辑用户的角色信息
-     */
+	 * 编辑用户的角色信息
+	 */
     function editUserRole() {
         var selected = userGrid.datagrid("getSelected");
         if (null == selected) {
@@ -543,11 +542,11 @@
     }
 
     /**
-     * 保存用户的角色信息
-     */
+	 * 保存用户的角色信息
+	 */
     function saveUserRoles() {
         var nodes = $('#roleTree').tree('getChecked');
-        //节点选中的ID，包括 市场，角色
+        // 节点选中的ID，包括 市场，角色
         var ids = [];
         for (var i = 0; i < nodes.length; i++) {
             ids.push(nodes[i].id);
@@ -575,8 +574,8 @@
     }
 
     /**
-     * 编辑用户的数据权限
-     */
+	 * 编辑用户的数据权限
+	 */
     function editUserDataAuth() {
 
     	$("#dataTabs").tabs('select',0);
@@ -589,12 +588,11 @@
         $('#userDataDlg').dialog('center');
         $('#data_userName').textbox("setValue",selected.userName);
         /**
-         * 获取用户的数据权限
-         * 获取用户的数据范围选择项
-         */
+		 * 获取用户的数据权限 获取用户的数据范围选择项
+		 */
         $.post('${contextPath!}/user/getUserData.action', {id: selected.id}, function (ret) {
             if (ret && ret.success) {
-                //data 中存有 数据权限范围选项，数据权限本身，当前所属的数据权限
+                // data 中存有 数据权限范围选项，数据权限本身，当前所属的数据权限
                 var data = ret.data;
                 $('#dataTree').tree("loadData", data.userDatas);
                 var output = [];
@@ -615,7 +613,7 @@
         <#resource code="projectDataAuth">
         $.post('${contextPath!}/user/getUserProjectData.action', {id: selected.id}, function (ret) {
             if (ret && ret.success) {
-                //data 中存有 数据权限范围选项，数据权限本身，当前所属的数据权限
+                // data 中存有 数据权限范围选项，数据权限本身，当前所属的数据权限
                 var data = ret.data;
                 $('#projectDateTree').tree("loadData", data.dataProject);
             }
@@ -623,23 +621,38 @@
          </#resource>
          $.post('${contextPath!}/user/getUserTradingDataAuth.action', {id: selected.id}, function (ret) {
             if (ret && ret.success) {
-                //data 中存有 数据权限范围选项，数据权限本身，当前所属的数据权限
+                // data 中存有 数据权限范围选项，数据权限本身，当前所属的数据权限
                 var data = ret.data;
                 $('#tradingHallTree').tree("loadData", data.tradingHallDataAuth);
             }
          }, 'json');
     }
+    
+    function onCascadeTreeLoadSuccess(){
+    	var opts = $(this).tree("options");
+        // 设置 关闭 级联检查，不然会默认勾选子节点中的未选中的数据
+        opts.cascadeCheck = true;
+    }
+    
 
     /**
-     * 保存用户的角色信息
-     */
+	 * 保存用户的角色信息
+	 */
     function saveUserDatas() {
+    	<#resource code="projectDataAuth">
+    	var opts = $('#projectDateTree').tree("options");
+        // 设置 关闭 级联检查，不然会默认勾选子节点中的未选中的数据
+        opts.cascadeCheck = false;
+        </#resource>
+        var opts = $('#tradingHallTree').tree("options");
+        // 设置 关闭 级联检查，不然会默认勾选子节点中的未选中的数据
+        opts.cascadeCheck = false;
         var nodes = $('#dataTree').tree('getChecked');
         <#resource code="projectDataAuth">
         var nodes2 = $('#projectDateTree').tree('getChecked');
         </#resource>
          var nodes3 = $('#tradingHallTree').tree('getChecked');
-        //节点选中的ID，包括 市场，角色
+        // 节点选中的ID，包括 市场，角色
         var ids = [];
         for (var i = 0; i < nodes.length; i++) {
             ids.push(nodes[i].id);
@@ -676,9 +689,10 @@
     }
 
     /**
-     * 用户编辑，真实姓名验证时的触发事件
-     * @param v
-     */
+	 * 用户编辑，真实姓名验证时的触发事件
+	 * 
+	 * @param v
+	 */
     function realNameValidate(v) {
         if (v || 'true' == v){
             getEmailByName();
@@ -686,8 +700,8 @@
     }
 
     /**
-     * 用户数据编辑时，部门数据加载成功后的执行方法
-     */
+	 * 用户数据编辑时，部门数据加载成功后的执行方法
+	 */
     function editDepartmentLoadSuccess(node,data) {
         var selected = userGrid.datagrid("getSelected");
         if (null == selected) {
