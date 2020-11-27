@@ -15,9 +15,9 @@ public interface ResourceRpc {
 	@GET("/resourceApi/listResourceCodeByMenuUrl.api")
 	BaseOutput<List<String>> listResourceCodeByMenuUrl(@ReqParam("url") String url, @ReqParam("userId") Long userId);
 
-	@POST("/resourceApi/listResourceCodeByUserId")
+	@POST("/resourceApi/listResourceCodeByUserId.api")
 	BaseOutput<List<String>> listResourceCodeByUserId(@VOBody Long id);
 
-	@POST("/resourceApi/listResourceCodesByUserId")
+	@POST("/resourceApi/listResourceCodesByUserId.api")
 	BaseOutput<List<String>> listResourceCodesByUserId(@VOBody UserResourceQueryDto dto);
 }
