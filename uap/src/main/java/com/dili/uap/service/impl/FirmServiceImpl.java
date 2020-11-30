@@ -172,7 +172,7 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 	}
 
 	@Override
-	public Firm getIdByCode(String firmCode) {
+	public Firm getByCode(String firmCode) {
 		Firm record = DTOUtils.newInstance(Firm.class);
 		record.setCode(firmCode);
 		return this.getActualDao().selectOne(record);
@@ -341,10 +341,10 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 	@Override
 	public BaseOutput<Object> enable(Long id) {
 		Firm firm = this.getActualDao().selectByPrimaryKey(id);
-		if (firm.getState().equals(FirmState.ENABLED.getValue())) {
+		if (firm.getFirmState().equals(FirmState.ENABLED.getValue())) {
 			return BaseOutput.failure("该商户状态为已开通状态，请勿重复操作");
 		}
-		firm.setState(FirmState.ENABLED.getValue());
+		firm.setFirmState(FirmState.ENABLED.getValue());
 		int rows = this.getActualDao().updateByPrimaryKeySelective(firm);
 		if (firm.getUserId() != null) {
 			BaseOutput output = this.userService.upateEnable(firm.getUserId(), true);
@@ -358,10 +358,10 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 	@Override
 	public BaseOutput<Object> disable(Long id) {
 		Firm firm = this.getActualDao().selectByPrimaryKey(id);
-		if (firm.getState().equals(FirmState.DISABLED.getValue())) {
+		if (firm.getFirmState().equals(FirmState.DISABLED.getValue())) {
 			return BaseOutput.failure("该商户状态为已关闭状态，请勿重复操作");
 		}
-		firm.setState(FirmState.DISABLED.getValue());
+		firm.setFirmState(FirmState.DISABLED.getValue());
 		firm.setCloseTime(LocalDateTime.now());
 		int rows = this.getActualDao().updateByPrimaryKeySelective(firm);
 		if (firm.getUserId() != null) {
@@ -379,7 +379,7 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 		if (firm.getDeleted()) {
 			return BaseOutput.failure("商户为已删除状态，请勿重复操作");
 		}
-		if (firm.getState().equals(FirmState.ENABLED.getValue()) && firm.getUserId() != null) {
+		if (firm.getFirmState().equals(FirmState.ENABLED.getValue()) && firm.getUserId() != null) {
 			return BaseOutput.failure("商户状态为已开通状态且设置了管理员，无法删除");
 		}
 		/*

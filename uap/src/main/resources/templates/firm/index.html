@@ -11,6 +11,9 @@
 	font-weight: bold;
 }
 </style>
+<script type="text/javascript">
+<#firm_indexJs/>    
+</script>
 <div class="easyui-layout" fit="true">
 	<!-- ====================================================================================================================== -->
 	<!-- 上方布局 -->
@@ -22,7 +25,6 @@
 		<!-- =========================================================表单========================================================= -->
 		<div class="easyui-panel" style="width: 100%;" align="left">
 			<form id="form" class="easyui-form" method="post" fit="true">
-				<!--				<input  name="state" id="state" hidden/>-->
 				<div class="search-wrap">
 					<div class="search-item">
 						<input class="easyui-textbox" name="name" id="name" style="width: 100%" labelAlign="right" data-options="label:'企业名称:', validType:'length[0,20]'" />
@@ -41,8 +43,8 @@
 						<input class="easyui-datebox" name="createdEnd" id="createdEnd" style="width: 100%" data-options="labelAlign:'center',editable:false" panelHeight="auto" label="-" />
 					</div>
 					<div class="search-item">
-						<input class="easyui-textbox" name="state" id="state" style="width: 100%" labelAlign="right" data-options="label:'状态:', editable:false" />
-						<#comboProvider _id="state" _provider="firmStateProvider" _queryParams='{dd_code:"state",emptyText:"-- 全部 --"}' />
+						<input class="easyui-textbox" name="firmState" id="firmState" style="width: 100%" labelAlign="right" data-options="label:'状态:', editable:false,onLoadSuccess:queryGrid" />
+						<#comboProvider _id="firmState" _provider="firmStateProvider" _queryParams='{dd_code:"state",emptyText:"-- 全部 --"}' />
 					</div>
 					<div class="search-wrap-btn">
 						<a href="#" class="easyui-linkbutton" iconCls="icon-search" id="queryBtn" onclick="queryGrid()">查询</a>&nbsp;&nbsp; <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-clear"
@@ -65,8 +67,7 @@
 		<!-- =========================================================表格========================================================= -->
 		<table class="easyui-treegrid" title="市场列表" id="grid" toolbar="#toolbar" fitColumns="true" noheader="true" rownumbers="false" remoteSort="false"
 			loadMsg="数据加载中..." singleSelect="true" method="post" multiSort="false" sortName="created" sortOrder="desc" align="center" fit="true" striped="true" idField="id" treeField="name"
-			data-options="onDblClickRow:openUpdate, onHeaderContextMenu:headerContextMenu,loadFilter:treegridLoadFilter, _parentIdField:'parentId',onLoadSuccess:gridLoadSuccess"
-			url="${contextPath!}/firm/list.action">
+			data-options="onDblClickRow:openUpdate, onHeaderContextMenu:headerContextMenu,loadFilter:treegridLoadFilter, _parentIdField:'parentId',onLoadSuccess:gridLoadSuccess">
 			<thead>
 				<tr>
 					<th width="15%" data-options="field:'name',   sortable:true, order:'asc', align:'left', resizable:'true', fixed:'false'">企业名称</th>
@@ -77,7 +78,7 @@
 						data-options="field:'industry', _provider:'dataDictionaryValueProvider', _queryParams:{'dd_code':'industry'}, sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">所属行业</th>
 					<th width="10%" data-options="field:'telephone',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">联系电话</th>
 					<th width="15%" data-options="field:'created',  _provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">创建时间</th>
-					<th width="10%" data-options="field:'state', _provider:'firmStateProvider',  sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">状态</th>
+					<th width="10%" data-options="field:'firmState', _provider:'firmStateProvider',  sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">状态</th>
 				</tr>
 			</thead>
 		</table>
@@ -91,6 +92,4 @@
 </div>
 
 <!-- ====================================================================================================================== --> <!-- style & script 分隔线 --> <!-- ====================================================================================================================== -->
-<script type="text/javascript">
-<#firm_indexJs/>	
-</script> </#body>
+</#body>

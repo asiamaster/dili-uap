@@ -5,13 +5,16 @@ import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.dao.DepartmentMapper;
 import com.dili.uap.dao.FirmMapper;
+import com.dili.uap.dao.UserMapper;
 import com.dili.uap.sdk.domain.Department;
 import com.dili.uap.sdk.domain.Firm;
+import com.dili.uap.sdk.domain.User;
 import com.dili.uap.sdk.domain.UserDataAuth;
 import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.glossary.DataAuthType;
 import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.service.DepartmentService;
+import com.dili.uap.service.FirmService;
 import com.dili.uap.service.UserDataAuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,6 +39,10 @@ public class DepartmentServiceImpl extends BaseServiceImpl<Department, Long> imp
 
 	@Autowired
 	private UserDataAuthService userDataAuthService;
+	@Autowired
+	private FirmService firmService;
+	@Autowired
+	private UserMapper userMapper;
 
 	@Override
 	@Transactional
@@ -68,6 +75,33 @@ public class DepartmentServiceImpl extends BaseServiceImpl<Department, Long> imp
 		result = this.userDataAuthService.insert(userDataAuth);
 		if (result <= 0) {
 			throw new RuntimeException("更新部门编码失败");
+		}
+		// 更新市场管理员权限
+		Firm firm = this.firmService.getByCode(department.getFirmCode());
+		if (firm.getUserId() != null) {
+			User adminUser = this.userMapper.selectByPrimaryKey(firm.getUserId());
+			userDataAuth = DTOUtils.newInstance(UserDataAuth.class);
+			userDataAuth.setRefCode(DataAuthType.DEPARTMENT.getCode());
+			userDataAuth.setUserId(adminUser.getId());
+			userDataAuth.setValue(department.getId().toString());
+			result = this.userDataAuthService.insert(userDataAuth);
+			if (result <= 0) {
+				throw new RuntimeException("更新市场管理员权限失败");
+			}
+		}
+		while (firm.getParentId() != null) {
+			firm = this.firmMapper.selectByPrimaryKey(firm.getParentId());
+			if (firm.getUserId() != null) {
+				User adminUser = this.userMapper.selectByPrimaryKey(firm.getUserId());
+				userDataAuth = DTOUtils.newInstance(UserDataAuth.class);
+				userDataAuth.setRefCode(DataAuthType.DEPARTMENT.getCode());
+				userDataAuth.setUserId(adminUser.getId());
+				userDataAuth.setValue(department.getId().toString());
+				result = this.userDataAuthService.insert(userDataAuth);
+				if (result <= 0) {
+					throw new RuntimeException("更新市场管理员权限失败");
+				}
+			}
 		}
 		return BaseOutput.success().setData(department);
 	}

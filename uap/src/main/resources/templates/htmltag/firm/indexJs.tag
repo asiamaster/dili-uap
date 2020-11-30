@@ -51,14 +51,14 @@
 
         // 表格查询
         function queryGrid() {
-            var opts = $("#grid").datagrid("options");
+            var opts = $("#grid").treegrid("options");
             if (null == opts.url || "" == opts.url) {
-                opts.url = "${contextPath}/firm/listPage.action";
+                opts.url = "${contextPath}/firm/list.action";
             }
             if(!$('#form').form("validate")){
                 return;
             }
-            $("#grid").datagrid("load", bindGridMeta2Form("grid", "form"));
+            $("#grid").treegrid("load", bindGridMeta2Form("grid", "form"));
         }
 
 
@@ -162,7 +162,6 @@
 		 */
         $(function () {
             bindFormEvent("form", "name", queryGrid);
-            bindFormEvent("_form", "_name", saveOrUpdate, function (){$('#dlg').dialog('close');});
             if (document.addEventListener) {
                 document.addEventListener("keyup",getKey,false);
             } else if (document.attachEvent) {
@@ -172,5 +171,4 @@
             }
             // 表格仅显示下边框
             $('#grid').datagrid('getPanel').removeClass('lines-both lines-no lines-right lines-bottom').addClass("lines-bottom");
-            queryGrid();
         })

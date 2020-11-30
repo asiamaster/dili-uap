@@ -29,12 +29,12 @@ public interface FirmService extends BaseService<Firm, Long> {
 	BaseOutput<Object> updateSelectiveAfterCheck(FirmUpdateDto dto);
 
 	/**
-	 * 根据编码查询id
+	 * 根据编码查询
 	 * 
 	 * @param firmCode
 	 * @return
 	 */
-	Firm getIdByCode(String firmCode);
+	Firm getByCode(String firmCode);
 
 	/**
 	 * 设置超级管理员用户

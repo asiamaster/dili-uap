@@ -84,7 +84,7 @@ public class DataDictionaryApi {
 			if (StringUtils.isNotBlank(sb)) {
 				sb.append(" and ");
 			}
-			Firm firm = this.firmService.getIdByCode(UapConstants.GROUP_CODE);
+			Firm firm = this.firmService.getByCode(UapConstants.GROUP_CODE);
 			sb.append("(firm_id in (").append(firm.getId()).append(",").append(firm.getId()).append(") or firm_id is null)");
 			dataDictionaryValue.setFirmId(null);
 		}

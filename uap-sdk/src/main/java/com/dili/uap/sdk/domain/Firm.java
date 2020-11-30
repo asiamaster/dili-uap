@@ -1,5 +1,6 @@
 package com.dili.uap.sdk.domain;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.dili.ss.domain.annotation.Like;
 import com.dili.ss.dto.IBaseDomain;
 import com.dili.ss.dto.IMybatisForceParams;
@@ -247,9 +248,9 @@ public interface Firm extends IBaseDomain, IMybatisForceParams {
 	@Column(name = "`state`")
 	@FieldDef(label = "状态：1开通，2关闭")
 	@EditMode(editor = FieldEditor.Number, required = true)
-	Integer getState();
+	Integer getFirmState();
 
-	void setState(Integer state);
+	void setFirmState(Integer state);
 
 	@Column(name = "`user_id`")
 	@FieldDef(label = "管理员用户id")
