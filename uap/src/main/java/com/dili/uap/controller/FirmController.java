@@ -87,10 +87,12 @@ public class FirmController {
 	 * 
 	 * @param firm
 	 * @return
+	 * @throws Exception
 	 */
 	@RequestMapping(value = "/list.action", method = { RequestMethod.GET, RequestMethod.POST })
-	public @ResponseBody Firm list(Firm firm) {
-		return firm;
+	public @ResponseBody String list(Firm firm) throws Exception {
+		firm.setDeleted(false);
+		return firmService.listEasyuiPageByExample(firm, true).toString();
 	}
 
 	/**
@@ -112,7 +114,8 @@ public class FirmController {
 	 * @return
 	 */
 	@GetMapping("/add.html")
-	public String addView() {
+	public String addView(@RequestParam(required = false) Long parentId, ModelMap modelMap) {
+		modelMap.addAttribute("parentId", parentId);
 		return "firm/add";
 	}
 

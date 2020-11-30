@@ -16,6 +16,7 @@ import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.exception.AppException;
 import com.dili.uap.constants.UapConstants;
+import com.dili.uap.dao.DepartmentMapper;
 import com.dili.uap.dao.FirmMapper;
 import com.dili.uap.dao.UserDataAuthMapper;
 import com.dili.uap.dao.UserRoleMapper;
@@ -26,6 +27,7 @@ import com.dili.uap.domain.dto.FirmUpdateDto;
 import com.dili.uap.domain.dto.PaymentFirmDto;
 import com.dili.uap.rpc.PayRpc;
 import com.dili.uap.rpc.UidRpc;
+import com.dili.uap.sdk.domain.Department;
 import com.dili.uap.sdk.domain.Firm;
 import com.dili.uap.sdk.domain.FirmState;
 import com.dili.uap.sdk.domain.Role;
@@ -37,6 +39,8 @@ import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.service.FirmService;
 import com.dili.uap.service.RoleService;
 import com.dili.uap.service.UserService;
+
+import tk.mybatis.mapper.entity.Example;
 
 /**
  * 由MyBatis Generator工具自动生成 This file was generated on 2018-05-23 14:31:07.
@@ -67,6 +71,8 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 	private UserRoleMapper userRoleMapper;
 	@Autowired
 	private PayRpc payRpc;
+	@Autowired
+	private DepartmentMapper departmentMapper;
 
 	public FirmMapper getActualDao() {
 		return (FirmMapper) getDao();
@@ -76,12 +82,12 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 	@Override
 	public BaseOutput<Object> insertAndBindUserDataAuth(FirmAddDto firmDto) {
 		UserTicket user = SessionContext.getSessionContext().getUserTicket();
-		if(user == null){
+		if (user == null) {
 			return BaseOutput.failure("登录超时");
 		}
-		//统一验证
+		// 统一验证
 		String msg = validateAddFirm(firmDto);
-		if(null != msg){
+		if (null != msg) {
 			return BaseOutput.failure(msg);
 		}
 		BaseOutput<String> output = this.uidRpc.getFirmSerialNumber();
@@ -92,14 +98,12 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 		Firm query = DTOUtils.newInstance(Firm.class);
 		query.setCode(UapConstants.GROUP_CODE);
 		Firm groupFirm = this.getActualDao().selectOne(query);
-		//将当前市场的parentId设置为集团
-		firmDto.setParentId(groupFirm.getId());
 		int rows = this.getActualDao().insertSelective(firmDto);
 		if (rows <= 0) {
 			return BaseOutput.failure("插入市场信息失败");
 		}
-		//如果nacos配置项uap.firm.to.payment.flag的值不为false,则市场信息同步到支付系统；调用支付系统商户注册接口
-		if(!"false".equalsIgnoreCase(paymentFlag)) {
+		// 如果nacos配置项uap.firm.to.payment.flag的值不为false,则市场信息同步到支付系统；调用支付系统商户注册接口
+		if (!"false".equalsIgnoreCase(paymentFlag)) {
 			PaymentFirmDto paymentFirmDto = new PaymentFirmDto();
 			paymentFirmDto.setMchId(firmDto.getId());
 			paymentFirmDto.setCode(firmDto.getCode());
@@ -115,7 +119,7 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 				throw new AppException(registerMerchant.getMessage());
 			}
 		}
-		//为当前用户设置数据权限，当前用户得看到新增的市场
+		// 为当前用户设置数据权限，当前用户得看到新增的市场
 		UserDataAuth userDataAuth = DTOUtils.newInstance(UserDataAuth.class);
 		userDataAuth.setRefCode(DataAuthType.MARKET.getCode());
 		userDataAuth.setUserId(user.getId());
@@ -124,6 +128,7 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 		if (rows <= 0) {
 			throw new RuntimeException("绑定用户市场数据权限失败");
 		}
+
 		return BaseOutput.success().setData(firmDto);
 	}
 
@@ -144,8 +149,8 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 		try {
 			rows = this.updateExactSimple(dto);
 
-			//如果nacos配置项uap.firm.to.payment.flag的值不为false,则市场信息同步到支付系统；调用支付系统修改商户接口
-			if(!"false".equalsIgnoreCase(paymentFlag)) {
+			// 如果nacos配置项uap.firm.to.payment.flag的值不为false,则市场信息同步到支付系统；调用支付系统修改商户接口
+			if (!"false".equalsIgnoreCase(paymentFlag)) {
 				PaymentFirmDto paymentFirmDto = new PaymentFirmDto();
 				paymentFirmDto.setMchId(dto.getId());
 				paymentFirmDto.setCode(dto.getCode());
@@ -192,8 +197,8 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 			adminUser.setEmail(dto.getEmail());
 			adminUser.setFirmCode(firm.getCode());
 			adminUser.setRealName(firm.getSimpleName());
-			//先判断市场的简称存不存在，不存在则用市场名称，老市场的简称可能不存在
-			if(firm.getSimpleName() == null || "".equals(firm.getSimpleName())){
+			// 先判断市场的简称存不存在，不存在则用市场名称，老市场的简称可能不存在
+			if (firm.getSimpleName() == null || "".equals(firm.getSimpleName())) {
 				adminUser.setRealName(firm.getName());
 			}
 			BaseOutput output = this.userService.save(adminUser);
@@ -203,7 +208,7 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 			firm.setUserId(adminUser.getId());
 			firmUpdate = true;
 		} else {
-			//校验用户账号是否存在
+			// 校验用户账号是否存在
 			List<User> userList = new ArrayList<User>();
 			User query = DTOUtils.newInstance(User.class);
 			query.setUserName(dto.getUserName());
@@ -225,37 +230,73 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 			}
 		}
 
-		//默认设置用户的权限
-		if(firmUpdate){
-			//为当前用户设置数据权限，当前用户得看到新增的市场
-			UserDataAuth userDataAuth = DTOUtils.newInstance(UserDataAuth.class);
-			userDataAuth.setRefCode(DataAuthType.MARKET.getCode());
-			userDataAuth.setUserId(adminUser.getId());
-			userDataAuth.setValue(firm.getCode());
-			int row = this.userDataAuthMapper.insertSelective(userDataAuth);
-			if (row <= 0) {
-				throw new RuntimeException("绑定用户市场数据权限失败");
+		// 默认设置用户的权限
+		if (firmUpdate) {
+			List<Firm> firms = this.getActualDao().selectAllChildrenFirms(firm.getId());
+			// 为当前用户设置数据权限，当前用户得看到新增的市场
+			List<UserDataAuth> dataAuths = new ArrayList<UserDataAuth>(firms.size());
+			for (Firm f : firms) {
+				UserDataAuth depDataAuth = DTOUtils.newInstance(UserDataAuth.class);
+				depDataAuth.setRefCode(DataAuthType.MARKET.getCode());
+				depDataAuth.setUserId(adminUser.getId());
+				depDataAuth.setValue(f.getCode());
+				dataAuths.add(depDataAuth);
 			}
-		}else{
-			//先判断该用户有无当前市场权限，如果没有则默认新增权限
-			List<Map> ranges = SessionContext.getSessionContext().dataAuth(DataAuthType.MARKET.getCode());
-			boolean rangFlag=false;
-			for (Map rangMap : ranges) {
-				if(rangMap.get("value") !=null && rangMap.get("value").toString().equals(String.valueOf(firm.getCode()))){
-					rangFlag=true;
-					break;
+			this.userDataAuthMapper.insertList(dataAuths);
+			// 新增部门权限
+			List<String> firmCodes = new ArrayList<String>(firms.size());
+			firms.forEach(f -> firmCodes.add(f.getCode()));
+			Example example = new Example(Department.class);
+			example.createCriteria().andIn("firmCode", firmCodes);
+			List<Department> departments = this.departmentMapper.selectByExample(example);
+			if (CollectionUtils.isNotEmpty(departments)) {
+				List<UserDataAuth> dataAuthList = new ArrayList<UserDataAuth>(departments.size());
+				for (Department d : departments) {
+					UserDataAuth depDataAuth = DTOUtils.newInstance(UserDataAuth.class);
+					depDataAuth.setRefCode(DataAuthType.DEPARTMENT.getCode());
+					depDataAuth.setUserId(adminUser.getId());
+					depDataAuth.setValue(d.getId().toString());
+					dataAuthList.add(depDataAuth);
 				}
+				this.userDataAuthMapper.insertList(dataAuthList);
 			}
-			if(!rangFlag){
-				//为当前用户设置数据权限，当前用户得看到新增的市场
-				UserDataAuth userDataAuth = DTOUtils.newInstance(UserDataAuth.class);
-				userDataAuth.setRefCode(DataAuthType.MARKET.getCode());
-				userDataAuth.setUserId(adminUser.getId());
-				userDataAuth.setValue(firm.getCode());
-				int row = this.userDataAuthMapper.insertSelective(userDataAuth);
-				if (row <= 0) {
-					throw new RuntimeException("绑定用户市场数据权限失败");
+		} else {
+			//更新市场数据权限
+			List<Firm> firms = this.getActualDao().selectAllChildrenFirms(firm.getId());
+			List<String> firmCodes = new ArrayList<String>(firms.size());
+			firms.forEach(f -> firmCodes.add(f.getCode()));
+			Example example = new Example(UserDataAuth.class);
+			example.createCriteria().andEqualTo("refCode", DataAuthType.MARKET.getCode()).andEqualTo("userId", adminUser.getId()).andIn("value", firmCodes);
+ 			this.userDataAuthMapper.deleteByExample(example);
+			// 为当前用户设置数据权限，当前用户得看到新增的市场
+			List<UserDataAuth> dataAuths = new ArrayList<UserDataAuth>(firms.size());
+			for (Firm f : firms) {
+				UserDataAuth depDataAuth = DTOUtils.newInstance(UserDataAuth.class);
+				depDataAuth.setRefCode(DataAuthType.MARKET.getCode());
+				depDataAuth.setUserId(adminUser.getId());
+				depDataAuth.setValue(f.getCode());
+				dataAuths.add(depDataAuth);
+			}
+			this.userDataAuthMapper.insertList(dataAuths);
+			// 更新部门权限
+			example = new Example(Department.class);
+			example.createCriteria().andIn("firmCode", firmCodes);
+			List<Department> departments = this.departmentMapper.selectByExample(example);
+			example = new Example(UserDataAuth.class);
+			List<Long> departmentIds = new ArrayList<Long>(firms.size());
+			departments.forEach(d -> departmentIds.add(d.getId()));
+			example.createCriteria().andEqualTo("refCode", DataAuthType.DEPARTMENT.getCode()).andEqualTo("userId", adminUser.getId()).andIn("value", departmentIds);
+			this.userDataAuthMapper.deleteByExample(example);
+			if (CollectionUtils.isNotEmpty(departments)) {
+				List<UserDataAuth> dataAuthList = new ArrayList<UserDataAuth>(departments.size());
+				for (Department d : departments) {
+					UserDataAuth depDataAuth = DTOUtils.newInstance(UserDataAuth.class);
+					depDataAuth.setRefCode(DataAuthType.DEPARTMENT.getCode());
+					depDataAuth.setUserId(adminUser.getId());
+					depDataAuth.setValue(d.getId().toString());
+					dataAuthList.add(depDataAuth);
 				}
+				this.userDataAuthMapper.insertList(dataAuthList);
 			}
 		}
 
@@ -341,23 +382,24 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 		if (firm.getState().equals(FirmState.ENABLED.getValue()) && firm.getUserId() != null) {
 			return BaseOutput.failure("商户状态为已开通状态且设置了管理员，无法删除");
 		}
-		/*LocalDateTime closeTime = firm.getCloseTime();
-		LocalDateTime beforeCloseTimeOneYear = closeTime.plusYears(1L);
-		if(beforeCloseTimeOneYear.isAfter(LocalDateTime.now())) {
-			return BaseOutput.failure("关闭了时间超过1年以上可以删除");
-		}*/
+		/*
+		 * LocalDateTime closeTime = firm.getCloseTime(); LocalDateTime
+		 * beforeCloseTimeOneYear = closeTime.plusYears(1L);
+		 * if(beforeCloseTimeOneYear.isAfter(LocalDateTime.now())) { return
+		 * BaseOutput.failure("关闭了时间超过1年以上可以删除"); }
+		 */
 		firm.setDeleted(true);
 		int rows = this.getActualDao().updateByPrimaryKeySelective(firm);
 		return rows > 0 ? BaseOutput.success() : BaseOutput.failure("删除失败");
 	}
 
-
 	/**
 	 * 新增企业统一验证
+	 * 
 	 * @param firmDto
 	 * @return
 	 */
-	private String validateAddFirm(FirmAddDto firmDto){
+	private String validateAddFirm(FirmAddDto firmDto) {
 		if (!firmDto.getLongTermEffictive() && firmDto.getCertificateNumber() == null) {
 			return "法人身份证有效期不能为空";
 		}
@@ -369,7 +411,7 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 		}
 		query = DTOUtils.newInstance(Firm.class);
 		query.setCode(firmDto.getCode());
-		//企业简码不能重复
+		// 企业简码不能重复
 		count = this.getActualDao().selectCount(query);
 		if (count > 0) {
 			return "已存在相同的企业简码";

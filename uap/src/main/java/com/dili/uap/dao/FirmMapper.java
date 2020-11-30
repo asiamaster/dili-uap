@@ -1,7 +1,11 @@
 package com.dili.uap.dao;
 
+import java.util.List;
+
 import com.dili.ss.base.MyMapper;
 import com.dili.uap.sdk.domain.Firm;
 
 public interface FirmMapper extends MyMapper<Firm> {
+
+	List<Firm> selectAllChildrenFirms(Long id);
 }

@@ -1,15 +1,26 @@
- 
-<#body>
-<script>
-<#firm_indexJs />
+
+<#body> <script>
+	<#firm_indexJs />
 </script>
 <style>
-	.order_number{
-		height:36px; line-height:35px; font-size:22px; color:dodgerblue; float:left;
-	}
-	.information{
-		height:36px; line-height:40px; font-size:16px; float:left;font-family: 'Microsoft Tai Le Bold', 'Microsoft Tai Le';color: rgba(0, 0, 0, 0.847058823529412);font-weight: 700;font-style: normal;
-	}
+.order_number {
+	height: 36px;
+	line-height: 35px;
+	font-size: 22px;
+	color: dodgerblue;
+	float: left;
+}
+
+.information {
+	height: 36px;
+	line-height: 40px;
+	font-size: 16px;
+	float: left;
+	font-family: 'Microsoft Tai Le Bold', 'Microsoft Tai Le';
+	color: rgba(0, 0, 0, 0.847058823529412);
+	font-weight: 700;
+	font-style: normal;
+}
 </style>
 <div class="easyui-layout" fit="true">
 	<!-- ====================================================================================================================== -->
@@ -35,7 +46,7 @@
 				}]
 			">
 			<form id="_form" class="easyui-form" method="post" fit="true">
-				<input name="id" id="id" type="hidden">
+				<input name="parentId" id="parentId" type="hidden" value="${parentId!}">
 				<table width="800px">
 					<tr>
 						<td style="padding: 5px;">
@@ -65,9 +76,8 @@
 							required="true" /></td>
 					</tr>
 					<tr>
-						<td style="padding: 5px;">
-							<input class="easyui-combobox" name="certificateType" id="certificateType" style="width: 35%"
-								data-options="
+						<td style="padding: 5px;"><input class="easyui-combobox" name="certificateType" id="certificateType" style="width: 35%"
+							data-options="
 								label:'企业证件:',
 								url:'${contextPath!}/firm/certificateTypeList.action',
 								editable:false,
@@ -75,21 +85,15 @@
 								panelHeight:'auto',
 								panelMaxHeight:200,
 								valueField:'code'"
-								required="true" /> 
-							<input class="easyui-textbox" name="certificateNumber" id="certificateNumber" style="width: 55%" 
-								data-options="prompt:'证件号',validType:'length[0,18]'" required="true" /></td>
+							required="true" /> <input class="easyui-textbox" name="certificateNumber" id="certificateNumber" style="width: 55%" data-options="prompt:'证件号',validType:'length[0,18]'" required="true" /></td>
 					</tr>
 					<tr>
-						<td style="padding: 5px;">
-							<input class="easyui-datebox" name="effectTime" id="effectTime" style="width: 50%" 
-								data-options="label:'营业期限:',prompt:'生效时间'" required="true" /> 
-							<input class="easyui-datebox"
-								name="failureTime" id="failureTime" style="width: 40%" data-options="prompt:'失效时间'" required="true" /></td>
+						<td style="padding: 5px;"><input class="easyui-datebox" name="effectTime" id="effectTime" style="width: 50%" data-options="label:'营业期限:',prompt:'生效时间'" required="true" /> <input
+							class="easyui-datebox" name="failureTime" id="failureTime" style="width: 40%" data-options="prompt:'失效时间'" required="true" /></td>
 					</tr>
 					<tr>
-						<td style="padding: 5px;">
-							<input class="easyui-combobox" name="registeredProvinceId" id="registeredProvinceId" style="width: 36%"
-								data-options="
+						<td style="padding: 5px;"><input class="easyui-combobox" name="registeredProvinceId" id="registeredProvinceId" style="width: 36%"
+							data-options="
 									label:'企业注册地址:',
 									labelWidth:100,
 									url:'${contextPath!}/firm/provinceList.action',
@@ -99,36 +103,32 @@
 									textField:'name',
 									valueField:'id',
 									onChange:onRegProvinceChange"
-								required="true" /> 
-							<input class="easyui-combobox" name="registeredCityId" id="registeredCityId" style="width: 27%"
-								data-options="
+							required="true" /> <input class="easyui-combobox" name="registeredCityId" id="registeredCityId" style="width: 27%"
+							data-options="
 									disabled:true,
 									editable:false,
 									textField:'name',
 									panelHeight:'auto',
 									panelMaxHeight:200,
 									valueField:'id',
-									onChange:onRegCityChange" required="true" /> 
-							<input class="easyui-combobox" name="registeredDistrictId" id="registeredDistrictId" style="width: 27%"
-								data-options="
+									onChange:onRegCityChange"
+							required="true" /> <input class="easyui-combobox" name="registeredDistrictId" id="registeredDistrictId" style="width: 27%"
+							data-options="
 										editable:false,
 										disabled:true,
 										textField:'name',
 										panelHeight:'auto',
 										panelMaxHeight:200,
-										valueField:'id'" required="true" /> 
-						</td>
+										valueField:'id'"
+							required="true" /></td>
 					</tr>
 					<tr>
-						<td style="padding: 5px;">
-							<input class="easyui-textbox" name="registeredDetailAddress" id="registeredDetailAddress" style="width: 90%" 
-											data-options="label:'注册所在地详细地址:',labelWidth:145, validType:'length[0,50]'" required="true" />
-						</td>
+						<td style="padding: 5px;"><input class="easyui-textbox" name="registeredDetailAddress" id="registeredDetailAddress" style="width: 90%"
+							data-options="label:'注册所在地详细地址:',labelWidth:145, validType:'length[0,50]'" required="true" /></td>
 					</tr>
 					<tr>
-						<td style="padding: 5px;">
-							<input class="easyui-combobox" name="actualProvinceId" id="actualProvinceId" style="width: 36%"
-								data-options="
+						<td style="padding: 5px;"><input class="easyui-combobox" name="actualProvinceId" id="actualProvinceId" style="width: 36%"
+							data-options="
 									label:'实际经营地址:',
 									labelWidth:100,
 									url:'${contextPath!}/firm/provinceList.action',
@@ -138,32 +138,28 @@
 									textField:'name',
 									valueField:'id',
 									onChange:onActProvinceChange"
-								required="true" /> 
-							<input class="easyui-combobox" name="actualCityId" id="actualCityId" style="width: 27%"
-								data-options="
+							required="true" /> <input class="easyui-combobox" name="actualCityId" id="actualCityId" style="width: 27%"
+							data-options="
 									disabled:true,
 									editable:false,
 									panelHeight:'auto',
 									panelMaxHeight:200,
 									textField:'name',
 									valueField:'id',
-									onChange:onActCityChange" required="true" /> 
-							<input class="easyui-combobox" name="actualDistrictId" id="actualDistrictId" style="width: 27%"
-								data-options="
+									onChange:onActCityChange"
+							required="true" /> <input class="easyui-combobox" name="actualDistrictId" id="actualDistrictId" style="width: 27%"
+							data-options="
 										editable:false,
 										disabled:true,
 										panelHeight:'auto',
 										panelMaxHeight:200,
 										textField:'name',
 										valueField:'id'"
-								required="true" /> 
-						</td>
+							required="true" /></td>
 					</tr>
 					<tr>
-						<td style="padding: 5px;">
-							<input class="easyui-textbox" name="actualDetailAddress" id="actualDetailAddress" style="width: 90%" 
-								data-options="label:'实际经营所在地详细地址:',labelWidth:170, validType:'length[0,50]'" required="true" />
-						</td>
+						<td style="padding: 5px;"><input class="easyui-textbox" name="actualDetailAddress" id="actualDetailAddress" style="width: 90%"
+							data-options="label:'实际经营所在地详细地址:',labelWidth:170, validType:'length[0,50]'" required="true" /></td>
 					</tr>
 					<tr>
 						<td style="padding: 5px;">
@@ -172,15 +168,12 @@
 						</td>
 					</tr>
 					<tr>
-						<td style="padding: 5px;">
-							<input class="easyui-textbox" name="legalPersonName" id="legalPersonName" style="width: 90%" 
-								data-options="label:'法人名称:', validType:'length[0,20]'" required="true" />
+						<td style="padding: 5px;"><input class="easyui-textbox" name="legalPersonName" id="legalPersonName" style="width: 90%" data-options="label:'法人名称:', validType:'length[0,20]'" required="true" />
 						</td>
 					</tr>
 					<tr>
-						<td style="padding: 5px;">
-							<input class="easyui-combobox" name="legalPersonCertificateType" id="legalPersonCertificateType" style="width: 30%"
-								data-options="
+						<td style="padding: 5px;"><input class="easyui-combobox" name="legalPersonCertificateType" id="legalPersonCertificateType" style="width: 30%"
+							data-options="
 								label:'法人证件:',
 								prompt:'证件类型',
 								panelHeight:'auto',
@@ -189,16 +182,12 @@
 								valueField:'code',
 								editable:false,
 								url:'${contextPath!}/firm/legalPersonCertificateTypeList.action'"
-								required="true" /> 
-							<input class="easyui-textbox" name="legalPersonCertificateNumber" id="legalPersonCertificateNumber" style="width: 60%" 
-								data-options="prompt:'证件号:', validType:'length[0,18]'"
-								required="true" />
-						</td>
+							required="true" /> <input class="easyui-textbox" name="legalPersonCertificateNumber" id="legalPersonCertificateNumber" style="width: 60%" data-options="prompt:'证件号:', validType:'length[0,18]'"
+							required="true" /></td>
 					</tr>
 					<tr>
-						<td style="padding: 5px;">
-							<input class="easyui-combobox" name="longTermEffictive" id="longTermEffictive" style="width: 30%"
-								data-options="
+						<td style="padding: 5px;"><input class="easyui-combobox" name="longTermEffictive" id="longTermEffictive" style="width: 30%"
+							data-options="
 									label:'是否长期有效:',
 									labelWidth:95,
 									panelHeight:'auto',
@@ -213,10 +202,8 @@
 										text:'是',
 										value:true
 									}],onChange:onLongTermEffictiveChange"
-								required="true" /> 
-							<input class="easyui-datebox" name="certificateValidityPeriod" id="certificateValidityPeriod" style="width: 60%" 
-								data-options="prompt:'证件有效期:',editable:false" required="true" />
-						</td>
+							required="true" /> <input class="easyui-datebox" name="certificateValidityPeriod" id="certificateValidityPeriod" style="width: 60%" data-options="prompt:'证件有效期:',editable:false"
+							required="true" /></td>
 					</tr>
 					<tr>
 						<td style="padding: 5px;">
@@ -225,9 +212,8 @@
 						</td>
 					</tr>
 					<tr>
-						<td style="padding: 5px;">
-							<input class="easyui-combobox" name="depositBank" id="depositBank" style="width: 90%"
-								data-options="
+						<td style="padding: 5px;"><input class="easyui-combobox" name="depositBank" id="depositBank" style="width: 90%"
+							data-options="
 										label:'开户银行:',
 										panelHeight:'auto',
 										panelMaxHeight:200,
@@ -236,13 +222,11 @@
 										textField:'name',
 										valueField:'id',
 										onChange:onBankChange"
-								required="true" />
-						</td>
+							required="true" /></td>
 					</tr>
 					<tr>
-						<td style="padding: 5px;">
-							<input class="easyui-combobox" name="bankProvinceId" id="bankProvinceId" style="width: 30%"
-								data-options="
+						<td style="padding: 5px;"><input class="easyui-combobox" name="bankProvinceId" id="bankProvinceId" style="width: 30%"
+							data-options="
 										label:'开户行地区:',
 										panelHeight:'auto',
 										panelMaxHeight:200,
@@ -252,26 +236,25 @@
 										valueField:'id',
 										url:'${contextPath!}/firm/provinceList.action',
 										onChange:onBankProvinceChange"
-								required="true" />
-							<input class="easyui-combobox" name="bankCityId" id="bankCityId" style="width: 30%"
-								data-options="
+							required="true" /> <input class="easyui-combobox" name="bankCityId" id="bankCityId" style="width: 30%"
+							data-options="
 										disabled:true,
 										editable:false,
 										panelHeight:'auto',
 										panelMaxHeight:200,
 										textField:'name',
 										valueField:'id',
-										onChange:onBankCityChange" required="true" />
-							<input class="easyui-combobox" name="depositBankUnionInfoId" id="depositBankUnionInfoId" style="width: 30%"
-								   data-options="
+										onChange:onBankCityChange"
+							required="true" /> <input class="easyui-combobox" name="depositBankUnionInfoId" id="depositBankUnionInfoId" style="width: 30%"
+							data-options="
 											editable:false,
 											disabled:true,
 											prompt:'开户支行',
 											panelHeight:'auto',
 											panelMaxHeight:200,
 											textField:'bankName',
-											valueField:'id'" required="true" />
-						</td>
+											valueField:'id'"
+							required="true" /></td>
 					</tr>
 					<tr>
 						<td style="padding: 5px;"><input class="easyui-numberbox" name="bankAccount" id="bankAccount" style="width: 90%" data-options="label:'银行账号:', validType:'length[12,19]'" required="true" /></td>
@@ -283,16 +266,15 @@
 						</td>
 					</tr>
 					<tr>
-						<td style="padding: 5px;"><input class="easyui-textbox" name="telephone" id="telephone" style="width: 90%" data-options="label:'绑定电话:', validType:['length[0,12]','checkCellphone']" required="true" /></td>
+						<td style="padding: 5px;"><input class="easyui-textbox" name="telephone" id="telephone" style="width: 90%" data-options="label:'绑定电话:', validType:['length[0,12]','checkCellphone']"
+							required="true" /></td>
 					</tr>
 					<tr>
 						<td style="padding: 5px;"><input class="easyui-textbox" name="email" id="email" style="width: 90%" data-options="label:'邮箱:', validType:['length[0,40]','email']" required="true" /></td>
 					</tr>
 					<tr>
-						<td style="padding: 5px;">
-							<a href="javascript:void(0);" class="easyui-linkbutton" style="margin-left:40%" data-options="iconCls:'icon-save',onClick:function(){saveOrUpdate();}">提交</a>
-							<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'icon-search',onClick:function(){window.location.href='${contextPath!}/firm/index.html';}">返回</a>
-						</td>
+						<td style="padding: 5px;"><a href="javascript:void(0);" class="easyui-linkbutton" style="margin-left: 40%" data-options="iconCls:'icon-save',onClick:function(){saveOrUpdate();}">提交</a> <a
+							href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'icon-search',onClick:function(){window.location.href='${contextPath!}/firm/index.html';}">返回</a></td>
 					</tr>
 				</table>
 			</form>
@@ -303,6 +285,4 @@
 
 <!-- ====================================================================================================================== --> <!-- style & script 分隔线 --> <!-- ====================================================================================================================== -->
 
-<#firm_updateJs />
-
-</script> </#body>
+<#firm_updateJs /> </script> </#body>

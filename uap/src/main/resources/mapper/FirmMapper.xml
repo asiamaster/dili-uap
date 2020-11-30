@@ -1,22 +1,66 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.dili.uap.dao.FirmMapper">
-  <resultMap id="BaseResultMap" type="com.dili.uap.sdk.domain.Firm">
-    <!--
-      WARNING - @mbg.generated
-    -->
-    <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="name" jdbcType="VARCHAR" property="name" />
-    <result column="parent_id" jdbcType="BIGINT" property="parentId" />
-    <result column="code" jdbcType="VARCHAR" property="code" />
-    <result column="description" jdbcType="VARCHAR" property="description" />
-    <result column="created" jdbcType="TIMESTAMP" property="created" />
-    <result column="modified" jdbcType="TIMESTAMP" property="modified" />
-  </resultMap>
-  <sql id="Base_Column_List">
-    <!--
-      WARNING - @mbg.generated
-    -->
-    id, name, parent_id, code, description, created, modified
-  </sql>
+	<resultMap id="BaseResultMap" type="com.dili.uap.sdk.domain.Firm">
+		<!-- WARNING - @mbg.generated -->
+		<id column="id" jdbcType="BIGINT" property="id" />
+		<result column="name" jdbcType="VARCHAR" property="name" />
+		<result column="simple_name" jdbcType="VARCHAR" property="simpleName" />
+		<result column="parent_id" jdbcType="BIGINT" property="parentId" />
+		<result column="code" jdbcType="VARCHAR" property="code" />
+		<result column="serial_number" jdbcType="BIGINT" property="serialNumber" />
+		<result column="description" jdbcType="VARCHAR" property="description" />
+		<result column="created" jdbcType="TIMESTAMP" property="created" />
+		<result column="modified" jdbcType="TIMESTAMP" property="modified" />
+		<result column="industry" jdbcType="VARCHAR" property="industry" />
+		<result column="certificate_type" jdbcType="VARCHAR" property="certificateType" />
+		<result column="certificate_number" jdbcType="VARCHAR" property="certificateNumber" />
+		<result column="effect_time" jdbcType="DATE" property="effectTime" />
+		<result column="failure_time" jdbcType="DATE" property="failureTime" />
+		<result column="registered_province_id" jdbcType="BIGINT" property="registeredProvinceId" />
+		<result column="registered_city_id" jdbcType="BIGINT" property="registeredCityId" />
+		<result column="registered_district_id" jdbcType="BIGINT" property="registeredDistrictId" />
+		<result column="registered_detail_address" jdbcType="VARCHAR" property="registeredDetailAddress" />
+		<result column="actual_province_id" jdbcType="BIGINT" property="actualProvinceId" />
+		<result column="actual_city_id" jdbcType="BIGINT" property="actualCityId" />
+		<result column="actual_district_id" jdbcType="BIGINT" property="actualDistrictId" />
+		<result column="actual_detail_address" jdbcType="VARCHAR" property="actualDetailAddress" />
+		<result column="legal_person_name" jdbcType="VARCHAR" property="legalPersonName" />
+		<result column="legal_person_certificate_type" jdbcType="VARCHAR" property="legalPersonCertificateType" />
+		<result column="legal_person_certificate_number" jdbcType="VARCHAR" property="legalPersonCertificateNumber" />
+		<result column="certificate_validity_period" jdbcType="DATE" property="certificateValidityPeriod" />
+		<result column="long_term_effictive" jdbcType="BIT" property="longTermEffictive" />
+		<result column="deposit_bank" jdbcType="BIGINT" property="depositBank" />
+		<result column="deposit_bank_union_info_id" jdbcType="BIGINT" property="depositBankUnionInfoId" />
+		<result column="bank_account" jdbcType="VARCHAR" property="bankAccount" />
+		<result column="telephone" jdbcType="VARCHAR" property="telephone" />
+		<result column="email" jdbcType="VARCHAR" property="email" />
+		<result column="state" jdbcType="INTEGER" property="state" />
+		<result column="close_time" jdbcType="TIMESTAMP" property="closeTime" />
+		<result column="user_id" jdbcType="BIGINT" property="userId" />
+		<result column="role_id" jdbcType="BIGINT" property="roleId" />
+		<result column="deleted" jdbcType="TINYINT" property="deleted" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		<!-- WARNING - @mbg.generated -->
+		id, name, simple_name, parent_id, code, serial_number, description, created, modified,
+		industry, certificate_type, certificate_number, effect_time, failure_time, registered_province_id,
+		registered_city_id, registered_district_id, registered_detail_address, actual_province_id,
+		actual_city_id, actual_district_id, actual_detail_address, legal_person_name, legal_person_certificate_type,
+		legal_person_certificate_number, certificate_validity_period, long_term_effictive,
+		deposit_bank, deposit_bank_union_info_id, bank_account, telephone, email, state,
+		close_time, user_id, role_id,
+		deleted
+	</sql>
+	<select id="selectBy" parameterType="java.lang.Long" resultMap="BaseResultMap">
+		<!-- WARNING - @mbg.generated -->
+		select
+		<include refid="Base_Column_List" />
+		from firm
+		where id = #{id,jdbcType=BIGINT}
+	</select>
+
+	<select id="selectAllChildrenFirms" parameterType="long" resultMap="BaseResultMap">
+		{call getAllChildrenFirms(#{id})}
+	</select>
 </mapper>

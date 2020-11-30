@@ -1,6 +1,11 @@
 // 打开新增窗口
         function openInsert(){
-            window.location.href='${contextPath!}/firm/add.html';
+            var selected = $("#grid").datagrid("getSelected");
+            var url='${contextPath!}/firm/add.html';
+            if (selected) {
+                url+='?parentId='+selected.id;
+            }
+            window.location.href=url;
         }
 
         // 打开修改窗口
@@ -10,49 +15,7 @@
                 swal('警告','请选中一条数据', 'warning');
                 return;
             }
-            $('#dlg').dialog('open');
-            $('#dlg').dialog('center');
-            formFocus("_form", "_name");
-            var formData = $.extend({},selected);
-            formData = addKeyStartWith(getOriginalData(formData),"_");
-            $('#_form').form('load', formData);
-        }
-
-        function saveOrUpdate(){
-            if(!$('#_form').form("validate")){
-                return;
-            }
-            if ($('#failureTime').datebox('getValue')<$('#effectTime').datebox('getValue')) {
-            	swal('错误','生效日期不能大于失效日期', 'error');
-            	return;
-            }
-            var _formData = removeKeyStartWith($("#_form").serializeObject(),"_");
-            var _url = null;
-            // 没有id就新增
-            if(_formData.id == null || _formData.id==""){
-                _url = "${contextPath}/firm/insert.action";
-            }else{// 有id就修改
-                _url = "${contextPath}/firm/update.action";
-            }
-            $.ajax({
-                type: "POST",
-                url: _url,
-                data: _formData,
-                processData:true,
-                dataType: "json",
-                async : true,
-                success: function (data) {
-                    if(data.code=="200"){
-                        $("#grid").datagrid("reload");
-                        $('#dlg').dialog('close');
-                    }else{
-                        swal('错误',data.result, 'error');
-                    }
-                },
-                error: function(){
-                    swal('错误', '远程访问失败', 'error');
-                }
-            });
+            window.location.href='${contextPath!}/firm/update.html?id='+selected.id;
         }
 
         // 根据主键删除
@@ -62,10 +25,10 @@
                 swal('警告','请选中一条数据', 'warning');
                 return;
             }
-            <#swalConfirm swalTitle="您确认想要删除记录吗？">
+            <#swalConfirm swalTitle="您确认想要删除该内容吗？">
                     $.ajax({
                         type: "POST",
-                        url: "${contextPath}/firm/delete.action",
+                        url: "${contextPath}/firm/logicalDelete.action",
                         data: {id:selected.id},
                         processData:true,
                         dataType: "json",
@@ -84,6 +47,8 @@
                     });
             </#swalConfirm>
         }
+
+
         // 表格查询
         function queryGrid() {
             var opts = $("#grid").datagrid("options");
@@ -125,7 +90,69 @@
                 }
             }
         }
+        
+        function updateAdminUser(){
+        	  var selected = $("#grid").datagrid("getSelected");
+              if (null == selected) {
+                  swal('警告','请选中一条数据', 'warning');
+                  return;
+              }	
+              window.location.href='${contextPath!}/firm/editAdminUser.html?id='+selected.id;
+        }
 
+        function doEnable(flag) {
+        	 var selected = $("#grid").datagrid("getSelected");
+             if (null == selected) {
+                 swal('警告','请选中一条数据', 'warning');
+                 return;
+             }
+             
+             var msg = (flag || 'true' == flag) ? '商户被开通后，将可继续在各系统使用，请确认是否开通该商户?' : '商户被关闭后，将不可再继续在各系统使用，请确认是否关闭该商户?';
+             swal({
+                 title : msg,
+                 type : 'question',
+                 showCancelButton : true,
+                 confirmButtonColor : '#3085d6',
+                 cancelButtonColor : '#d33',
+                 confirmButtonText : '确定',
+                 cancelButtonText : '取消',
+                 confirmButtonClass : 'btn btn-success',
+                 cancelButtonClass : 'btn btn-danger'
+             }).then(function(btn) {
+                 if (btn.dismiss == 'cancel') {
+                     return;
+                 }
+                 var url="${contextPath}/firm/";
+             	if (flag) {
+             		url+='enable.action';
+             	}else{
+             		url+='disable.action';
+             	}
+             	// json对象再转换成json字符串
+         		$.ajax({
+					type : "POST",
+					url : url,
+					data : {id: selected.id},
+					dataType : "json",
+					processData : true,
+					async : true,
+					success : function(ret) {
+						$.messager.progress('close');
+						if (ret.success) {
+							swal('提示', ret.result, 'success');
+							window.location.href = '${contextPath!}/firm/index.html';
+						} else {
+							swal('错误', ret.result, 'error');
+						}
+					},
+					error : function() {
+						$.messager.progress('close');
+						swal('错误', '远程访问失败', 'error');
+					}
+				});
+             });
+        }
+        
         /**
 		 * 绑定页面回车事件，以及初始化页面时的光标定位
 		 * 
@@ -143,41 +170,6 @@
             } else {
                 document.onkeyup = getKey;
             }
-            var pager = $('#grid').datagrid('getPager');    // get the pager of
-															// treegrid
-                pager.pagination({
-                    <#controls_paginationOpts/>,
-                    buttons:[
-                    {
-                        iconCls:'icon-add',
-                        text:'新增',
-                        handler:function(){
-                            openInsert();
-                        }
-                    },
-                    {
-                        iconCls:'icon-edit',
-                        text:'修改',
-                        handler:function(){
-                            openUpdate();
-                        }
-                    },
-                    {
-                        iconCls:'icon-remove',
-                        text:'删除',
-                        handler:function(){
-                            del();
-                        }
-                    },
-                    {
-                        iconCls:'icon-export',
-                        text:'导出',
-                        handler:function(){
-                            doExport('grid');
-                        }
-                    }
-                ]
-            });
             // 表格仅显示下边框
             $('#grid').datagrid('getPanel').removeClass('lines-both lines-no lines-right lines-bottom').addClass("lines-bottom");
             queryGrid();
