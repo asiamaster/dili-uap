@@ -468,13 +468,22 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 						ud.setValue(id);
 					}
 					saveDatas.add(ud);
-				} else {
+				} else if (id.startsWith(UapConstants.TRADING_HALL_PREFIX)) {
 					String value = id.replace(UapConstants.TRADING_HALL_PREFIX, "");
 					if (!value.equals("0")) {
 						ud.setRefCode(DataAuthType.TRADING_HALL.getCode());
 						ud.setValue(value);
 						saveDatas.add(ud);
 					}
+				} else {
+					if (id.startsWith(UapConstants.FIRM_PREFIX)) {
+						ud.setRefCode(DataAuthType.MARKET.getCode());
+						ud.setValue(id.replace(UapConstants.FIRM_PREFIX, ""));
+					} else {
+						ud.setRefCode(DataAuthType.DEPARTMENT.getCode());
+						ud.setValue(id);
+					}
+					saveDatas.add(ud);
 				}
 			}
 		}
