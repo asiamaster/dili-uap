@@ -6,52 +6,78 @@ import com.dili.uap.sdk.domain.User;
 
 import javax.persistence.Column;
 import javax.persistence.Transient;
+
+import java.util.Date;
 import java.util.List;
 
-public interface UserDto extends User{
+public interface UserDto extends User {
 
-    @Transient
-    default String getOldPassword(){return "123456";}
-    void setOldPassword(String oldPassword);
+	@Transient
+	default String getOldPassword() {
+		return "123456";
+	}
 
-    @Transient
-    String getNewPassword();
-    void setNewPassword(String newPassword);
+	void setOldPassword(String oldPassword);
 
-    @Transient
-    String getConfirmPassword();
-    void setConfirmPassword(String confirmPassword);
+	@Transient
+	String getNewPassword();
 
-    /**
-     * 关键字查询
-     * @return
-     */
-    @Transient
-    String getKeywords();
-    void setKeywords(String keywords);
+	void setNewPassword(String newPassword);
 
-    /**
-     * 角色ID查询
-     * @return
-     */
-    @Transient
-    Long getRoleId();
-    void setRoleId(Long roleId);
+	@Transient
+	String getConfirmPassword();
 
-    @Column(name = "`user_roles`")
-    @FieldDef(label="关联查询的角色名称")
-    @Transient
-    String getUserRoles();
-    void  setUserRoles(String userRoles);
+	void setConfirmPassword(String confirmPassword);
 
-    @Operator(Operator.IN)
-    @Column(name = "`id`")
-    List<String> getIds();
-    void setIds(List<String> ids);
+	/**
+	 * 关键字查询
+	 * 
+	 * @return
+	 */
+	@Transient
+	String getKeywords();
 
-    @Operator(Operator.IN)
-    @Column(name = "`firm_code`")
-    List<String> getFirmCodes();
+	void setKeywords(String keywords);
 
-    void setFirmCodes(List<String> firmCodes);
+	/**
+	 * 角色ID查询
+	 * 
+	 * @return
+	 */
+	@Transient
+	Long getRoleId();
+
+	void setRoleId(Long roleId);
+
+	@Column(name = "`user_roles`")
+	@FieldDef(label = "关联查询的角色名称")
+	@Transient
+	String getUserRoles();
+
+	void setUserRoles(String userRoles);
+
+	@Operator(Operator.IN)
+	@Column(name = "`id`")
+	List<String> getIds();
+
+	void setIds(List<String> ids);
+
+	@Operator(Operator.IN)
+	@Column(name = "`firm_code`")
+	List<String> getFirmCodes();
+
+	void setFirmCodes(List<String> firmCodes);
+
+	@Operator(Operator.GREAT_EQUAL_THAN)
+	@Column(name = "`last_login_time`")
+	Date getLastLoginTimeStart();
+
+	void setLastLoginTimeStart(Date lastLoginTimeStart);
+
+	@Operator(Operator.LITTLE_EQUAL_THAN)
+	@Column(name = "`last_login_time`")
+	Date getLastLoginTimeEnd();
+
+	void setLastLoginTimeEnd(Date lastLoginTimeEnd);
+
 }

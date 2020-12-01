@@ -149,4 +149,11 @@ public interface User extends IBaseDomain, IMybatisForceParams {
 	String getDescription();
 
 	void setDescription(String description);
+	
+	@Column(name = "`last_login_time`")
+	@FieldDef(label = "最后登录时间")
+	@EditMode(editor = FieldEditor.Datetime, required = true)
+	Date getLastLoginTime();
+
+	void setLastLoginTime(Date lastLoginTime);
 }

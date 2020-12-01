@@ -18,11 +18,14 @@
 		<result column="serial_number" jdbcType="VARCHAR" property="serialNumber" />
 		<result column="cellphone" jdbcType="VARCHAR" property="cellphone" />
 		<result column="email" jdbcType="VARCHAR" property="email" />
+		<result column="push_id" jdbcType="VARCHAR" property="pushId" />
+		<result column="push_id" jdbcType="VARCHAR" property="pushId" />
+		<result column="last_login_time" jdbcType="TIMESTAMP" property="lastLoginTime" />
 	</resultMap>
 	<sql id="Base_Column_List">
 		<!-- WARNING - @mbg.generated -->
 		id, user_name, password, firm_code, department_id, position, card_number, created,
-		modified, state, real_name, serial_number, cellphone, email,locked
+		modified, state, real_name, serial_number, cellphone, email,locked,push_id,last_login_time
 	</sql>
 
 	<!-- 根据角色ID查询用户列表信息 -->
@@ -68,6 +71,12 @@
 			<if test="keywords != null and keywords != ''">
 				and (u.user_name = #{keywords} or u.cellphone = #{keywords})
 			</if>
+			<if test="lastLoginTimeStart != null">
+                and last_login_time <![CDATA[>=]]> #{lastLoginTimeStart}
+            </if>
+            <if test="lastLoginTimeEnd != null">
+                and last_login_time <![CDATA[<=]]> #{lastLoginTimeEnd}
+            </if>
 		</where>
 	</sql>
 
@@ -92,29 +101,15 @@
 			FROM firm f
 		</if>
 		<if test="loginUserId != null">
-			FROM (SELECT fi.id, fi.name, fi.parent_id, fi.code, fi.description FROM firm fi inner join user_data_auth uda on fi.code = uda.value WHERE uda.user_id=#{loginUserId} AND ref_code='market' ) f
+			FROM (SELECT fi.id, fi.name, fi.parent_id, fi.code, fi.description FROM firm fi inner join user_data_auth uda on fi.code = uda.value WHERE uda.user_id=#{loginUserId} AND
+			ref_code='market' ) f
 		</if>
 		LEFT JOIN (SELECT u.* from user_data_auth u where u.user_id = #{userId} AND u.ref_code='market') ud
 		ON f.code = ud.value
 	</select>
 
 
-	<resultMap id="UDRResultMap" type="com.dili.uap.domain.dto.UserDepartmentRole">
-		<id column="id" jdbcType="BIGINT" property="id" />
-		<result column="user_name" jdbcType="VARCHAR" property="userName" />
-		<result column="password" jdbcType="VARCHAR" property="password" />
-		<result column="firm_code" jdbcType="VARCHAR" property="firmCode" />
-		<result column="department_id" jdbcType="BIGINT" property="departmentId" />
-		<result column="position" jdbcType="VARCHAR" property="position" />
-		<result column="card_number" jdbcType="VARCHAR" property="cardNumber" />
-		<result column="locked" jdbcType="TIMESTAMP" property="locked" />
-		<result column="created" jdbcType="TIMESTAMP" property="created" />
-		<result column="modified" jdbcType="TIMESTAMP" property="modified" />
-		<result column="state" jdbcType="INTEGER" property="state" />
-		<result column="real_name" jdbcType="VARCHAR" property="realName" />
-		<result column="serial_number" jdbcType="VARCHAR" property="serialNumber" />
-		<result column="cellphone" jdbcType="VARCHAR" property="cellphone" />
-		<result column="email" jdbcType="VARCHAR" property="email" />
+	<resultMap id="UDRResultMap" extends="BaseResultMap" type="com.dili.uap.domain.dto.UserDepartmentRole">
 		<association javaType="com.dili.uap.sdk.domain.Department" property="department">
 			<result column="department_id" property="id" />
 			<result column="department_name" property="name" />
@@ -169,12 +164,13 @@
 		`user` u
 		INNER JOIN user_role ur ON u.id = ur.user_id
 		INNER JOIN role_resource rr ON ur.role_id = rr.role_id
-		INNER JOIN resource r ON r.id = rr.resource_id
+		INNER
+		JOIN resource r ON r.id = rr.resource_id
 		WHERE
 		u.firm_code = #{firmCode}
 		AND r.`code` = #{resourceCode}
 	</select>
-	
+
 	<select id="findUsersByResourceCode" resultMap="BaseResultMap">
 		SELECT DISTINCT
 		u.*
@@ -182,7 +178,8 @@
 		`user` u
 		INNER JOIN user_role ur ON u.id = ur.user_id
 		INNER JOIN role_resource rr ON ur.role_id = rr.role_id
-		INNER JOIN resource r ON r.id = rr.resource_id
+		INNER JOIN
+		resource r ON r.id = rr.resource_id
 		INNER JOIN firm f ON u.firm_code = f.`code`
 		WHERE
 		r.`code` = #{resourceCode}

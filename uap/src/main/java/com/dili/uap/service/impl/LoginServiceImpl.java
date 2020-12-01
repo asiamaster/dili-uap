@@ -138,6 +138,7 @@ public class LoginServiceImpl implements LoginService {
 		return BaseOutput.success("登录成功");
 	}
 
+	@Transactional(rollbackFor = Exception.class)
 	@Override
 	public BaseOutput<String> validateSaveSession(LoginDto loginDto) {
 		if (loginDto.getUserName().length() < 2 || loginDto.getUserName().length() > 20) {
@@ -164,6 +165,7 @@ public class LoginServiceImpl implements LoginService {
 			lockUser(user);
 			return BaseOutput.failure("用户名或密码错误").setCode(ResultCode.NOT_AUTH_ERROR);
 		}
+		this.updateLoginTime(user);
 		// 登录成功后清除锁定计时
 		clearUserLock(user.getId());
 		// 加载用户系统
@@ -184,6 +186,7 @@ public class LoginServiceImpl implements LoginService {
 		return BaseOutput.success("登录成功").setData(sessionId);
 	}
 
+	@Transactional(rollbackFor = Exception.class)
 	@Override
 	public BaseOutput<LoginResult> login(LoginDto loginDto) {
 		try {
@@ -221,6 +224,7 @@ public class LoginServiceImpl implements LoginService {
 				logLogin(user, loginDto, false, "用户名或密码错误");
 				return BaseOutput.failure("用户名或密码错误").setCode(ResultCode.NOT_AUTH_ERROR);
 			}
+			this.updateLoginTime(user);
 			// 登录成功后清除锁定计时
 			clearUserLock(user.getId());
 			// 加载用户系统
@@ -281,10 +285,12 @@ public class LoginServiceImpl implements LoginService {
 		if (!output.isSuccess()) {
 			return BaseOutput.failure(output.getMessage()).setCode(output.getCode()).setData(false);
 		}
+		this.updateLoginTime(output.getData().getUser());
 		makeCookieTag(output.getData().getUser(), output.getData().getSessionId());
 		return BaseOutput.success("登录成功");
 	}
 
+	@Transactional(rollbackFor = Exception.class)
 	@Override
 	public BaseOutput<Boolean> loginBySession(String sessionId) {
 		String userId = this.sessionManager.getUserIdBySessionId(sessionId);
@@ -294,6 +300,7 @@ public class LoginServiceImpl implements LoginService {
 		User record = DTOUtils.newInstance(User.class);
 		record.setId(Long.valueOf(userId));
 		User user = this.userMapper.selectOne(record);
+		this.updateLoginTime(user);
 		Firm firmQuery = DTOUtils.newInstance(Firm.class);
 		firmQuery.setCode(user.getFirmCode());
 		Firm firm = this.firmMapper.selectOne(firmQuery);
@@ -306,6 +313,14 @@ public class LoginServiceImpl implements LoginService {
 
 	// ================================= 私有方法分割线
 	// ====================================
+
+	private void updateLoginTime(User user) {
+		user.setLastLoginTime(new Date());
+		int rows = this.userMapper.updateByPrimaryKeySelective(user);
+		if (rows <= 0) {
+			throw new AppException("更新用户登陆时间失败");
+		}
+	}
 
 	/**
 	 * 异步记录登录日志

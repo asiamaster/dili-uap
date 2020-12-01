@@ -181,7 +181,6 @@ public class AuthenticationApi {
 			return BaseOutput.failure(e.getMessage());
 		}
 		BaseOutput output = systemConfigRpc.list(null);
-		java.lang.System.out.println(output);
 		JSONObject jsonObject = JSONObject.parseObject(json);
 		LoginDto loginDto = DTOUtils.newInstance(LoginDto.class);
 		loginDto.setUserName(jsonObject.getString("userName"));
