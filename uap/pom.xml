@@ -68,8 +68,8 @@
 				<version>3.8.1</version>
 				<!-- 编译JDK版本 -->
 				<configuration>
-					<source>13</source>
-					<target>13</target>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
 					<encoding>UTF-8</encoding>
 					<parameters>true</parameters>
 					<compilerArgs>
@@ -211,7 +211,7 @@
 		<dependency>
 			<groupId>com.dili</groupId>
 			<artifactId>logger-sdk</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
