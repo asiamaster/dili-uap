@@ -1,5 +1,7 @@
 package com.dili.uap.service;
 
+import java.util.List;
+
 import com.dili.ss.base.BaseService;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.uap.domain.dto.EditFirmAdminUserDto;
@@ -66,4 +68,11 @@ public interface FirmService extends BaseService<Firm, Long> {
 	 * @return
 	 */
 	BaseOutput<Object> logicalDelete(Long id);
+
+	/**
+	 * 根据父级商户id获取 所有子商户（级联）
+	 * @param parentId
+	 * @return
+	 */
+	List<Firm> getAllChildrenByParentId(Long parentId);
 }

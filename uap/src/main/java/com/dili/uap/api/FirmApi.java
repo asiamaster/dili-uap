@@ -99,5 +99,16 @@ public class FirmApi {
 	public BaseOutput<Firm> getById(@RequestBody Long id) {
 		return BaseOutput.success().setData(firmService.get(id));
 	}
+	
+	/**
+	 * 根据id查询公司及下级公司
+	 * @param parentId
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getAllChildrenByParentId.api", method = { RequestMethod.GET, RequestMethod.POST })
+	public BaseOutput<List<Firm>> getAllChildrenByParentId(@RequestBody Long parentId) {
+		return BaseOutput.success().setData(firmService.getAllChildrenByParentId(parentId));
+	}
 
 }

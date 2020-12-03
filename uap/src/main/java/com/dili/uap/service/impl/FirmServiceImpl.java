@@ -261,13 +261,13 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 				this.userDataAuthMapper.insertList(dataAuthList);
 			}
 		} else {
-			//更新市场数据权限
+			// 更新市场数据权限
 			List<Firm> firms = this.getActualDao().selectAllChildrenFirms(firm.getId());
 			List<String> firmCodes = new ArrayList<String>(firms.size());
 			firms.forEach(f -> firmCodes.add(f.getCode()));
 			Example example = new Example(UserDataAuth.class);
 			example.createCriteria().andEqualTo("refCode", DataAuthType.MARKET.getCode()).andEqualTo("userId", adminUser.getId()).andIn("value", firmCodes);
- 			this.userDataAuthMapper.deleteByExample(example);
+			this.userDataAuthMapper.deleteByExample(example);
 			// 为当前用户设置数据权限，当前用户得看到新增的市场
 			List<UserDataAuth> dataAuths = new ArrayList<UserDataAuth>(firms.size());
 			for (Firm f : firms) {
@@ -417,6 +417,11 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 			return "已存在相同的企业简码";
 		}
 		return null;
+	}
+
+	@Override
+	public List<Firm> getAllChildrenByParentId(Long parentId) {
+		return this.getActualDao().selectAllChildrenFirms(parentId);
 	}
 
 }

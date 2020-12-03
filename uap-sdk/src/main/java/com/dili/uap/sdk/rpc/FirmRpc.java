@@ -28,4 +28,7 @@ public interface FirmRpc {
 
     @POST("/firmApi/getById.api")
     BaseOutput<Firm> getById(@VOBody Long id);
+    
+    @POST("/firmApi/getAllChildrenByParentId.api")
+    BaseOutput<List<Firm>> getAllChildrenByParentId(@VOBody Long id);
 }

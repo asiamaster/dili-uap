@@ -51,12 +51,6 @@ public class UserApi {
 	@Autowired
 	LoginService loginService;
 
-	@ResponseBody
-	@RequestMapping("/testGetTokenUser.api")
-	public BaseOutput<UserTicket> testGetTokenUser() {
-		return BaseOutput.successData(SessionContext.getSessionContext().getUserTicket());
-	}
-
 	/**
 	 * 查询User实体接口
 	 *
