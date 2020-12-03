@@ -267,6 +267,85 @@ public class LoginServiceImpl implements LoginService {
 		}
 	}
 
+	public BaseOutput<LoginResult> tokenLogin(LoginDto loginDto) {
+		try {
+			if (loginDto.getUserName().length() < 2 || loginDto.getUserName().length() > 20) {
+				return BaseOutput.failure("用户名长度不能小于2位或大于20位!").setCode(ResultCode.PARAMS_ERROR);
+			}
+			if (loginDto.getPassword().length() < 6 || loginDto.getPassword().length() > 20) {
+				return BaseOutput.failure("密码长度不能小于6位或大于20位!").setCode(ResultCode.PARAMS_ERROR);
+			}
+			User record = DTOUtils.newInstance(User.class);
+			record.setUserName(loginDto.getUserName());
+			User user = this.userMapper.selectOne(record);
+			if (user == null) {
+				return BaseOutput.failure("用户名或密码错误");
+			}
+			// 设置默认登录系统为UAP
+			if (StringUtils.isBlank(loginDto.getSystemCode())) {
+				loginDto.setSystemCode(UapConstants.UAP_SYSTEM_CODE);
+			}
+			// 记录用户id和市场编码，用于记录登录日志
+			loginDto.setUserId(user.getId());
+			loginDto.setFirmCode(user.getFirmCode());
+			// 用户状态为锁定和禁用不允许登录
+			if (user.getState().equals(UserState.LOCKED.getCode())) {
+				logLogin(user, loginDto, false, "用户已被锁定，请联系管理员");
+				return BaseOutput.failure("用户已被锁定，请联系管理员").setCode(ResultCode.NOT_AUTH_ERROR);
+			}
+			if (user.getState().equals(UserState.DISABLED.getCode())) {
+				logLogin(user, loginDto, false, "用户已被禁用，请联系管理员");
+				return BaseOutput.failure("用户已被禁用，请联系管理员!");
+			}
+			// 判断密码不正确，三次后锁定用户、锁定后的用户12小时后自动解锁
+			if (!StringUtils.equals(user.getPassword(), this.encryptPwd(loginDto.getPassword()))) {
+				lockUser(user);
+				logLogin(user, loginDto, false, "用户名或密码错误");
+				return BaseOutput.failure("用户名或密码错误").setCode(ResultCode.NOT_AUTH_ERROR);
+			}
+			this.updateLoginTime(user);
+			// 登录成功后清除锁定计时
+			clearUserLock(user.getId());
+			// 加载用户系统
+			this.systemManager.initUserSystemTokenInRedis(user.getId());
+			// 加载用户url
+			this.menuManager.initUserMenuUrlsTokenInRedis(user.getId());
+			// 加载用户resource
+			this.resourceManager.initUserResourceCodeTokenInRedis(user.getId());
+			// 加载用户数据权限
+			this.dataAuthManager.initUserDataAuthesTokenInRedis(user.getId());
+
+			// 原来的代码是更新用户的最后登录IP和最后登录时间，现在暂时不需要了
+//        user.setLastLoginTime(new Date());
+//        user.setLastLoginIp(dto.getIp());
+//        if (this.userMapper.updateByPrimaryKey(user) <= 0) {
+//            LOG.error("登录过程更新用户信息失败");
+//            return BaseOutput.failure("用户已被禁用, 不能进行登录!").setCode(ResultCode.NOT_AUTH_ERROR);
+//        }
+			LOG.info(String.format("用户登录成功，用户名[%s] | 用户IP[%s]", loginDto.getUserName(), loginDto.getIp()));
+			// 用户登陆 挤掉 旧登陆用户
+			jamTokenUser(user);
+			String token = UUID.randomUUID().toString();
+			// 缓存用户相关信息到Redis
+			makeTokenTag(user, token);
+			// 构建返回的登录信息
+			LoginResult loginResult = DTOUtils.newInstance(LoginResult.class);
+			// 返回用户信息需要屏蔽用户的密码
+			user.setPassword(null);
+			loginResult.setUser(user);
+			loginResult.setToken(token);
+			loginResult.setLoginPath(loginDto.getLoginPath());
+			logLogin(user, loginDto, true, "登录成功");
+			return BaseOutput.success("登录成功").setData(loginResult);
+		} catch (Exception e) {
+			LOG.error(e.getMessage());
+			if (loginDto.getUserId() != null) {
+				logLogin(null, loginDto, false, e.getMessage());
+			}
+			return BaseOutput.failure("登录失败").setMessage("登录失败，参数不正确");
+		}
+	}
+
 	/**
 	 * blockHandler 对应处理 BlockException 的函数名称，可选项。blockHandler 函数访问范围需要是
 	 * public，返回类型需要与原方法相匹配，参数类型需要和原方法相匹配并且最后加一个额外的参数，类型为 BlockException
@@ -368,6 +447,24 @@ public class LoginServiceImpl implements LoginService {
 			}
 		}
 	}
+	
+	/**
+	 * 用户登陆 挤掉 旧token登陆用户
+	 *
+	 * @param user
+	 */
+	private void jamTokenUser(User user) {
+		if (this.manageConfig.getUserLimitOne() && this.sessionRedisManager.existUserIdTokenKey(user.getId().toString())) {
+			List<String> oldTokens = this.userManager.clearUserToken(user.getId());
+			if (oldTokens == null) {
+				return;
+			}
+			for (String oldToken : oldTokens) {
+				// 为了提示
+				this.sessionRedisManager.addKickTokenKey(oldToken);
+			}
+		}
+	}
 
 	/**
 	 * 记录用户信息和登录地址到Cookie
@@ -416,6 +513,40 @@ public class LoginServiceImpl implements LoginService {
 		// redis: userID - sessionId
 		this.sessionRedisManager.setUserIdSessionIdKey(user.getId().toString(), sessionId);
 		LOG.debug("UserName: " + user.getUserName() + " | SessionId:" + sessionId + " | SessionData:" + sessionData);
+	}
+	
+	/**
+	 * 缓存用户相关信息到Redis
+	 * 
+	 * @param user
+	 * @param token
+	 */
+	private void makeTokenTag(User user, String token) {
+		Map<String, Object> tokenData = new HashMap<>(1);
+		// 根据firmCode查询firmId，放入UserTicket
+		Firm condition = DTOUtils.newInstance(Firm.class);
+		condition.setCode(user.getFirmCode());
+		Firm firm = firmMapper.selectOne(condition);
+		UserTicket userTicket = DTOUtils.asInstance(user, UserTicket.class);
+		if (firm != null) {
+			// 用于makeCookieTag中获取firmId
+			WebContent.put("firmId", firm.getId());
+			userTicket.setFirmId(firm.getId());
+			userTicket.setFirmName(firm.getName());
+		}
+		tokenData.put(SessionConstants.LOGGED_USER, JSON.toJSONString(userTicket));
+
+		LOG.debug("--- Save Session Data To Redis ---");
+		// redis: ressionId - user
+		// 用于在SDK中根据sessionId获取用户信息，如果sessionId不存在，过期或者被挤，都会被权限系统拦截
+		this.redisUtil.set(SessionConstants.TOKEN_KEY_PREFIX + token, JSON.toJSONString(tokenData), dynaSessionConstants.getTokenTimeout());
+		// redis: sessionId - userID
+		this.sessionRedisManager.setTokenUserIdKey(token, user.getId().toString());
+		// redis: sessionId - userName
+		this.sessionRedisManager.setTokenUserNameKey(token, user.getUserName());
+		// redis: userID - sessionId
+		this.sessionRedisManager.setUserIdTokenKey(user.getId().toString(), token);
+		LOG.debug("UserName: " + user.getUserName() + " | Token:" + token + " | TokenData:" + tokenData);
 	}
 
 	/**
@@ -500,7 +631,7 @@ public class LoginServiceImpl implements LoginService {
 	@Transactional(rollbackFor = Exception.class)
 	@Override
 	public BaseOutput<LoginResult> loginFromApp(LoginDto loginDto) {
-		BaseOutput<LoginResult> result = this.login(loginDto);
+		BaseOutput<LoginResult> result = this.tokenLogin(loginDto);
 		if (!result.isSuccess()) {
 			return result;
 		}

@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component;
 import java.util.Base64;
 import java.util.List;
 
-
 @Component
 public class SystemManagerImpl implements SystemManager {
 	private final static Logger LOG = LoggerFactory.getLogger(SystemManagerImpl.class);
@@ -43,8 +42,20 @@ public class SystemManagerImpl implements SystemManager {
 		}
 		String key = SessionConstants.USER_SYSTEM_KEY + userId;
 		this.redisUtils.remove(key);
-		//使用BASE64编码被序列化为byte[]的对象
+		// 使用BASE64编码被序列化为byte[]的对象
 		this.redisUtils.set(key, Base64.getEncoder().encodeToString(SerializeUtil.serialize(systems)), dynaSessionConstants.getSessionTimeout());
+	}
+
+	@Override
+	public void initUserSystemTokenInRedis(Long userId) {
+		List<Systems> systems = this.systemMapper.listByUserId(userId);
+		if (CollectionUtils.isEmpty(systems)) {
+			return;
+		}
+		String key = SessionConstants.USER_SYSTEM_TOKEN_KEY + userId;
+		this.redisUtils.remove(key);
+		// 使用BASE64编码被序列化为byte[]的对象
+		this.redisUtils.set(key, Base64.getEncoder().encodeToString(SerializeUtil.serialize(systems)), dynaSessionConstants.getTokenTimeout());
 	}
 
 }

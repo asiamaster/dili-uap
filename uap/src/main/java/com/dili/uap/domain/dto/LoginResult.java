@@ -12,6 +12,10 @@ public interface LoginResult extends IDTO {
     //登录会话id
     String getSessionId();
     void setSessionId(String sessionId);
+    
+    //登录token
+    String getToken();
+    void setToken(String token);
 
     //登录成功后的返回地址
     String getLoginPath();

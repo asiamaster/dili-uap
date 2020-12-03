@@ -1,6 +1,5 @@
 package com.dili.uap.sdk.session;
 
-
 import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.service.UserInfoApiService;
 import com.dili.uap.sdk.util.WebContent;
@@ -43,31 +42,36 @@ public class SessionContext {
 	public UserTicket getUserTicket() {
 		if (userTicket == null) {
 			userTicket = pc.getUserRedis().getUser(pc.getSessionId());
+			if (userTicket == null) {
+				userTicket = pc.getUserRedis().getTokenUser(pc.getToken());
+			}
 		}
 		return userTicket;
 	}
 
-	public ManageConfig getManageConfig(){
+	public ManageConfig getManageConfig() {
 		return pc.getConfig();
 	}
 
 	/**
 	 * 这个方法好像是个后门，暂时改为私有方法
+	 * 
 	 * @return
 	 */
-	private UserTicket getAuthorizer(){
+	private UserTicket getAuthorizer() {
 		return pc.getAuthorizer();
 	}
 
 	/**
 	 * 获取当前数据权限DataAuth 的Map
+	 * 
 	 * @return
 	 */
 	public List<Map> dataAuth() {
 		return pc.getDataAuthRedis().dataAuth(getUserTicket().getId());
 	}
 
-	public UserInfoApiService fetchUserApi(){
+	public UserInfoApiService fetchUserApi() {
 		if (userInfoApiService == null) {
 			userInfoApiService = new UserInfoApiService("", pc.getConfig().getDomain());
 		}

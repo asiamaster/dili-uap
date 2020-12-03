@@ -13,7 +13,6 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
-
 @Component
 public class UserManagerImpl implements UserManager {
 	private final static Logger LOG = LoggerFactory.getLogger(UserManagerImpl.class);
@@ -28,31 +27,36 @@ public class UserManagerImpl implements UserManager {
 	@Override
 	public void clearSession(String sessionId) {
 		LOG.debug("--- Clear User SessionData --- : SessionId - " + sessionId);
-		//参考loginServiceImpl.login(LoginDto loginDto)和loginServiceImpl.makeRedisTag()方法
+		// 参考loginServiceImpl.login(LoginDto loginDto)和loginServiceImpl.makeRedisTag()方法
 		// ------------------------------------------------
 
-		// SessionConstants.SESSION_KEY_PREFIX + sessionId: JSON.toJSONString(sessionData) : SessionConstants.SESSION_TIMEOUT
+		// SessionConstants.SESSION_KEY_PREFIX + sessionId:
+		// JSON.toJSONString(sessionData) : SessionConstants.SESSION_TIMEOUT
 		this.redisUtil.remove(SessionConstants.SESSION_KEY_PREFIX + sessionId);
 
-		//清空 key为SessionConstants.USERID_SESSIONID_KEY + userId, 值为:用户信息的Map, key为sessionId和user 的缓存
-		//先根据sessionId找到用户id
-		//SessionConstants.SESSIONID_USERID_KEY + sessionId : userId : SessionConstants.SESSION_TIMEOUT
-		//再根据userId，清除sessionId
-		//SessionConstants.USERID_SESSIONID_KEY + userId : sessionId : SessionConstants.SESSION_TIMEOUT
+		// 清空 key为SessionConstants.USERID_SESSIONID_KEY + userId, 值为:用户信息的Map,
+		// key为sessionId和user 的缓存
+		// 先根据sessionId找到用户id
+		// SessionConstants.SESSIONID_USERID_KEY + sessionId : userId :
+		// SessionConstants.SESSION_TIMEOUT
+		// 再根据userId，清除sessionId
+		// SessionConstants.USERID_SESSIONID_KEY + userId : sessionId :
+		// SessionConstants.SESSION_TIMEOUT
 		this.sessionRedisManager.clearUserIdSessionDataKeyBySessionId(sessionId);
 
-		//清空key为SessionConstants.SESSIONID_USERID_KEY + sessionId， 值为用户id的缓存
-		//SessionConstants.SESSIONID_USERID_KEY + sessionId : userId : SessionConstants.SESSION_TIMEOUT
+		// 清空key为SessionConstants.SESSIONID_USERID_KEY + sessionId， 值为用户id的缓存
+		// SessionConstants.SESSIONID_USERID_KEY + sessionId : userId :
+		// SessionConstants.SESSION_TIMEOUT
 		this.sessionRedisManager.clearSessionUserIdKey(sessionId);
 	}
 
 	@Override
 	public List<String> clearUserSession(Long userId) {
 		List<String> oldSessionIds = this.sessionRedisManager.getSessionIdsByUserId(userId.toString());
-		if(CollectionUtils.isEmpty(oldSessionIds)){
+		if (CollectionUtils.isEmpty(oldSessionIds)) {
 			return null;
 		}
-		for(String oldSessionId : oldSessionIds) {
+		for (String oldSessionId : oldSessionIds) {
 			LOG.debug("--- Clear User SessionData --- : SessionId - " + oldSessionId);
 			this.redisUtil.remove(SessionConstants.SESSION_KEY_PREFIX + oldSessionId);
 			this.sessionRedisManager.clearUserIdSessionDataKey(userId.toString());
@@ -64,6 +68,21 @@ public class UserManagerImpl implements UserManager {
 	@Override
 	public List<String> getOnlineUserIds() {
 		return sessionRedisManager.getOnlineUserIds();
+	}
+
+	@Override
+	public List<String> clearUserToken(Long userId) {
+		List<String> oldTokens = this.sessionRedisManager.getTokensByUserId(userId.toString());
+		if (CollectionUtils.isEmpty(oldTokens)) {
+			return null;
+		}
+		for (String oldToken : oldTokens) {
+			LOG.debug("--- Clear User TokenData --- : Token - " + oldToken);
+			this.redisUtil.remove(SessionConstants.TOKEN_KEY_PREFIX + oldToken);
+			this.sessionRedisManager.clearUserIdTokenDataKey(userId.toString());
+			this.sessionRedisManager.clearTokenUserIdKey(oldToken);
+		}
+		return oldTokens;
 	}
 
 }

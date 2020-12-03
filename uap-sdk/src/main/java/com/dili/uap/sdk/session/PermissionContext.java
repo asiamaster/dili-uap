@@ -1,6 +1,5 @@
 package com.dili.uap.sdk.session;
 
-
 import com.alibaba.fastjson.JSON;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.util.SpringUtil;
@@ -21,231 +20,243 @@ import java.io.IOException;
  * 权限上下文
  */
 public class PermissionContext {
-    private static final Logger log = LoggerFactory.getLogger(PermissionContext.class);
-    private HttpServletRequest req;
-    private HttpServletResponse resp;
+	private static final Logger log = LoggerFactory.getLogger(PermissionContext.class);
+	private HttpServletRequest req;
+	private HttpServletResponse resp;
 
-    //处理器
-    private Object handler;
-    //referer
-    private String referer = "";
+	// 处理器
+	private Object handler;
+	// referer
+	private String referer = "";
 
-    //请求地址
-    private String uri;
+	// 请求地址
+	private String uri;
 
-    //请求的全路径
-    private String url;
+	// 请求的全路径
+	private String url;
 
-    //查询字符串
-    private String queryString;
+	// 查询字符串
+	private String queryString;
 
-    private String sessionId;
+	private String sessionId;
 
-    private Long userId;
+	private String token;
 
-    private ManageConfig config;
+	private Long userId;
 
-    private UserRedis userRedis;
+	private ManageConfig config;
 
-    private UserUrlRedis userResRedis;
+	private UserRedis userRedis;
 
-    private DataAuthRedis dataAuthRedis;
+	private UserUrlRedis userResRedis;
 
-    public PermissionContext(HttpServletRequest req, HttpServletResponse resp, Object handler, ManageConfig conf) {
-        setReq(req);
-        setConfig(conf);
-        this.resp = resp;
-        this.handler = handler;
-        userRedis = SpringUtil.getBean(UserRedis.class);
-        userResRedis = SpringUtil.getBean(UserUrlRedis.class);
-        dataAuthRedis = SpringUtil.getBean(DataAuthRedis.class);
-    }
+	private DataAuthRedis dataAuthRedis;
 
-    public String getReferer() {
-        return referer;
-    }
+	public PermissionContext(HttpServletRequest req, HttpServletResponse resp, Object handler, ManageConfig conf) {
+		setReq(req);
+		setConfig(conf);
+		this.resp = resp;
+		this.handler = handler;
+		userRedis = SpringUtil.getBean(UserRedis.class);
+		userResRedis = SpringUtil.getBean(UserUrlRedis.class);
+		dataAuthRedis = SpringUtil.getBean(DataAuthRedis.class);
+	}
 
-    public String getUri() {
-        return uri;
-    }
+	public String getReferer() {
+		return referer;
+	}
 
-    public HttpServletRequest getReq() {
-        return req;
-    }
+	public String getUri() {
+		return uri;
+	}
 
-    public void setReq(HttpServletRequest req) {
-        this.req = req;
-        referer = req.getHeader("referer");
-        uri = req.getRequestURI();
-        String serverPath = SpringUtil.getProperty("project.serverPath");
-        url = StringUtils.isBlank(serverPath) ? req.getRequestURL().toString() : serverPath+uri;
-        queryString = req.getQueryString();
-    }
+	public HttpServletRequest getReq() {
+		return req;
+	}
 
-    public HttpServletResponse getResp() {
-        return resp;
-    }
+	public void setReq(HttpServletRequest req) {
+		this.req = req;
+		referer = req.getHeader("referer");
+		uri = req.getRequestURI();
+		String serverPath = SpringUtil.getProperty("project.serverPath");
+		url = StringUtils.isBlank(serverPath) ? req.getRequestURL().toString() : serverPath + uri;
+		queryString = req.getQueryString();
+	}
 
-    public void setResp(HttpServletResponse resp) {
-        this.resp = resp;
-    }
+	public HttpServletResponse getResp() {
+		return resp;
+	}
 
+	public void setResp(HttpServletResponse resp) {
+		this.resp = resp;
+	}
 
-    public Object getHandler() {
-        return handler;
-    }
+	public Object getHandler() {
+		return handler;
+	}
 
-    public void setHandler(Object handler) {
-        this.handler = handler;
-    }
+	public void setHandler(Object handler) {
+		this.handler = handler;
+	}
 
-    public void setUri(String uri) {
-        this.uri = uri;
-    }
+	public void setUri(String uri) {
+		this.uri = uri;
+	}
 
-    public String getUrl() {
-        return url;
-    }
+	public String getUrl() {
+		return url;
+	}
 
-    public void setUrl(String url) {
-        this.url = url;
-    }
+	public void setUrl(String url) {
+		this.url = url;
+	}
 
-    public ManageConfig getConfig() {
-        return config;
-    }
+	public ManageConfig getConfig() {
+		return config;
+	}
 
-    public void setConfig(ManageConfig config) {
-        this.config = config;
-    }
+	public void setConfig(ManageConfig config) {
+		this.config = config;
+	}
 
-    public String getQueryString() {
-        return queryString;
-    }
+	public String getQueryString() {
+		return queryString;
+	}
 
-    public void setQueryString(String queryString) {
-        this.queryString = queryString;
-    }
+	public void setQueryString(String queryString) {
+		this.queryString = queryString;
+	}
 
-    public void sendRedirect(String s) throws IOException {
-        resp.sendRedirect(makePath(s));
-    }
+	public void sendRedirect(String s) throws IOException {
+		resp.sendRedirect(makePath(s));
+	}
 
-    public String makePath(String s) {
-        if (config.getDomain().endsWith("/")) {
-            if (s.startsWith("/")) {
-                s = s.substring(1);
-            }
-        } else {
-            if (!s.startsWith("/")) {
-                s = "/" + s;
-            }
-        }
-        return config.getDomain() + s;
-    }
+	public String makePath(String s) {
+		if (config.getDomain().endsWith("/")) {
+			if (s.startsWith("/")) {
+				s = s.substring(1);
+			}
+		} else {
+			if (!s.startsWith("/")) {
+				s = "/" + s;
+			}
+		}
+		return config.getDomain() + s;
+	}
 
+	/**
+	 * 没有权限
+	 */
+	public void nonPermission() {
+		try {
+			String requestType = req.getHeader("X-Requested-With");
+			if (requestType == null) {
+				sendRedirect("/error/noAccess.do");
+				return;
+			}
+			String path = makePath("/error/noAccess.do");
+			resp.setStatus(403);
+			resp.addHeader("nonAccessable", path);
+			resp.getWriter().write("nonAccessable");
+			resp.flushBuffer();
+		} catch (IOException e) {
+			log.error(e.getMessage(), e);
+		}
+		return;
+	}
 
-    /**
-     * 没有权限
-     */
-    public void nonPermission() {
-        try {
-            String requestType = req.getHeader("X-Requested-With");
-            if (requestType == null) {
-                sendRedirect("/error/noAccess.do");
-                return;
-            }
-            String path = makePath("/error/noAccess.do");
-            resp.setStatus(403);
-            resp.addHeader("nonAccessable", path);
-            resp.getWriter().write("nonAccessable");
-            resp.flushBuffer();
-        } catch (IOException e) {
-            log.error(e.getMessage(), e);
-        }
-        return;
-    }
+	public void noAccess() throws IOException {
+		String requestType = req.getHeader("X-Requested-With");
+		if (requestType == null) {
+			sendRedirect("/error/noAccess.do");
+			return;
+		}
+		resp.setContentType("application/json;charset=UTF-8");
+		resp.getWriter().write(JSON.toJSONString(BaseOutput.failure("登录超时").setCode("401")));
+		resp.flushBuffer();
+	}
 
-    public void noAccess() throws IOException {
-        String requestType = req.getHeader("X-Requested-With");
-        if (requestType == null) {
-            sendRedirect("/error/noAccess.do");
-            return;
-        }
-        resp.setContentType("application/json;charset=UTF-8");
-        resp.getWriter().write(JSON.toJSONString(BaseOutput.failure("登录超时").setCode("401")));
-        resp.flushBuffer();
-    }
+	public void noLogin() throws IOException {
+		String requestType = req.getHeader("X-Requested-With");
+		if (requestType == null) {
+			sendRedirect("/error/noLogin.do");
+			return;
+		}
+		resp.setContentType("application/json;charset=UTF-8");
+		resp.getWriter().write(JSON.toJSONString(BaseOutput.failure("用户未登录").setCode("401")));
+		resp.flushBuffer();
+	}
 
-    public void noLogin() throws IOException {
-        String requestType = req.getHeader("X-Requested-With");
-        if (requestType == null) {
-            sendRedirect("/error/noLogin.do");
-            return;
-        }
-        resp.setContentType("application/json;charset=UTF-8");
-        resp.getWriter().write(JSON.toJSONString(BaseOutput.failure("用户未登录").setCode("401")));
-        resp.flushBuffer();
-    }
+	public String getSessionId() {
+		if (sessionId == null) {
+			// 首先读取链接中的session
+			sessionId = req.getParameter(SessionConstants.SESSION_ID);
+			if (StringUtils.isBlank(sessionId)) {
+				sessionId = req.getHeader(SessionConstants.SESSION_ID);
+			}
+			if (StringUtils.isNotBlank(sessionId)) {
+				WebContent.setCookie(SessionConstants.SESSION_ID, sessionId);
+			} else {
+				sessionId = WebContent.getCookieVal(SessionConstants.SESSION_ID);
+			}
+		}
+		return sessionId;
+	}
 
-    public String getSessionId() {
-        if (sessionId == null) {
-            //首先读取链接中的session
-            sessionId = req.getParameter(SessionConstants.SESSION_ID);
-            if(StringUtils.isBlank(sessionId)) {
-                sessionId = req.getHeader(SessionConstants.SESSION_ID);
-            }
-            if (StringUtils.isNotBlank(sessionId)) {
-                WebContent.setCookie(SessionConstants.SESSION_ID, sessionId);
-            } else {
-                sessionId = WebContent.getCookieVal(SessionConstants.SESSION_ID);
-            }
-        }
-        return sessionId;
-    }
+	public UserTicket getUser() {
+		String sessionId = getSessionId();
+		if (sessionId == null) {
+			String token = getToken();
+			if (StringUtils.isBlank(token)) {
+				return null;
+			}
+			return getUserRedis().getTokenUser(token);
+		}
+		return getUserRedis().getUser(sessionId);
+	}
 
-    public UserTicket getUser(){
-        String sessionId = getSessionId();
-        if (sessionId == null) {
-            return null;
-        }
-        return getUserRedis().getUser(sessionId);
-    }
+	public String getToken() {
+		if (token == null) {
+			// 首先读取链接中的session
+			token = req.getHeader(SessionConstants.TOKEN);
+		}
+		return token;
+	}
 
-    public UserTicket getAuthorizer(){
-        String authKey = req.getParameter(SessionConstants.AUTH_KEY);
-        if (StringUtils.isBlank(authKey)) {
-            authKey = req.getHeader(SessionConstants.AUTH_KEY);
-            if(StringUtils.isBlank(authKey)) {
-                return null;
-            }
-        }
-        return userRedis.getUser(authKey);
-    }
+	public UserTicket getAuthorizer() {
+		String authKey = req.getParameter(SessionConstants.AUTH_KEY);
+		if (StringUtils.isBlank(authKey)) {
+			authKey = req.getHeader(SessionConstants.AUTH_KEY);
+			if (StringUtils.isBlank(authKey)) {
+				return null;
+			}
+		}
+		return userRedis.getUser(authKey);
+	}
 
-    public Long getUserId(){
-        if (getSessionId() == null) {
-            return null;
-        }
-        if (userId ==  null) {
-            userId = userRedis.getSessionUserId(getSessionId());
-        }
-        return userId;
-    }
+	public Long getUserId() {
+		if (getSessionId() == null) {
+			return null;
+		}
+		if (userId == null) {
+			userId = userRedis.getSessionUserId(getSessionId());
+		}
+		return userId;
+	}
 
-    public void setSessionId(String sessionId) {
-        this.sessionId = sessionId;
-    }
+	public void setSessionId(String sessionId) {
+		this.sessionId = sessionId;
+	}
 
-    public UserRedis getUserRedis() {
-        return userRedis;
-    }
+	public UserRedis getUserRedis() {
+		return userRedis;
+	}
 
-    public UserUrlRedis getUserResRedis() {
-        return userResRedis;
-    }
+	public UserUrlRedis getUserResRedis() {
+		return userResRedis;
+	}
 
-    public DataAuthRedis getDataAuthRedis() {
-        return dataAuthRedis;
-    }
+	public DataAuthRedis getDataAuthRedis() {
+		return dataAuthRedis;
+	}
 }

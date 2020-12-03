@@ -8,19 +8,32 @@ import org.springframework.stereotype.Component;
 @Component
 public class DynaSessionConstants {
 
-    // sessionId - SessionData的Redis 过期时间(秒)
-    // sessionId - userId和UserIdSessionData的Redis 过期时间(秒)
-    // 默认为30分钟
-    private Long SESSION_TIMEOUT;
+	// sessionId - SessionData的Redis 过期时间(秒)
+	// sessionId - userId和UserIdSessionData的Redis 过期时间(秒)
+	// 默认为30分钟
+	private Long SESSION_TIMEOUT;
 
+	// sessionId - SessionData的Redis 过期时间(秒)
+	// sessionId - userId和UserIdSessionData的Redis 过期时间(秒)
+	// 默认为30天
+	private Long TOKEN_TIMEOUT;
 
-    public Long getSessionTimeout() {
-        return SESSION_TIMEOUT;
-    }
+	public Long getSessionTimeout() {
+		return SESSION_TIMEOUT;
+	}
 
-    @Value("${uap.sessionTimeout:1800}")
-    public void setSessionTimeout(Long sessionTimeout) {
-        SESSION_TIMEOUT = sessionTimeout;
-    }
+	@Value("${uap.sessionTimeout:1800}")
+	public void setSessionTimeout(Long sessionTimeout) {
+		SESSION_TIMEOUT = sessionTimeout;
+	}
+	
+	public Long getTokenTimeout() {
+		return TOKEN_TIMEOUT;
+	}
+
+	@Value("${uap.tokenTimeout:2592000}")
+	public void setTokenTimeout(Long tokenTimeout) {
+		TOKEN_TIMEOUT = tokenTimeout;
+	}
 
 }

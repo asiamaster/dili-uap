@@ -10,10 +10,14 @@ public class SessionConstants {
 	public static final String APPLICATION_NAME = "UAP_";
 	// Session Data的key prefix，后面加sessionId
 	public static final String SESSION_KEY_PREFIX = APPLICATION_NAME + "DILI_MANAGE_SESSION_";
+	// token的key prefix，后面加token
+	public static final String TOKEN_KEY_PREFIX = APPLICATION_NAME + "DILI_MANAGE_TOKEN_";
 	// SessionData中取登录用户的key
 	public static final String LOGGED_USER = APPLICATION_NAME + "common:loggedUser";
 	// Cookie, Request, Header, Session中取sessionId的key
 	public static final String SESSION_ID = APPLICATION_NAME + "SessionId";
+	// Cookie, Request, Header, Session中取sessionId的key
+	public static final String TOKEN = APPLICATION_NAME + "Token";
 	// SessionFilter中checkUser方法最后从Redis中获取UserTicket的key
 	public static final String AUTH_KEY = APPLICATION_NAME + "authKey";
 
@@ -30,23 +34,42 @@ public class SessionConstants {
 	// 新的redis关系 - kv定义表 - START
 	// 用户数据权限 redis的key
 	public static final String USER_DATA_AUTH_KEY = APPLICATION_NAME + "manage:dataAuth:userId:";
+	// 用户数据权限 redis的key
+	public static final String USER_DATA_AUTH_TOKEN_KEY = APPLICATION_NAME + "manage:token:dataAuth:userId:";
 
 	// userSystem(用户和系统关系)
 	public static final String USER_SYSTEM_KEY = APPLICATION_NAME + "manage:userSystem:userId:";
+	// userSystem(用户和系统关系)：token方式
+	public static final String USER_SYSTEM_TOKEN_KEY = APPLICATION_NAME + "manage:token:userSystem::userId:";
 	// userUrl(用户和菜单URL关系)
 	public static final String USER_MENU_URL_KEY = APPLICATION_NAME + "manage:userMenuUrl:userId:";
+	// userUrl(用户和菜单URL关系)
+	public static final String USER_MENU_URL_TOKEN_KEY = APPLICATION_NAME + "manage:token:userMenuUrl:userId:";
 	// key:userId - value:resources Set
 	public static final String USER_RESOURCE_CODE_KEY = APPLICATION_NAME + "manage:userResourceCode:userId:";
+	// key:token:userId - value:resources Set
+	public static final String USER_RESOURCE_CODE_TOKEN_KEY = APPLICATION_NAME + "manage:token:userResourceCode:userId:";
 	// key:sessionId - value:userId
 	public static final String SESSIONID_USERID_KEY = APPLICATION_NAME + "manage:sessionIdUserId:sessionId:";
+	// token - value:userId
+	public static final String TOKEN_USERID_KEY = APPLICATION_NAME + "manage:tokenUserId:token:";
 	// key:sessionId - value:userName
 	public static final String SESSIONID_USERNAME_KEY = APPLICATION_NAME + "manage:sessionIdUserName:sessionId:";
+	// key:token - value:userName
+	public static final String TOKEN_USERNAME_KEY = APPLICATION_NAME + "manage:tokenUserName:token:";
 	// key:userId - value:sessionId
 	public static final String USERID_SESSIONID_KEY = APPLICATION_NAME + "manage:userIdSessionId:userId:";
+
+	// key:userId - value:token
+	public static final String USERID_TOKEN_KEY = APPLICATION_NAME + "manage:userIdToken:userId:";
 
 	// 限制用户唯一登陆 - START
 	public static final String KICK_OLDSESSIONID_KEY = APPLICATION_NAME + "manage:kickOldSessionId:";
 	// 限制用户唯一登陆 - END
+
+	// 限制用户token唯一登陆 - START
+	public static final String KICK_OLDTOKEN_KEY = APPLICATION_NAME + "manage:kickOldToken:";
+	// 限制用户唯一token登陆 - END
 
 	// 登录密码错误锁定的key
 	public static final String USER_PWD_ERROR_KEY = APPLICATION_NAME + "manage:user_pwd_error:";

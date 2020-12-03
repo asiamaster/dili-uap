@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-
 /**
  * 菜单redis管理器
  */
@@ -51,11 +50,32 @@ public class MenuManagerImpl implements MenuManager {
 				urls.add(menu.getUrl().trim().replace("http://", "").replace("https://", ""));
 			}
 		}
-        String key = SessionConstants.USER_MENU_URL_KEY + userId;
-        this.redisUtils.remove(key);
-        BoundSetOperations<String, Object> ops = this.redisUtils.getRedisTemplate().boundSetOps(key);
-        ops.expire(dynaSessionConstants.getSessionTimeout(), TimeUnit.SECONDS);
-        ops.add(urls.toArray());
-    }
+		String key = SessionConstants.USER_MENU_URL_KEY + userId;
+		this.redisUtils.remove(key);
+		BoundSetOperations<String, Object> ops = this.redisUtils.getRedisTemplate().boundSetOps(key);
+		ops.expire(dynaSessionConstants.getSessionTimeout(), TimeUnit.SECONDS);
+		ops.add(urls.toArray());
+	}
+
+	@Override
+	public void initUserMenuUrlsTokenInRedis(Long userId) {
+		List<String> urls = new ArrayList<>();
+		Map param = new HashMap<>();
+		param.put("userId", userId);
+		List<Menu> menus = this.menuMapper.listByUserAndSystemId(param);
+		if (CollectionUtils.isEmpty(menus)) {
+			return;
+		}
+		for (Menu menu : menus) {
+			if (menu != null && StringUtils.isNotBlank(menu.getUrl())) {
+				urls.add(menu.getUrl().trim().replace("http://", "").replace("https://", ""));
+			}
+		}
+		String key = SessionConstants.USER_MENU_URL_TOKEN_KEY + userId;
+		this.redisUtils.remove(key);
+		BoundSetOperations<String, Object> ops = this.redisUtils.getRedisTemplate().boundSetOps(key);
+		ops.expire(dynaSessionConstants.getSessionTimeout(), TimeUnit.SECONDS);
+		ops.add(urls.toArray());
+	}
 
 }

@@ -20,6 +20,13 @@ public interface UserManager {
 	 * @return
 	 */
 	List<String> clearUserSession(Long userId);
+	
+	/**
+	 * 清空用户redis数据，返回token列表
+	 * @param userId
+	 * @return
+	 */
+	List<String> clearUserToken(Long userId);
 
 	/**
 	 * 获取当前在线的用户ID

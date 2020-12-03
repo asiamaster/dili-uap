@@ -14,7 +14,9 @@ import com.dili.uap.domain.dto.UserDepartmentRoleQuery;
 import com.dili.uap.domain.dto.UserDto;
 import com.dili.uap.glossary.UserState;
 import com.dili.uap.sdk.domain.User;
+import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.domain.dto.UserQuery;
+import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.service.LoginService;
 import com.dili.uap.service.RoleService;
 import com.dili.uap.service.UserService;
@@ -27,7 +29,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
 
 /**
  * 由MyBatis Generator工具自动生成 This file was generated on 2017-07-11 16:56:50.
@@ -49,6 +50,12 @@ public class UserApi {
 
 	@Autowired
 	LoginService loginService;
+
+	@ResponseBody
+	@RequestMapping("/testGetTokenUser.api")
+	public BaseOutput<UserTicket> testGetTokenUser() {
+		return BaseOutput.successData(SessionContext.getSessionContext().getUserTicket());
+	}
 
 	/**
 	 * 查询User实体接口
@@ -105,7 +112,7 @@ public class UserApi {
 			Long total = page.getTotal();
 			return PageOutput.success().setTotal(total).setPageNum(page.getPageNum()).setPageSize(page.getPageSize()).setData(users);
 		} else {
-			return PageOutput.success().setTotal((long)users.size()).setPageNum(user.getPage()).setPageSize(user.getRows()).setData(users);
+			return PageOutput.success().setTotal((long) users.size()).setPageNum(user.getPage()).setPageSize(user.getRows()).setData(users);
 		}
 	}
 
@@ -285,6 +292,7 @@ public class UserApi {
 		user.setDescription(description);
 		return user;
 	}
+
 	/**
 	 * 小程序修改密码
 	 *
@@ -307,7 +315,7 @@ public class UserApi {
 		if (userInDB == null) {
 			return BaseOutput.failure("用户不存在");
 		}
-		if(!UserState.INACTIVE.getCode().equals(userInDB.getState())){
+		if (!UserState.INACTIVE.getCode().equals(userInDB.getState())) {
 			return BaseOutput.failure("用户当前状态不能修改密码");
 		}
 		BaseOutput output = userService.changePwd(userId, user);

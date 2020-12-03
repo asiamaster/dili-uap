@@ -19,8 +19,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 数据权限redis管理器
- * Created by asiam
+ * 数据权限redis管理器 Created by asiam
  */
 @Component
 public class DataAuthManagerImpl implements DataAuthManager {
@@ -39,11 +38,11 @@ public class DataAuthManagerImpl implements DataAuthManager {
 	public void initUserDataAuthesInRedis(Long userId) {
 		UserDataAuth userDataAuth = DTOUtils.newInstance(UserDataAuth.class);
 		userDataAuth.setUserId(userId);
-		//查询数据权限，需要合并下面的部门数据权限列表
+		// 查询数据权限，需要合并下面的部门数据权限列表
 		List<UserDataAuth> userDataAuths = this.userDataAuthMapper.select(userDataAuth);
 		String key = SessionConstants.USER_DATA_AUTH_KEY + userId;
 		this.redisUtil.remove(key);
-		if(CollectionUtils.isEmpty(userDataAuths)){
+		if (CollectionUtils.isEmpty(userDataAuths)) {
 			return;
 		}
 		BoundSetOperations<String, Object> ops = this.redisUtil.getRedisTemplate().boundSetOps(key);
@@ -66,6 +65,24 @@ public class DataAuthManagerImpl implements DataAuthManager {
 		UserDataAuth userDataAuth = DTOUtils.newInstance(UserDataAuth.class);
 		userDataAuth.setUserId(userId);
 		return this.userDataAuthMapper.select(userDataAuth);
+	}
+
+	@Override
+	public void initUserDataAuthesTokenInRedis(Long userId) {
+		UserDataAuth userDataAuth = DTOUtils.newInstance(UserDataAuth.class);
+		userDataAuth.setUserId(userId);
+		// 查询数据权限，需要合并下面的部门数据权限列表
+		List<UserDataAuth> userDataAuths = this.userDataAuthMapper.select(userDataAuth);
+		String key = SessionConstants.USER_DATA_AUTH_TOKEN_KEY + userId;
+		this.redisUtil.remove(key);
+		if (CollectionUtils.isEmpty(userDataAuths)) {
+			return;
+		}
+		BoundSetOperations<String, Object> ops = this.redisUtil.getRedisTemplate().boundSetOps(key);
+		ops.expire(dynaSessionConstants.getTokenTimeout(), TimeUnit.SECONDS);
+		for (UserDataAuth dataAuth : userDataAuths) {
+			ops.add(JSON.toJSONString(dataAuth));
+		}
 	}
 
 }

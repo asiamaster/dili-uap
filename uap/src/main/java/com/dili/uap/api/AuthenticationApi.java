@@ -155,12 +155,12 @@ public class AuthenticationApi {
 		if (!output.isSuccess()) {
 			return output;
 		}
-		UserTicket userTicket = this.userRedis.getUser(output.getData().getSessionId());
+		UserTicket userTicket = this.userRedis.getTokenUser(output.getData().getToken());
 		Map param = new HashMap(2);
 		param.put("userId", output.getData().getUser().getId());
 		return BaseOutput.successData(new HashMap<String, Object>() {
 			{
-				put("sessionId", output.getData().getSessionId());
+				put("token", output.getData().getToken());
 				put("user", userTicket);
 			}
 		});
