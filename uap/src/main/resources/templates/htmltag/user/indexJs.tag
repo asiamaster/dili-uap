@@ -2,6 +2,14 @@
 
     // 是否是修改用户。目前用于判断用户编辑页面，部门数据的初始值显示问题
     var isUpdateUser = true;
+    // 全部数据权限--true:全选,false:全不选
+    var dataAuthButton1 = true;
+    // 本部门数据权限--true:全选,false:全不选
+    var dataAuthButton2 = true;
+    // 部门及以下数据权限--true:全选,false:全不选
+    var dataAuthButton3 = true;
+    // 其他商户数据权限--true:全选,false:全不选
+    var dataAuthButton4 = true;
 
     /**
 	 * datagrid行点击事件 目前用于来判断 启禁用是否可点
@@ -584,6 +592,13 @@
             swal('警告', '请选中一条数据', 'warning');
             return;
         }
+        //新打开一个权限编辑框重置全选/全不选按钮
+        dataAuthButton1 = true;
+        dataAuthButton2 = true;
+        dataAuthButton3 = true;
+        dataAuthButton4 = true;
+        //先把之前编辑框勾选的清空
+        $('#dataTree').tree("loadData",[]);
         $('#userDataDlg').dialog('open');
         $('#userDataDlg').dialog('center');
         $('#data_userName').textbox("setValue",selected.userName);
@@ -710,6 +725,87 @@
         // 如果是修改用户，则显示用户已有的部门数据
         if (isUpdateUser || 'true' == isUpdateUser){
             $('#_departmentId').combotree('setValue', selected.$_departmentId);
+        }
+    }
+
+
+    /**
+     * 勾选用户的数据权限
+     * @param type 1:全部数据权限; 2:本部门数据权限; 3:部门及以下数据权限; 4:其他商户数据权限;
+     */
+    function selectUserDataAuth(type){
+        var _tree = $('#dataTree');
+        var roots = _tree.tree('getRoots');
+        if(type == 1){
+            for (var i = 0; i < roots.length; i++) {
+                easyuiTreeChecked(_tree,dataAuthButton1,roots[i].id);
+            }
+            dataAuthButton1 = booleanChange(dataAuthButton1);
+        }
+        if(type == 2){
+            var node = _tree.tree('find', departmentId);
+            if(dataAuthButton2){
+                _tree.tree('check', node.target);
+            }else{
+                _tree.tree('uncheck', node.target);
+            }
+            dataAuthButton2 = booleanChange(dataAuthButton2);
+        }
+        if(type == 3){
+            easyuiTreeChecked(_tree,dataAuthButton3,departmentId);
+            dataAuthButton3 = booleanChange(dataAuthButton3);
+        }
+        if(type == 4){
+            for (var i = 0; i < roots.length; i++) {
+                if("firm_"+firmCode==roots[i].id){
+                    continue;
+                }
+                easyuiTreeChecked(_tree,dataAuthButton4,roots[i].id);
+            }
+            dataAuthButton4 = booleanChange(dataAuthButton4);
+        }
+    }
+
+    /**
+     * boolean值取反
+     * @param value
+     */
+    function booleanChange(value){
+        if(value){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+    /**
+     * 树全选/全不选
+     * @param  _tree 树
+     * @param  ifCheck [是否选中true:全选，false:全不选]
+     * @param  nodeId  [节点的id]
+     */
+    function easyuiTreeChecked(_tree,ifCheck, nodeId) {
+        var node = _tree.tree('find', nodeId);
+        if (ifCheck) {
+            _tree.tree('check', node.target);
+            var childrenNodes = _tree.tree('getChildren', node.target);
+            for (var i = 0; i < childrenNodes.length; i++) {
+
+                var childreNode = _tree.tree('find', childrenNodes[i].id);
+                _tree.tree('check', childreNode.target);
+                easyuiTreeChecked(_tree,ifCheck,childrenNodes[i].id);
+
+            }
+        } else {
+            _tree.tree('uncheck', node.target);
+            var childrenNodes = _tree.tree('getChildren', node.target);
+            for (var i = 0; i < childrenNodes.length; i++) {
+
+                var childreNode = _tree.tree('find', childrenNodes[i].id);
+                _tree.tree('uncheck', childreNode.target);
+                easyuiTreeChecked(_tree,ifCheck,childrenNodes[i].id);
+
+            }
         }
     }
 

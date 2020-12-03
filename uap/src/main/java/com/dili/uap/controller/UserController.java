@@ -70,6 +70,7 @@ public class UserController {
 	@RequestMapping(value = "/index.html", method = RequestMethod.GET)
 	public String index(ModelMap modelMap) {
 		String firmCode = SessionContext.getSessionContext().getUserTicket().getFirmCode();
+		Long departmentId = SessionContext.getSessionContext().getUserTicket().getDepartmentId();
 		// 用户是否属于集团
 		Boolean isGroup = false;
 		Firm query = DTOUtils.newInstance(Firm.class);
@@ -81,6 +82,7 @@ public class UserController {
 		modelMap.put("firms", JSONArray.toJSONString(firmService.list(query)));
 		modelMap.put("isGroup", isGroup);
 		modelMap.put("firmCode", firmCode);
+		modelMap.put("departmentId", departmentId);
 		return "user/index";
 	}
 

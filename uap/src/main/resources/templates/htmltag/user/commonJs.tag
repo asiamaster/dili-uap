@@ -6,6 +6,7 @@
     <%}%>
     //用户当前的所属市场
     var firmCode = '${firmCode!}'
+    var departmentId = '${departmentId!}'
 
 
     /**

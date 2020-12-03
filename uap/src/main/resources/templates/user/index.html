@@ -248,6 +248,13 @@
 				<ui>请选择数据权限:</ui>
 				<ui id="dataRangeDiv"></ui>
 			</div>
+			<div style="margin-left: 20px;">
+				<a id="btn" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" onclick="selectUserDataAuth(1)">全部</a>
+				<a id="btn" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" onclick="selectUserDataAuth(2)">本部门</a>
+				<a id="btn" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" onclick="selectUserDataAuth(3)">部门及以下</a>
+				<a id="btn" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" onclick="selectUserDataAuth(4)">其他商户</a>
+			</div>
+
 			<div class="easyui-panel" style="margin-left: 20px; padding: 10px; width: 95%; height: 350px;">
 				<ui id="dataTree" class="easyui-tree" style="width: 90%;" data-options="checkbox:true,_idField:'treeId',_textField:'name',_parentIdField:'parentId',loadFilter:treeLoadFilter,cascadeCheck:false"></ui>
 			</div>
