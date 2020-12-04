@@ -1,6 +1,7 @@
 package com.dili.uap.service.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -18,11 +19,13 @@ import com.dili.uap.constants.UapConstants;
 import com.dili.uap.dao.DataDictionaryMapper;
 import com.dili.uap.dao.DataDictionaryValueMapper;
 import com.dili.uap.dao.FirmMapper;
+import com.dili.uap.domain.DataDictionaryValueState;
 import com.dili.uap.domain.dto.DataDictionaryDto;
 import com.dili.uap.sdk.domain.DataDictionary;
 import com.dili.uap.sdk.domain.DataDictionaryValue;
 import com.dili.uap.sdk.domain.Firm;
 import com.dili.uap.service.DataDictionaryValueService;
+import com.dili.uap.service.FirmService;
 
 /**
  * 由MyBatis Generator工具自动生成 This file was generated on 2018-05-21 10:40:13.
@@ -41,6 +44,8 @@ public class DataDictionaryValueServiceImpl extends BaseServiceImpl<DataDictiona
 	private DataDictionaryValueMapper ddValueMapper;
 	@Autowired
 	private FirmMapper firmMapper;
+	@Autowired
+	private FirmService firmService;
 
 	@Override
 	public List<DataDictionaryValue> listDictionaryValueByCode(String code) {
@@ -163,6 +168,55 @@ public class DataDictionaryValueServiceImpl extends BaseServiceImpl<DataDictiona
 			dto.setDataDictionaryValues(dtos);
 		}
 		return dto;
+	}
+
+	@Transactional(rollbackFor = Exception.class)
+	@Override
+	public BaseOutput<Object> synchronizeToOrtherFirms(Long id) {
+		DataDictionaryValue ddVal = this.getActualDao().selectByPrimaryKey(id);
+		Date now = new Date();
+		if (StringUtils.isEmpty(ddVal.getFirmCode())) {
+			Firm groupFirm = this.firmService.getByCode(UapConstants.GROUP_CODE);
+			ddVal.setFirmCode(UapConstants.GROUP_CODE);
+			ddVal.setFirmId(groupFirm.getId());
+			ddVal.setModified(now);
+			this.getActualDao().updateByPrimaryKeySelective(ddVal);
+		}
+		List<Firm> firms = this.firmMapper.selectAll();
+		DataDictionaryValue ddValueQuery = DTOUtils.newInstance(DataDictionaryValue.class);
+		ddValueQuery.setDdCode(ddVal.getDdCode());
+		ddValueQuery.setCode(ddVal.getCode());
+		List<DataDictionaryValue> values = this.getActualDao().select(ddValueQuery);
+		List<DataDictionaryValue> insertList = new ArrayList<DataDictionaryValue>();
+		firms.forEach(f -> {
+			if (values.stream().filter(v -> {
+				if (StringUtils.isBlank(v.getFirmCode())) {
+					Firm groupFirm = this.firmService.getByCode(UapConstants.GROUP_CODE);
+					v.setFirmCode(UapConstants.GROUP_CODE);
+					v.setFirmId(groupFirm.getId());
+					this.firmMapper.updateByPrimaryKeySelective(groupFirm);
+				}
+				return v.getFirmCode().equals(f.getCode());
+			}).findFirst().orElse(null) == null) {
+				DataDictionaryValue value = DTOUtils.newInstance(DataDictionaryValue.class);
+				value.setCode(ddVal.getCode());
+				value.setCreated(new Date());
+				value.setDdCode(ddVal.getDdCode());
+				value.setDescription(ddVal.getDescription());
+				value.setFirmCode(f.getCode());
+				value.setFirmId(f.getId());
+				value.setName(ddVal.getName());
+				value.setParentId(ddVal.getParentId());
+				value.setState(DataDictionaryValueState.ENABLED.getValue());
+				value.setCreated(now);
+				value.setModified(now);
+				insertList.add(value);
+			}
+		});
+		if (CollectionUtils.isNotEmpty(insertList)) {
+			this.getActualDao().insertList(insertList);
+		}
+		return BaseOutput.success();
 	}
 
 }

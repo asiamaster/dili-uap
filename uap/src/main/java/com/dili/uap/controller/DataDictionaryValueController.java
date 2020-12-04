@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.dili.logger.sdk.annotation.BusinessLogger;
@@ -146,4 +147,29 @@ public class DataDictionaryValueController {
 		}
 		return output;
 	}
+
+	/**
+	 * 删除DataDictionaryValue
+	 * 
+	 * @param id
+	 * @return
+	 */
+	@BusinessLogger(businessType = "data_dictionary_value", content = "删除数据字典值：dd_code:${ddCode}", operationType = "syncronize", systemCode = "UAP")
+	@RequestMapping(value = "/synchronizeToOrtherFirms.action", method = { RequestMethod.GET, RequestMethod.POST })
+	public @ResponseBody BaseOutput<Object> synchronizeToOrtherFirms(@RequestParam Long id) {
+		DataDictionaryValue dataDictionaryValue = this.dataDictionaryValueService.get(id);
+		BaseOutput<Object> output = dataDictionaryValueService.synchronizeToOrtherFirms(id);
+		if (output.isSuccess()) {
+			LoggerContext.put(LoggerConstant.LOG_BUSINESS_CODE_KEY, dataDictionaryValue.getCode());
+			LoggerContext.put(LoggerConstant.LOG_BUSINESS_ID_KEY, dataDictionaryValue.getId());
+			LoggerContext.put("ddCode", dataDictionaryValue.getDdCode());
+			UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
+			if (userTicket != null) {
+				LoggerContext.put(LoggerConstant.LOG_OPERATOR_ID_KEY, userTicket.getId());
+				LoggerContext.put(LoggerConstant.LOG_MARKET_ID_KEY, userTicket.getFirmId());
+			}
+		}
+		return output;
+	}
+
 }

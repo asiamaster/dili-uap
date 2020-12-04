@@ -21,6 +21,7 @@ import com.dili.uap.domain.dto.DataDictionaryDto;
 import com.dili.uap.sdk.domain.DataDictionary;
 import com.dili.uap.sdk.domain.DataDictionaryValue;
 import com.dili.uap.sdk.domain.Firm;
+import com.dili.uap.sdk.domain.dto.DataDictionaryValueQueryDto;
 import com.dili.uap.service.DataDictionaryService;
 import com.dili.uap.service.DataDictionaryValueService;
 import com.dili.uap.service.FirmService;
@@ -64,6 +65,18 @@ public class DataDictionaryApi {
 	@RequestMapping(value = "/listDataDictionaryValue.api", method = { RequestMethod.GET, RequestMethod.POST })
 	public BaseOutput<List<DataDictionaryValue>> listDataDictionaryValue(DataDictionaryValue dataDictionaryValue) {
 		return this.list(dataDictionaryValue);
+	}
+
+	/**
+	 * 查询数据字典
+	 * 
+	 * @param dataDictionaryValue
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/listDataDictionaryValueByDto.api", method = { RequestMethod.GET, RequestMethod.POST })
+	public BaseOutput<List<DataDictionaryValue>> listDataDictionaryValueByDto(DataDictionaryValueQueryDto dataDictionaryValue) {
+		return BaseOutput.successData(this.dataDictionaryValueService.listByExample(dataDictionaryValue));
 	}
 
 	/**

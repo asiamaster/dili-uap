@@ -199,6 +199,51 @@ function setOptValueBtnDisplay(show){
     }
 }
 
+function sync(){
+	if (!endDdValueGridEditing()) {
+        return;
+    }
+	var selected = ddValueGrid.datagrid("getSelected");
+    if (!selected) {
+        swal('警告！','请选中一条数据', 'warning');
+        return;
+    }
+    swal({
+        title : '如果其他市场已存在相同配置该配置项将不会被同步，您确认想要同步该条配置到其他市场吗？',
+        type : 'question',
+        showCancelButton : true,
+        confirmButtonColor : '#3085d6',
+        cancelButtonColor : '#d33',
+        confirmButtonText : '确定',
+        cancelButtonText : '取消',
+        confirmButtonClass : 'btn btn-success',
+        cancelButtonClass : 'btn btn-danger'
+    }).then(function(flag) {
+        if (flag.dismiss == 'cancel') {
+            return;
+        }
+        $.ajax({
+            type : "POST",
+            url : "${contextPath}/dataDictionaryValue/synchronizeToOrtherFirms.action",
+            data : {id:selected.id},
+            processData : true,
+            //dataType : "json",
+            async : true,
+            success : function(data) {
+                if (data.success) {
+                    ddValueGrid.datagrid('reload');
+                    $('#dlg').dialog('close');
+                } else {
+                    swal('修改失败！', '', 'error');
+                }
+            },
+            error : function() {
+                swal('错误！', data.result, 'error');
+            }
+        });
+    });
+}
+
 /**
  * 绑定页面回车事件，以及初始化页面时的光标定位
  * 
@@ -239,6 +284,15 @@ $(function() {
 					delDdValue();
 				}
 			},
+			 <#resource code="syncDataDictionary">
+            {
+                iconCls:'icon-play',
+                text:'同步',
+                handler:function(){
+                    sync();
+                }
+            },
+              </#resource>
 			</#resource>
             {
                 id:'save_btn_ddValue',

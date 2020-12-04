@@ -297,7 +297,11 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 			roleList.stream().forEach(role -> {
 				UserDataDto dto = DTOUtils.newInstance(UserDataDto.class);
 				dto.setName(role.getRoleName());
-				dto.setParentId(UapConstants.FIRM_PREFIX + role.getFirmCode());
+				if (role.getParentId() == null) {
+					dto.setParentId(UapConstants.FIRM_PREFIX + role.getFirmCode());
+				} else {
+					dto.setParentId(role.getParentId().toString());
+				}
 				dto.setTreeId(String.valueOf(role.getId()));
 				if (userRoleIds.contains(role.getId())) {
 					dto.setChecked(true);

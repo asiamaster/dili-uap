@@ -67,4 +67,12 @@ public interface DataDictionaryValueService extends BaseService<DataDictionaryVa
 	 */
 	public BaseOutput<Object> insertDataDictionaryDto(DataDictionaryDto dataDictionaryDto);
 
+	/**
+	 * 将数据字典值同步到其他市场
+	 * 
+	 * @param id 数据字典值id
+	 * @return
+	 */
+	BaseOutput<Object> synchronizeToOrtherFirms(Long id);
+
 }

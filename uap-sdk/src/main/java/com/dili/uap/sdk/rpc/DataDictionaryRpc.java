@@ -10,6 +10,7 @@ import com.dili.ss.retrofitful.annotation.VOBody;
 import com.dili.ss.retrofitful.annotation.VOField;
 import com.dili.uap.sdk.domain.DataDictionary;
 import com.dili.uap.sdk.domain.DataDictionaryValue;
+import com.dili.uap.sdk.domain.dto.DataDictionaryValueQueryDto;
 import com.dili.uap.sdk.domain.dto.UapDataDictionaryDto;
 
 /**
@@ -20,6 +21,9 @@ public interface DataDictionaryRpc {
 
 	@POST("/dataDictionaryApi/listDataDictionaryValue.api")
 	BaseOutput<List<DataDictionaryValue>> listDataDictionaryValue(@VOBody DataDictionaryValue dataDictionaryValue);
+	
+	@POST("/dataDictionaryApi/listDataDictionaryValueByDto.api")
+	BaseOutput<List<DataDictionaryValue>> listDataDictionaryValueByDto(@VOBody DataDictionaryValueQueryDto dataDictionaryValue);
 
 	/**
 	 * 有firmId的情况下匹配firm_id in (#{firmId},#{groupId}) or firm_id is
