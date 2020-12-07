@@ -42,7 +42,7 @@ import java.text.DecimalFormat;
 @EnableTransactionManagement
 @EnableDiscoveryClient
 @EnableFeignClients(basePackages = { "com.dili.logger.sdk", "com.dili.uap.rpc", "com.dili.assets.sdk.rpc" })
-@ComponentScan(basePackages = { "com.dili.ss", "com.dili.uap", "com.dili.logger.sdk" })
+@ComponentScan(basePackages = { "com.dili.ss", "com.dili.uap", "com.dili.logger.sdk","com.dili.commons" })
 @RestfulScan({ "com.dili.uap.rpc", "com.dili.uap.sdk.rpc" })
 @MapperScan(basePackages = { "com.dili.uap.dao", "com.dili.ss.dao" })
 @DTOScan(value = { "com.dili.ss", "com.dili.uap" })
