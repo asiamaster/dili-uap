@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSON;
@@ -45,6 +46,7 @@ import com.dili.uap.sdk.rpc.SystemConfigRpc;
 import com.dili.uap.service.DataAuthRefService;
 import com.dili.uap.service.LoginService;
 import com.dili.uap.service.ResourceService;
+import com.dili.uap.service.TerminalBindingService;
 import com.dili.uap.service.UserPushInfoService;
 import com.dili.uap.service.UserService;
 import com.dili.uap.utils.WebUtil;
@@ -93,6 +95,8 @@ public class AuthenticationApi {
 	private SystemConfigRpc systemConfigRpc;
 	@Autowired
 	private UserPushInfoService userPushInfoService;
+	@Autowired
+	private TerminalBindingService terminalBindingService;
 
 	/**
 	 * 统一授权登录，返回登录用户信息LoginResult
@@ -164,6 +168,19 @@ public class AuthenticationApi {
 				put("user", userTicket);
 			}
 		});
+	}
+
+	/**
+	 * 绑定终端号
+	 * 
+	 * @param token      登录token
+	 * @param terminalId 终端号
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping("/bindTerminal.api")
+	public BaseOutput<Object> bindTerminal(@RequestParam String token, @RequestParam String terminalId) {
+		return this.terminalBindingService.bindByToken(token, terminalId);
 	}
 
 	/**
