@@ -31,38 +31,41 @@ public class FirmApi {
 
 	/**
 	 * 获取商户编号(用于哨兵测试)
+	 * 
 	 * @return
 	 */
 	@GetMapping(value = "/getFirmSerialNumber.api")
-	@SentinelResource(value="getFirmSerialNumber.api", defaultFallback = "defaultFallback",blockHandler ="getFirmSerialNumberBlockHandler", entryType = EntryType.OUT)
+	@SentinelResource(value = "getFirmSerialNumber.api", defaultFallback = "defaultFallback", blockHandler = "getFirmSerialNumberBlockHandler", entryType = EntryType.OUT)
 	@ResponseBody
-	public BaseOutput<String> getFirmSerialNumber(){
+	public BaseOutput<String> getFirmSerialNumber() {
 		BaseOutput<String> firmSerialNumber = uidRpc.getFirmSerialNumber();
 		return firmSerialNumber;
 	}
 
-
 	/**
 	 * 用于在抛出异常的时候提供 fallback 处理逻辑
+	 * 
 	 * @param e
 	 * @return
 	 */
 	public BaseOutput defaultFallback(Throwable e) {
-		return BaseOutput.failure("["+e.getClass().getName()+"]异常:"+e.getMessage()).setCode(ResultCode.FLOW_LIMIT);
+		return BaseOutput.failure("[" + e.getClass().getName() + "]异常:" + e.getMessage()).setCode(ResultCode.FLOW_LIMIT);
 	}
 
 	/**
-	 * blockHandler 对应处理 BlockException 的函数名称，可选项。blockHandler 函数访问范围需要是 public，返回类型需要与原方法相匹配，参数类型需要和原方法相匹配并且最后加一个额外的参数，类型为 BlockException
+	 * blockHandler 对应处理 BlockException 的函数名称，可选项。blockHandler 函数访问范围需要是
+	 * public，返回类型需要与原方法相匹配，参数类型需要和原方法相匹配并且最后加一个额外的参数，类型为 BlockException
+	 * 
 	 * @param e
 	 * @return
 	 */
-	public BaseOutput<String> getFirmSerialNumberBlockHandler(BlockException e){
-		return BaseOutput.failure("限流阻塞:"+e.getRule()).setCode(ResultCode.FLOW_LIMIT);
+	public BaseOutput<String> getFirmSerialNumberBlockHandler(BlockException e) {
+		return BaseOutput.failure("限流阻塞:" + e.getRule()).setCode(ResultCode.FLOW_LIMIT);
 	}
-
 
 	/**
 	 * 查询公司
+	 * 
 	 * @param firm
 	 * @return
 	 */
@@ -74,16 +77,17 @@ public class FirmApi {
 
 	/**
 	 * 根据编码查询公司
+	 * 
 	 * @param code
 	 * @return
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/getByCode.api", method = { RequestMethod.GET, RequestMethod.POST })
 	public BaseOutput<Firm> getByCode(@RequestBody String code) {
-		Firm firm  = DTOUtils.newInstance(Firm.class);
+		Firm firm = DTOUtils.newInstance(Firm.class);
 		firm.setCode(code);
 		List<Firm> firms = firmService.list(firm);
-		if(firms == null || firms.isEmpty()){
+		if (firms == null || firms.isEmpty()) {
 			return BaseOutput.success().setData(Lists.newArrayList());
 		}
 		return BaseOutput.success().setData(firms.get(0));
@@ -91,6 +95,7 @@ public class FirmApi {
 
 	/**
 	 * 根据id查询公司
+	 * 
 	 * @param id
 	 * @return
 	 */
@@ -99,15 +104,16 @@ public class FirmApi {
 	public BaseOutput<Firm> getById(@RequestBody Long id) {
 		return BaseOutput.success().setData(firmService.get(id));
 	}
-	
+
 	/**
 	 * 根据id查询公司及下级公司
+	 * 
 	 * @param parentId
 	 * @return
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/getAllChildrenByParentId.api", method = { RequestMethod.GET, RequestMethod.POST })
-	public BaseOutput<List<Firm>> getAllChildrenByParentId(@RequestBody Long parentId) {
+	public BaseOutput<List<Firm>> getAllChildrenByParentId(@RequestBody(required = false) Long parentId) {
 		return BaseOutput.success().setData(firmService.getAllChildrenByParentId(parentId));
 	}
 

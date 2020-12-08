@@ -421,6 +421,11 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 
 	@Override
 	public List<Firm> getAllChildrenByParentId(Long parentId) {
+		if (parentId == null) {
+			Example example = new Example(Firm.class);
+			example.createCriteria().andIsNull("parentId");
+			return this.getActualDao().selectByExample(example);
+		}
 		return this.getActualDao().selectAllChildrenFirms(parentId);
 	}
 
