@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("/position")
 public class PositionController {
     @Autowired
-    PositionService positionService;
+    private PositionService positionService;
     @Autowired
     private FirmService firmService;
 

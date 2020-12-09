@@ -6,8 +6,18 @@
     <%}%>
     //用户当前的所属市场
     var firmCode = '${firmCode!}'
+    //用户当前的所属部门
     var departmentId = '${departmentId!}'
 
+    /**
+     * 根据市场code加载部门,上级,职位信息，并显示到相应的部门,上级,职位控件中
+     * @param firmCode 市场code
+     */
+    function loadInfos(firmCode,departmentControlId,superiorControlId,positionControlId) {
+        loadDepartments(firmCode,departmentControlId);
+        loadSuperiors(firmCode,superiorControlId);
+        loadPositions(firmCode,positionControlId);
+    }
 
     /**
      * 根据市场code加载部门信息，并显示到相应的部门控件中
@@ -17,6 +27,54 @@
         var obj = {id: '', name: '-- 全部 --','parentId':null};
         if (firmCode){
             $.post('${contextPath!}/department/listByCondition.action', {firmCode: firmCode}, function (ret) {
+                if (ret) {
+                    //动态添加'全部'
+                    ret.unshift(obj);
+                    $('#' + controlId).combotree("clear");
+                    $('#' + controlId).combotree("loadData", ret);
+                    // $('#' + controlId).combotree("setValue", obj);
+                }
+            }, 'json');
+        }else{
+            $('#' + controlId).combotree("clear");
+            $('#' + controlId).combotree("loadData", {});
+            // $('#' + controlId).combotree("setValue", obj);
+        }
+
+    }
+
+    /**
+     * 根据市场code加载上级信息，并显示到相应的上级控件中
+     * @param firmCode 市场code
+     */
+    function loadSuperiors(firmCode,controlId) {
+        var obj = {id: '', userName: '-- 全部 --'};
+        if (firmCode){
+            $.post('${contextPath!}/user/list.action', {firmCode: firmCode}, function (ret) {
+                if (ret) {
+                    //动态添加'全部'
+                    ret.unshift(obj);
+                    $('#' + controlId).combotree("clear");
+                    $('#' + controlId).combotree("loadData", ret);
+                    // $('#' + controlId).combotree("setValue", obj);
+                }
+            }, 'json');
+        }else{
+            $('#' + controlId).combotree("clear");
+            $('#' + controlId).combotree("loadData", {});
+            // $('#' + controlId).combotree("setValue", obj);
+        }
+
+    }
+
+    /**
+     * 根据市场code加载职位信息，并显示到相应的职位控件中
+     * @param firmCode 市场code
+     */
+    function loadPositions(firmCode,controlId) {
+        var obj = {id: '', positionName: '-- 全部 --'};
+        if (firmCode){
+            $.post('${contextPath!}/position/listByCondition.action', {firmCode: firmCode}, function (ret) {
                 if (ret) {
                     //动态添加'全部'
                     ret.unshift(obj);

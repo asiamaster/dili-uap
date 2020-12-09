@@ -63,4 +63,12 @@ public interface UserMapper extends MyMapper<User> {
 	 * @return
 	 */
 	List<User> findUsersByResourceCode(String resourceCode, Long marketId);
+
+	/**
+	 * 将positionId置空
+	 *
+	 * @param positionId   职位id
+	 * @return
+	 */
+	Integer updateByPositionId(Long positionId);
 }

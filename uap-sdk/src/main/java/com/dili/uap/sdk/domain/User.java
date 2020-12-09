@@ -156,4 +156,25 @@ public interface User extends IBaseDomain, IMybatisForceParams {
 	Date getLastLoginTime();
 
 	void setLastLoginTime(Date lastLoginTime);
+
+	@Column(name = "`superior_id`")
+	@FieldDef(label = "上级id")
+	@EditMode(editor = FieldEditor.Number)
+	Long getSuperiorId();
+
+	void setSuperiorId(Long superiorId);
+
+	@Column(name = "`position_id`")
+	@FieldDef(label = "职位id")
+	@EditMode(editor = FieldEditor.Number)
+	Long getPositionId();
+
+	void setPositionId(Long positionId);
+
+	@Column(name = "`gender`")
+	@FieldDef(label = "性别 0:男 1：女")
+	@EditMode(editor = FieldEditor.Number)
+	Integer getGender();
+
+	void setGender(Integer gender);
 }

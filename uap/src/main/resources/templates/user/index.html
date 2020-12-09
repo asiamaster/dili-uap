@@ -65,6 +65,9 @@
 			data-options="onClickRow:onClickRow,onDblClickRow:openUpdate, onHeaderContextMenu:headerContextMenu,onLoadSuccess:gridLoadSuccess">
 			<thead>
 				<tr>
+					<th width="0%" data-options="field:'gender',hidden: true,_provider:'genderProvider',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'"></th>
+					<th width="0%" data-options="field:'superiorId',hidden: true,_provider:'userProvider',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'"></th>
+					<th width="0%" data-options="field:'positionId',hidden : true,_provider:'positionProvider',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'"></th>
 					<th width="10%" data-options="field:'userName',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">用户账号</th>
 					<th width="10%" data-options="field:'realName',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">真实姓名</th>
 					<th width="15%" data-options="field:'cellphone',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">手机号码</th>
@@ -95,7 +98,7 @@
 <!-- 隐藏编辑框 -->
 <div id="editDlg" class="easyui-dialog" resizable="false" constrain="true" shadow="true" draggable="false" title="用户信息" style="padding: 10px; width: 450px;" modal="true" border="thin" closed="true"
 	data-options="
-				height: 540,
+				height: 560,
 				buttons: [{
 				    id:'saveUser',
 					text:'确认',
@@ -127,10 +130,10 @@
 				<td style="padding: 5px;"><input class="easyui-textbox" name="_email" id="_email" style="width: 85%; height: 28px;"
 					data-options="labelAlign:'right',label:'&lowast;邮箱:', validType:['email','length[0,64]']" required="true" /></td>
 			</tr>
-			<tr>
-				<td style="padding: 5px;"><input class="easyui-textbox" name="_position" id="_position" style="width: 85%; height: 28px;"
-					data-options="labelAlign:'right',label:'职位:', validType:'length[0,20]'" /></td>
-			</tr>
+<!--			<tr>-->
+<!--				<td style="padding: 5px;"><input class="easyui-textbox" name="_position" id="_position" style="width: 85%; height: 28px;"-->
+<!--					data-options="labelAlign:'right',label:'职位:', validType:'length[0,20]'" /></td>-->
+<!--			</tr>-->
 			<tr>
 				<td style="padding: 5px;"><input class="easyui-textbox" name="_cardNumber" id="_cardNumber" style="width: 85%; height: 28px;"
 					data-options="labelAlign:'right',label:'卡号:', validType:'bankCard'" /></td>
@@ -140,15 +143,32 @@
 					data-options="labelAlign:'right',label:'&lowast;归属市场:',valueField:'code',textField:'name',
                                         onLoadSuccess:function(){
                                            $('#_firmCode').combobox('select',firmCode);
-                                           loadDepartments(firmCode,'_departmentId');
+                                           loadInfos(firmCode,'_departmentId','_superiorId','_positionId');
                                        },onChange:function(newValue,oldValue){
-                                            loadDepartments(newValue,'_departmentId');
+                                            loadInfos(newValue,'_departmentId','_superiorId','_positionId');
                                        }">
 				</td>
 			</tr>
 			<tr>
 				<td style="padding: 5px;"><input class="easyui-combotree" name="_departmentId" panelWidth="auto" panelHeight="300" editable="false" id="_departmentId" style="width: 85%; height: 28px;"
 					data-options="labelAlign:'right',label:'归属部门:',_idField:'id',_textField:'name',_parentIdField:'parentId',loadFilter:treeLoadFilter,onLoadSuccess:editDepartmentLoadSuccess"></td>
+			</tr>
+			<tr>
+				<td style="padding: 5px;"><input class="easyui-combotree" name="_superiorId" panelWidth="auto" panelHeight="300" editable="false" id="_superiorId" style="width: 85%; height: 28px;"
+												 data-options="labelAlign:'right',label:'上级:',_idField:'id',_textField:'userName',loadFilter:treeLoadFilter,onLoadSuccess:editSuperiorLoadSuccess"></td>
+			</tr>
+			<tr>
+				<td style="padding: 5px;"><input class="easyui-combotree" name="_positionId" panelWidth="auto" panelHeight="300" editable="false" id="_positionId" style="width: 85%; height: 28px;"
+												 data-options="labelAlign:'right',label:'职位:',_idField:'id',_textField:'positionName',loadFilter:treeLoadFilter,onLoadSuccess:editPositionLoadSuccess"></td>
+			</tr>
+			<tr>
+				<td style="padding: 5px;">
+					<div class="inputlist" data-options="labelAlign:'right'">
+						<span style="padding-left:42px;">性别：</span>
+						<label><input name="_gender" type="radio" value="0"/>男</label>
+						<label><input name="_gender" type="radio" value="1"/>女</label>
+					</div>
+				</td>
 			</tr>
 			<tr>
 				<td style="padding: 5px;"><input class="easyui-textbox" name="_description" id="_description" style="width: 85%; height: 70px;"
@@ -180,10 +200,10 @@
 				<td style="padding: 5px;"><input class="easyui-textbox" name="_view_email" id="_view_email" style="width: 90%; height: 28px;" data-options="labelAlign:'right',label:'邮箱:',cls:'noborder'" />
 				</td>
 			</tr>
-			<tr>
-				<td style="padding: 5px;"><input class="easyui-textbox" name="_view_position" id="_view_position" style="width: 90%; height: 28px;"
-					data-options="labelAlign:'right',label:'职位:',cls:'noborder'" /></td>
-			</tr>
+<!--			<tr>-->
+<!--				<td style="padding: 5px;"><input class="easyui-textbox" name="_view_position" id="_view_position" style="width: 90%; height: 28px;"-->
+<!--					data-options="labelAlign:'right',label:'职位:',cls:'noborder'" /></td>-->
+<!--			</tr>-->
 			<tr>
 				<td style="padding: 5px;"><input class="easyui-textbox" name="_view_cardNumber" id="_view_cardNumber" style="width: 90%; height: 28px;"
 					data-options="labelAlign:'right',label:'卡号:',cls:'noborder'" /></td>
@@ -195,6 +215,18 @@
 			<tr>
 				<td style="padding: 5px;"><input class="easyui-textbox" name="_view_departmentId" editable="false" id="_view_departmentId" style="width: 90%; height: 28px;"
 					data-options="labelAlign:'right',label:'归属部门:',cls:'noborder'" /></td>
+			</tr>
+			<tr>
+				<td style="padding: 5px;"><input class="easyui-textbox" name="_view_superiorId" editable="false" id="_view_superiorId" style="width: 90%; height: 28px;"
+					data-options="labelAlign:'right',label:'上级:',cls:'noborder'" /></td>
+			</tr>
+			<tr>
+				<td style="padding: 5px;"><input class="easyui-textbox" name="_view_positionId" editable="false" id="_view_positionId" style="width: 90%; height: 28px;"
+					data-options="labelAlign:'right',label:'职位:',cls:'noborder'" /></td>
+			</tr>
+			<tr>
+				<td style="padding: 5px;"><input class="easyui-textbox" name="_view_gender" editable="false" id="_view_gender" style="width: 90%; height: 28px;"
+					data-options="labelAlign:'right',label:'性别:',cls:'noborder'" /></td>
 			</tr>
 			<tr>
 				<td style="padding: 5px;"><input class="easyui-textbox" name="_view_state" editable="false" id="_view_state" style="width: 90%; height: 28px;"
