@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 public class ManageConfig {
 
 //	@Value("${manage.domain}")
-	private String domain;
+//	private String domain;
 	//是否开启过滤
 //	@Value("${manage.enable}")
 	private Boolean enable = true;
@@ -114,9 +114,9 @@ public class ManageConfig {
 		return false;
 	}
 
-	public String getDomain() {
-		return domain;
-	}
+//	public String getDomain() {
+//		return domain;
+//	}
 
 	public ManageRedisUtil getRedisUtil() {
 		return redisUtil;
@@ -142,9 +142,9 @@ public class ManageConfig {
 		return mustIframe;
 	}
 
-	public void setDomain(String domain) {
-		this.domain = domain;
-	}
+//	public void setDomain(String domain) {
+//		this.domain = domain;
+//	}
 
 	public void setEnable(Boolean enable) {
 		this.enable = enable;

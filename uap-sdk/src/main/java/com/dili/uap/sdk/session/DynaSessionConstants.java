@@ -17,6 +17,8 @@ public class DynaSessionConstants {
 	// sessionId - userId和UserIdSessionData的Redis 过期时间(秒)
 	// 默认为30天
 	private Long TOKEN_TIMEOUT;
+	
+	private String UAP_CONTEXT_PATH;
 
 	public Long getSessionTimeout() {
 		return SESSION_TIMEOUT;
@@ -35,5 +37,16 @@ public class DynaSessionConstants {
 	public void setTokenTimeout(Long tokenTimeout) {
 		TOKEN_TIMEOUT = tokenTimeout;
 	}
+
+	public String getUapContextPath() {
+		return UAP_CONTEXT_PATH;
+	}
+
+	@Value("${uap.contextPath}")
+	public void setUapContextPath(String uapContextPath) {
+		UAP_CONTEXT_PATH = uapContextPath;
+	}
+	
+	
 
 }

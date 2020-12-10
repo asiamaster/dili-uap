@@ -52,7 +52,9 @@ public class PermissionContext {
 
 	private DataAuthRedis dataAuthRedis;
 
-	public PermissionContext(HttpServletRequest req, HttpServletResponse resp, Object handler, ManageConfig conf) {
+	private String domain;
+
+	public PermissionContext(HttpServletRequest req, HttpServletResponse resp, Object handler, ManageConfig conf, String domain) {
 		setReq(req);
 		setConfig(conf);
 		this.resp = resp;
@@ -60,6 +62,7 @@ public class PermissionContext {
 		userRedis = SpringUtil.getBean(UserRedis.class);
 		userResRedis = SpringUtil.getBean(UserUrlRedis.class);
 		dataAuthRedis = SpringUtil.getBean(DataAuthRedis.class);
+		this.domain = domain;
 	}
 
 	public String getReferer() {
@@ -131,8 +134,12 @@ public class PermissionContext {
 		resp.sendRedirect(makePath(s));
 	}
 
+	public String getDomain() {
+		return domain;
+	}
+
 	public String makePath(String s) {
-		if (config.getDomain().endsWith("/")) {
+		if (this.domain.endsWith("/")) {
 			if (s.startsWith("/")) {
 				s = s.substring(1);
 			}
@@ -141,7 +148,7 @@ public class PermissionContext {
 				s = "/" + s;
 			}
 		}
-		return config.getDomain() + s;
+		return this.domain + s;
 	}
 
 	/**

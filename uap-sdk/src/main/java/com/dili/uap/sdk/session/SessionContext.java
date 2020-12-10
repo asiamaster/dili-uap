@@ -53,6 +53,10 @@ public class SessionContext {
 		return pc.getConfig();
 	}
 
+	public String getDomain() {
+		return pc.getDomain();
+	}
+
 	/**
 	 * 这个方法好像是个后门，暂时改为私有方法
 	 * 
@@ -73,7 +77,7 @@ public class SessionContext {
 
 	public UserInfoApiService fetchUserApi() {
 		if (userInfoApiService == null) {
-			userInfoApiService = new UserInfoApiService("", pc.getConfig().getDomain());
+			userInfoApiService = new UserInfoApiService("", pc.getDomain());
 		}
 		return userInfoApiService;
 	}

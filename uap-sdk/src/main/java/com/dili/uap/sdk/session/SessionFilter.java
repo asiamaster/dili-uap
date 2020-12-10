@@ -2,6 +2,7 @@ package com.dili.uap.sdk.session;
 
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
+import com.dili.ss.util.SpringUtil;
 import com.dili.uap.sdk.domain.Menu;
 import com.dili.uap.sdk.domain.SystemExceptionLog;
 import com.dili.uap.sdk.domain.UserTicket;
@@ -67,7 +68,8 @@ public class SessionFilter implements Filter {
 		HttpServletResponse resp = (HttpServletResponse) response;
 		WebContent.put(req);
 		WebContent.put(resp);
-		PermissionContext pc = new PermissionContext(req, resp, this, config);
+		String domain = SpringUtil.getBean(DynaSessionConstants.class).getUapContextPath();
+		PermissionContext pc = new PermissionContext(req, resp, this, config, domain);
 		WebContent.put(SessionConstants.MANAGE_PERMISSION_CONTEXT, pc);
 		// 如果是框架导出，需要手动设置SessionId到Header中，因为restful取不到cookies
 		if (pc.getReq().getRequestURI().trim().endsWith("/export/serverExport.action")) {
@@ -142,11 +144,11 @@ public class SessionFilter implements Filter {
 	 */
 	private void systemExceptionLog(PermissionContext pc, Exception e) {
 		BaseOutput<Map<String, Object>> output = menuRpc.getMenuDetailByUrl(pc.getUrl());
-		if(output.isSuccess()){
+		if (output.isSuccess()) {
 			Map<String, Object> menu1 = output.getData();
-			if(menu1 == null || menu1.isEmpty()) {
+			if (menu1 == null || menu1.isEmpty()) {
 				SystemExceptionLog systemExceptionLog = DTOUtils.newDTO(SystemExceptionLog.class);
-				systemExceptionLog.setMsg(e.getMessage()+",url:" + pc.getUrl());
+				systemExceptionLog.setMsg(e.getMessage() + ",url:" + pc.getUrl());
 				systemExceptionLog.setType(ExceptionType.NOT_AUTH_ERROR.getCode());
 				systemExceptionLog.setExceptionTime(new Date());
 				systemExceptionLog.setIp(pc.getReq().getRemoteAddr());
