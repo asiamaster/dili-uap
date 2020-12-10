@@ -56,7 +56,7 @@ public class SessionFilter implements Filter {
 	}
 
 	@Override
-	public void init(FilterConfig conf) throws ServletException {
+	public void init(FilterConfig conf) {
 		filterConfig = conf;
 	}
 

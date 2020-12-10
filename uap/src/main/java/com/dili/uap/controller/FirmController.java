@@ -233,6 +233,17 @@ public class FirmController {
 	}
 
 	/**
+	 * 获取所有市场
+	 *
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping("/listAll.action")
+	public List<Firm> listAll() {
+		return this.firmService.list(DTOUtils.newInstance(Firm.class));
+	}
+
+	/**
 	 * 查询所属行业
 	 * 
 	 * @return

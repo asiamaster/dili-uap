@@ -728,6 +728,34 @@
         }
     }
 
+    /**
+	 * 用户数据编辑时，上级数据加载成功后的执行方法
+	 */
+    function editSuperiorLoadSuccess(node,data) {
+        var selected = userGrid.datagrid("getSelected");
+        if (null == selected) {
+            return;
+        }
+        // 如果是修改用户，则显示用户已有的职业数据
+        if (isUpdateUser || 'true' == isUpdateUser){
+            $('#_superiorId').combotree('setValue', selected.$_superiorId);
+        }
+    }
+
+    /**
+	 * 用户数据编辑时，职位数据加载成功后的执行方法
+	 */
+    function editPositionLoadSuccess(node,data) {
+        var selected = userGrid.datagrid("getSelected");
+        if (null == selected) {
+            return;
+        }
+        // 如果是修改用户，则显示用户已有的职业数据
+        if (isUpdateUser || 'true' == isUpdateUser){
+            $('#_positionId').combotree('setValue', selected.$_positionId);
+        }
+    }
+
 
     /**
      * 勾选用户的数据权限

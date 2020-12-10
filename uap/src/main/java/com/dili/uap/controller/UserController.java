@@ -92,7 +92,7 @@ public class UserController {
 	 * @param user
 	 * @return
 	 */
-	@RequestMapping(value = "/list", method = { RequestMethod.GET, RequestMethod.POST })
+	@RequestMapping(value = "/list.action", method = { RequestMethod.GET, RequestMethod.POST })
 	@ResponseBody
 	public List<User> list(User user) {
 		return userService.list(user);

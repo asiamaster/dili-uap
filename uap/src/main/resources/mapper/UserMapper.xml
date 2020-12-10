@@ -186,4 +186,10 @@
 		AND f.id = #{marketId}
 	</select>
 
+	<update id="updateByPositionId"  parameterType="java.lang.Long">
+		UPDATE user
+		SET position_id = NULL
+		WHERE position_id = #{positionId,jdbcType=BIGINT}
+	</update>
+
 </mapper>
