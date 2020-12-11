@@ -184,7 +184,7 @@ public class WebContent {
 			break;
 		}
 		String[] strs = host.split("\\.");
-		return "."+strs[strs.length-1]+"."+strs[strs.length-2];
+		return "."+strs[strs.length-2]+"."+strs[strs.length-1];
 //		return host.substring(host.indexOf(".") + 1);
 	}
 
