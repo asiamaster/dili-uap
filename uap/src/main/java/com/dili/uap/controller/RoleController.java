@@ -253,6 +253,7 @@ public class RoleController {
             UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
             if (userTicket != null) {
                 LoggerContext.put(LoggerConstant.LOG_OPERATOR_ID_KEY, userTicket.getId());
+                LoggerContext.put(LoggerConstant.LOG_OPERATOR_NAME_KEY, userTicket.getRealName());
                 LoggerContext.put(LoggerConstant.LOG_MARKET_ID_KEY, userTicket.getFirmId());
             }
         }
@@ -286,6 +287,7 @@ public class RoleController {
             UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
             if (userTicket != null) {
                 LoggerContext.put(LoggerConstant.LOG_OPERATOR_ID_KEY, userTicket.getId());
+                LoggerContext.put(LoggerConstant.LOG_OPERATOR_NAME_KEY, userTicket.getRealName());
                 LoggerContext.put(LoggerConstant.LOG_MARKET_ID_KEY, userTicket.getFirmId());
             }
         }
@@ -311,6 +313,7 @@ public class RoleController {
             UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
             if (userTicket != null) {
                 LoggerContext.put(LoggerConstant.LOG_OPERATOR_ID_KEY, userTicket.getId());
+                LoggerContext.put(LoggerConstant.LOG_OPERATOR_NAME_KEY, userTicket.getRealName());
                 LoggerContext.put(LoggerConstant.LOG_MARKET_ID_KEY, userTicket.getFirmId());
             }
         }
@@ -349,6 +352,7 @@ public class RoleController {
             UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
             if (userTicket != null) {
                 LoggerContext.put(LoggerConstant.LOG_OPERATOR_ID_KEY, userTicket.getId());
+                LoggerContext.put(LoggerConstant.LOG_OPERATOR_NAME_KEY, userTicket.getRealName());
                 LoggerContext.put(LoggerConstant.LOG_MARKET_ID_KEY, userTicket.getFirmId());
             }
         }
@@ -375,6 +379,7 @@ public class RoleController {
             UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
             if (userTicket != null) {
                 LoggerContext.put(LoggerConstant.LOG_OPERATOR_ID_KEY, userTicket.getId());
+                LoggerContext.put(LoggerConstant.LOG_OPERATOR_NAME_KEY, userTicket.getRealName());
                 LoggerContext.put(LoggerConstant.LOG_MARKET_ID_KEY, userTicket.getFirmId());
             }
         }
