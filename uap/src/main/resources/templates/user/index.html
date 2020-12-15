@@ -66,17 +66,17 @@
 			<thead>
 				<tr>
 					<th width="0%" data-options="field:'gender',hidden: true,_provider:'genderProvider',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'"></th>
-					<th width="0%" data-options="field:'superiorId',hidden: true,_provider:'userProvider',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'"></th>
-					<th width="0%" data-options="field:'positionId',hidden : true,_provider:'positionProvider',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'"></th>
 					<th width="10%" data-options="field:'userName',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">用户账号</th>
 					<th width="10%" data-options="field:'realName',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">真实姓名</th>
 					<th width="15%" data-options="field:'cellphone',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">手机号码</th>
-					<th width="20%" data-options="field:'userRoles',align:'center', resizable:'true', fixed:'false'">角色类型</th>
+					<th width="15%" data-options="field:'userRoles',align:'center', resizable:'true', fixed:'false'">角色类型</th>
 					<th width="10%" data-options="field:'firmCode',_provider:'firmCodeProvider',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">归属市场</th>
 					<th width="10%" data-options="field:'departmentId',_provider:'departmentProvider',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">归属部门</th>
+					<th width="10%" data-options="field:'positionId',_provider:'positionProvider',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">职位</th>
+					<th width="10%" data-options="field:'superiorId',_provider:'userProvider',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">上级</th>
 					<th width="10%" data-options="field:'state',_provider:'userStateProvider',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">状态</th>
-					<th width="16%" data-options="field:'created',  _provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">创建时间</th>
-					<th width="16%" data-options="field:'lastLoginTime',  _provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">最后登录时间</th>
+					<th width="13%" data-options="field:'created',  _provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">创建时间</th>
+					<th width="13%" data-options="field:'lastLoginTime',  _provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">最后登录时间</th>
 				</tr>
 			</thead>
 		</table>
@@ -150,15 +150,15 @@
 				</td>
 			</tr>
 			<tr>
-				<td style="padding: 5px;"><input class="easyui-combotree" name="_departmentId" panelWidth="auto" panelHeight="300" editable="false" id="_departmentId" style="width: 85%; height: 28px;"
+				<td style="padding: 5px;"><input class="easyui-combotree" name="_departmentId" panelWidth="auto" panelHeight="300" editable="true" id="_departmentId" style="width: 85%; height: 28px;"
 					data-options="labelAlign:'right',label:'归属部门:',_idField:'id',_textField:'name',_parentIdField:'parentId',loadFilter:treeLoadFilter,onLoadSuccess:editDepartmentLoadSuccess"></td>
 			</tr>
 			<tr>
-				<td style="padding: 5px;"><input class="easyui-combotree" name="_superiorId" panelWidth="auto" panelHeight="300" editable="false" id="_superiorId" style="width: 85%; height: 28px;"
+				<td style="padding: 5px;"><input class="easyui-combotree" name="_superiorId" panelWidth="auto" panelHeight="300" editable="true" id="_superiorId" style="width: 85%; height: 28px;"
 												 data-options="labelAlign:'right',label:'上级:',_idField:'id',_textField:'userName',loadFilter:treeLoadFilter,onLoadSuccess:editSuperiorLoadSuccess"></td>
 			</tr>
 			<tr>
-				<td style="padding: 5px;"><input class="easyui-combotree" name="_positionId" panelWidth="auto" panelHeight="300" editable="false" id="_positionId" style="width: 85%; height: 28px;"
+				<td style="padding: 5px;"><input class="easyui-combotree" name="_positionId" panelWidth="auto" panelHeight="300" editable="true" id="_positionId" style="width: 85%; height: 28px;"
 												 data-options="labelAlign:'right',label:'职位:',_idField:'id',_textField:'positionName',loadFilter:treeLoadFilter,onLoadSuccess:editPositionLoadSuccess"></td>
 			</tr>
 			<tr>
