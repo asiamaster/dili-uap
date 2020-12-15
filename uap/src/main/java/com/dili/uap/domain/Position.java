@@ -54,7 +54,7 @@ public interface Position extends IBaseDomain {
     @Column(name = "`description`")
     @FieldDef(label="描述", maxLength = 255)
     @EditMode(editor = FieldEditor.Text, required = false)
-    @Size(max = 4, message = "描述介于0-255之间", groups = { AddView.class,ModifyView.class })
+    @Size(max = 255, message = "描述长度介于0-255之间", groups = { AddView.class,ModifyView.class })
     String getDescription();
 
     void setDescription(String description);
