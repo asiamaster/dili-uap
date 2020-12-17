@@ -196,7 +196,13 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 				user.setState(UserState.INACTIVE.getCode());
 			}
 			user.setPassword(encryptPwd(UapConstants.DEFAULT_PASS));
-			this.insertExactSimple(user);
+			user.setCreated(new Date());
+			user.setModified(new Date());
+			if (null == user.getSerialNumber()){
+				user.setSerialNumber("000");
+			}
+			getActualDao().insertUseGeneratedKeys(user);
+
 			User newUser = DTOUtils.newInstance(User.class);
 			newUser.setUserName(user.getUserName());
 			newUser.setPassword(user.getPassword());
@@ -207,6 +213,8 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 			String json = JSON.toJSONString(newUser);
 			json = AESUtils.encrypt(json, aesKey);
 			amqpTemplate.convertAndSend(RabbitConfiguration.UAP_TOPIC_EXCHANGE, RabbitConfiguration.UAP_ADD_USER_KEY, json);
+			//默认分配本部门权限 dataRange:1 所有人
+			this.saveUserDatas(user.getId(),new String[]{String.valueOf(user.getDepartmentId())},1L);
 		} else {
 			if (CollectionUtils.isNotEmpty(userList)) {
 				// 匹配是否有用户ID不等当前修改记录的用户
