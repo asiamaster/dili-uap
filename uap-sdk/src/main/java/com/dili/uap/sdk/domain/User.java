@@ -166,13 +166,13 @@ public interface User extends IBaseDomain, IMybatisForceParams {
 
 	@Column(name = "`position_id`")
 	@FieldDef(label = "职位id")
-	@EditMode(editor = FieldEditor.Number)
+	@EditMode(editor = FieldEditor.Number, required = true)
 	Long getPositionId();
 
 	void setPositionId(Long positionId);
 
 	@Column(name = "`gender`")
-	@FieldDef(label = "性别 0:男 1：女")
+	@FieldDef(label = "性别 0：男 1：女")
 	@EditMode(editor = FieldEditor.Number)
 	Integer getGender();
 
