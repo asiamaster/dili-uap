@@ -24,12 +24,36 @@
      * @param firmCode 市场code
      */
     function loadDepartments(firmCode,controlId) {
-        var obj = {id: '', name: '-- 全部 --','parentId':null};
+        // var obj = {id: '', name: '-- 全部 --','parentId':null};
         if (firmCode){
             $.post('${contextPath!}/department/listByCondition.action', {firmCode: firmCode}, function (ret) {
                 if (ret) {
                     //动态添加'全部'
-                    ret.unshift(obj);
+                    // ret.unshift(obj);
+                    $('#' + controlId).combotree("clear");
+                    $('#' + controlId).combotree("loadData", ret);
+                    // $('#' + controlId).combotree("setValue", obj);
+                }
+            }, 'json');
+        }else{
+            $('#' + controlId).combotree("clear");
+            $('#' + controlId).combotree("loadData", {});
+            // $('#' + controlId).combotree("setValue", obj);
+        }
+
+    }
+
+    /**
+     * 根据市场code加载部门信息，并显示到相应的部门控件中
+     * @param firmCode 市场code
+     */
+    function loadFirmDepartments(firmCode,controlId) {
+        // var obj = {id: '', name: '-- 全部 --','parentId':null};
+        if (firmCode){
+            $.post('${contextPath!}/department/listUserDepartment.action', {firmCode: firmCode}, function (ret) {
+                if (ret) {
+                    //动态添加'全部'
+                    // ret.unshift(obj);
                     $('#' + controlId).combotree("clear");
                     $('#' + controlId).combotree("loadData", ret);
                     // $('#' + controlId).combotree("setValue", obj);
@@ -48,12 +72,12 @@
      * @param firmCode 市场code
      */
     function loadSuperiors(firmCode,controlId) {
-        var obj = {id: '', userName: '-- 全部 --'};
+        // var obj = {id: '', userName: '-- 全部 --'};
         if (firmCode){
             $.post('${contextPath!}/user/list.action', {firmCode: firmCode}, function (ret) {
                 if (ret) {
                     //动态添加'全部'
-                    ret.unshift(obj);
+                    // ret.unshift(obj);
                     $('#' + controlId).combotree("clear");
                     $('#' + controlId).combotree("loadData", ret);
                     // $('#' + controlId).combotree("setValue", obj);
@@ -72,12 +96,12 @@
      * @param firmCode 市场code
      */
     function loadPositions(firmCode,controlId) {
-        var obj = {id: '', positionName: '-- 全部 --'};
+        // var obj = {id: '', positionName: '-- 全部 --'};
         if (firmCode){
             $.post('${contextPath!}/position/listByCondition.action', {firmCode: firmCode}, function (ret) {
                 if (ret) {
                     //动态添加'全部'
-                    ret.unshift(obj);
+                    // ret.unshift(obj);
                     $('#' + controlId).combotree("clear");
                     $('#' + controlId).combotree("loadData", ret);
                     // $('#' + controlId).combotree("setValue", obj);

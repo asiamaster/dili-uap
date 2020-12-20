@@ -199,4 +199,15 @@ public class DepartmentServiceImpl extends BaseServiceImpl<Department, Long> imp
 		}
 		return departmentList.stream().filter(d -> userDataAuthList.stream().anyMatch(ud -> Objects.equals(String.valueOf(d.getId()), ud.getValue()))).collect(Collectors.toList());
 	}
+
+	@Override
+	public List<Map> listUserDepartment(String firmCode) {
+		List<Map> list = getActualDao().listUserDepartment(firmCode);
+		list.forEach(map ->{
+			Map<String, String> attributes = new HashMap<>(2);
+			attributes.put("firmCode", (String) map.get("firmCode"));
+			map.put("attributes",attributes);
+		});
+		return list;
+	}
 }

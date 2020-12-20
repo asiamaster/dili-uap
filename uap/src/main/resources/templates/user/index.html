@@ -4,94 +4,115 @@
 	<!-- ====================================================================================================================== -->
 	<!-- 上方布局 -->
 	<!-- ====================================================================================================================== -->
-	<div region="north" height="auto" align="center" border="false">
-		<div id="nav" style="padding-left: 15px; padding-top: 10px;" align="left">
-			<#nav />
-		</div>
-		<!-- =========================================================表单========================================================= -->
-		<div class="easyui-panel" style="width: 100%;" align="left" border="false">
-			<form id="form" class="easyui-form" method="post" fit="true">
-				<div class="search-wrap">
-					<%if(isGroup){%>
-					<div class="search-item">
-						<input class="easyui-combobox" name="firmCode" id="firmCode" style="width: 200px"
-							data-options="label:'所属市场:',editable:false,labelAlign:'right',valueField:'code',textField:'name',
-                                       onLoadSuccess:function(){
-                                           loadDepartments('','departmentId');
-                                           loadRoles('');
-                                       },onChange:function(newValue,oldValue){
-                                           loadDepartments(newValue,'departmentId');
-                                           loadRoles(newValue);
-                                       }"
-							panelHeight="auto" />
-					</div>
-					<%}else{%> <input type="hidden" name="firmCode" id="firmCode" value="${firmCode}" style="width: 100%" /> <%}%>
-					<div class="search-item">
-						<input class="easyui-combotree" name="departmentId" id="departmentId" panelHeight="240%" panelWidth="auto" style="width: 100%"
-							data-options="label:'归属部门:',labelAlign:'right',editable:false,_idField:'id',_textField:'name',_parentIdField:'parentId',loadFilter:treeLoadFilter" />
-					</div>
-					<div class="search-item">
-						<input class="easyui-combobox" name="roleId" id="roleId" panelHeight="auto" style="width: 100%"
-							data-options="label:'角色类型:',labelAlign:'right',editable:false,valueField:'id',textField:'roleName'" />
-					</div>
-					<div class="search-item">
-						<input class="easyui-combobox" name="state" id="state" style="width: 160px" data-options="labelAlign:'right',editable:false,labelWidth:60" panelHeight="auto" label="状态:" />
-						<#comboProvider _id="state" _provider='userStateProvider' _queryParams='{emptyText:"-- 全部 --"}' />
-					</div>
-					<div class="search-item">
-						<input class="easyui-textbox" name="keywords" id="keywords" style="width: 160px" data-options="prompt:'用户账号/联系手机'" />
-					</div>
-					<div class="search-item" style="width:450px;">
-						<input class="easyui-datetimebox" name="lastLoginTimeStart" id="lastLoginTimeStart" style="width: 59%" data-options="labelAlign:'right',editable:false,labelWidth:100" panelHeight="auto" label="最后登录时间:" />-
-						<input class="easyui-datetimebox" name="lastLoginTimeEnd" id="lastLoginTimeEnd" style="width: 36%" data-options="labelAlign:'center',editable:false" panelHeight="auto" />
-					</div>
-					
-					<div class="search-wrap-btn">
-						<a href="#" class="easyui-linkbutton" iconCls="icon-search" id="queryBtn" onclick="queryGrid()">查询</a> &nbsp;&nbsp; <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-clear"
-							onclick="clearForm()">清除</a>
-					</div>
-				</div>
-			</form>
+	<div region="north" height="auto" align="center" style="padding-bottom: 15px;border:1px #e6e6e6 solid;"  border="false">
+		<div id="nav" style="padding-left:15px;padding-top:10px;" align="left">
+			<#nav/>
 		</div>
 	</div>
-	<!-- ====================================================================================================================== -->
-	<!-- 中央布局 -->
-	<!-- ====================================================================================================================== -->
-	<!-- 表格 -->
-	<div region="center" style="width: 100%;" height="auto" border="false">
-		<!-- =========================================================表格========================================================= -->
-		<table class="easyui-datagrid" title="用户列表" id="userGrid" fitColumns="true" noheader="true" pagination="true" pageSize="30" pageNumber="1" pagePosition="top" remoteSort="true" border="false"
-			loadMsg="数据加载中..." singleSelect="true" method="post" multiSort="false" sortName="id" sortOrder="desc" align="center" fit="true" striped="false" idField="id"
-			data-options="onClickRow:onClickRow,onDblClickRow:openUpdate, onHeaderContextMenu:headerContextMenu,onLoadSuccess:gridLoadSuccess">
-			<thead>
-				<tr>
-					<th width="0%" data-options="field:'gender',hidden: true,_provider:'genderProvider',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'"></th>
-					<th width="10%" data-options="field:'userName',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">用户账号</th>
-					<th width="10%" data-options="field:'realName',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">真实姓名</th>
-					<th width="15%" data-options="field:'cellphone',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">手机号码</th>
-					<th width="15%" data-options="field:'userRoles',align:'center', resizable:'true', fixed:'false'">角色类型</th>
-					<th width="10%" data-options="field:'firmCode',_provider:'firmCodeProvider',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">归属市场</th>
-					<th width="10%" data-options="field:'departmentId',_provider:'departmentProvider',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">归属部门</th>
-					<th width="10%" data-options="field:'positionId',_provider:'positionProvider',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">职位</th>
-					<th width="10%" data-options="field:'superiorId',_provider:'userProvider',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">上级</th>
-					<th width="10%" data-options="field:'state',_provider:'userStateProvider',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">状态</th>
-					<th width="13%" data-options="field:'created',  _provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">创建时间</th>
-					<th width="13%" data-options="field:'lastLoginTime',  _provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">最后登录时间</th>
-				</tr>
-			</thead>
-		</table>
-		<div id="toolbar" style="padding: 2px 5px;">
-			<#resource code="editUserRole"> <a href="#" class="easyui-linkbutton" iconCls="icon-role" onclick="editUserRole()" plain="true">分配角色</a> </#resource>
-			<#resource code="editUserData"> <a href="#" class="easyui-linkbutton" iconCls="icon-data" onclick="editUserDataAuth()" plain="true">数据权限</a> </#resource>
-			<#resource code="viewUser"> <a href="#" class="easyui-linkbutton" iconCls="icon-detail" onclick="openDetail()" plain="true">详情</a> </#resource>
-			<#resource code="insertUser"> <a href="#" class="easyui-linkbutton" iconCls="icon-add" onclick="openInsert()" plain="true">新增</a> </#resource>
-			<#resource code="updateUser"> <a href="#" class="easyui-linkbutton" iconCls="icon-edit" onclick="openUpdate()" plain="true">修改</a> </#resource>
-			<#resource code="deleteUser"> <a href="#" class="easyui-linkbutton" iconCls="icon-remove" onclick="del()" plain="true">删除</a> </#resource>
-			<#resource code="resetPass"> <a href="#" class="easyui-linkbutton" iconCls="icon-reset" onclick="resetPass()" plain="true">密码重置</a> </#resource>
-			<#resource code="enabledUser"> <a href="#" class="easyui-linkbutton" iconCls="icon-play" onclick="doEnable(true)" plain="true">启用</a> </#resource>
-			<#resource code="disabledUser"> <a href="#" class="easyui-linkbutton" iconCls="icon-stop" onclick="doEnable(false)" plain="true">禁用</a> </#resource>
-			<#resource code="unlockUser"> <a href="#" class="easyui-linkbutton" iconCls="icon-unlock" onclick="doUnlock()" plain="true">解锁</a> </#resource>
-			<#resource code="exportUser"> <a href="#" class="easyui-linkbutton" iconCls="icon-export" onclick="doExport('userGrid')" plain="true">导出</a> </#resource>
+	<div style="width: 210px;" height="95%" align="left" data-options="region:'west',title:'用户管理',split:true, hideCollapsedContent:false,expandMode:'dock'" >
+		<input data-options="iconCls:'icon-search'" style="width:100%;border:2px solid #cccccc" id="searchTree">
+		<ul id="menuTree" class="easyui-tree" lines="false" url="${contextPath}/department/listUserDepartment.action"
+			data-options="loadFilter:treeLoadFilter, _idField:'id', _textField:'name', _parentIdField:'parent_id',
+				onSelect:queryTree" />
+<!--		<tr>-->
+<!--			<td style="padding: 5px;"><input class="easyui-combotree" name="_departmentId" panelWidth="auto" panelHeight="300" editable="true" id="_departmentIdTree" style="width: 100%; height: 28px;"  required=true-->
+<!--											 data-options="labelAlign:'right',label:'',_idField:'id',_textField:'name',_parentIdField:'parentId',loadFilter:treeLoadFilter"></td>-->
+<!--		</tr>-->
+	</div>
+	<div region="center">
+		<div class="easyui-layout" fit="true" region="center">
+			<div region="north" height="130px" align="center" border="false">
+		<!--		<div id="nav" style="padding-left: 15px; padding-top: 10px;" align="left">-->
+		<!--			<#nav />-->
+		<!--		</div>-->
+				<!-- =========================================================表单========================================================= -->
+				<div class="easyui-panel" style="width: 100%;" align="left" border="false">
+					<form id="form" class="easyui-form" method="post" fit="true">
+						<div class="search-wrap">
+<!--							<%if(isGroup){%>-->
+<!--							<div class="search-item" style="width: 200px;">-->
+<!--								<input class="easyui-combobox" name="firmCode" id="firmCode" style="width: 180px"-->
+<!--									data-options="label:'所属市场:',editable:false,labelAlign:'right',valueField:'code',textField:'name',-->
+<!--											   onLoadSuccess:function(){-->
+<!--												   loadDepartments('','departmentId');-->
+<!--												   loadRoles('');-->
+<!--											   },onChange:function(newValue,oldValue){-->
+<!--												   loadDepartments(newValue,'departmentId');-->
+<!--												   loadRoles(newValue);-->
+<!--											   }"-->
+<!--									panelHeight="auto" />-->
+<!--							</div>-->
+<!--							<%}else{%> <input type="hidden" name="firmCode" id="firmCode" value="${firmCode}" style="width: 100%" /> <%}%>-->
+<!--							<div class="search-item"  style="width: 210px;">-->
+<!--								<input class="easyui-combotree" name="departmentId" id="departmentId" panelHeight="240%" panelWidth="auto" style="width: 100%"-->
+<!--									data-options="label:'归属部门:',labelAlign:'right',editable:false,_idField:'id',_textField:'name',_parentIdField:'parentId',loadFilter:treeLoadFilter" />-->
+<!--							</div>-->
+							<input type="hidden" name="firmCode" id="firmCode" value="${firmCode}" style="width: 100%" />
+							<input type="hidden" name="departmentId" id="departmentId" value="${departmentId}" style="width: 100%" />
+							<div class="search-item">
+								<input class="easyui-combobox" name="roleId" id="roleId" panelHeight="auto" style="width: 100%"
+									data-options="label:'角色类型:',labelAlign:'right',editable:false,valueField:'id',textField:'roleName'" />
+							</div>
+							<div class="search-item">
+								<input class="easyui-combobox" name="state" id="state" style="width: 160px" data-options="labelAlign:'right',editable:false,labelWidth:60" panelHeight="auto" label="状态:" />
+								<#comboProvider _id="state" _provider='userStateProvider' _queryParams='{emptyText:"-- 全部 --"}' />
+							</div>
+							<div class="search-item">
+								<input class="easyui-textbox" name="keywords" id="keywords" style="width: 160px" data-options="prompt:'用户账号/联系手机'" />
+							</div>
+							<div class="search-item" style="width:450px;">
+								<input class="easyui-datetimebox" name="lastLoginTimeStart" id="lastLoginTimeStart" style="width: 59%" data-options="labelAlign:'right',editable:false,labelWidth:100" panelHeight="auto" label="最后登录时间:" />-
+								<input class="easyui-datetimebox" name="lastLoginTimeEnd" id="lastLoginTimeEnd" style="width: 36%" data-options="labelAlign:'center',editable:false" panelHeight="auto" />
+							</div>
+
+							<div class="search-wrap-btn">
+								<a href="#" class="easyui-linkbutton" iconCls="icon-search" id="queryBtn" onclick="queryGrid()">查询</a> &nbsp;&nbsp; <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-clear"
+									onclick="clearForm()">清除</a>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+			<!-- ====================================================================================================================== -->
+			<!-- 中央布局 -->
+			<!-- ====================================================================================================================== -->
+			<!-- 表格 -->
+			<div region="center" style="width: 100%;" height="auto%" border="false">
+				<!-- =========================================================表格========================================================= -->
+				<table class="easyui-datagrid" title="用户列表" id="userGrid" fitColumns="true" noheader="true" pagination="true" pageSize="30" pageNumber="1" pagePosition="top" remoteSort="true" border="false" rownumbers="true"
+					loadMsg="数据加载中..." singleSelect="true" method="post" multiSort="false" sortName="id" sortOrder="desc" align="center" fit="true" striped="false" idField="id"
+					data-options="onClickRow:onClickRow,onDblClickRow:openUpdate, onHeaderContextMenu:headerContextMenu,onLoadSuccess:gridLoadSuccess">
+					<thead>
+						<tr>
+							<th width="0%" data-options="field:'gender',hidden: true,_provider:'genderProvider',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'"></th>
+							<th width="10%" data-options="field:'userName',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">用户账号</th>
+							<th width="10%" data-options="field:'realName',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">真实姓名</th>
+							<th width="15%" data-options="field:'cellphone',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">手机号码</th>
+							<th width="15%" data-options="field:'userRoles',align:'center', resizable:'true', fixed:'false'">角色类型</th>
+							<th width="10%" data-options="field:'firmCode',_provider:'firmCodeProvider',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">归属市场</th>
+							<th width="10%" data-options="field:'departmentId',_provider:'departmentProvider',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">归属部门</th>
+							<th width="10%" data-options="field:'positionId',_provider:'positionProvider',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">职位</th>
+							<th width="10%" data-options="field:'superiorId',_provider:'userProvider',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">上级</th>
+							<th width="10%" data-options="field:'state',_provider:'userStateProvider',sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">状态</th>
+							<th width="13%" data-options="field:'created',  _provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">创建时间</th>
+							<th width="13%" data-options="field:'lastLoginTime',  _provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">最后登录时间</th>
+						</tr>
+					</thead>
+				</table>
+				<div id="toolbar" style="padding: 2px 5px;">
+					<#resource code="editUserRole"> <a href="#" class="easyui-linkbutton" iconCls="icon-role" onclick="editUserRole()" plain="true">分配角色</a> </#resource>
+					<#resource code="editUserData"> <a href="#" class="easyui-linkbutton" iconCls="icon-data" onclick="editUserDataAuth()" plain="true">数据权限</a> </#resource>
+					<#resource code="viewUser"> <a href="#" class="easyui-linkbutton" iconCls="icon-detail" onclick="openDetail()" plain="true">详情</a> </#resource>
+					<#resource code="insertUser"> <a href="#" class="easyui-linkbutton" iconCls="icon-add" onclick="openInsert()" plain="true">新增</a> </#resource>
+					<#resource code="updateUser"> <a href="#" class="easyui-linkbutton" iconCls="icon-edit" onclick="openUpdate()" plain="true">修改</a> </#resource>
+					<#resource code="deleteUser"> <a href="#" class="easyui-linkbutton" iconCls="icon-remove" onclick="del()" plain="true">删除</a> </#resource>
+					<#resource code="resetPass"> <a href="#" class="easyui-linkbutton" iconCls="icon-reset" onclick="resetPass()" plain="true">密码重置</a> </#resource>
+					<#resource code="enabledUser"> <a href="#" class="easyui-linkbutton" iconCls="icon-play" onclick="doEnable(true)" plain="true">启用</a> </#resource>
+					<#resource code="disabledUser"> <a href="#" class="easyui-linkbutton" iconCls="icon-stop" onclick="doEnable(false)" plain="true">禁用</a> </#resource>
+					<#resource code="unlockUser"> <a href="#" class="easyui-linkbutton" iconCls="icon-unlock" onclick="doUnlock()" plain="true">解锁</a> </#resource>
+					<#resource code="exportUser"> <a href="#" class="easyui-linkbutton" iconCls="icon-export" onclick="doExport('userGrid')" plain="true">导出</a> </#resource>
+				</div>
+			</div>
 		</div>
 	</div>
 </div>
@@ -150,16 +171,16 @@
 				</td>
 			</tr>
 			<tr>
-				<td style="padding: 5px;"><input class="easyui-combotree" name="_departmentId" panelWidth="auto" panelHeight="300" editable="true" id="_departmentId" style="width: 85%; height: 28px;"
-					data-options="labelAlign:'right',label:'归属部门:',_idField:'id',_textField:'name',_parentIdField:'parentId',loadFilter:treeLoadFilter,onLoadSuccess:editDepartmentLoadSuccess"></td>
+				<td style="padding: 5px;"><input class="easyui-combotree" name="_departmentId" panelWidth="auto" panelHeight="300" editable="true" id="_departmentId" style="width: 85%; height: 28px;"  required=true
+					data-options="labelAlign:'right',label:'&lowast;归属部门:',_idField:'id',_textField:'name',_parentIdField:'parentId',loadFilter:treeLoadFilter,onLoadSuccess:editDepartmentLoadSuccess"></td>
 			</tr>
 			<tr>
 				<td style="padding: 5px;"><input class="easyui-combotree" name="_superiorId" panelWidth="auto" panelHeight="300" editable="true" id="_superiorId" style="width: 85%; height: 28px;"
 												 data-options="labelAlign:'right',label:'上级:',_idField:'id',_textField:'userName',loadFilter:treeLoadFilter,onLoadSuccess:editSuperiorLoadSuccess"></td>
 			</tr>
 			<tr>
-				<td style="padding: 5px;"><input class="easyui-combotree" name="_positionId" panelWidth="auto" panelHeight="300" editable="true" id="_positionId" style="width: 85%; height: 28px;"
-												 data-options="labelAlign:'right',label:'职位:',_idField:'id',_textField:'positionName',loadFilter:treeLoadFilter,onLoadSuccess:editPositionLoadSuccess"></td>
+				<td style="padding: 5px;"><input class="easyui-combotree" name="_positionId" panelWidth="auto" panelHeight="300" editable="true" id="_positionId" style="width: 85%; height: 28px;" required=true
+												 data-options="labelAlign:'right',label:'&lowast;职位:',_idField:'id',_textField:'positionName',loadFilter:treeLoadFilter,onLoadSuccess:editPositionLoadSuccess"></td>
 			</tr>
 			<tr>
 				<td style="padding: 5px;">

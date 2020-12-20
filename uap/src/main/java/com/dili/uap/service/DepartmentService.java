@@ -75,4 +75,10 @@ public interface DepartmentService extends BaseService<Department, Long> {
 	 * @return
 	 */
 	List<Department> listUserAuthDepartmentByFirmId(Long userId, Long firmId);
+
+	/**
+	 * 查询用户所在市场部门列表
+	 * @return
+	 */
+	List<Map> listUserDepartment(String firmCode);
 }

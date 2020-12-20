@@ -15,6 +15,7 @@ import com.dili.uap.service.FirmService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,6 +37,10 @@ public class DepartmentController {
 
 	@Autowired
 	FirmService firmService;
+
+	@Value("${uap.adminName:admin}")
+	private String adminName;
+
 
 	/**
 	 * 跳转到Department页面
@@ -181,6 +186,26 @@ public class DepartmentController {
 	@ResponseBody
 	public List<Department> listByCondition(Department department) {
 		return departmentService.list(department);
+	}
+
+	/**
+	 * 查询用户所在市场部门列表
+	 *
+	 * @return
+	 */
+	@RequestMapping(value = "/listUserDepartment.action", method = { RequestMethod.GET, RequestMethod.POST })
+	@ResponseBody
+	public List<Map> listUserDepartment(){
+		UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
+		if (userTicket == null) {
+			return null;
+		}
+		String userName = userTicket.getUserName();
+		String firmCode = null;
+		if(!adminName.equals(userName)){
+			firmCode = userTicket.getFirmCode();
+		}
+		return departmentService.listUserDepartment(firmCode);
 	}
 
 	/**

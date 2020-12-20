@@ -108,6 +108,14 @@ public class UserController {
 	@RequestMapping(value = "/listPage.action", method = { RequestMethod.GET, RequestMethod.POST })
 	@ResponseBody
 	public String listPage(UserDto user) throws Exception {
+		UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
+		if(null == userTicket){
+			return BaseOutput.failure("登录超时").toString();
+		}
+		String userName = userTicket.getUserName();
+		if(!adminName.equals(userName)){
+			user.setFirmCode(userTicket.getFirmCode());
+		}
 		return userService.selectForEasyuiPage(user, true).toString();
 	}
 

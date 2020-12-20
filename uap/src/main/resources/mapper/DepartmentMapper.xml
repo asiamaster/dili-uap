@@ -73,4 +73,37 @@
 		resultMap="BaseResultMap">
 		{call getChildDepartments(#{id})}
 	</select>
+
+
+    <!-- 根据市场查询部门列表 -->
+    <select id="listUserDepartment" parameterType="java.lang.String" resultType="map">
+		 (SELECT
+	        ( SELECT concat( 'department_', d.`id` ) ) id
+            ,CASE WHEN d.`parent_id` IS NULL THEN concat( 'firm_', d.`firm_code` )
+            ELSE concat( 'department_', d.`parent_id` ) END parentId
+            ,concat(d.`name`,'(',count( u.`id` ),')') name
+            ,d.`firm_code` firmCode
+        FROM
+            `department` d
+            LEFT JOIN `user` u ON d.`id` = u.`department_id`
+        <if test="firmCode !=null and firmCode !=''">
+        WHERE
+            d.`firm_code` = #{firmCode}
+        </if>
+        GROUP BY
+            d.id)
+        UNION ALL
+        (SELECT
+            concat( 'firm_', f.`code` ) id
+            ,f.`parent_id`
+            ,concat(f.`name`,'(',count(u.`id` ),')') name
+            ,u.`firm_code` firmCode
+        FROM
+            `firm` f LEFT JOIN `user` u ON f.`code` = u.`firm_code`
+        <if test="firmCode !=null and firmCode !=''">
+        WHERE
+            code = #{firmCode}
+        </if>
+        GROUP BY f.code)
+	</select>
 </mapper>
