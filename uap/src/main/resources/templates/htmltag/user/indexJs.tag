@@ -772,7 +772,11 @@
         var roots = _tree.tree('getRoots');
         if(type == 1){
             for (var i = 0; i < roots.length; i++) {
-                easyuiTreeChecked(_tree,dataAuthButton1,roots[i].id);
+                var firm = roots[i].id.split("_");
+                if(firmCode == firm[1]){
+                    easyuiTreeChecked(_tree,dataAuthButton1,roots[i].id);
+                    break;
+                }
             }
             dataAuthButton1 = booleanChange(dataAuthButton1);
         }
