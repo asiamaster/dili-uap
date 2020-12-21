@@ -629,6 +629,7 @@
                     }
                 });
                 $('#dataRangeDiv').html(output.join(''));
+                selectDataAuth(1);
             }
         }, 'json');
         <#resource code="projectDataAuth">
@@ -847,6 +848,10 @@
         }
     }
 
+    /**
+     * 左边树选择节点查询
+     * @param  node 节点
+     */
     function queryTree(node){
         var ids = node.id.split("_");
         var departmentId,firmCode;
@@ -858,13 +863,78 @@
         }else{
             return;
         }
-        // $('#firmCode').combobox('setValue', firmCode);
-        // $('#departmentId').combotree('setValue', departmentId);
         $('#firmCode').val(firmCode);
         $('#departmentId').val(departmentId);
         loadRoles(firmCode);
         queryGrid();
     }
+
+    /**
+     * 根据市场类型展示权限树
+     * @param  firmType 市场类型 1:本市场 2:其他市场
+     */
+    function selectDataAuth(firmType){
+        var _tree = $('#dataTree');
+        var roots = _tree.tree('getRoots');
+        if(1 == firmType){
+            $("#btn1").show();
+            $("#btn2").show();
+            $("#btn3").show();
+            $("#btn4").hide();
+            $("#userMarket").css({"background":"#ffffff", "color":"black", "border":"#ffffff"});
+            $("#otherMarket").css({"background":"#DDDDDD", "color":"#5599FF", "border":"#DDDDDD"});
+            for (var i = 0; i < roots.length; i++) {
+                var firm = roots[i].id.split("_");
+                if(firmCode == firm[1]){
+                    $(roots[i].target).show();
+                    recursionTree(_tree,roots[i].id,true);
+                }else{
+                    $(roots[i].target).hide();
+                    recursionTree(_tree,roots[i].id,false);
+                }
+            }
+        }else if(2 == firmType){
+            $("#btn1").hide();
+            $("#btn2").hide();
+            $("#btn3").hide();
+            $("#btn4").show();
+            $("#otherMarket").css({"background":"#ffffff", "color":"black", "border":"#ffffff"});
+            $("#userMarket").css({"background":"#DDDDDD", "color":"#5599FF", "border":"#DDDDDD"});
+            for (var i = 0; i < roots.length; i++) {
+                var firm = roots[i].id.split("_");
+                if(firmCode == firm[1]){
+                   $(roots[i].target).hide();
+                    recursionTree(_tree,roots[i].id,false);
+                }else{
+                   $(roots[i].target).show();
+                    recursionTree(_tree,roots[i].id,true);
+                }
+            }
+        }
+    }
+
+    /**
+     * 递归展示隐藏树
+     * @param  _tree 树
+     * @param  nodeId 节点id
+     * @param  isShowed 是否展示
+     */
+    function recursionTree(_tree,nodeId,isShowed){
+        var node = _tree.tree('find', nodeId);
+        var childrenNodes = _tree.tree('getChildren', node.target);
+        if (isShowed) {
+            for (var i = 0; i < childrenNodes.length; i++) {
+                $(childrenNodes[i].target).show();
+                recursionTree(_tree,childrenNodes[i].id,true);
+            }
+        }else{
+            for (var i = 0; i < childrenNodes.length; i++) {
+                $(childrenNodes[i].target).hide();
+                recursionTree(_tree,childrenNodes[i].id,false);
+            }
+        }
+    }
+
 
     /**
      * 1）扩展jquery easyui tree的节点检索方法。使用方法如下：

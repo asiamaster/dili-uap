@@ -302,10 +302,14 @@
 				<ui id="dataRangeDiv"></ui>
 			</div>
 			<div style="margin-left: 20px;">
-				<a id="btn" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" onclick="selectUserDataAuth(1)">市场全部</a>
-				<a id="btn" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" onclick="selectUserDataAuth(2)">本部门</a>
-				<a id="btn" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" onclick="selectUserDataAuth(3)">部门及以下</a>
-				<a id="btn" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" onclick="selectUserDataAuth(4)">其他商户</a>
+				<a id="userMarket" href="#" style="width: 49%;background: #ffffff;color: black;border:1px solid #ffffff;" class="easyui-linkbutton" onclick="selectDataAuth(1)">本市场</a>
+				<a id="otherMarket" href="#" style="width: 49%;background: #DDDDDD;color: #5599FF;border:1px solid #DDDDDD;" class="easyui-linkbutton" onclick="selectDataAuth(2)">其他市场</a>
+			</div>
+			<div style="margin-left: 20px;">
+				<a id="btn1" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" onclick="selectUserDataAuth(1)">市场全部</a>
+				<a id="btn2" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" onclick="selectUserDataAuth(2)">本部门</a>
+				<a id="btn3" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" onclick="selectUserDataAuth(3)">部门及以下</a>
+				<a id="btn4" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" onclick="selectUserDataAuth(4)" type="hidden">其他市场全部</a>
 			</div>
 
 			<div class="easyui-panel" style="margin-left: 20px; padding: 10px; width: 95%; height: 350px;">
