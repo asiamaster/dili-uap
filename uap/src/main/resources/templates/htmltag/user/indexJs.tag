@@ -498,14 +498,15 @@
 		 * 加载部门信息
 		 */
         <% if (has(isGroup) && isGroup){ %>
-            var obj={code:"",name:'-- 全部 --'};
-            // 为了不改变原值，所以复制一遍数组
-            var firmData = firms.slice();
-            // 动态添加'请选择'
-            firmData.unshift(obj);
-            $("#firmCode").combobox("loadData", firmData);
+            // var obj={code:"",name:'-- 全部 --'};
+            // // 为了不改变原值，所以复制一遍数组
+            // var firmData = firms.slice();
+            // // 动态添加'请选择'
+            // firmData.unshift(obj);
+            // $("#firmCode").combobox("loadData", firmData);
+            loadRoles(firmCode);
         <%}else{%>
-            loadDepartments(firmCode,'departmentId');
+            // loadDepartments(firmCode,'departmentId');
             loadRoles(firmCode);
         <%}%>
         
@@ -520,6 +521,11 @@
         }
         initUserGrid();
         queryGrid();
+        //绑定搜索框键盘改变事件
+        $("#searchTree").keyup(function(){
+            var searchVal=$("#searchTree").val();
+            $("#menuTree").tree("search", searchVal);
+        });
     });
 
     // 表格查询
@@ -623,6 +629,7 @@
                     }
                 });
                 $('#dataRangeDiv').html(output.join(''));
+                selectDataAuth(1);
             }
         }, 'json');
         <#resource code="projectDataAuth">
@@ -766,7 +773,11 @@
         var roots = _tree.tree('getRoots');
         if(type == 1){
             for (var i = 0; i < roots.length; i++) {
-                easyuiTreeChecked(_tree,dataAuthButton1,roots[i].id);
+                var firm = roots[i].id.split("_");
+                if(firmCode == firm[1]){
+                    easyuiTreeChecked(_tree,dataAuthButton1,roots[i].id);
+                    break;
+                }
             }
             dataAuthButton1 = booleanChange(dataAuthButton1);
         }
@@ -836,5 +847,256 @@
             }
         }
     }
+
+    /**
+     * 左边树选择节点查询
+     * @param  node 节点
+     */
+    function queryTree(node){
+        var ids = node.id.split("_");
+        var departmentId,firmCode;
+        if(ids[0]=="firm"){
+            firmCode = ids[1];
+        }else if(ids[0]=="department"){
+            departmentId = ids[1];
+            firmCode = node.attributes.firmCode;
+        }else{
+            return;
+        }
+        $('#firmCode').val(firmCode);
+        $('#departmentId').val(departmentId);
+        loadRoles(firmCode);
+        queryGrid();
+    }
+
+    /**
+     * 根据市场类型展示权限树
+     * @param  firmType 市场类型 1:本市场 2:其他市场
+     */
+    function selectDataAuth(firmType){
+        var _tree = $('#dataTree');
+        var roots = _tree.tree('getRoots');
+        if(1 == firmType){
+            $("#btn1").show();
+            $("#btn2").show();
+            $("#btn3").show();
+            $("#btn4").hide();
+            $("#userMarket").css({"background":"#ffffff", "color":"black", "border":"#ffffff"});
+            $("#otherMarket").css({"background":"#DDDDDD", "color":"#5599FF", "border":"#DDDDDD"});
+            for (var i = 0; i < roots.length; i++) {
+                var firm = roots[i].id.split("_");
+                if(firmCode == firm[1]){
+                    $(roots[i].target).show();
+                    recursionTree(_tree,roots[i].id,true);
+                }else{
+                    $(roots[i].target).hide();
+                    recursionTree(_tree,roots[i].id,false);
+                }
+            }
+        }else if(2 == firmType){
+            $("#btn1").hide();
+            $("#btn2").hide();
+            $("#btn3").hide();
+            $("#btn4").show();
+            $("#otherMarket").css({"background":"#ffffff", "color":"black", "border":"#ffffff"});
+            $("#userMarket").css({"background":"#DDDDDD", "color":"#5599FF", "border":"#DDDDDD"});
+            for (var i = 0; i < roots.length; i++) {
+                var firm = roots[i].id.split("_");
+                if(firmCode == firm[1]){
+                   $(roots[i].target).hide();
+                    recursionTree(_tree,roots[i].id,false);
+                }else{
+                   $(roots[i].target).show();
+                    recursionTree(_tree,roots[i].id,true);
+                }
+            }
+        }
+    }
+
+    /**
+     * 递归展示隐藏树
+     * @param  _tree 树
+     * @param  nodeId 节点id
+     * @param  isShowed 是否展示
+     */
+    function recursionTree(_tree,nodeId,isShowed){
+        var node = _tree.tree('find', nodeId);
+        var childrenNodes = _tree.tree('getChildren', node.target);
+        if (isShowed) {
+            for (var i = 0; i < childrenNodes.length; i++) {
+                $(childrenNodes[i].target).show();
+                recursionTree(_tree,childrenNodes[i].id,true);
+            }
+        }else{
+            for (var i = 0; i < childrenNodes.length; i++) {
+                $(childrenNodes[i].target).hide();
+                recursionTree(_tree,childrenNodes[i].id,false);
+            }
+        }
+    }
+
+
+    /**
+     * 1）扩展jquery easyui tree的节点检索方法。使用方法如下：
+     * $("#treeId").tree("search", searchText);
+     * 其中，treeId为easyui tree的根UL元素的ID，searchText为检索的文本。
+     * 如果searchText为空或""，将恢复展示所有节点为正常状态
+     */
+    (function($) {
+        $.extend($.fn.tree.methods, {
+            /**
+             * 扩展easyui tree的搜索方法
+             * @param tree easyui tree的根DOM节点(UL节点)的jQuery对象
+             * @param searchText 检索的文本
+             * @param this-context easyui tree的tree对象
+             */
+            search: function(jqTree, searchText) {
+                //easyui tree的tree对象。可以通过tree.methodName(jqTree)方式调用easyui tree的方法
+                var tree = this;
+                //获取所有的树节点
+                var nodeList = getAllNodes(jqTree, tree);
+                //如果没有搜索条件，则展示所有节点
+                searchText = $.trim(searchText);
+                if (searchText == "") {
+                    for (var i=0; i<nodeList.length; i++) {
+                        $(".tree-node-targeted", nodeList[i].target).removeClass("tree-node-targeted");
+                        $(nodeList[i].target).show();
+                    }
+                    //展开所有节点
+                    tree.expandAll(jqTree);
+                    // 展开已选择的节点（如果之前选择了）
+                    // var selectedNode = tree.getSelected(jqTree);
+                    // if (selectedNode) {
+                    //     tree.expandTo(jqTree, selectedNode.target);
+                    // }
+                    return;
+                }
+                //搜索匹配的节点并高亮显示
+                var matchedNodeList = [];
+                if (nodeList && nodeList.length>0) {
+                    var node = null;
+                    for (var i=0; i<nodeList.length; i++) {
+                        node = nodeList[i];
+                        var searchWord = node.text.split("(");
+                        if (isMatch(searchText, searchWord[0])) {
+                            matchedNodeList.push(node);
+                        }
+                    }
+                    //隐藏所有节点
+                    for (var i=0; i<nodeList.length; i++) {
+                        $(".tree-node-targeted", nodeList[i].target).removeClass("tree-node-targeted");
+                        $(nodeList[i].target).hide();
+                    }
+                    //折叠所有节点
+                    tree.collapseAll(jqTree);
+                    //展示所有匹配的节点以及父节点
+                    for (var i=0; i<matchedNodeList.length; i++) {
+                        showMatchedNode(jqTree, tree, matchedNodeList[i]);
+                    }
+                }
+            },
+            /**
+             * 展示节点的子节点（子节点有可能在搜索的过程中被隐藏了）
+             * @param node easyui tree节点
+             */
+            showChildren: function(jqTree, node) {
+                //easyui tree的tree对象。可以通过tree.methodName(jqTree)方式调用easyui tree的方法
+                var tree = this;
+                //展示子节点
+                if (!tree.isLeaf(jqTree, node.target)) {
+                    var children = tree.getChildren(jqTree, node.target);
+                    if (children && children.length>0) {
+                        for (var i=0; i<children.length; i++) {
+                            if ($(children[i].target).is(":hidden")) {
+                                $(children[i].target).show();
+                            }
+                        }
+                    }
+                }
+            },
+            /**
+             * 将滚动条滚动到指定的节点位置，使该节点可见（如果有滚动条才滚动，没有滚动条就不滚动）
+             * @param param {
+             *  treeContainer: easyui tree的容器（即存在滚动条的树容器）。如果为null，则取easyui tree的根UL节点的父节点。
+             *  targetNode: 将要滚动到的easyui tree节点。如果targetNode为空，则默认滚动到当前已选中的节点，如果没有选中的节点，则不滚动
+             * }
+             */
+            scrollTo: function(jqTree, param) {
+                //easyui tree的tree对象。可以通过tree.methodName(jqTree)方式调用easyui tree的方法
+                var tree = this;
+                //如果node为空，则获取当前选中的node
+                var targetNode = param && param.targetNode ? param.targetNode : tree.getSelected(jqTree);
+                if (targetNode != null) {
+                    //判断节点是否在可视区域
+                    var root = tree.getRoot(jqTree);
+                    var $targetNode = $(targetNode.target);
+                    var container = param && param.treeContainer ? param.treeContainer : jqTree.parent();
+                    var containerH = container.height();
+                    var nodeOffsetHeight = $targetNode.offset().top - container.offset().top;
+                    if (nodeOffsetHeight > (containerH - 30)) {
+                        var scrollHeight = container.scrollTop() + nodeOffsetHeight - containerH + 30;
+                        container.scrollTop(scrollHeight);
+                    }
+                }
+            }
+        });
+        /**
+         * 展示搜索匹配的节点
+         */
+        function showMatchedNode(jqTree, tree, node) {
+            //展示所有父节点
+            $(node.target).show();
+            $(".tree-title", node.target).addClass("tree-node-targeted");
+            var pNode = node;
+            while ((pNode = tree.getParent(jqTree, pNode.target))) {
+                $(pNode.target).show();
+            }
+            //展开到该节点
+            tree.expandTo(jqTree, node.target);
+            //如果是非叶子节点，需折叠该节点的所有子节点
+            if (!tree.isLeaf(jqTree, node.target)) {
+                tree.collapse(jqTree, node.target);
+            }
+        }
+        /**
+         * 判断searchText是否与targetText匹配
+         * @param searchText 检索的文本
+         * @param targetText 目标文本
+         * @return true-检索的文本与目标文本匹配；否则为false.
+         */
+        function isMatch(searchText, targetText) {
+            return $.trim(targetText)!="" && targetText.indexOf(searchText)!=-1;
+        }
+        /**
+         * 获取easyui tree的所有node节点
+         */
+        function getAllNodes(jqTree, tree) {
+            var allNodeList = jqTree.data("allNodeList");
+            // if (!allNodeList) {
+                var roots = tree.getRoots(jqTree);
+                allNodeList = getChildNodeList(jqTree, tree, roots);
+                jqTree.data("allNodeList", allNodeList);
+            // }
+            return allNodeList;
+        }
+        /**
+         * 定义获取easyui tree的子节点的递归算法
+         */
+        function getChildNodeList(jqTree, tree, nodes) {
+            var childNodeList = [];
+            if (nodes && nodes.length>0) {
+                var node = null;
+                for (var i=0; i<nodes.length; i++) {
+                    node = nodes[i];
+                    childNodeList.push(node);
+                    if (!tree.isLeaf(jqTree, node.target)) {
+                        var children = tree.getChildren(jqTree, node.target);
+                        childNodeList = childNodeList.concat(getChildNodeList(jqTree, tree, children));
+                    }
+                }
+            }
+            return childNodeList;
+        }
+    })(jQuery);
 
 </script>

@@ -25,4 +25,10 @@ public interface DepartmentMapper extends MyMapper<Department> {
 	 * @return
 	 */
 	List<Department> getChildDepartments(Long parentId);
+
+	/**
+	 * 查询用户所在市场部门列表
+	 * @return
+	 */
+	List<Map> listUserDepartment(String firmCode);
 }
