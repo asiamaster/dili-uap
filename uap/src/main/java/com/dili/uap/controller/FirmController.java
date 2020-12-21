@@ -441,6 +441,14 @@ public class FirmController {
 		return this.firmService.disable(id);
 	}
 
+	/**
+	 * 新增市场审批页面
+	 * 
+	 * @param id
+	 * @param modelMap
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/approve.html", method = { RequestMethod.GET, RequestMethod.POST })
 	public String approveView(@RequestParam Long id, ModelMap modelMap) throws Exception {
 		Firm firm = this.firmService.get(id);
@@ -459,7 +467,7 @@ public class FirmController {
 		metadata.put("depositBankUnionInfoId", "bankUnionInfoProvider");
 
 //		metadata.put("operationRecord.operationTime", "datetimeProvider");
-		
+
 		JSONObject legalPersonCertificateTypeProvider = new JSONObject();
 		legalPersonCertificateTypeProvider.put(ValueProvider.PROVIDER_KEY, "dataDictionaryValueProvider");
 		legalPersonCertificateTypeProvider.put(ValueProvider.QUERY_PARAMS_KEY, "{\"dd_code\":\"legalPersonCertificateType\",\"firm_code\":\"group\"}");
