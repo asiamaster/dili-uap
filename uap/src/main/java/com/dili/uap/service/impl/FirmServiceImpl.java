@@ -2,33 +2,47 @@ package com.dili.uap.service.impl;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
+import com.dili.bpmc.sdk.domain.ProcessInstanceMapping;
+import com.dili.bpmc.sdk.domain.TaskMapping;
+import com.dili.bpmc.sdk.dto.StartProcessInstanceDto;
+import com.dili.bpmc.sdk.dto.TaskCompleteDto;
+import com.dili.bpmc.sdk.rpc.restful.RuntimeRpc;
+import com.dili.bpmc.sdk.rpc.restful.TaskRpc;
 import com.dili.ss.base.BaseServiceImpl;
 import com.dili.ss.domain.BaseOutput;
+import com.dili.ss.domain.EasyuiPageOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.exception.AppException;
+import com.dili.ss.metadata.ValueProviderUtils;
 import com.dili.uap.constants.UapConstants;
 import com.dili.uap.dao.DepartmentMapper;
 import com.dili.uap.dao.FirmMapper;
 import com.dili.uap.dao.UserDataAuthMapper;
 import com.dili.uap.dao.UserRoleMapper;
+import com.dili.uap.domain.FirmApproveResult;
 import com.dili.uap.domain.UserRole;
 import com.dili.uap.domain.dto.EditFirmAdminUserDto;
 import com.dili.uap.domain.dto.FirmAddDto;
+import com.dili.uap.domain.dto.FirmListDto;
 import com.dili.uap.domain.dto.FirmUpdateDto;
 import com.dili.uap.domain.dto.PaymentFirmDto;
 import com.dili.uap.rpc.PayRpc;
 import com.dili.uap.rpc.UidRpc;
 import com.dili.uap.sdk.domain.Department;
 import com.dili.uap.sdk.domain.Firm;
+import com.dili.uap.sdk.domain.FirmApproveRecord;
 import com.dili.uap.sdk.domain.FirmState;
 import com.dili.uap.sdk.domain.Role;
 import com.dili.uap.sdk.domain.User;
@@ -39,6 +53,8 @@ import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.service.FirmService;
 import com.dili.uap.service.RoleService;
 import com.dili.uap.service.UserService;
+import com.dili.uap.utils.BpmcUtil;
+import com.github.pagehelper.Page;
 
 import tk.mybatis.mapper.entity.Example;
 
@@ -73,6 +89,12 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 	private PayRpc payRpc;
 	@Autowired
 	private DepartmentMapper departmentMapper;
+	@Autowired
+	private RuntimeRpc runtimeRpc;
+	@Autowired
+	private TaskRpc taskRpc;
+	@Autowired
+	private BpmcUtil bpmcUtil;
 
 	public FirmMapper getActualDao() {
 		return (FirmMapper) getDao();
@@ -85,6 +107,7 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 		if (user == null) {
 			return BaseOutput.failure("登录超时");
 		}
+		firmDto.setCreatorId(user.getId());
 		// 统一验证
 		String msg = validateAddFirm(firmDto);
 		if (null != msg) {
@@ -95,79 +118,33 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 			return BaseOutput.failure("获取市场编号失败");
 		}
 		firmDto.setSerialNumber(Long.parseLong(output.getData()));
-		Firm query = DTOUtils.newInstance(Firm.class);
-		query.setCode(UapConstants.GROUP_CODE);
-		Firm groupFirm = this.getActualDao().selectOne(query);
+		firmDto.setFirmState(FirmState.UNREVIEWED.getValue());
 		int rows = this.getActualDao().insertSelective(firmDto);
 		if (rows <= 0) {
 			return BaseOutput.failure("插入市场信息失败");
 		}
-		// 如果nacos配置项uap.firm.to.payment.flag的值不为false,则市场信息同步到支付系统；调用支付系统商户注册接口
-		if (!"false".equalsIgnoreCase(paymentFlag)) {
-			PaymentFirmDto paymentFirmDto = new PaymentFirmDto();
-			paymentFirmDto.setMchId(firmDto.getId());
-			paymentFirmDto.setCode(firmDto.getCode());
-			paymentFirmDto.setName(firmDto.getName());
-			paymentFirmDto.setAddress(firmDto.getActualDetailAddress());
-			paymentFirmDto.setContact(firmDto.getLegalPersonName());
-			paymentFirmDto.setMobile(firmDto.getTelephone());
-			paymentFirmDto.setPassword(PASSWORD);
-			BaseOutput<PaymentFirmDto> registerMerchant = payRpc.registerMerchant(paymentFirmDto);
-			if (!registerMerchant.isSuccess()) {
-				BaseOutput.failure(registerMerchant.getMessage());
-				LOGGER.error(registerMerchant.getMessage());
-				throw new AppException(registerMerchant.getMessage());
-			}
-		}
-		// 为当前用户设置数据权限，当前用户得看到新增的市场
-		UserDataAuth userDataAuth = DTOUtils.newInstance(UserDataAuth.class);
-		userDataAuth.setRefCode(DataAuthType.MARKET.getCode());
-		userDataAuth.setUserId(user.getId());
-		userDataAuth.setValue(firmDto.getCode());
-		rows = this.userDataAuthMapper.insertSelective(userDataAuth);
-		if (rows <= 0) {
-			throw new RuntimeException("绑定用户市场数据权限失败");
-		}
-
 		return BaseOutput.success().setData(firmDto);
 	}
 
 	@Transactional
 	@Override
 	public BaseOutput<Object> updateSelectiveAfterCheck(FirmUpdateDto dto) {
+		Firm firm = this.getActualDao().selectByPrimaryKey(dto.getId());
+		if (!firm.getFirmState().equals(FirmState.UNREVIEWED.getValue())) {
+			return BaseOutput.failure("当前状态不能修改商户信息");
+		}
 		Firm query = DTOUtils.newInstance(Firm.class);
 		query.setCertificateNumber(dto.getCertificateNumber());
 		Firm old = this.getActualDao().selectOne(query);
 		if (old != null && !dto.getId().equals(old.getId())) {
 			return BaseOutput.failure("企业证件号不能重复");
 		}
-		Firm firm = DTOUtils.as(dto, Firm.class);
+		firm = DTOUtils.as(dto, Firm.class);
 		if (firm.getLongTermEffictive()) {
 			firm.setCertificateValidityPeriod(null);
 		}
 		int rows = 0;
-		try {
-			rows = this.updateExactSimple(dto);
-
-			// 如果nacos配置项uap.firm.to.payment.flag的值不为false,则市场信息同步到支付系统；调用支付系统修改商户接口
-			if (!"false".equalsIgnoreCase(paymentFlag)) {
-				PaymentFirmDto paymentFirmDto = new PaymentFirmDto();
-				paymentFirmDto.setMchId(dto.getId());
-				paymentFirmDto.setCode(dto.getCode());
-				paymentFirmDto.setName(dto.getName());
-				paymentFirmDto.setAddress(dto.getActualDetailAddress());
-				paymentFirmDto.setContact(dto.getLegalPersonName());
-				paymentFirmDto.setMobile(dto.getTelephone());
-				BaseOutput<PaymentFirmDto> modifyMerchant = payRpc.modifyMerchant(paymentFirmDto);
-				if (!modifyMerchant.isSuccess()) {
-					BaseOutput.failure(modifyMerchant.getMessage());
-					LOGGER.error(modifyMerchant.getMessage());
-					throw new AppException(modifyMerchant.getMessage());
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		rows = this.updateExactSimple(dto);
 		return rows > 0 ? BaseOutput.success("修改成功").setData(this.getActualDao().selectByPrimaryKey(dto.getId())) : BaseOutput.failure("修改失败");
 	}
 
@@ -184,6 +161,9 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 		Firm firm = this.getActualDao().selectByPrimaryKey(dto.getId());
 		if (firm == null) {
 			return BaseOutput.failure("商户不存在");
+		}
+		if (!firm.getFirmState().equals(FirmState.ENABLED.getValue())) {
+			return BaseOutput.failure("当前商户状态不能设置超级管理员");
 		}
 		boolean firmUpdate = false;
 		User adminUser = null;
@@ -341,6 +321,9 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 	@Override
 	public BaseOutput<Object> enable(Long id) {
 		Firm firm = this.getActualDao().selectByPrimaryKey(id);
+		if (firm.getFirmState().equals(FirmState.DISABLED.getValue())) {
+			return BaseOutput.failure("当前商户状态不能进行此操作");
+		}
 		if (firm.getFirmState().equals(FirmState.ENABLED.getValue())) {
 			return BaseOutput.failure("该商户状态为已开通状态，请勿重复操作");
 		}
@@ -358,6 +341,9 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 	@Override
 	public BaseOutput<Object> disable(Long id) {
 		Firm firm = this.getActualDao().selectByPrimaryKey(id);
+		if (firm.getFirmState().equals(FirmState.ENABLED.getValue())) {
+			return BaseOutput.failure("当前商户状态不能进行此操作");
+		}
 		if (firm.getFirmState().equals(FirmState.DISABLED.getValue())) {
 			return BaseOutput.failure("该商户状态为已关闭状态，请勿重复操作");
 		}
@@ -371,26 +357,6 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 			}
 		}
 		return rows > 0 ? BaseOutput.success() : BaseOutput.failure("更新状态失败");
-	}
-
-	@Override
-	public BaseOutput<Object> logicalDelete(Long id) {
-		Firm firm = this.getActualDao().selectByPrimaryKey(id);
-		if (firm.getDeleted()) {
-			return BaseOutput.failure("商户为已删除状态，请勿重复操作");
-		}
-		if (firm.getFirmState().equals(FirmState.ENABLED.getValue()) && firm.getUserId() != null) {
-			return BaseOutput.failure("商户状态为已开通状态且设置了管理员，无法删除");
-		}
-		/*
-		 * LocalDateTime closeTime = firm.getCloseTime(); LocalDateTime
-		 * beforeCloseTimeOneYear = closeTime.plusYears(1L);
-		 * if(beforeCloseTimeOneYear.isAfter(LocalDateTime.now())) { return
-		 * BaseOutput.failure("关闭了时间超过1年以上可以删除"); }
-		 */
-		firm.setDeleted(true);
-		int rows = this.getActualDao().updateByPrimaryKeySelective(firm);
-		return rows > 0 ? BaseOutput.success() : BaseOutput.failure("删除失败");
 	}
 
 	/**
@@ -427,6 +393,222 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 			return this.getActualDao().selectByExample(example);
 		}
 		return this.getActualDao().selectAllChildrenFirms(parentId);
+	}
+
+	@Override
+	public BaseOutput<Object> submit(Long id, String taskId) {
+		Firm firm = this.getActualDao().selectByPrimaryKey(id);
+		if (firm == null) {
+			return BaseOutput.failure("商户不存在");
+		}
+		if (!firm.getFirmState().equals(FirmState.UNREVIEWED.getValue())) {
+			return BaseOutput.failure("当前状态不能提交审批");
+		}
+		firm.setFirmState(FirmState.APPROVING.getValue());
+		int rows = this.getActualDao().updateByPrimaryKeySelective(firm);
+		if (rows <= 0) {
+			return BaseOutput.failure("更新商户状态失败");
+		}
+
+		if (StringUtils.isNotEmpty(taskId)) {
+			BaseOutput<String> output = this.taskRpc.complete(taskId);
+			if (!output.isSuccess()) {
+				throw new AppException("执行流程任务失败");
+			}
+		} else {
+			StartProcessInstanceDto startProcessInstanceDto = DTOUtils.newInstance(StartProcessInstanceDto.class);
+			startProcessInstanceDto.setProcessDefinitionKey(UapConstants.FIRM_ADD_APPROVE_PROCESS_KEY);
+			startProcessInstanceDto.setBusinessKey(id.toString());
+			BaseOutput<ProcessInstanceMapping> output = this.runtimeRpc.startProcessInstanceByKey(startProcessInstanceDto);
+			if (!output.isSuccess()) {
+				throw new AppException("执行流程任务失败");
+			}
+		}
+		return BaseOutput.success();
+	}
+
+	@Transactional(rollbackFor = Exception.class)
+	@Override
+	public BaseOutput<Object> reject(Long id, String taskId, Long approverId, String notes) {
+		Firm firm = this.getActualDao().selectByPrimaryKey(id);
+		if (firm == null) {
+			return BaseOutput.failure("商户不存在");
+		}
+		if (!firm.getFirmState().equals(FirmState.APPROVING.getValue())) {
+			return BaseOutput.failure("当前状态进行审批操作");
+		}
+		firm.setFirmState(FirmState.UNREVIEWED.getValue());
+		List<FirmApproveRecord> results = null;
+		if (StringUtils.isNotBlank(firm.getApproveResult())) {
+			results = JSON.parseObject(firm.getApproveResult(), new TypeReference<List<FirmApproveRecord>>() {
+			});
+		} else {
+			results = new ArrayList<FirmApproveRecord>();
+		}
+		FirmApproveRecord result = DTOUtils.newInstance(FirmApproveRecord.class);
+		result.setApproveTime(LocalDateTime.now());
+		result.setApproverId(approverId);
+		result.setNotes(notes);
+		result.setResult(FirmApproveResult.REJECTED.getValue());
+		results.add(result);
+		firm.setApproveResult(JSON.toJSONString(results));
+		int rows = this.getActualDao().updateByPrimaryKeySelective(firm);
+		if (rows <= 0) {
+			return BaseOutput.failure("更新商户信息失败");
+		}
+		BaseOutput<TaskMapping> output = this.taskRpc.getById(taskId);
+		if (!output.isSuccess()) {
+			throw new AppException("查询流程任务失败");
+		}
+		if (StringUtils.isBlank(output.getData().getAssignee())) {
+			BaseOutput<String> claimOutput = this.taskRpc.claim(taskId, approverId.toString());
+			if (!claimOutput.isSuccess()) {
+				throw new AppException(claimOutput.getMessage());
+			}
+		}
+		TaskCompleteDto completeDto = DTOUtils.newInstance(TaskCompleteDto.class);
+		completeDto.setTaskId(taskId);
+		completeDto.setVariables(new HashMap<String, Object>() {
+			{
+				put("approveResult", FirmApproveResult.REJECTED.getValue());
+			}
+		});
+		BaseOutput<String> taskOutput = this.taskRpc.complete(completeDto);
+		if (!taskOutput.isSuccess()) {
+			throw new AppException("执行流程任务失败");
+		}
+		return BaseOutput.success();
+	}
+
+	@Override
+	public BaseOutput<Object> accept(Long id, String taskId, Long approverId, String notes) {
+		UserTicket user = SessionContext.getSessionContext().getUserTicket();
+		if (user == null) {
+			return BaseOutput.failure("登录超时");
+		}
+		Firm firm = this.getActualDao().selectByPrimaryKey(id);
+		if (firm == null) {
+			return BaseOutput.failure("商户不存在");
+		}
+		if (!firm.getFirmState().equals(FirmState.APPROVING.getValue())) {
+			return BaseOutput.failure("当前状态进行审批操作");
+		}
+		firm.setFirmState(FirmState.ENABLED.getValue());
+		List<FirmApproveRecord> results = null;
+		if (StringUtils.isNotBlank(firm.getApproveResult())) {
+			results = JSON.parseObject(firm.getApproveResult(), new TypeReference<List<FirmApproveRecord>>() {
+			});
+		} else {
+			results = new ArrayList<FirmApproveRecord>();
+		}
+		FirmApproveRecord result = DTOUtils.newInstance(FirmApproveRecord.class);
+		result.setApproveTime(LocalDateTime.now());
+		result.setApproverId(approverId);
+		result.setNotes(notes);
+		result.setResult(FirmApproveResult.ACCEPTED.getValue());
+		results.add(result);
+		firm.setApproveResult(JSON.toJSONString(results));
+		int rows = this.getActualDao().updateByPrimaryKeySelective(firm);
+		if (rows <= 0) {
+			return BaseOutput.failure("更新商户信息失败");
+		}
+
+		// 如果nacos配置项uap.firm.to.payment.flag的值不为false,则市场信息同步到支付系统；调用支付系统商户注册接口
+		if (!"false".equalsIgnoreCase(paymentFlag)) {
+			PaymentFirmDto paymentFirmDto = new PaymentFirmDto();
+			paymentFirmDto.setMchId(firm.getId());
+			paymentFirmDto.setCode(firm.getCode());
+			paymentFirmDto.setName(firm.getName());
+			paymentFirmDto.setAddress(firm.getActualDetailAddress());
+			paymentFirmDto.setContact(firm.getLegalPersonName());
+			paymentFirmDto.setMobile(firm.getTelephone());
+			paymentFirmDto.setPassword(PASSWORD);
+			BaseOutput<PaymentFirmDto> registerMerchant = payRpc.registerMerchant(paymentFirmDto);
+			if (!registerMerchant.isSuccess()) {
+				BaseOutput.failure(registerMerchant.getMessage());
+				LOGGER.error(registerMerchant.getMessage());
+				throw new AppException(registerMerchant.getMessage());
+			}
+		}
+		// 为当前用户设置数据权限，当前用户得看到新增的市场
+		UserDataAuth userDataAuth = DTOUtils.newInstance(UserDataAuth.class);
+		userDataAuth.setRefCode(DataAuthType.MARKET.getCode());
+		userDataAuth.setUserId(user.getId());
+		userDataAuth.setValue(firm.getCode());
+		rows = this.userDataAuthMapper.insertSelective(userDataAuth);
+		if (rows <= 0) {
+			throw new RuntimeException("绑定用户市场数据权限失败");
+		}
+
+		BaseOutput<TaskMapping> output = this.taskRpc.getById(taskId);
+		if (!output.isSuccess()) {
+			throw new AppException("查询流程任务失败");
+		}
+		if (StringUtils.isBlank(output.getData().getAssignee())) {
+			BaseOutput<String> claimOutput = this.taskRpc.claim(taskId, approverId.toString());
+			if (!claimOutput.isSuccess()) {
+				throw new AppException(claimOutput.getMessage());
+			}
+		}
+		TaskCompleteDto completeDto = DTOUtils.newInstance(TaskCompleteDto.class);
+		completeDto.setTaskId(taskId);
+		completeDto.setVariables(new HashMap<String, Object>() {
+			{
+				put("approveResult", FirmApproveResult.ACCEPTED.getValue());
+			}
+		});
+		BaseOutput<String> taskOutput = this.taskRpc.complete(completeDto);
+		if (!taskOutput.isSuccess()) {
+			throw new AppException("执行流程任务失败");
+		}
+		return BaseOutput.success();
+	}
+
+	@Override
+	public BaseOutput<Object> deleteAndStopProcess(Long id, String taskId) {
+		Firm firm = this.getActualDao().selectByPrimaryKey(id);
+		if (firm == null) {
+			return BaseOutput.failure("商户不存在");
+		}
+		if (!firm.getFirmState().equals(FirmState.UNREVIEWED.getValue())) {
+			return BaseOutput.failure("当前状态进行删除操作");
+		}
+		int rows = this.getActualDao().deleteByPrimaryKey(id);
+		if (rows <= 0) {
+			return BaseOutput.failure("删除市场失败");
+		}
+		BaseOutput<TaskMapping> output = this.taskRpc.getById(taskId);
+		if (!output.isSuccess()) {
+			throw new AppException("查询流程任务失败");
+		}
+		if (StringUtils.isBlank(output.getData().getAssignee())) {
+			BaseOutput<String> claimOutput = this.taskRpc.claim(taskId, firm.getCreatorId().toString());
+			if (!claimOutput.isSuccess()) {
+				throw new AppException(claimOutput.getMessage());
+			}
+		}
+		TaskCompleteDto completeDto = DTOUtils.newInstance(TaskCompleteDto.class);
+		completeDto.setTaskId(taskId);
+		completeDto.setVariables(new HashMap<String, Object>() {
+			{
+				put("deleteFlag", 1);
+			}
+		});
+		BaseOutput<String> taskOutput = this.taskRpc.complete(completeDto);
+		if (!taskOutput.isSuccess()) {
+			throw new AppException("执行流程任务失败");
+		}
+		return BaseOutput.success();
+	}
+
+	@Override
+	public EasyuiPageOutput listEasyuiPageByExample(Firm domain, boolean useProvider) throws Exception {
+		List<Firm> list = listByExample(domain);
+		long total = list instanceof Page ? ((Page) list).getTotal() : list.size();
+		List<FirmListDto> dtos = DTOUtils.as(list, FirmListDto.class);
+		this.bpmcUtil.fitLoggedUserIsCanHandledProcess(dtos);
+		List results = useProvider ? ValueProviderUtils.buildDataByProvider(domain, dtos) : dtos;
+		return new EasyuiPageOutput(total, dtos);
 	}
 
 }

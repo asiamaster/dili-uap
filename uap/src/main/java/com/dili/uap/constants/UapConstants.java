@@ -73,4 +73,9 @@ public class UapConstants {
 	 */
 	public static final String TRADING_HALL_PREFIX = "trading_hall_";
 
+	/**
+	 * 市场新增审批流程定义KEY
+	 */
+	public static final String FIRM_ADD_APPROVE_PROCESS_KEY = "firmAddProcess";
+
 }

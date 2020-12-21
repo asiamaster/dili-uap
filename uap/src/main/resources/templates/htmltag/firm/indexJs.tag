@@ -1,3 +1,15 @@
+function approve(){
+	var selected = $("#grid").datagrid("getSelected");
+    if (null == selected) {
+        swal('警告','请选中一条数据', 'warning');
+        return;
+    }
+//    if(selected.$_firmState != 3){
+//        swal('错误',data.result, 'error');
+//    }
+	window.location.href='${contextPath!}/firm/approve.html?id='+selected.id;
+}
+
 // 打开新增窗口
         function openInsert(){
             var selected = $("#grid").datagrid("getSelected");
@@ -28,7 +40,7 @@
             <#swalConfirm swalTitle="您确认想要删除该内容吗？">
                     $.ajax({
                         type: "POST",
-                        url: "${contextPath}/firm/logicalDelete.action",
+                        url: "${contextPath}/firm/delete.action",
                         data: {id:selected.id},
                         processData:true,
                         dataType: "json",

@@ -35,11 +35,13 @@
 		<result column="bank_account" jdbcType="VARCHAR" property="bankAccount" />
 		<result column="telephone" jdbcType="VARCHAR" property="telephone" />
 		<result column="email" jdbcType="VARCHAR" property="email" />
-		<result column="state" jdbcType="INTEGER" property="firmState" />
+		<result column="state" jdbcType="INTEGER" property="state" />
 		<result column="close_time" jdbcType="TIMESTAMP" property="closeTime" />
 		<result column="user_id" jdbcType="BIGINT" property="userId" />
 		<result column="role_id" jdbcType="BIGINT" property="roleId" />
 		<result column="deleted" jdbcType="TINYINT" property="deleted" />
+		<result column="process_instance_id" jdbcType="VARCHAR" property="processInstanceId" />
+		<result column="process_definition_id" jdbcType="VARCHAR" property="processDefinitionId" />
 	</resultMap>
 	<sql id="Base_Column_List">
 		<!-- WARNING - @mbg.generated -->
@@ -49,8 +51,7 @@
 		actual_city_id, actual_district_id, actual_detail_address, legal_person_name, legal_person_certificate_type,
 		legal_person_certificate_number, certificate_validity_period, long_term_effictive,
 		deposit_bank, deposit_bank_union_info_id, bank_account, telephone, email, state,
-		close_time, user_id, role_id,
-		deleted
+		close_time, user_id, role_id, deleted, process_instance_id, process_definition_id
 	</sql>
 	<select id="selectBy" parameterType="java.lang.Long" resultMap="BaseResultMap">
 		<!-- WARNING - @mbg.generated -->

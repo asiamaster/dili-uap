@@ -1,6 +1,9 @@
 package com.dili.uap.controller;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.fastjson.JSONObject;
 import com.dili.assets.sdk.dto.BankDto;
 import com.dili.assets.sdk.dto.BankUnionInfoDto;
 import com.dili.assets.sdk.dto.CityDto;
@@ -29,6 +33,8 @@ import com.dili.logger.sdk.glossary.LoggerConstant;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.dto.IDTO;
+import com.dili.ss.metadata.ValueProvider;
+import com.dili.ss.metadata.ValueProviderUtils;
 import com.dili.uap.constants.UapConstants;
 import com.dili.uap.domain.dto.DataDictionaryDto;
 import com.dili.uap.domain.dto.EditFirmAdminUserDto;
@@ -204,16 +210,18 @@ public class FirmController {
 	 * @return
 	 */
 	@RequestMapping(value = "/delete.action", method = { RequestMethod.GET, RequestMethod.POST })
-	public @ResponseBody BaseOutput delete(Long id) {
+	public @ResponseBody BaseOutput delete(Long id, String taskId) {
 		Firm firm = this.firmService.get(id);
-		firmService.delete(id);
-		LoggerContext.put(LoggerConstant.LOG_BUSINESS_CODE_KEY, firm.getCode());
-		LoggerContext.put(LoggerConstant.LOG_BUSINESS_ID_KEY, firm.getId());
-		UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
-		if (userTicket != null) {
-			LoggerContext.put(LoggerConstant.LOG_OPERATOR_ID_KEY, userTicket.getId());
-			LoggerContext.put(LoggerConstant.LOG_OPERATOR_NAME_KEY, userTicket.getRealName());
-			LoggerContext.put(LoggerConstant.LOG_MARKET_ID_KEY, userTicket.getFirmId());
+		BaseOutput<Object> output = firmService.deleteAndStopProcess(id, taskId);
+		if (output.isSuccess()) {
+			LoggerContext.put(LoggerConstant.LOG_BUSINESS_CODE_KEY, firm.getCode());
+			LoggerContext.put(LoggerConstant.LOG_BUSINESS_ID_KEY, firm.getId());
+			UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
+			if (userTicket != null) {
+				LoggerContext.put(LoggerConstant.LOG_OPERATOR_ID_KEY, userTicket.getId());
+				LoggerContext.put(LoggerConstant.LOG_OPERATOR_NAME_KEY, userTicket.getRealName());
+				LoggerContext.put(LoggerConstant.LOG_MARKET_ID_KEY, userTicket.getFirmId());
+			}
 		}
 		return BaseOutput.success("删除成功");
 	}
@@ -433,15 +441,43 @@ public class FirmController {
 		return this.firmService.disable(id);
 	}
 
-	/**
-	 * 逻辑删除
-	 * 
-	 * @param id
-	 * @return
-	 */
-	@ResponseBody
-	@PostMapping(value = "/logicalDelete.action")
-	public BaseOutput<Object> logicalDelete(@RequestParam Long id) {
-		return this.firmService.logicalDelete(id);
+	@RequestMapping(value = "/approve.html", method = { RequestMethod.GET, RequestMethod.POST })
+	public String approveView(@RequestParam Long id, ModelMap modelMap) throws Exception {
+		Firm firm = this.firmService.get(id);
+		Map<Object, Object> metadata = new HashMap<Object, Object>();
+		metadata.put("registeredProvinceId", "cityProvider");
+		metadata.put("registeredCityId", "cityProvider");
+		metadata.put("registeredDistrictId", "cityProvider");
+		metadata.put("actualProvinceId", "cityProvider");
+		metadata.put("actualCityId", "cityProvider");
+		metadata.put("bankProvinceId", "cityProvider");
+		metadata.put("bankCityId", "cityProvider");
+		metadata.put("actualProvinceId", "cityProvider");
+
+		metadata.put("depositBank", "bankProvider");
+
+		metadata.put("depositBankUnionInfoId", "bankUnionInfoProvider");
+
+//		metadata.put("operationRecord.operationTime", "datetimeProvider");
+		
+		JSONObject legalPersonCertificateTypeProvider = new JSONObject();
+		legalPersonCertificateTypeProvider.put(ValueProvider.PROVIDER_KEY, "dataDictionaryValueProvider");
+		legalPersonCertificateTypeProvider.put(ValueProvider.QUERY_PARAMS_KEY, "{\"dd_code\":\"legalPersonCertificateType\",\"firm_code\":\"group\"}");
+		metadata.put("legalPersonCertificateType", legalPersonCertificateTypeProvider);
+
+		JSONObject industryProvider = new JSONObject();
+		industryProvider.put(ValueProvider.PROVIDER_KEY, "dataDictionaryValueProvider");
+		industryProvider.put(ValueProvider.QUERY_PARAMS_KEY, "{\"dd_code\":\"industry\",\"firm_code\":\"group\"}");
+		metadata.put("industry", industryProvider);
+
+		JSONObject enterpriseCertificateTypeProvider = new JSONObject();
+		enterpriseCertificateTypeProvider.put(ValueProvider.PROVIDER_KEY, "dataDictionaryValueProvider");
+		enterpriseCertificateTypeProvider.put(ValueProvider.QUERY_PARAMS_KEY, "{\"dd_code\":\"enterpriseCertificateType\",\"firm_code\":\"group\"}");
+		metadata.put("certificateType", enterpriseCertificateTypeProvider);
+
+		firm.setMetadata(metadata);
+		modelMap.addAttribute("firm", ValueProviderUtils.buildDataByProvider(metadata, Arrays.asList(firm)).get(0));
+		return "firm/approve";
 	}
+
 }

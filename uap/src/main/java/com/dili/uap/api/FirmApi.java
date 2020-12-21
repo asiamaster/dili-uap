@@ -1,21 +1,30 @@
 package com.dili.uap.api;
 
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.alibaba.csp.sentinel.EntryType;
 import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.alibaba.csp.sentinel.slots.block.BlockException;
+import com.dili.bpmc.sdk.domain.TaskMapping;
+import com.dili.bpmc.sdk.dto.Assignment;
 import com.dili.ss.constant.ResultCode;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.rpc.UidRpc;
 import com.dili.uap.sdk.domain.Firm;
+import com.dili.uap.sdk.domain.FirmState;
 import com.dili.uap.sdk.domain.dto.FirmDto;
 import com.dili.uap.service.FirmService;
 import com.google.common.collect.Lists;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * 由MyBatis Generator工具自动生成 This file was generated on 2017-07-11 16:56:50.
@@ -72,6 +81,9 @@ public class FirmApi {
 	@ResponseBody
 	@RequestMapping(value = "/listByExample.api", method = { RequestMethod.GET, RequestMethod.POST })
 	public BaseOutput<List<Firm>> listByExample(FirmDto firm) {
+		if (firm.getFirmState() == null) {
+			firm.setFirmState(FirmState.ENABLED.getValue());
+		}
 		return BaseOutput.success().setData(firmService.listByExample(firm));
 	}
 
@@ -84,13 +96,7 @@ public class FirmApi {
 	@ResponseBody
 	@RequestMapping(value = "/getByCode.api", method = { RequestMethod.GET, RequestMethod.POST })
 	public BaseOutput<Firm> getByCode(@RequestBody String code) {
-		Firm firm = DTOUtils.newInstance(Firm.class);
-		firm.setCode(code);
-		List<Firm> firms = firmService.list(firm);
-		if (firms == null || firms.isEmpty()) {
-			return BaseOutput.success().setData(Lists.newArrayList());
-		}
-		return BaseOutput.success().setData(firms.get(0));
+		return BaseOutput.success().setData(this.firmService.getByCode(code));
 	}
 
 	/**
@@ -115,6 +121,25 @@ public class FirmApi {
 	@RequestMapping(value = "/getAllChildrenByParentId.api", method = { RequestMethod.GET, RequestMethod.POST })
 	public BaseOutput<List<Firm>> getAllChildrenByParentId(@RequestBody(required = false) Long parentId) {
 		return BaseOutput.success().setData(firmService.getAllChildrenByParentId(parentId));
+	}
+
+	/**
+	 * 流控中心获取市场创建人接口
+	 * 
+	 * @param taskMapping
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getFirmCreator.api", method = { RequestMethod.GET, RequestMethod.POST })
+	public BaseOutput<Assignment> getFirmCreator(TaskMapping taskMapping) {
+		Map<String, Object> map = taskMapping.getProcessVariables();
+		Firm firm = this.firmService.get(Long.valueOf(map.get("businessKey").toString()));
+		if (firm == null) {
+			return BaseOutput.failure();
+		}
+		Assignment assignment = DTOUtils.newInstance(Assignment.class);
+		assignment.setAssignee(firm.getCreatorId().toString());
+		return BaseOutput.successData(assignment);
 	}
 
 }

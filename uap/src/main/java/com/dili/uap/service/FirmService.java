@@ -63,16 +63,50 @@ public interface FirmService extends BaseService<Firm, Long> {
 	BaseOutput<Object> disable(Long id);
 
 	/**
-	 * 逻辑删除
-	 * @param id
-	 * @return
-	 */
-	BaseOutput<Object> logicalDelete(Long id);
-
-	/**
 	 * 根据父级商户id获取 所有子商户（级联）
+	 * 
 	 * @param parentId
 	 * @return
 	 */
 	List<Firm> getAllChildrenByParentId(Long parentId);
+
+	/**
+	 * 提交审批
+	 * 
+	 * @param id     商户id
+	 * @param taskId TODO
+	 * @return
+	 */
+	BaseOutput<Object> submit(Long id, String taskId);
+
+	/**
+	 * 审批拒绝
+	 * 
+	 * @param id         商户id
+	 * @param taskId     流程任务id
+	 * @param approverId TODO
+	 * @param notes      TODO
+	 * @return
+	 */
+	BaseOutput<Object> reject(Long id, String taskId, Long approverId, String notes);
+
+	/**
+	 * 审批通过
+	 * 
+	 * @param id         商户id
+	 * @param taskId     流程任务id
+	 * @param approverId TODO
+	 * @param notes      TODO
+	 * @return
+	 */
+	BaseOutput<Object> accept(Long id, String taskId, Long approverId, String notes);
+
+	/**
+	 * 删除市场并终止流程
+	 * 
+	 * @param id     市场id
+	 * @param taskId 流程任务id
+	 * @return
+	 */
+	BaseOutput<Object> deleteAndStopProcess(Long id, String taskId);
 }

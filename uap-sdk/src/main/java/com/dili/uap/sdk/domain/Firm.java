@@ -1,17 +1,22 @@
 package com.dili.uap.sdk.domain;
 
-import com.alibaba.fastjson.annotation.JSONField;
+import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.List;
+
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
 import com.dili.ss.domain.annotation.Like;
 import com.dili.ss.dto.IBaseDomain;
 import com.dili.ss.dto.IMybatisForceParams;
 import com.dili.ss.metadata.FieldEditor;
 import com.dili.ss.metadata.annotation.EditMode;
 import com.dili.ss.metadata.annotation.FieldDef;
-
-import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.List;
 
 /**
  * 由MyBatis Generator工具自动生成
@@ -61,6 +66,7 @@ public interface Firm extends IBaseDomain, IMybatisForceParams {
 	@Column(name = "`serial_number`")
 	@FieldDef(label = "商户号", maxLength = 20)
 	Long getSerialNumber();
+
 	void setSerialNumber(Long serialNumber);
 
 	@Column(name = "`description`")
@@ -269,11 +275,13 @@ public interface Firm extends IBaseDomain, IMybatisForceParams {
 	@Column(name = "`deleted`")
 	@FieldDef(label = "逻辑删除")
 	Boolean getDeleted();
+
 	void setDeleted(Boolean deleted);
 
 	@Column(name = "`close_time`")
 	@FieldDef(label = "关闭时间")
 	LocalDateTime getCloseTime();
+
 	void setCloseTime(LocalDateTime localDateTime);
 
 	List<String> getNames();
@@ -287,4 +295,43 @@ public interface Firm extends IBaseDomain, IMybatisForceParams {
 	User getUser();
 
 	void setUser(User user);
+
+	@Column(name = "`approve_result`")
+	@FieldDef(label = "审批意见")
+	String getApproveResult();
+
+	void setApproveResult(String approveResult);
+
+	@Transient
+	List<FirmApproveRecord> getApproveResults();
+
+	void setApproveResults(List<FirmApproveRecord> approveResults);
+
+	@Column(name = "`creator_id`")
+	@FieldDef(label = "创建人")
+	Long getCreatorId();
+
+	void setCreatorId(Long creatorId);
+
+	/**
+	 * 流程实例id
+	 * 
+	 * @return
+	 */
+	@Column(name = "`process_instance_id`")
+	@FieldDef(label = "创建人")
+	String getProcessInstanceId();
+
+	void setProcessInstanceId(String processInstanceId);
+
+	/**
+	 * 流程定义id
+	 * 
+	 * @return
+	 */
+	@Column(name = "`process_definition_id`")
+	@FieldDef(label = "创建人")
+	String getProcessDefinitionId();
+
+	void setProcessDefinitionId(String processDefinitionId);
 }
