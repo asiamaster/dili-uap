@@ -184,5 +184,10 @@ public class SessionRedisManagerImpl implements SessionRedisManager {
 		return myRedisUtil.getRedisTemplate().boundSetOps(SessionConstants.USERID_TOKEN_KEY + userId).isMember(userId);
 	}
 
+	@Override
+	public String getUserIdByToken(String token) {
+		return myRedisUtil.get(SessionConstants.TOKEN_USERID_KEY + token, String.class);
+	}
+
 	// sessionId - userId 操作 - END
 }

@@ -95,7 +95,7 @@ public class UserRedis {
 		// dynaSessionConstants.getSessionTimeout()
 		redisUtil.expire(SessionConstants.USER_DATA_AUTH_KEY + userId, dynaSessionConstants.getSessionTimeout(), TimeUnit.SECONDS);
 	}
-	
+
 	/**
 	 * 推迟redis token过期时间
 	 * 
@@ -108,7 +108,7 @@ public class UserRedis {
 		// 先根据sessionId找到用户id
 		// SessionConstants.SESSIONID_USERID_KEY + sessionId : userId :
 		// dynaSessionConstants.getSessionTimeout()
-		String userId = getUserIdBySessionId(token);
+		String userId = getUserIdByToken(token);
 		// 再根据userId，推后sessionId
 		// 推后SessionConstants.USERID_SESSIONID_KEY + userId : sessionId :
 		// dynaSessionConstants.getSessionTimeout()
@@ -125,6 +125,10 @@ public class UserRedis {
 		// 推后SessionConstants.USER_DATA_AUTH_KEY + userId : userDataAuths :
 		// dynaSessionConstants.getSessionTimeout()
 		redisUtil.expire(SessionConstants.USER_DATA_AUTH_TOKEN_KEY + userId, dynaSessionConstants.getTokenTimeout(), TimeUnit.SECONDS);
+	}
+
+	private String getUserIdByToken(String token) {
+		return sessionRedisManager.getUserIdByToken(token);
 	}
 
 	/**

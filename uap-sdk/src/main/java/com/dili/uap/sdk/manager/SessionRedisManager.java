@@ -13,7 +13,7 @@ public interface SessionRedisManager {
 	 * @param sessionId
 	 */
 	void clearSessionUserIdKey(String sessionId);
-	
+
 	/**
 	 * 清空key为SessionConstants.TOKEN_USERID_KEY + token， 值为用户id的缓存
 	 * 
@@ -28,7 +28,7 @@ public interface SessionRedisManager {
 	 * @param userId
 	 */
 	void clearUserIdSessionDataKey(String userId);
-	
+
 	/**
 	 * 清空 key为SessionConstants.USERID_TOKEN_KEY + userId, 值为:用户信息的Map,
 	 * key为token和user 的缓存
@@ -92,7 +92,7 @@ public interface SessionRedisManager {
 	 * @return
 	 */
 	List<String> getSessionIdsByUserId(String userId);
-	
+
 	/**
 	 * 获取指定id用户token集合
 	 * 
@@ -109,10 +109,10 @@ public interface SessionRedisManager {
 	 * @return
 	 */
 	Boolean existUserIdSessionIdKey(String s);
-	
+
 	/**
-	 * 判断key为SessionConstants.USERID_TOKEN_KEY + userId，值为用户信息的Map,
-	 * key为token和user 的缓存是否存在
+	 * 判断key为SessionConstants.USERID_TOKEN_KEY + userId，值为用户信息的Map, key为token和user
+	 * 的缓存是否存在
 	 * 
 	 * @param s
 	 * @return
@@ -125,7 +125,7 @@ public interface SessionRedisManager {
 	 * @param oldSessionId
 	 */
 	void addKickSessionKey(String oldSessionId);
-	
+
 	/**
 	 * 添加key为SessionConstants.KICK_TOKEN_KEY + oldToken，值为空串的缓存
 	 * 
@@ -173,7 +173,7 @@ public interface SessionRedisManager {
 	/**
 	 * 缓存 SessionConstants.TOKEN_USERID_KEY + sessionId: userName
 	 * 
-	 * @param token 
+	 * @param token
 	 * @param userName
 	 */
 	void setTokenUserNameKey(String token, String userName);
@@ -185,5 +185,13 @@ public interface SessionRedisManager {
 	 * @param token
 	 */
 	void setUserIdTokenKey(String userId, String token);
+
+	/**
+	 * 根据token获取用户id
+	 * 
+	 * @param token
+	 * @return
+	 */
+	String getUserIdByToken(String token);
 
 }
