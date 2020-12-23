@@ -552,6 +552,12 @@ public class FirmController {
 		}
 	}
 
+	/**
+	 * 保存并提交审批
+	 * 
+	 * @param dto
+	 * @return
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/saveAndSubmit.action", method = { RequestMethod.GET, RequestMethod.POST })
 	public BaseOutput<Object> saveAndSubmit(@Validated FirmUpdateDto dto) {
