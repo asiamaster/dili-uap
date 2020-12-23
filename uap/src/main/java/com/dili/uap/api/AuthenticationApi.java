@@ -1,25 +1,5 @@
 package com.dili.uap.api;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.dili.ss.constant.ResultCode;
 import com.dili.ss.domain.BaseOutput;
@@ -37,19 +17,25 @@ import com.dili.uap.sdk.domain.DataAuthRef;
 import com.dili.uap.sdk.domain.Systems;
 import com.dili.uap.sdk.domain.UserPushInfo;
 import com.dili.uap.sdk.domain.UserTicket;
-import com.dili.uap.sdk.domain.dto.ClientMenuDto;
 import com.dili.uap.sdk.redis.DataAuthRedis;
 import com.dili.uap.sdk.redis.UserRedis;
 import com.dili.uap.sdk.redis.UserSystemRedis;
-import com.dili.uap.sdk.rpc.ResourceRpc;
 import com.dili.uap.sdk.rpc.SystemConfigRpc;
-import com.dili.uap.service.DataAuthRefService;
-import com.dili.uap.service.LoginService;
-import com.dili.uap.service.ResourceService;
-import com.dili.uap.service.TerminalBindingService;
-import com.dili.uap.service.UserPushInfoService;
-import com.dili.uap.service.UserService;
+import com.dili.uap.service.*;
 import com.dili.uap.utils.WebUtil;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Created by asiam on 2018/6/7 0007.
@@ -500,10 +486,12 @@ public class AuthenticationApi {
 	public static void main1(String[] args) throws Exception {
 		// 私钥
 		String privateStr = "MIIBVAIBADANBgkqhkiG9w0BAQEFAASCAT4wggE6AgEAAkEAtmEBC5xciJySRAqchSYQR5tnEzsKO/dK0Fg1dVBKKPPwETD5HrQqcDPegRwoiZm8ASpVA2MKZd0iBHFU/M7wNQIDAQABAkEAtK25OWV4jqZ+iQXyNj6VVjtwjC6rXukIpwscOtKGBbalCLgRAs8Q0ZePqe9Duj3/vE8/ZZuTXjSlsJlVSCp/aQIhAPdo8I2aLJrkm/om/CtUHvlW1TCw14eP28zvChQzIx4zAiEAvLYMMVcHD7pe+Xj0hfnc+rmai/64zcjP4VpknqHI//cCIF8bRwWYE7eDU/ZokB1z2+hLme56vI+PHJZ9+Wjkc4aDAiBdJ0Rnir06n1ZIsdOK2yehQMOwfaH+OzWa2YM350cQSwIgOscoD26vCWCF3Q35Tn16RgRYSSyk28s+uqZs1Ld4PvU=";
+		privateStr = "MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAKA3uR1rkvjO05Sq6geO5tAgTKoGmOlph6r4MEpcDck05mwyMbAsZWp8LBCDcccAZNpafGynmCOaHS1LOIkWBB/a7jlOoDZQ5s6+SVGFtavnpChM2yObvbBmhI6VTNbfEeL/o+hwd3L/tsw6IN/p+ZiEUFl1GV5fq0ICnvDoOx1tAgMBAAECgYBLqmVjbpWHqe4krR8/mI6LRmXOerUmru8ioHn19EmSd8hG2uG6iQ0QYDpTRjCqwhXfRZKzoebpEXSsGnVF0L77KMgrsSQwBS7Q023gRK9xZgdPmOq7+wXizIEyahwElFFFg8QKJBH0GsVnOKhmsFjyM+tUY2mMcseFsXBXHBs14QJBANZrJRNV8fBlNs6VsW8GtEvRj0n5XA06SM/uE4XItaSM6Wa3150ssehrfmQyMudF5Xr4/abH6HO3G+Ovg/amBMkCQQC/ScOvRvtsJ0GM8D88uY23uT3R8FqnEkghPsYzjMaVGRAWFa24PIBr1mh5/DZ6nJXS7eYozhMjA9GdbO1h6xmFAkBfQmLKYFiIcK8UwLR/mv7m4EdEmiAnUEmg9yh9O1pXrLLVC8Ai+ARiOb+BTDwJO6hkJdKrEg1Xu3YMhaGfJsrhAkEAq4QtlN0VlS1Bxmiomv9ZhfHv720PK5zl1gFeYFyKtqepV9QKVxbQo2C1fyNZiekbIe00IURdvlivO/OuiczurQJAC6bMIu+Z4v7XkdzAdVvA/azKjAGQrQOCYGvwZPsqxOd65FcX8hmSwuIAOXo1Pjl7GeW/P2x0Cis667e5mn7xrg==";
 		java.lang.System.out.println("java私钥:" + privateStr);
 		byte[] privateBytes = Base64.decodeBase64(privateStr);
 		// 公钥
 		String publicStr = "MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBALZhAQucXIickkQKnIUmEEebZxM7Cjv3StBYNXVQSijz8BEw+R60KnAz3oEcKImZvAEqVQNjCmXdIgRxVPzO8DUCAwEAAQ==";
+		publicStr = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCgN7kda5L4ztOUquoHjubQIEyqBpjpaYeq+DBKXA3JNOZsMjGwLGVqfCwQg3HHAGTaWnxsp5gjmh0tSziJFgQf2u45TqA2UObOvklRhbWr56QoTNsjm72wZoSOlUzW3xHi/6PocHdy/7bMOiDf6fmYhFBZdRleX6tCAp7w6DsdbQIDAQAB";
 		java.lang.System.out.println("java公钥:" + publicStr);
 		byte[] publicBytes = Base64.decodeBase64(publicStr);
 		String content = "{userName:\"jt_test\", password:\"asdf1234\"}";
