@@ -1,21 +1,21 @@
 package com.dili.uap.provider;
 
-import com.dili.assets.sdk.dto.CityDto;
-import com.dili.assets.sdk.rpc.CityRpc;
-import com.dili.ss.domain.BaseOutput;
-import com.dili.ss.dto.DTOUtils;
-import com.dili.ss.metadata.provider.BatchDisplayTextProviderAdaptor;
-import com.dili.uap.sdk.domain.dto.DepartmentDto;
-import com.dili.uap.service.DepartmentService;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.dili.assets.sdk.dto.BankDto;
+import com.dili.assets.sdk.dto.CityDto;
+import com.dili.ss.domain.BaseOutput;
+import com.dili.ss.metadata.FieldMeta;
+import com.dili.ss.metadata.ValuePair;
+import com.dili.ss.metadata.ValueProvider;
+import com.dili.uap.rpc.BankRpc;
 
 /**
  * <B>Description</B> <B>Copyright</B> 本软件源代码版权归农丰时代所有,未经许可不得任意复制与传播.<br />
@@ -25,38 +25,28 @@ import java.util.Map;
  * @createTime 2018/5/29 18:32
  */
 @Component
-public class BankProvider extends BatchDisplayTextProviderAdaptor {
+public class BankProvider implements ValueProvider {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(BankProvider.class);
 
 	@Autowired
-	private CityRpc cityRpc;
+	private BankRpc bankRpc;
 
 	@Override
-	protected List getFkList(List<String> ids, Map map) {
-		CityDto cityDto = new CityDto();
-		BaseOutput<List<CityDto>> output = cityRpc.list(cityDto);
+	public List<ValuePair<?>> getLookupList(Object val, Map metaMap, FieldMeta fieldMeta) {
+		return null;
+	}
+
+	@Override
+	public String getDisplayText(Object val, Map metaMap, FieldMeta fieldMeta) {
+		BankDto query = new BankDto();
+		query.setId(Long.valueOf(val.toString()));
+		BaseOutput<List<BankDto>> output = this.bankRpc.list(query);
 		if (!output.isSuccess()) {
 			LOGGER.error(output.getMessage());
 			return null;
 		}
-		return output.getData();
+		return output.getData().get(0).getName();
 	}
 
-	@Override
-	protected Map<String, String> getEscapeFileds(Map metaMap) {
-		if (metaMap.get(ESCAPE_FILEDS_KEY) instanceof Map) {
-			return (Map) metaMap.get(ESCAPE_FILEDS_KEY);
-		} else {
-			Map<String, String> map = new HashMap<>();
-			map.put(metaMap.get(FIELD_KEY).toString(), "name");
-			return map;
-		}
-	}
-
-	@Override
-	protected String getFkField(Map metaMap) {
-		String fkField = (String) metaMap.get(FK_FILED_KEY);
-		return fkField == null ? "cityId" : fkField;
-	}
 }

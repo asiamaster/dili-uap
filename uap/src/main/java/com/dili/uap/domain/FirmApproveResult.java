@@ -12,6 +12,15 @@ public enum FirmApproveResult {
 		this.value = value;
 	}
 
+	public static FirmApproveResult valueOf(Integer value) {
+		for (FirmApproveResult result : FirmApproveResult.values()) {
+			if (result.getValue().equals(value)) {
+				return result;
+			}
+		}
+		throw new IllegalArgumentException("未知的商户新增审批结果");
+	}
+
 	public String getName() {
 		return name;
 	}

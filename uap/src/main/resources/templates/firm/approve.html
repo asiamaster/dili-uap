@@ -75,7 +75,7 @@
 					class="easyui-textbox" readonly="readonly" value="${firm.actualDistrictId!}" name="actualDistrictId" id="actualDistrictId" style="width: 27%" data-options="" required="true" /></td>
 			</tr>
 			<tr>
-				<td style="padding: 5px;"><input class="easyui-textbox" name="actualDetailAddress" id="actualDetailAddress" value="${firm.actualDetailAddress!}" style="width: 90%"
+				<td style="padding: 5px;"><input class="easyui-textbox" readonly="readonly" name="actualDetailAddress" id="actualDetailAddress" value="${firm.actualDetailAddress!}" style="width: 90%"
 					data-options="label:'实际经营所在地详细地址:',labelWidth:170, validType:'length[0,50]'" required="true" /></td>
 			</tr>
 			<tr>
@@ -85,8 +85,8 @@
 				</td>
 			</tr>
 			<tr>
-				<td style="padding: 5px;"><input class="easyui-textbox" name="legalPersonName" id="legalPersonName" value="${firm.legalPersonName!}" style="width: 90%"
-					data-options="label:'法人 名称:', validType:'length[0,20]'" required="true" /></td>
+				<td style="padding: 5px;"><input class="easyui-textbox" readonly="readonly" name="legalPersonName" id="legalPersonName" value="${firm.legalPersonName!}" style="width: 90%"
+					data-options="label:'法人 名称:', validType:'length[0,20]'"  /></td>
 			</tr>
 			<tr>
 				<td style="padding: 5px;"><input class="easyui-textbox" readonly="readonly" value="${firm.legalPersonCertificateType!}" name="legalPersonCertificateType" id="legalPersonCertificateType"
@@ -109,18 +109,20 @@
 				</td>
 			</tr>
 			<tr>
-				<td style="padding: 5px;"><input class="easyui-textbox" value="${firm.depositBank!}" readonly="readonly" name="depositBank" id="depositBank" style="width: 90%"
-					data-options="
-										label:'开户银行:'" /></td>
+				<td style="padding: 5px;">
+				<input class="easyui-textbox" value="${firm.depositBank!}" readonly="readonly" name="depositBank" id="depositBank" style="width: 90%"
+					data-options="label:'开户银行:'" /></td>
 			</tr>
 			<tr>
-				<td style="padding: 5px;"><input class="easyui-textbox" value="${firm.bankProvinceId!}" readonly="readonly" name="bankProvinceId" id="bankProvinceId" style="width: 38%"
-					data-options="
-										label:'开户行地区:'" /> <input class="easyui-textbox" readonly="readonly" value="bankCityId" name="bankCityId" id="bankCityId" style="width: 26%" data-options="" /> <input
-					class="easyui-textbox" readonly="readonly" value="${firm.depositBankUnionInfoId!}" name="depositBankUnionInfoId" id="depositBankUnionInfoId" style="width: 30%" data-options="" /></td>
+				<td style="padding: 5px;">
+				<input class="easyui-textbox" value="${firmBank.province!}" readonly="readonly" name="bankProvinceId" id="bankProvinceId" style="width: 38%"
+					data-options="label:'开户行地区:'" />
+				<input class="easyui-textbox" readonly="readonly" value="${firmBank.city!}" name="bankCityId" id="bankCityId" style="width: 26%" data-options="" />
+				<input class="easyui-textbox" readonly="readonly" value="${firmBank.bankName!}" name="depositBankUnionInfoId" id="depositBankUnionInfoId" style="width: 30%" data-options="" /></td>
 			</tr>
 			<tr>
-				<td style="padding: 5px;"><input class="easyui-textbox" readonly="readonly" name="bankAccount" id="bankAccount" value="${firm.bankAccount!}" style="width: 90%"
+				<td style="padding: 5px;">
+				    <input class="easyui-textbox" readonly="readonly" name="bankAccount" id="bankAccount" value="${firm.bankAccount!}" style="width: 90%"
 					data-options="label:'银行账号:', validType:'length[9,19]'" required="true" /></td>
 			</tr>
 			<tr>
@@ -137,6 +139,9 @@
 				<td style="padding: 5px;"><input class="easyui-textbox" readonly="readonly" name="email" id="email" value="${firm.email!}" style="width: 90%"
 					data-options="label:'邮箱:', validType:['length[0,40]','email']" required="true" /></td>
 			</tr>
+			<form id="_form" class="easyui-form" method="post" fit="true">
+			<input name="id" id="id" value="${firm.id!}" type="hidden">
+			<input type="hidden" name="taskId" id="taskId" value="${taskId}">
 			<tr>
 				<td style="padding: 5px;"><input class="easyui-combobox" name="approveResult" id="approveResult" style="width: 90%"
 					data-options="label:'审批意见:',
@@ -152,9 +157,7 @@
 					        }]"
 					required="true" /></td>
 			</tr>
-			<form id="_form" class="easyui-form" method="post" fit="true">
 			<tr>
-				<input name="id" id="id" value="${firm.id!}" type="hidden">
 				<td style="padding: 5px;"><input class="easyui-textbox" name="notes" id="notes" style="width: 90%" data-options="label:'审核说明:', validType:['length[0,50]'],multiline:true,height:'200'" /></td>
 			</tr>
 			<tr>

@@ -20,7 +20,7 @@ public interface FirmService extends BaseService<Firm, Long> {
 	 * @param firm
 	 * @return
 	 */
-	BaseOutput<Object> insertAndBindUserDataAuth(FirmAddDto firm);
+	BaseOutput<Object> addFirm(FirmAddDto firm);
 
 	/**
 	 * 修改市场验证编码是否重复
@@ -109,4 +109,11 @@ public interface FirmService extends BaseService<Firm, Long> {
 	 * @return
 	 */
 	BaseOutput<Object> deleteAndStopProcess(Long id, String taskId);
+
+	/**
+	 * 保存并提交
+	 * @param dto TODO
+	 * @return
+	 */
+	BaseOutput<Object> saveAndSubmit(FirmUpdateDto dto);
 }

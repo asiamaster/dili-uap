@@ -1,5 +1,6 @@
 package com.dili.uap.controller;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -26,6 +27,7 @@ import com.dili.assets.sdk.dto.BankDto;
 import com.dili.assets.sdk.dto.BankUnionInfoDto;
 import com.dili.assets.sdk.dto.CityDto;
 import com.dili.assets.sdk.dto.CityLevelType;
+import com.dili.assets.sdk.dto.CityQueryDto;
 import com.dili.assets.sdk.rpc.CityRpc;
 import com.dili.logger.sdk.annotation.BusinessLogger;
 import com.dili.logger.sdk.base.LoggerContext;
@@ -36,6 +38,7 @@ import com.dili.ss.dto.IDTO;
 import com.dili.ss.metadata.ValueProvider;
 import com.dili.ss.metadata.ValueProviderUtils;
 import com.dili.uap.constants.UapConstants;
+import com.dili.uap.domain.FirmApproveResult;
 import com.dili.uap.domain.dto.DataDictionaryDto;
 import com.dili.uap.domain.dto.EditFirmAdminUserDto;
 import com.dili.uap.domain.dto.FirmAddDto;
@@ -138,7 +141,7 @@ public class FirmController {
 		if (StringUtils.isNotBlank(validator)) {
 			return BaseOutput.failure(validator);
 		}
-		BaseOutput<Object> output = firmService.insertAndBindUserDataAuth(firmAddDto);
+		BaseOutput<Object> output = firmService.addFirm(firmAddDto);
 		if (output.isSuccess()) {
 			Firm firm = (Firm) output.getData();
 			LoggerContext.put(LoggerConstant.LOG_BUSINESS_CODE_KEY, firm.getCode());
@@ -184,6 +187,9 @@ public class FirmController {
 	@RequestMapping(value = "/update.action", method = { RequestMethod.GET, RequestMethod.POST })
 	@BusinessLogger(businessType = "firm", content = "业务id:${businessId!},用户id:${operatorId!}, 市场id:${marketId!}，公司名:${name!}。", operationType = "edit", notes = "修改企业", systemCode = "UAP")
 	public @ResponseBody BaseOutput update(FirmUpdateDto dto) {
+		if (dto.getId() == null) {
+			return BaseOutput.failure("id不能为空");
+		}
 		String validator = (String) dto.aget(IDTO.ERROR_MSG_KEY);
 		if (StringUtils.isNotBlank(validator)) {
 			return BaseOutput.failure(validator);
@@ -450,23 +456,12 @@ public class FirmController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/approve.html", method = { RequestMethod.GET, RequestMethod.POST })
-	public String approveView(@RequestParam Long id, ModelMap modelMap) throws Exception {
+	public String approveView(@RequestParam Long id, @RequestParam String taskId, @RequestParam Boolean isNeedClaim, ModelMap modelMap) throws Exception {
+		modelMap.addAttribute("taskId", taskId);
 		Firm firm = this.firmService.get(id);
 		Map<Object, Object> metadata = new HashMap<Object, Object>();
-		metadata.put("registeredProvinceId", "cityProvider");
-		metadata.put("registeredCityId", "cityProvider");
-		metadata.put("registeredDistrictId", "cityProvider");
-		metadata.put("actualProvinceId", "cityProvider");
-		metadata.put("actualCityId", "cityProvider");
-		metadata.put("bankProvinceId", "cityProvider");
-		metadata.put("bankCityId", "cityProvider");
-		metadata.put("actualProvinceId", "cityProvider");
 
 		metadata.put("depositBank", "bankProvider");
-
-		metadata.put("depositBankUnionInfoId", "bankUnionInfoProvider");
-
-//		metadata.put("operationRecord.operationTime", "datetimeProvider");
 
 		JSONObject legalPersonCertificateTypeProvider = new JSONObject();
 		legalPersonCertificateTypeProvider.put(ValueProvider.PROVIDER_KEY, "dataDictionaryValueProvider");
@@ -484,8 +479,99 @@ public class FirmController {
 		metadata.put("certificateType", enterpriseCertificateTypeProvider);
 
 		firm.setMetadata(metadata);
-		modelMap.addAttribute("firm", ValueProviderUtils.buildDataByProvider(metadata, Arrays.asList(firm)).get(0));
+		Map firmMap = ValueProviderUtils.buildDataByProvider(metadata, Arrays.asList(firm)).get(0);
+		List<Long> cityIds = new ArrayList<Long>();
+		cityIds.add(firm.getActualCityId());
+		cityIds.add(firm.getActualDistrictId());
+		cityIds.add(firm.getActualProvinceId());
+		cityIds.add(firm.getRegisteredCityId());
+		cityIds.add(firm.getRegisteredDistrictId());
+		cityIds.add(firm.getRegisteredProvinceId());
+		CityQueryDto query = new CityQueryDto();
+		query.setIdList(cityIds);
+		BaseOutput<List<CityDto>> output = this.cityRpc.listByExample(query);
+		if (output.isSuccess()) {
+			CityDto actualCity = output.getData().stream().filter(c -> c.getId().equals(firm.getActualCityId())).findFirst().orElse(null);
+			if (actualCity != null) {
+				firmMap.put("actualCityId", actualCity.getName());
+			}
+			CityDto actualDistrict = output.getData().stream().filter(c -> c.getId().equals(firm.getActualDistrictId())).findFirst().orElse(null);
+			if (actualDistrict != null) {
+				firmMap.put("actualDistrictId", actualDistrict.getName());
+			}
+			CityDto actualProvince = output.getData().stream().filter(c -> c.getId().equals(firm.getActualProvinceId())).findFirst().orElse(null);
+			if (actualProvince != null) {
+				firmMap.put("actualProvinceId", actualProvince.getName());
+			}
+			CityDto registeredCity = output.getData().stream().filter(c -> c.getId().equals(firm.getRegisteredCityId())).findFirst().orElse(null);
+			if (registeredCity != null) {
+				firmMap.put("registeredCityId", registeredCity.getName());
+			}
+			CityDto registeredDistrict = output.getData().stream().filter(c -> c.getId().equals(firm.getRegisteredDistrictId())).findFirst().orElse(null);
+			if (registeredDistrict != null) {
+				firmMap.put("registeredDistrictId", registeredDistrict.getName());
+			}
+			CityDto registeredProvince = output.getData().stream().filter(c -> c.getId().equals(firm.getRegisteredProvinceId())).findFirst().orElse(null);
+			if (registeredProvince != null) {
+				firmMap.put("registeredProvinceId", registeredProvince.getName());
+			}
+		} else {
+			LOGGER.error(output.getMessage());
+		}
+		BankUnionInfoDto bankQuery = new BankUnionInfoDto();
+		bankQuery.setId(firm.getDepositBankUnionInfoId());
+		BaseOutput<List<BankUnionInfoDto>> bankOutput = this.bankUnionInfoRpc.list(bankQuery);
+		if (CollectionUtils.isNotEmpty(bankOutput.getData())) {
+			BankUnionInfoDto buiDto = bankOutput.getData().get(0);
+			modelMap.addAttribute("firmBank", buiDto);
+		}
+		modelMap.addAttribute("firm", firmMap);
 		return "firm/approve";
+	}
+
+	/**
+	 * 商户新增审批
+	 * 
+	 * @param id            商户id
+	 * @param approveResult 审批结果
+	 * @param notes         说明
+	 * @return
+	 */
+	@ResponseBody
+	@PostMapping("/approve.action")
+	public BaseOutput<Object> approve(@RequestParam Long id, @RequestParam Integer approveResult, @RequestParam String notes, @RequestParam String taskId) {
+		UserTicket user = SessionContext.getSessionContext().getUserTicket();
+		if (user == null) {
+			return BaseOutput.failure("用户未登录");
+		}
+		FirmApproveResult result = FirmApproveResult.valueOf(approveResult);
+		if (result.equals(FirmApproveResult.ACCEPTED)) {
+			return this.firmService.accept(id, taskId, user.getId(), notes);
+		} else {
+			return this.firmService.reject(id, taskId, user.getId(), notes);
+		}
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/saveAndSubmit.action", method = { RequestMethod.GET, RequestMethod.POST })
+	public BaseOutput<Object> saveAndSubmit(@Validated FirmUpdateDto dto) {
+		String validator = (String) dto.aget(IDTO.ERROR_MSG_KEY);
+		if (StringUtils.isNotBlank(validator)) {
+			return BaseOutput.failure(validator);
+		}
+		BaseOutput<Object> output = firmService.saveAndSubmit(dto);
+//		if (output.isSuccess()) {
+//			Firm firm = (Firm) output.getData();
+//			LoggerContext.put(LoggerConstant.LOG_BUSINESS_CODE_KEY, firm.getCode());
+//			LoggerContext.put(LoggerConstant.LOG_BUSINESS_ID_KEY, firm.getId());
+//			UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
+//			if (userTicket != null) {
+//				LoggerContext.put(LoggerConstant.LOG_OPERATOR_ID_KEY, userTicket.getId());
+//				LoggerContext.put(LoggerConstant.LOG_OPERATOR_NAME_KEY, userTicket.getRealName());
+//				LoggerContext.put(LoggerConstant.LOG_MARKET_ID_KEY, userTicket.getFirmId());
+//			}
+//		}
+		return output;
 	}
 
 }

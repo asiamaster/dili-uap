@@ -19,13 +19,7 @@ function saveOrUpdate() {
     if(_formData.longTermEffictive && _formData.longTermEffictive=='1'){
         _formData.longTermEffictive='true';
     }
-	var _url = null;
-	// 没有id就新增
-	if (_formData.id == null || _formData.id == "") {
-		_url = "${contextPath}/firm/insert.action";
-	} else {// 有id就修改
-		_url = "${contextPath}/firm/update.action";
-	}
+	var _url = "${contextPath}/firm/update.action";
 	$.ajax({
 				type : "POST",
 				url : _url,

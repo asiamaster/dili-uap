@@ -273,8 +273,11 @@
 						<td style="padding: 5px;"><input class="easyui-textbox" name="email" id="email" style="width: 90%" data-options="label:'邮箱:', validType:['length[0,40]','email']" required="true" /></td>
 					</tr>
 					<tr>
-						<td style="padding: 5px;"><a href="javascript:void(0);" class="easyui-linkbutton" style="margin-left: 40%" data-options="iconCls:'icon-save',onClick:function(){saveOrUpdate();}">提交</a> <a
-							href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'icon-search',onClick:function(){window.location.href='${contextPath!}/firm/index.html';}">返回</a></td>
+						<td style="padding: 5px;">
+						<a href="javascript:void(0);" class="easyui-linkbutton" style="margin-left: 40%" data-options="iconCls:'icon-save',onClick:function(){saveOrUpdate();}">保存</a> 
+						<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'icon-save',onClick:function(){saveAndSubmit();}">提交</a>
+						<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'icon-search',onClick:function(){window.location.href='${contextPath!}/firm/index.html';}">返回</a>
+						</td>
 					</tr>
 				</table>
 			</form>

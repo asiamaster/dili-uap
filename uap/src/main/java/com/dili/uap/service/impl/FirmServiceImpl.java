@@ -100,9 +100,31 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 		return (FirmMapper) getDao();
 	}
 
+	@Override
+	public BaseOutput<Object> saveAndSubmit(FirmUpdateDto dto) {
+		if (dto.getId() == null) {
+			FirmAddDto addDto = DTOUtils.as(dto, FirmAddDto.class);
+			BaseOutput<Object> output = this.addFirm(addDto);
+			if (!output.isSuccess()) {
+				return output;
+			}
+			return this.submit(addDto.getId(), dto.getTaskId());
+		} else {
+			UserTicket user = SessionContext.getSessionContext().getUserTicket();
+			if (user == null) {
+				return BaseOutput.failure("用户未登录");
+			}
+			BaseOutput<Object> output = this.updateSelectiveAfterCheck(dto);
+			if (!output.isSuccess()) {
+				return output;
+			}
+			return this.submit(dto.getId(), dto.getTaskId());
+		}
+	}
+
 	@Transactional
 	@Override
-	public BaseOutput<Object> insertAndBindUserDataAuth(FirmAddDto firmDto) {
+	public BaseOutput<Object> addFirm(FirmAddDto firmDto) {
 		UserTicket user = SessionContext.getSessionContext().getUserTicket();
 		if (user == null) {
 			return BaseOutput.failure("登录超时");
@@ -456,11 +478,7 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 		if (rows <= 0) {
 			return BaseOutput.failure("更新商户信息失败");
 		}
-		BaseOutput<TaskMapping> output = this.taskRpc.getById(taskId);
-		if (!output.isSuccess()) {
-			throw new AppException("查询流程任务失败");
-		}
-		if (StringUtils.isBlank(output.getData().getAssignee())) {
+		if (this.isNeedClaim(taskId)) {
 			BaseOutput<String> claimOutput = this.taskRpc.claim(taskId, approverId.toString());
 			if (!claimOutput.isSuccess()) {
 				throw new AppException(claimOutput.getMessage());
@@ -473,11 +491,20 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 				put("approveResult", FirmApproveResult.REJECTED.getValue());
 			}
 		});
+
 		BaseOutput<String> taskOutput = this.taskRpc.complete(completeDto);
 		if (!taskOutput.isSuccess()) {
 			throw new AppException("执行流程任务失败");
 		}
 		return BaseOutput.success();
+	}
+
+	private boolean isNeedClaim(String taskId) {
+		BaseOutput<TaskMapping> output = this.taskRpc.getById(taskId);
+		if (!output.isSuccess()) {
+			throw new AppException("查询流程任务失败");
+		}
+		return StringUtils.isBlank(output.getData().getAssignee());
 	}
 
 	@Override
@@ -557,6 +584,7 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 				put("approveResult", FirmApproveResult.ACCEPTED.getValue());
 			}
 		});
+
 		BaseOutput<String> taskOutput = this.taskRpc.complete(completeDto);
 		if (!taskOutput.isSuccess()) {
 			throw new AppException("执行流程任务失败");

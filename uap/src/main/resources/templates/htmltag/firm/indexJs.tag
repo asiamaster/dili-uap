@@ -4,10 +4,11 @@ function approve(){
         swal('警告','请选中一条数据', 'warning');
         return;
     }
-//    if(selected.$_firmState != 3){
-//        swal('错误',data.result, 'error');
-//    }
-	window.location.href='${contextPath!}/firm/approve.html?id='+selected.id;
+    if(selected.$_firmState != 3){
+        swal('错误','当前状态不能进行审批操作', 'error');
+        return;
+    }
+	window.location.href='${contextPath!}/firm/approve.html?id='+selected.id+'&taskId='+selected.taskId+'&isNeedClaim='+selected.isNeedClaim;
 }
 
 // 打开新增窗口
