@@ -17,6 +17,7 @@
 		<div style="padding-left: 5px;color:red;font-weight: bold;font-size: 20px;">${firm.serialNumber!}</div>
 			<form id="_form" class="easyui-form" method="post" fit="true">
 				<input name="id" id="id" value="${firm.id!}" type="hidden">
+				<input type="hidden" name="taskId" id="taskId" value="${taskId}" >
 				<table width="800px">
 					<tr>
 						<td style="padding: 5px;">
@@ -283,8 +284,9 @@
 					</tr>
 					<tr>
 						<td style="padding: 5px;">
-							<a href="javascript:void(0);" class="easyui-linkbutton" style="margin-left:40%" data-options="iconCls:'icon-save',onClick:saveOrUpdate">提交</a>
-							<a  href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'icon-search',onClick:function(){window.location.href='${contextPath!}/firm/index.html';}">返回</a>
+						<a href="javascript:void(0);" class="easyui-linkbutton" style="margin-left: 40%" data-options="iconCls:'icon-save',onClick:function(){saveOrUpdate();}">保存</a> 
+                        <a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'icon-save',onClick:function(){saveAndSubmit();}">提交</a>
+                        <a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'icon-search',onClick:function(){window.location.href='${contextPath!}/firm/index.html';}">返回</a>
 						</td>
 					</tr>
 				</table>

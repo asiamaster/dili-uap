@@ -1,11 +1,12 @@
 package com.dili.uap.domain.dto;
 
-import com.dili.uap.sdk.domain.Firm;
+import java.util.Date;
 
 import javax.persistence.Transient;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.Date;
+
+import com.dili.uap.sdk.domain.Firm;
 
 public interface FirmUpdateDto extends Firm {
 
@@ -81,7 +82,7 @@ public interface FirmUpdateDto extends Firm {
 	@NotBlank
 	String getEmail();
 
-	void setTaskId();
+	void setTaskId(String taskId);
 
 	@Transient
 	String getTaskId();

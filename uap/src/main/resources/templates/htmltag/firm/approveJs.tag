@@ -1,7 +1,8 @@
 <script type="text/javascript">
 var firmId = '${firm.id!}';
 
-function saveOrUpdate() {
+
+function approve() {
 	$.messager.progress({
 				msg : '正在加载数据......'
 			});
@@ -10,16 +11,8 @@ function saveOrUpdate() {
 		return;
 	}
 	$.messager.progress('close');
-	if ($('#failureTime').datebox('getValue') < $('#effectTime').datebox('getValue')) {
-		swal('错误', '生效日期不能大于失效日期', 'error');
-		return;
-	}
 	var _formData = $("#_form").serializeObject();
-	//判断是否为1，为给true，否则不处理
-    if(_formData.longTermEffictive && _formData.longTermEffictive=='1'){
-        _formData.longTermEffictive='true';
-    }
-	var _url = "${contextPath}/firm/update.action";
+	var _url = "${contextPath}/firm/approve.action";
 	$.ajax({
 				type : "POST",
 				url : _url,

@@ -63,6 +63,9 @@ public class BpmcUtil {
 				}
 			});
 		});
+		if (CollectionUtils.isEmpty(roleIds)) {
+			return;
+		}
 		Example example = new Example(UserRole.class);
 		example.createCriteria().andIn("roleId", roleIds);
 		List<UserRole> userRoleList = this.userRoleMapper.selectByExample(example);

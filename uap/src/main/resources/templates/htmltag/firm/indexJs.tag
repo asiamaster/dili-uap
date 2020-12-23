@@ -4,7 +4,7 @@ function approve(){
         swal('警告','请选中一条数据', 'warning');
         return;
     }
-    if(selected.$_firmState != 3){
+    if(selected.$_firmState != 4){
         swal('错误','当前状态不能进行审批操作', 'error');
         return;
     }
@@ -28,7 +28,7 @@ function approve(){
                 swal('警告','请选中一条数据', 'warning');
                 return;
             }
-            window.location.href='${contextPath!}/firm/update.html?id='+selected.id;
+            window.location.href='${contextPath!}/firm/update.html?id='+selected.id+'&taskId='+selected.taskId;
         }
 
         // 根据主键删除
@@ -37,6 +37,10 @@ function approve(){
             if (null == selected) {
                 swal('警告','请选中一条数据', 'warning');
                 return;
+            }
+            if(selected.$_firmState != 3){
+            	swal('错误','当前状态不能删除商户', 'error');
+            	return;
             }
             <#swalConfirm swalTitle="您确认想要删除该内容吗？">
                     $.ajax({
@@ -48,7 +52,7 @@ function approve(){
                         async : true,
                         success: function (data) {
                             if(data.code=="200"){
-                                $("#grid").datagrid("reload");
+                                $("#grid").treegrid("reload");
                                 $('#dlg').dialog('close');
                             }else{
                                 swal('错误',data.result, 'error');

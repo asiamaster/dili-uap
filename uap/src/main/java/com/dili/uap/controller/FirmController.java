@@ -164,7 +164,7 @@ public class FirmController {
 	 * @return
 	 */
 	@GetMapping("/update.html")
-	public String updateView(Long id, ModelMap modelMap) {
+	public String updateView(@RequestParam Long id, @RequestParam(required = false) String taskId, ModelMap modelMap) {
 		Firm firm = this.firmService.get(id);
 		modelMap.addAttribute("firm", firm);
 		if (firm.getDepositBankUnionInfoId() != null) {
@@ -174,6 +174,9 @@ public class FirmController {
 			if (CollectionUtils.isNotEmpty(output.getData())) {
 				modelMap.addAttribute("bankUnionInfo", output.getData().get(0));
 			}
+		}
+		if (StringUtils.isNotBlank(taskId)) {
+			modelMap.addAttribute("taskId", taskId);
 		}
 		return "firm/update";
 	}
@@ -560,7 +563,7 @@ public class FirmController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/saveAndSubmit.action", method = { RequestMethod.GET, RequestMethod.POST })
-	public BaseOutput<Object> saveAndSubmit(@Validated FirmUpdateDto dto) {
+	public BaseOutput<Object> saveAndSubmit(FirmUpdateDto dto) {
 		String validator = (String) dto.aget(IDTO.ERROR_MSG_KEY);
 		if (StringUtils.isNotBlank(validator)) {
 			return BaseOutput.failure(validator);

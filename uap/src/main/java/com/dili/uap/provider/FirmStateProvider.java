@@ -15,36 +15,32 @@ import java.util.stream.Stream;
 
 /**
  * 企业状态提供者
+ * 
  * @author wm
  * @createTime 2020/9/11
  */
 @Component
 public class FirmStateProvider implements ValueProvider {
 
-    private static final List<ValuePair<?>> BUFFER = new ArrayList<>();
+	@Override
+	public List<ValuePair<?>> getLookupList(Object obj, Map metaMap, FieldMeta fieldMeta) {
+		List<ValuePair<?>> list = new ArrayList<ValuePair<?>>(FirmState.values().length);
+		for (FirmState state : FirmState.values()) {
+			list.add(new ValuePairImpl<Integer>(state.getName(), state.getValue()));
+		}
+		return list;
+	}
 
-    static {
-        BUFFER.addAll(Stream.of(FirmState.values())
-                .map(e -> new ValuePairImpl<String>(e.getName(), e.getValue().toString()))
-                .collect(Collectors.toList()));
-
-    }
-
-    @Override
-    public List<ValuePair<?>> getLookupList(Object obj, Map metaMap, FieldMeta fieldMeta) {
-        return BUFFER;
-    }
-
-    @Override
-    public String getDisplayText(Object obj, Map metaMap, FieldMeta fieldMeta) {
-        if (obj == null || "".equals(obj)) {
-            return null;
-        }
-        for (ValuePair<?> valuePair : BUFFER) {
-            if (obj.toString().equals(valuePair.getValue())) {
-                return valuePair.getText();
-            }
-        }
-        return null;
-    }
+	@Override
+	public String getDisplayText(Object obj, Map metaMap, FieldMeta fieldMeta) {
+		if (obj == null || "".equals(obj)) {
+			return null;
+		}
+		for (FirmState state : FirmState.values()) {
+			if (state.getValue().equals(obj)) {
+				return state.getName();
+			}
+		}
+		return null;
+	}
 }

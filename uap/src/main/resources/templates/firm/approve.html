@@ -27,6 +27,7 @@
 	<!-- 表格 -->
 	<div region="center" style="width: 100%; padding-left: 20px; padding-bottom: 20px; padding-top: 5px;" title="编辑商户" height="auto">
 		<div style="padding-left: 5px; color: red; font-weight: bold; font-size: 20px;">${firm.serialNumber!}</div>
+		<form id="_form" class="easyui-form" method="post" fit="true">
 		<table width="800px">
 			<tr>
 				<td style="padding: 5px;">
@@ -95,7 +96,7 @@
 					value="${firm.legalPersonCertificateNumber!}" style="width: 60%" data-options="prompt:'证件号:', validType:'length[0,18]'" required="true" /></td>
 			</tr>
 			<tr>
-				<td style="padding: 5px;"><input class="easyui-textbox" readonly="readonly" value="${decode(firm.longTermEffictive,true,'是','否','不知道了')}" name="longTermEffictive" id="longTermEffictive"
+				<td style="padding: 5px;"><input class="easyui-textbox" readonly="readonly" value="${decode(firm.longTermEffictive,true,'是',false,'否','不知道了')}" name="longTermEffictive" id="longTermEffictive"
 					style="width: 30%" data-options="
 									label:'是否长期有效:'" required="true" /> <%if(firm.longTermEffictive){%> <input class="easyui-textbox" disabled="disabled" name="certificateValidityPeriod"
 					id="certificateValidityPeriod" style="width: 60%" data-options="prompt:'证件有效期:',editable:false" required="true" /> <%}else{%> <input class="easyui-datebox" readonly="readonly"
@@ -139,12 +140,13 @@
 				<td style="padding: 5px;"><input class="easyui-textbox" readonly="readonly" name="email" id="email" value="${firm.email!}" style="width: 90%"
 					data-options="label:'邮箱:', validType:['length[0,40]','email']" required="true" /></td>
 			</tr>
-			<form id="_form" class="easyui-form" method="post" fit="true">
 			<input name="id" id="id" value="${firm.id!}" type="hidden">
 			<input type="hidden" name="taskId" id="taskId" value="${taskId}">
 			<tr>
-				<td style="padding: 5px;"><input class="easyui-combobox" name="approveResult" id="approveResult" style="width: 90%"
+				<td style="padding: 5px;">
+				<input class="easyui-combobox" name="approveResult" id="approveResult" style="width: 90%"
 					data-options="label:'审批意见:',
+					        editable:false,
                             panelHeight:'auto',
                             valueField: 'value',
 					        textField: 'label',
@@ -161,12 +163,11 @@
 				<td style="padding: 5px;"><input class="easyui-textbox" name="notes" id="notes" style="width: 90%" data-options="label:'审核说明:', validType:['length[0,50]'],multiline:true,height:'200'" /></td>
 			</tr>
 			<tr>
-				<td style="padding: 5px;"><a href="javascript:void(0);" class="easyui-linkbutton" style="margin-left: 40%" data-options="iconCls:'icon-save',onClick:saveOrUpdate">提交</a> <a
+				<td style="padding: 5px;"><a href="javascript:void(0);" class="easyui-linkbutton" style="margin-left: 40%" data-options="iconCls:'icon-save',onClick:function(){approve();}">提交</a> <a
 					href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'icon-search',onClick:function(){window.location.href='${contextPath!}/firm/index.html';}">返回</a></td>
 			</tr>
-			</form>
-		</table>
-
+		  </table>
+        </form>
 	</div>
 </div>
 

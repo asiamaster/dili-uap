@@ -100,6 +100,7 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 		return (FirmMapper) getDao();
 	}
 
+	@Transactional(rollbackFor = Exception.class)
 	@Override
 	public BaseOutput<Object> saveAndSubmit(FirmUpdateDto dto) {
 		if (dto.getId() == null) {
@@ -445,6 +446,12 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 			if (!output.isSuccess()) {
 				throw new AppException("执行流程任务失败");
 			}
+			firm.setProcessDefinitionId(output.getData().getProcessDefinitionId());
+			firm.setProcessInstanceId(output.getData().getProcessInstanceId());
+			rows = this.getActualDao().updateByPrimaryKeySelective(firm);
+			if (rows <= 0) {
+				throw new AppException("更新流程信息失败");
+			}
 		}
 		return BaseOutput.success();
 	}
@@ -507,6 +514,7 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 		return StringUtils.isBlank(output.getData().getAssignee());
 	}
 
+	@Transactional(rollbackFor = Exception.class)
 	@Override
 	public BaseOutput<Object> accept(Long id, String taskId, Long approverId, String notes) {
 		UserTicket user = SessionContext.getSessionContext().getUserTicket();
@@ -605,27 +613,30 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 		if (rows <= 0) {
 			return BaseOutput.failure("删除市场失败");
 		}
-		BaseOutput<TaskMapping> output = this.taskRpc.getById(taskId);
-		if (!output.isSuccess()) {
-			throw new AppException("查询流程任务失败");
-		}
-		if (StringUtils.isBlank(output.getData().getAssignee())) {
-			BaseOutput<String> claimOutput = this.taskRpc.claim(taskId, firm.getCreatorId().toString());
-			if (!claimOutput.isSuccess()) {
-				throw new AppException(claimOutput.getMessage());
+		if (StringUtils.isNotBlank(taskId)) {
+			BaseOutput<TaskMapping> output = this.taskRpc.getById(taskId);
+			if (!output.isSuccess()) {
+				throw new AppException("查询流程任务失败");
+			}
+			if (StringUtils.isBlank(output.getData().getAssignee())) {
+				BaseOutput<String> claimOutput = this.taskRpc.claim(taskId, firm.getCreatorId().toString());
+				if (!claimOutput.isSuccess()) {
+					throw new AppException(claimOutput.getMessage());
+				}
+			}
+			TaskCompleteDto completeDto = DTOUtils.newInstance(TaskCompleteDto.class);
+			completeDto.setTaskId(taskId);
+			completeDto.setVariables(new HashMap<String, Object>() {
+				{
+					put("deleteFlag", 1);
+				}
+			});
+			BaseOutput<String> taskOutput = this.taskRpc.complete(completeDto);
+			if (!taskOutput.isSuccess()) {
+				throw new AppException("执行流程任务失败");
 			}
 		}
-		TaskCompleteDto completeDto = DTOUtils.newInstance(TaskCompleteDto.class);
-		completeDto.setTaskId(taskId);
-		completeDto.setVariables(new HashMap<String, Object>() {
-			{
-				put("deleteFlag", 1);
-			}
-		});
-		BaseOutput<String> taskOutput = this.taskRpc.complete(completeDto);
-		if (!taskOutput.isSuccess()) {
-			throw new AppException("执行流程任务失败");
-		}
+
 		return BaseOutput.success();
 	}
 
@@ -636,7 +647,7 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 		List<FirmListDto> dtos = DTOUtils.as(list, FirmListDto.class);
 		this.bpmcUtil.fitLoggedUserIsCanHandledProcess(dtos);
 		List results = useProvider ? ValueProviderUtils.buildDataByProvider(domain, dtos) : dtos;
-		return new EasyuiPageOutput(total, dtos);
+		return new EasyuiPageOutput(total, results);
 	}
 
 }
