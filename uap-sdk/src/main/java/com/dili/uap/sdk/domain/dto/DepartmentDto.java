@@ -37,5 +37,5 @@ public interface DepartmentDto extends Department {
 	@Column(name = "`name`")
 	String getNameLike();
 
-	void setNameLike();
+	void setNameLike(String nameLike);
 }
