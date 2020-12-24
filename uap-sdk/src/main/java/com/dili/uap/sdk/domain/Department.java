@@ -1,13 +1,17 @@
 package com.dili.uap.sdk.domain;
 
-import com.dili.ss.domain.annotation.Like;
+import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 import com.dili.ss.dto.IBaseDomain;
 import com.dili.ss.metadata.FieldEditor;
 import com.dili.ss.metadata.annotation.EditMode;
 import com.dili.ss.metadata.annotation.FieldDef;
-
-import javax.persistence.*;
-import java.util.Date;
 
 /**
  * 由MyBatis Generator工具自动生成
@@ -39,7 +43,6 @@ public interface Department extends IBaseDomain {
 
 	void setFirmCode(String firmCode);
 
-	@Like(Like.BOTH)
 	@Column(name = "`name`")
 	@FieldDef(label = "名称", maxLength = 20)
 	@EditMode(editor = FieldEditor.Text, required = false)
