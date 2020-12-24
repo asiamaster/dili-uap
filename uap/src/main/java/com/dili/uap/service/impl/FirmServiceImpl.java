@@ -420,6 +420,10 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 
 	@Override
 	public BaseOutput<Object> submit(Long id, String taskId) {
+		UserTicket user = SessionContext.getSessionContext().getUserTicket();
+		if (user == null) {
+			return BaseOutput.failure("用户未登录");
+		}
 		Firm firm = this.getActualDao().selectByPrimaryKey(id);
 		if (firm == null) {
 			return BaseOutput.failure("商户不存在");
@@ -434,6 +438,12 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 		}
 
 		if (StringUtils.isNotEmpty(taskId)) {
+			if (this.isNeedClaim(taskId)) {
+				BaseOutput<String> output = this.taskRpc.claim(taskId, user.getId().toString());
+				if (!output.isSuccess()) {
+					throw new AppException("签收流程任务失败");
+				}
+			}
 			BaseOutput<String> output = this.taskRpc.complete(taskId);
 			if (!output.isSuccess()) {
 				throw new AppException("执行流程任务失败");
@@ -496,6 +506,7 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 		completeDto.setVariables(new HashMap<String, Object>() {
 			{
 				put("approveResult", FirmApproveResult.REJECTED.getValue());
+				put("creatorId", firm.getCreatorId());
 			}
 		});
 
