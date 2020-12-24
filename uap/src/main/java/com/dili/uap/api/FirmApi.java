@@ -124,25 +124,6 @@ public class FirmApi {
 		return BaseOutput.success().setData(firmService.getAllChildrenByParentId(parentId));
 	}
 
-//	/**
-//	 * 流控中心获取市场创建人接口
-//	 * 
-//	 * @param taskMapping
-//	 * @return
-//	 */
-//	@ResponseBody
-//	@RequestMapping(value = "/getFirmCreator.api", method = { RequestMethod.GET, RequestMethod.POST })
-//	public BaseOutput<Assignment> getFirmCreator(TaskMapping taskMapping) {
-//		Map<String, Object> map = taskMapping.getProcessVariables();
-//		Firm firm = this.firmService.get(Long.valueOf(map.get("businessKey").toString()));
-//		if (firm == null) {
-//			return BaseOutput.failure();
-//		}
-//		Assignment assignment = DTOUtils.newInstance(Assignment.class);
-//		assignment.setAssignee(firm.getCreatorId().toString());
-//		return BaseOutput.successData(assignment);
-//	}
-
 	/**
 	 * 流控中心获取市场创建人接口
 	 * 
@@ -151,12 +132,12 @@ public class FirmApi {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/getFirmCreator.api", method = { RequestMethod.GET, RequestMethod.POST })
-	public BaseOutput<Assignment> getFirmCreator(@RequestBody JSONObject json) {
-//		Map<String, Object> map = taskMapping.getProcessVariables();
-		Map<String, Object> map = json.getJSONObject("processVariables");
+	public BaseOutput<Assignment> getFirmCreator(TaskMapping taskMapping) {
+		Map<String, Object> map = taskMapping.getProcessVariables();
 		Assignment assignment = DTOUtils.newInstance(Assignment.class);
 		assignment.setAssignee(map.get("creatorId").toString());
 		return BaseOutput.successData(assignment);
 	}
+
 
 }
