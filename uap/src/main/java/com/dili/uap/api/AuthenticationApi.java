@@ -470,7 +470,7 @@ public class AuthenticationApi {
 		if (StringUtils.isBlank(token)) {
 			return BaseOutput.failure("会话id不存在").setCode(ResultCode.PARAMS_ERROR);
 		}
-		Long userId = userRedis.getSessionUserId(token);
+		Long userId = userRedis.getTokenUserId(token);
 		UserDto userDto = DTOUtils.newInstance(UserDto.class);
 		userDto.setId(userId);
 		userDto.setNewPassword(newPassword);
