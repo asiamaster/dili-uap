@@ -13,6 +13,10 @@ public class UapConstants {
 	 * 园区管理系统编码
 	 */
 	public static final String PARK_SYSTEM_CODE = "PARK";
+	/**
+	 * 智能业务管理系统编码
+	 */
+	public static final String ISS_SYSTEM_CODE = "ISS";
 	// 密码错误多次后锁定用户
 	public static final String LOGIN_FAILED_TIMES = "loginFailedTimes";
 	// 锁定用户恢复时长(毫秒)，默认12小时

@@ -39,18 +39,18 @@
                    align="center" fit="true" striped="true" toolbar="#toolbar" idField="id" data-options="onDblClickRow:openUpdate, onHeaderContextMenu:headerContextMenu">
                 <thead>
                     <tr>
-                        <th width="20%" data-options="field:'positionName',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th width="15%" data-options="field:'positionName',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             职位名称
                         </th>
-                        <th width="20%" data-options="field:'positionCode',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th width="15%" data-options="field:'positionCode',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             职位编码
                         </th>
-                        <th width="31%" data-options="field:'description',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                        <th width="21%" data-options="field:'description',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             描述
                         </th>
-<!--                        <th width="20%" data-options="field:'firmCode',   sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">-->
-<!--                            归属市场-->
-<!--                        </th>-->
+                        <th width="20%" data-options="field:'firmCode',  _provider:'firmCodeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
+                            归属市场
+                        </th>
                         <th width="15%" data-options="field:'created',  _provider:'datetimeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">
                             创建时间
                         </th>
