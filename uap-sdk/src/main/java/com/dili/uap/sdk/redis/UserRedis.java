@@ -41,6 +41,20 @@ public class UserRedis {
 		}
 		return Long.valueOf(rst);
 	}
+	
+	/**
+	 * 根据token获取userId
+	 * 
+	 * @param token
+	 * @return
+	 */
+	public Long getTokenUserId(String token) {
+		String rst = redisUtil.get(SessionConstants.TOKEN_USERID_KEY + token, String.class);
+		if (rst == null) {
+			return null;
+		}
+		return Long.valueOf(rst);
+	}
 
 	/**
 	 * 根据sessionId获取数据，支持转型为指定的clazz<br/>

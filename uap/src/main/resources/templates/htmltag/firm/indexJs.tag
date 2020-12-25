@@ -28,6 +28,10 @@ function approve(){
                 swal('警告','请选中一条数据', 'warning');
                 return;
             }
+            if (selected.$_firmState!=3) {
+            	swal('错误','当前状态不能编辑', 'error');
+            	return;
+            }
             window.location.href='${contextPath!}/firm/update.html?id='+selected.id+'&taskId='+selected.taskId;
         }
 

@@ -147,10 +147,10 @@ function onBankChange(n, v) {
 
 function reloadBankUnionInfo() {
 	$('#depositBankUnionInfoId').combobox('setValue', '');
-	$('#depositBankUnionInfoId').combobox('enable');
 	var n = $('#depositBank').combobox('getValue');
 	var cityId = $('#bankCityId').combobox('getValue');
 	if (cityId) {
+	   $('#depositBankUnionInfoId').combobox('enable');
 		$('#depositBankUnionInfoId').combobox('reload', '${contextPath!}/firm/bankUnionInfoList.action?cityId=' + cityId + '&bankId=' + n);
 	}
 }

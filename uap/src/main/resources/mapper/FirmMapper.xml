@@ -35,7 +35,7 @@
 		<result column="bank_account" jdbcType="VARCHAR" property="bankAccount" />
 		<result column="telephone" jdbcType="VARCHAR" property="telephone" />
 		<result column="email" jdbcType="VARCHAR" property="email" />
-		<result column="state" jdbcType="INTEGER" property="state" />
+		<result column="state" jdbcType="INTEGER" property="firmState" />
 		<result column="close_time" jdbcType="TIMESTAMP" property="closeTime" />
 		<result column="user_id" jdbcType="BIGINT" property="userId" />
 		<result column="role_id" jdbcType="BIGINT" property="roleId" />

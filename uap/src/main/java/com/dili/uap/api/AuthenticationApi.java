@@ -452,6 +452,32 @@ public class AuthenticationApi {
 		userDto.setOldPassword(oldPassword);
 		return userService.changePwd(userId, userDto);
 	}
+	
+	/**
+	 * 修改密码
+	 * 
+	 * @param json
+	 * @return
+	 */
+	@RequestMapping(value = "/changePwdByToken.api", method = { RequestMethod.GET, RequestMethod.POST })
+	@ResponseBody
+	public BaseOutput changePwdByToken(@RequestBody String json) {
+		JSONObject jsonObject = JSONObject.parseObject(json);
+		String token = jsonObject.getString("token");
+		String oldPassword = jsonObject.getString("oldPassword");
+		String newPassword = jsonObject.getString("newPassword");
+		String confirmPassword = jsonObject.getString("confirmPassword");
+		if (StringUtils.isBlank(token)) {
+			return BaseOutput.failure("会话id不存在").setCode(ResultCode.PARAMS_ERROR);
+		}
+		Long userId = userRedis.getSessionUserId(token);
+		UserDto userDto = DTOUtils.newInstance(UserDto.class);
+		userDto.setId(userId);
+		userDto.setNewPassword(newPassword);
+		userDto.setConfirmPassword(confirmPassword);
+		userDto.setOldPassword(oldPassword);
+		return userService.changePwd(userId, userDto);
+	}
 
 	/**
 	 * 从json中获取sessionId

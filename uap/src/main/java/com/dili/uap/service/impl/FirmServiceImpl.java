@@ -152,13 +152,19 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 	@Transactional
 	@Override
 	public BaseOutput<Object> updateSelectiveAfterCheck(FirmUpdateDto dto) {
+		Firm firmQuery = DTOUtils.newInstance(Firm.class);
+		firmQuery.setCode(dto.getCode());
+		Firm old = this.getActualDao().selectOne(firmQuery);
+		if (old != null && !old.getId().equals(dto.getId())) {
+			return BaseOutput.failure("已存在相同编码的商户");
+		}
 		Firm firm = this.getActualDao().selectByPrimaryKey(dto.getId());
 		if (!firm.getFirmState().equals(FirmState.UNREVIEWED.getValue())) {
 			return BaseOutput.failure("当前状态不能修改商户信息");
 		}
 		Firm query = DTOUtils.newInstance(Firm.class);
 		query.setCertificateNumber(dto.getCertificateNumber());
-		Firm old = this.getActualDao().selectOne(query);
+		old = this.getActualDao().selectOne(query);
 		if (old != null && !dto.getId().equals(old.getId())) {
 			return BaseOutput.failure("企业证件号不能重复");
 		}
@@ -389,12 +395,18 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 	 * @return
 	 */
 	private String validateAddFirm(FirmAddDto firmDto) {
+		Firm firmQuery = DTOUtils.newInstance(Firm.class);
+		firmQuery.setCode(firmDto.getCode());
+		int count = this.getActualDao().selectCount(firmQuery);
+		if (count > 0) {
+			return "已存在相同编码的商户";
+		}
 		if (!firmDto.getLongTermEffictive() && firmDto.getCertificateNumber() == null) {
 			return "法人身份证有效期不能为空";
 		}
 		Firm query = DTOUtils.newInstance(Firm.class);
 		query.setCertificateNumber(firmDto.getCertificateNumber());
-		int count = this.getActualDao().selectCount(query);
+		count = this.getActualDao().selectCount(query);
 		if (count > 0) {
 			return "企业证件号不能重复";
 		}
