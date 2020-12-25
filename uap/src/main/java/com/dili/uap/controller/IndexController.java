@@ -1,21 +1,11 @@
 package com.dili.uap.controller;
 
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-
+import com.dili.logger.sdk.domain.BusinessLog;
+import com.dili.logger.sdk.rpc.BusinessLogRpc;
+import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.exception.AppException;
+import com.dili.ss.mvc.util.RequestUtils;
 import com.dili.uap.constants.UapConstants;
 import com.dili.uap.sdk.domain.Systems;
 import com.dili.uap.sdk.domain.User;
@@ -29,6 +19,19 @@ import com.dili.uap.sdk.util.WebContent;
 import com.dili.uap.service.MenuService;
 import com.dili.uap.service.SystemService;
 import com.dili.uap.service.UserService;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.util.CollectionUtils;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 首页控制器
@@ -63,6 +66,9 @@ public class IndexController {
 
 	@Autowired
 	private UserUrlRedis userResRedis;
+
+	@Autowired
+	private BusinessLogRpc businessLogRpc;
 
 	/**
 	 * 跳转到权限主页面
@@ -115,6 +121,9 @@ public class IndexController {
 			String taskCenterUrl = this.bpmcUrl + "/task/taskCenter.html";
 			if (userResRedis.checkUserMenuUrlRight(userTicket.getId(), taskCenterUrl)) {
 				modelMap.put("taskCenterUrl", taskCenterUrl);
+			}
+			if(UapConstants.ISS_SYSTEM_CODE.equals(systemCode)){
+				saveLog(request,userTicket,null,null,"login","login");
 			}
 			return INDEX_PATH;
 		} else {
@@ -212,6 +221,50 @@ public class IndexController {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * 保存日志记录
+	 *
+	 * @param userTicket
+	 * @param businessId    记录主键ID
+	 * @param businessCode  业务编号
+	 * @param businessType  业务类型
+	 * @param operationType 操作类型
+	 * @param content       操作内容
+	 * @return
+	 */
+	public BaseOutput saveLog(HttpServletRequest request, UserTicket userTicket, Long businessId, String businessCode, String businessType, String operationType, String... content) {
+		if (null != userTicket) {
+				BusinessLog log = new BusinessLog();
+				String remoteIp = RequestUtils.getIpAddress(request);
+				log.setRemoteIp(StringUtils.isNotBlank(remoteIp) ? remoteIp.split(",")[0] : "");
+				log.setServerIp(request.getLocalAddr());
+				log.setOperatorId(userTicket.getId());
+				log.setOperatorName(userTicket.getRealName());
+				log.setMarketId(userTicket.getFirmId());
+				log.setCreateTime(LocalDateTime.now());
+				if (null != businessId && businessId > 0) {
+					log.setBusinessId(businessId);
+				}
+				if (StringUtils.isNotBlank(businessCode)) {
+					log.setBusinessCode(businessCode);
+				}
+				if (StringUtils.isNotBlank(businessType)) {
+					log.setBusinessType(businessType);
+				}
+				if (StringUtils.isNotBlank(operationType)) {
+					log.setOperationType(operationType);
+				}
+				if (content != null && content.length != 0) {
+					log.setContent(String.join(",", content));
+				}
+				log.setSystemCode("iss");
+				BaseOutput baseOutput = businessLogRpc.save(log, request.getHeader("referer"));
+				return baseOutput;
+		} else {
+			return BaseOutput.failure("请先登录");
+		}
 	}
 
 	/**
