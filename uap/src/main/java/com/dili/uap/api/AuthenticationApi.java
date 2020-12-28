@@ -245,10 +245,19 @@ public class AuthenticationApi {
 	@ResponseBody
 	public BaseOutput appLoginout(@RequestBody String json, HttpServletRequest request) {
 		String sessionId = getSessionIdByJson(json);
+		String token = null;
 		if (StringUtils.isBlank(sessionId)) {
-			return BaseOutput.failure("会话id不存在").setCode(ResultCode.PARAMS_ERROR);
+			token = getTokenByJson(json);
+			if (StringUtils.isBlank(token)) {
+				return BaseOutput.failure("会话id不存在").setCode(ResultCode.PARAMS_ERROR);
+			}
 		}
-		UserTicket userTicket = this.userRedis.getUser(sessionId);
+		UserTicket userTicket = null;
+		if (StringUtils.isNotEmpty(sessionId)) {
+			userTicket = this.userRedis.getUser(sessionId);
+		} else {
+			userTicket = this.userRedis.getTokenUser(token);
+		}
 		if (userTicket == null) {
 			return BaseOutput.failure("未获取到登录用户信息");
 		}
@@ -452,7 +461,7 @@ public class AuthenticationApi {
 		userDto.setOldPassword(oldPassword);
 		return userService.changePwd(userId, userDto);
 	}
-	
+
 	/**
 	 * 修改密码
 	 * 
@@ -488,6 +497,17 @@ public class AuthenticationApi {
 	private String getSessionIdByJson(String json) {
 		JSONObject jsonObject = JSONObject.parseObject(json);
 		return jsonObject.getString("sessionId");
+	}
+
+	/**
+	 * 从json中获取token
+	 * 
+	 * @param json
+	 * @return
+	 */
+	private String getTokenByJson(String json) {
+		JSONObject jsonObject = JSONObject.parseObject(json);
+		return jsonObject.getString("token");
 	}
 
 	/**
