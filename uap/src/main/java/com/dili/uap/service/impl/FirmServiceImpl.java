@@ -575,6 +575,7 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 		if (!"false".equalsIgnoreCase(paymentFlag)) {
 			PaymentFirmDto paymentFirmDto = new PaymentFirmDto();
 			paymentFirmDto.setMchId(firm.getId());
+			paymentFirmDto.setParentId(firm.getParentId());
 			paymentFirmDto.setCode(firm.getCode());
 			paymentFirmDto.setName(firm.getName());
 			paymentFirmDto.setAddress(firm.getActualDetailAddress());

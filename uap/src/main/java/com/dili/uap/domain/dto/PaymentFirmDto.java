@@ -5,8 +5,8 @@ import java.util.List;
 /**
  * Description: 商户注册/修改商户参数类
  *
- * @date:    2020/9/16
- * @author:   Seabert.Zhan
+ * @date: 2020/9/16
+ * @author: Seabert.Zhan
  *
  */
 public class PaymentFirmDto {
@@ -14,6 +14,11 @@ public class PaymentFirmDto {
 	 * 商户ID
 	 */
 	private Long mchId;
+
+	/**
+	 * 父级市场id
+	 */
+	private Long parentId;
 
 	/**
 	 * 商户编码
@@ -76,6 +81,14 @@ public class PaymentFirmDto {
 
 	public void setMchId(Long mchId) {
 		this.mchId = mchId;
+	}
+
+	public Long getParentId() {
+		return parentId;
+	}
+
+	public void setParentId(Long parentId) {
+		this.parentId = parentId;
 	}
 
 	public String getCode() {
