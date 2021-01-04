@@ -105,6 +105,8 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 	private LoginService loginService;
 	@Autowired
 	private TradeRoomRpc tradeRoomRpc;
+	@Autowired
+	private  UserMapper userMapper;
 
 	@Override
 	public void logout(String sessionId) {
@@ -757,5 +759,15 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 		tradingHallDataDto.setChecked(isRootChecked);
 		selectAll.add(tradingHallDataDto);
 		return selectAll;
+	}
+
+	@Override
+	public List<HashMap<Long, Integer>> getUserCountByDepartmentIds(List<Long> departmentIds) {
+		return userMapper.getUserCountByDepartmentIds(departmentIds);
+	}
+
+	@Override
+	public Integer updateBySuperiorId(Long superiorId) {
+		return userMapper.updateBySuperiorId(superiorId);
 	}
 }

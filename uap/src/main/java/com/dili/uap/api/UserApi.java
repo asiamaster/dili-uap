@@ -14,13 +14,12 @@ import com.dili.uap.domain.dto.UserDepartmentRoleQuery;
 import com.dili.uap.domain.dto.UserDto;
 import com.dili.uap.glossary.UserState;
 import com.dili.uap.sdk.domain.User;
-import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.domain.dto.UserQuery;
-import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.service.LoginService;
 import com.dili.uap.service.RoleService;
 import com.dili.uap.service.UserService;
 import com.github.pagehelper.Page;
+import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +27,8 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -317,5 +318,26 @@ public class UserApi {
 			return BaseOutput.failure(output.getMessage());
 		}
 		return output;
+	}
+
+	/**
+	 * 根据部门id获取部门人数
+	 *
+	 * @param ids
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getUserCountByDepartmentIds.api", method = { RequestMethod.GET, RequestMethod.POST })
+	public BaseOutput getUserCountByDepartmentIds(@RequestParam String ids) {
+		List<HashMap<Long, Integer>> list;
+		if(StringUtils.isBlank(ids)){
+			list = userService.getUserCountByDepartmentIds(null);
+		}else{
+			String str[] = ids.split(",");
+			Long longIds[] = (Long[]) ConvertUtils.convert(str, Long.class);
+			List<Long> longList = Arrays.asList(longIds);
+			list = userService.getUserCountByDepartmentIds(longList);
+		}
+		return BaseOutput.success().setData(list);
 	}
 }
