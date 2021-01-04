@@ -101,4 +101,13 @@ public interface UserRpc {
 	 */
 	@POST("/userApi/changePwdForApp.api")
 	BaseOutput<Object> changePwdForApp(@VOField("userId") Long userId, @VOField("oldPassword") String oldPassword, @VOField("newPassword") String newPassword, @VOField("confirmPassword") String confirmPassword);
+
+	/**
+	 * 根据部门id获取部门人数
+	 *
+	 * @param ids eg:1,2,3
+	 * @return
+	 */
+	@POST("/userApi/getUserCountByDepartmentIds.api")
+	BaseOutput<List<Long>> getUserCountByDepartmentIds(@ReqParam("ids") String ids);
 }

@@ -323,7 +323,7 @@ public class UserApi {
 	/**
 	 * 根据部门id获取部门人数
 	 *
-	 * @param ids
+	 * @param ids eg:1,2,3
 	 * @return
 	 */
 	@ResponseBody
