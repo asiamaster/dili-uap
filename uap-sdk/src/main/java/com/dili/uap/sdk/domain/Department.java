@@ -57,6 +57,13 @@ public interface Department extends IBaseDomain {
 
 	void setCode(String code);
 
+	@Column(name = "`department_type`")
+	@FieldDef(label = "部门类型,1业务部门，2行政部门")
+	@EditMode(editor = FieldEditor.Number, required = false)
+	Integer getDepartmentType();
+
+	void setDepartmentType(Integer departmentType);
+
 	@Column(name = "`description`")
 	@FieldDef(label = "描述", maxLength = 255)
 	@EditMode(editor = FieldEditor.Text, required = false)
