@@ -1,7 +1,9 @@
 package com.dili.uap.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.dili.commons.rabbitmq.RabbitMQMessageService;
 import com.dili.logger.sdk.domain.BusinessLog;
+import com.dili.logger.sdk.glossary.LoggerConstant;
 import com.dili.logger.sdk.rpc.BusinessLogRpc;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
@@ -71,6 +73,9 @@ public class IndexController {
 
 	@Autowired
 	private BusinessLogRpc businessLogRpc;
+
+	@Autowired
+	private RabbitMQMessageService rabbitMQMessageService;
 
 	/**
 	 * 跳转到权限主页面
@@ -238,35 +243,35 @@ public class IndexController {
 	 */
 	public BaseOutput saveLog(HttpServletRequest request, UserTicket userTicket, Long businessId, String businessCode, String businessType, String operationType, String... content) {
 		if (null != userTicket) {
-				BusinessLog log = new BusinessLog();
-				String remoteIp = RequestUtils.getIpAddress(request);
-				log.setRemoteIp(StringUtils.isNotBlank(remoteIp) ? remoteIp.split(",")[0] : "");
-				log.setServerIp(request.getLocalAddr());
-				log.setOperatorId(userTicket.getId());
-				log.setOperatorName(userTicket.getRealName());
-				log.setMarketId(userTicket.getFirmId());
-				log.setCreateTime(LocalDateTime.now());
-				Map<String,Object> map = new HashMap<>();
-				map.put("departmentId",userTicket.getDepartmentId());
-				log.setNotes(JSONObject.toJSONString(map));
-				if (null != businessId && businessId > 0) {
-					log.setBusinessId(businessId);
-				}
-				if (StringUtils.isNotBlank(businessCode)) {
-					log.setBusinessCode(businessCode);
-				}
-				if (StringUtils.isNotBlank(businessType)) {
-					log.setBusinessType(businessType);
-				}
-				if (StringUtils.isNotBlank(operationType)) {
-					log.setOperationType(operationType);
-				}
-				if (content != null && content.length != 0) {
-					log.setContent(String.join(",", content));
-				}
-				log.setSystemCode("iss");
-				BaseOutput baseOutput = businessLogRpc.save(log, request.getHeader("referer"));
-				return baseOutput;
+			BusinessLog log = new BusinessLog();
+			String remoteIp = RequestUtils.getIpAddress(request);
+			log.setRemoteIp(StringUtils.isNotBlank(remoteIp) ? remoteIp.split(",")[0] : "");
+			log.setServerIp(request.getLocalAddr());
+			log.setOperatorId(userTicket.getId());
+			log.setOperatorName(userTicket.getRealName());
+			log.setMarketId(userTicket.getFirmId());
+			log.setCreateTime(LocalDateTime.now());
+			Map<String,Object> map = new HashMap<>();
+			map.put("departmentId",userTicket.getDepartmentId());
+			log.setNotes(JSONObject.toJSONString(map));
+			if (null != businessId && businessId > 0) {
+				log.setBusinessId(businessId);
+			}
+			if (StringUtils.isNotBlank(businessCode)) {
+				log.setBusinessCode(businessCode);
+			}
+			if (StringUtils.isNotBlank(businessType)) {
+				log.setBusinessType(businessType);
+			}
+			if (StringUtils.isNotBlank(operationType)) {
+				log.setOperationType(operationType);
+			}
+			if (content != null && content.length != 0) {
+				log.setContent(String.join(",", content));
+			}
+			log.setSystemCode("iss");
+			rabbitMQMessageService.send(LoggerConstant.MQ_LOGGER_TOPIC_EXCHANGE,LoggerConstant.MQ_LOGGER_ADD_BUSINESS_KEY,JSONObject.toJSONString(log));
+			return BaseOutput.success();
 		} else {
 			return BaseOutput.failure("请先登录");
 		}
