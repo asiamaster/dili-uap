@@ -1,5 +1,6 @@
 package com.dili.uap.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.dili.logger.sdk.domain.BusinessLog;
 import com.dili.logger.sdk.rpc.BusinessLogRpc;
 import com.dili.ss.domain.BaseOutput;
@@ -30,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -244,6 +246,9 @@ public class IndexController {
 				log.setOperatorName(userTicket.getRealName());
 				log.setMarketId(userTicket.getFirmId());
 				log.setCreateTime(LocalDateTime.now());
+				Map<String,Object> map = new HashMap<>();
+				map.put("departmentId",userTicket.getDepartmentId());
+				log.setNotes(JSONObject.toJSONString(map));
 				if (null != businessId && businessId > 0) {
 					log.setBusinessId(businessId);
 				}

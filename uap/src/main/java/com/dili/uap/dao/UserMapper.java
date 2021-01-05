@@ -7,6 +7,7 @@ import com.dili.uap.domain.dto.UserDepartmentRole;
 import com.dili.uap.domain.dto.UserDepartmentRoleQuery;
 import com.dili.uap.domain.dto.UserDto;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -71,4 +72,20 @@ public interface UserMapper extends MyMapper<User> {
 	 * @return
 	 */
 	Integer updateByPositionId(Long positionId);
+
+	/**
+	 * 将superiorId置空
+	 *
+	 * @param superiorId   上级id
+	 * @return
+	 */
+	Integer updateBySuperiorId(Long superiorId);
+
+	/**
+	 * 根据部门id获取各部门人数
+	 *
+	 * @param departmentIds   部门id集合
+	 * @return
+	 */
+	List<HashMap<Long,Integer>> getUserCountByDepartmentIds(List<Long> departmentIds);
 }

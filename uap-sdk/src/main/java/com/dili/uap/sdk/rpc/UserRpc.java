@@ -1,15 +1,14 @@
 package com.dili.uap.sdk.rpc;
 
-import java.util.List;
-
-import com.dili.ss.retrofitful.annotation.*;
-import com.dili.uap.sdk.domain.dto.UserQuery;
-
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.domain.PageOutput;
+import com.dili.ss.retrofitful.annotation.*;
 import com.dili.uap.sdk.domain.User;
 import com.dili.uap.sdk.domain.dto.UserDepartmentRole;
 import com.dili.uap.sdk.domain.dto.UserDepartmentRoleQuery;
+import com.dili.uap.sdk.domain.dto.UserQuery;
+
+import java.util.List;
 
 /**
  * <B>Description</B> <B>Copyright:本软件源代码版权归农丰时代所有,未经许可不得任意复制与传播.</B>
@@ -101,4 +100,13 @@ public interface UserRpc {
 	 */
 	@POST("/userApi/changePwdForApp.api")
 	BaseOutput<Object> changePwdForApp(@VOField("userId") Long userId, @VOField("oldPassword") String oldPassword, @VOField("newPassword") String newPassword, @VOField("confirmPassword") String confirmPassword);
+
+	/**
+	 * 根据部门id获取部门人数
+	 *
+	 * @param ids eg:1,2,3
+	 * @return
+	 */
+	@POST("/userApi/getUserCountByDepartmentIds.api")
+	BaseOutput getUserCountByDepartmentIds(@ReqParam("ids") String ids);
 }

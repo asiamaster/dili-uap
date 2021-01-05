@@ -187,6 +187,7 @@ public class UserController {
 	public BaseOutput delete(Long id) {
 		User user = userService.get(id);
 		userService.delete(id);
+		userService.updateBySuperiorId(id);
 		BaseOutput<Object> output = BaseOutput.success("删除成功");
 		if (output.isSuccess()) {
 			LoggerContext.put(LoggerConstant.LOG_BUSINESS_CODE_KEY, user.getUserName());
