@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.fastjson.JSON;
 import com.dili.logger.sdk.domain.BusinessLog;
 import com.dili.logger.sdk.domain.input.BusinessLogQueryInput;
 import com.dili.logger.sdk.rpc.BusinessLogRpc;
@@ -67,6 +68,12 @@ public class LoginLogController {
 	@RequestMapping(value = "/listPage.action", method = { RequestMethod.GET, RequestMethod.POST })
 	public @ResponseBody String listPage(LoginLogDto loginLog) throws Exception {
 		BusinessLogQueryInput query = new BusinessLogQueryInput();
+		if (loginLog.getStartLoginTime() == null) {
+			query.setCreateTimeStart(LocalDateTime.now().minusDays(7));
+		}
+		if (loginLog.getEndLoginTime() == null) {
+			query.setCreateTimeEnd(LocalDateTime.now());
+		}
 		if (loginLog.getStartLoginTime() != null) {
 			query.setCreateTimeStart(LocalDateTime.ofInstant(loginLog.getStartLoginTime().toInstant(), ZoneId.systemDefault()));
 		}
@@ -86,6 +93,7 @@ public class LoginLogController {
 				}
 			});
 		}
+		System.out.println(JSON.toJSONString(query));
 		PageOutput<List<BusinessLog>> output = this.logRpc.listPage(query);
 		return new EasyuiPageOutput(output.getTotal(), output.getData()).toString();
 	}
