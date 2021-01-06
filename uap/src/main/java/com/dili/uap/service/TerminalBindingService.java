@@ -11,10 +11,10 @@ public interface TerminalBindingService extends BaseService<TerminalBinding, Lon
 
 	/**
 	 * 根据token绑定终端
-	 * 
-	 * @param token
-	 * @param terminalId TODO
+	 * @param accessToken
+	 * @param refreshToken
+	 * @param terminalId
 	 * @return
 	 */
-	BaseOutput<Object> bindByToken(String token, String terminalId);
+	BaseOutput<Object> bindByToken(String accessToken, String refreshToken, String terminalId);
 }

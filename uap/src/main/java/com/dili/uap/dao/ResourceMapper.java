@@ -2,11 +2,10 @@ package com.dili.uap.dao;
 
 import com.dili.ss.base.MyMapper;
 import com.dili.uap.domain.Resource;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
-
-import org.apache.ibatis.annotations.Param;
 
 /**
  * 资源管理者
@@ -17,9 +16,10 @@ public interface ResourceMapper extends MyMapper<Resource> {
 	 * 根据用户id查询资源列表
 	 * 
 	 * @param userId
+	 * @param systemType
 	 * @return
 	 */
-	List<Resource> listByUserId(Long userId);
+	List<Resource> listByUserId(@Param("userId")Long userId, @Param("systemType")Integer systemType);
 
 	/**
 	 * 根据用户id和系统id查询资源列表

@@ -1,6 +1,7 @@
 package com.dili.uap.sdk.component.beetl;
 
 import com.dili.uap.sdk.domain.UserTicket;
+import com.dili.uap.sdk.glossary.SystemType;
 import com.dili.uap.sdk.redis.UserResourceRedis;
 import com.dili.uap.sdk.session.SessionContext;
 import org.beetl.core.Context;
@@ -26,7 +27,7 @@ public class HasResourceFunction implements Function {
 		if(o == null || userTicket == null) {
 			return false;
 		}
-		if(userResourceRedis.checkUserResourceRight(userTicket.getId(), String.valueOf(o))){
+		if(userResourceRedis.checkUserResourceRight(userTicket.getId(), SystemType.WEB.getCode(), String.valueOf(o))){
 			return true;
 		}
 		return false;

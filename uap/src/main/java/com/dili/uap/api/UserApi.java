@@ -14,9 +14,7 @@ import com.dili.uap.domain.dto.UserDepartmentRoleQuery;
 import com.dili.uap.domain.dto.UserDto;
 import com.dili.uap.glossary.UserState;
 import com.dili.uap.sdk.domain.User;
-import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.domain.dto.UserQuery;
-import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.service.LoginService;
 import com.dili.uap.service.RoleService;
 import com.dili.uap.service.UserService;
@@ -212,7 +210,7 @@ public class UserApi {
 	 * @return
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/saveUserRoles.api", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@RequestMapping(value = "/saveUserRoles.api")
 	public BaseOutput<Object> saveUserRoles(@RequestBody String json) {
 		// @RequestParam Long userId, @RequestParam Long roleId
 		JSONObject jo = JSON.parseObject(json);
@@ -228,7 +226,7 @@ public class UserApi {
 	 * @return
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/unbindUserRole.api", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@RequestMapping(value = "/unbindUserRole.api")
 	public BaseOutput<Object> unbindUserRole(@RequestBody String json) {
 		JSONObject jo = JSON.parseObject(json);
 		Long userId = jo.getLong("userId");
@@ -243,7 +241,7 @@ public class UserApi {
 	 * @return
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/registeryByApp.api", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@RequestMapping(value = "/registeryByApp.api")
 	public BaseOutput registeryByApp(@RequestBody String json) {
 		JSONObject jo = JSON.parseObject(json);
 		String userName = jo.getString("userName");

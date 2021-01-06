@@ -114,7 +114,7 @@
                 <td class="home" style="padding-left: 30px;width: 60px;padding-right: 20px;"><a href="${contextPath}/index/index.html" class="homeA"></a></td>
                 <td class="logo" style="width: 230px;white-space:nowrap;"><a href="${system.url!}"><img  src="<%if(isEmpty(system.logoUrl)){%>${contextPath}/resources/images/icon/uni-logo.png<%}else{%>${system.logoUrl}<%}%>" alt=""><span style="white-space:nowrap;">&nbsp;&nbsp;${system.name!}</span></a></td>
                 <td >
-                    <#menubuttonSwiper _divId="mainMenu" _panelAlign="center" _service="systemServiceImpl" _method="listByUserId" _queryParams="${userid}" _menuWidth="145" _menuHeight="40"
+                    <#menubuttonSwiper _divId="mainMenu" _panelAlign="center" _service="systemServiceImpl" _method="listByLoginUser" _queryParams="" _menuWidth="145" _menuHeight="40"
                     _textField="name" _idField="id" _parentIdField="parentId" plain="true" hasDownArrow="false" itemWidth="122" itemHeight="40" minWidth="50"
                     align="left" noline="true" onClick="systemClickHandler">
                     </#menubuttonSwiper>

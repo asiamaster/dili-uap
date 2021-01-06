@@ -34,14 +34,15 @@ public interface SystemService extends BaseService<Systems, Long> {
     /**
      * 根据用户id查询其有权限的系统
      * @param userId
+     * @param systemType
      * @return
      */
-    List<Systems> listByUserId(Long userId);
+    List<Systems> listByUserId(Long userId, Integer systemType);
 
     /**
      * 根据上下文中用户id查询其有权限的系统
-     * @param param 首页系统菜单栏menubutton标签参数
+     * param queryParams 首页顶部系统标签menubuttonSwiper调用
      * @return
      */
-    List<Systems> listByUserId(String param);
+    List<Systems> listByLoginUser(String queryParam);
 }

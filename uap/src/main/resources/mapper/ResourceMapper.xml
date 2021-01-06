@@ -16,40 +16,27 @@
 		id, name, description, menu_id, code, created, modified
 	</sql>
 
-	<select id="listByUserId" parameterType="Long" resultMap="BaseResultMap">
+	<select id="listByUserId" resultMap="BaseResultMap">
 		SELECT
 		r.id,
 		r.`code`,
 		r.created,
 		r.description,
 		r.menu_id,
-		r.`name`
-		FROM
-		role_resource rr,
-		resource r,
-		(
-		SELECT DISTINCT
-		r.id
-		FROM
-		role r
-		INNER JOIN
-		user_role ur ON r.id = ur.role_id
-		WHERE
-		ur.user_id = #{userId}
-		OR (
-		ur.user_id = #{userId}
-		AND FIND_IN_SET(
-		r.id,
-		getChildRoles ( ur.role_id )))) t1
-		WHERE
-		rr.role_id = t1.id
-		AND rr.resource_id = r.id
+		r.system_type,
+		r.`name`,
+		r.`system_type`
+		FROM role_resource rr
+		INNER JOIN resource r ON rr.resource_id = r.id
+		INNER JOIN user_role ur ON rr.role_id = ur.role_id
+		WHERE r.`system_type`= #{systemType}
+		AND ur.user_id = #{userId}
 	</select>
 
 	<select id="listByUserIdAndSystemId" resultMap="BaseResultMap">
 		SELECT
 		r.id, r.`code`, r.created, r.description, r.menu_id,
-		r.`name`
+		r.`name`,r.`system_type`
 		FROM
 		role_resource rr, resource r, user_role ur, menu m
 		where rr.role_id =

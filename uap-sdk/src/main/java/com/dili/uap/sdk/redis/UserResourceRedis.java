@@ -1,7 +1,7 @@
 package com.dili.uap.sdk.redis;
 
 import com.dili.uap.sdk.exception.ParameterException;
-import com.dili.uap.sdk.session.SessionConstants;
+import com.dili.uap.sdk.util.KeyBuilder;
 import com.dili.uap.sdk.util.ManageRedisUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,23 +25,13 @@ public class UserResourceRedis {
      * @param resourceCode
      * @return
      */
-    public boolean checkUserResourceRight(Long userId, String resourceCode) {
+    public boolean checkUserResourceRight(Long userId, Integer systemType, String resourceCode) {
         if (userId == null) {
             log.debug("用户id或资源编码不能为空!");
             throw new ParameterException();
         }
-        return checkRedisUserResource(userId, resourceCode);
+        return isMemberKey(KeyBuilder.buildUserResourceCodeKey(userId.toString(), systemType), resourceCode);
 
-    }
-
-    /**
-     * 从redis根据用户id判断是否有resourceCode的访问权限
-     * @param userId
-     * @param resourceCode
-     * @return
-     */
-    private boolean checkRedisUserResource(Long userId, String resourceCode) {
-        return isMemberKey(SessionConstants.USER_RESOURCE_CODE_KEY + userId.toString(), resourceCode);
     }
 
     /**

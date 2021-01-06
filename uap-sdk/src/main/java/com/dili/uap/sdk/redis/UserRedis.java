@@ -1,213 +1,165 @@
 package com.dili.uap.sdk.redis;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.JSON;
+import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.sdk.domain.UserTicket;
-import com.dili.uap.sdk.manager.SessionRedisManager;
+import com.dili.uap.sdk.domain.dto.UserToken;
+import com.dili.uap.sdk.glossary.SystemType;
+import com.dili.uap.sdk.glossary.TokenStep;
 import com.dili.uap.sdk.session.DynaSessionConstants;
 import com.dili.uap.sdk.session.SessionConstants;
+import com.dili.uap.sdk.util.JwtService;
+import com.dili.uap.sdk.util.KeyBuilder;
 import com.dili.uap.sdk.util.ManageRedisUtil;
+import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.BoundSetOperations;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
+import javax.annotation.Resource;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 用户redis操作 Created by Administrator on 2016/10/18.
+ * 用户redis操作
  */
 @Service
 public class UserRedis {
 
-	@Autowired
+	@Resource
 	private ManageRedisUtil redisUtil;
-
-	@Autowired
-	private SessionRedisManager sessionRedisManager;
-
-	@Autowired
+	@Resource
+	private JwtService jwtService;
+	@Resource
 	private DynaSessionConstants dynaSessionConstants;
+	@Resource
+	UapRedisDistributedLock uapRedisDistributedLock;
 
 	/**
-	 * 根据sessionId获取userId
-	 * 
-	 * @param sessionId
+	 * 申请新的accessToken
+	 * 如果redis中的refreshToken超时，则返回空
+	 * @param refreshToken
 	 * @return
 	 */
-	public Long getSessionUserId(String sessionId) {
-		String rst = redisUtil.get(SessionConstants.SESSIONID_USERID_KEY + sessionId, String.class);
-		if (rst == null) {
+	public UserToken applyAccessToken(String refreshToken) {
+		String userTicketJSON = redisUtil.get(KeyBuilder.buildRefreshTokenKey(refreshToken), String.class);
+		if (StringUtils.isEmpty(userTicketJSON)) {
 			return null;
 		}
-		return Long.valueOf(rst);
-	}
-	
-	/**
-	 * 根据token获取userId
-	 * 
-	 * @param token
-	 * @return
-	 */
-	public Long getTokenUserId(String token) {
-		String rst = redisUtil.get(SessionConstants.TOKEN_USERID_KEY + token, String.class);
-		if (rst == null) {
-			return null;
+		UserToken userToken = DTOUtils.newInstance(UserToken.class);
+		userToken.setRefreshToken(refreshToken);
+		UserTicket userTicket = JSON.parseObject(userTicketJSON, UserTicket.class);
+		userToken.setUserTicket(userTicket);
+		//锁定获取accessToken
+		if (uapRedisDistributedLock.tryGetLock(refreshToken, refreshToken, 10L)) {
+			try {
+				// 先从缓存中取 accessToken，
+				// 如果取到，则说明前一个过期的请求已经生成了accessToken(并可能也推后了redis过期时长)
+				String cachedAccessToken = redisUtil.get(refreshToken+":cache", String.class);
+				if(cachedAccessToken != null){
+					userToken.setAccessToken(cachedAccessToken);
+					userToken.setTokenStep(TokenStep.REFRESH_CACHE.getCode());
+				}else {// 根据redis中的userTicket重新签发
+					String accessToken = jwtService.generateTokenByRSA256(userTicket, SystemType.getSystemType(userTicket.getSystemType()));
+					redisUtil.set(refreshToken+":cache", accessToken);
+					userToken.setAccessToken(accessToken);
+					userToken.setTokenStep(TokenStep.REFRESH_TOKEN.getCode());
+				}
+			}finally {
+				//完成后释放锁
+				if (uapRedisDistributedLock.exists(refreshToken)) {
+					uapRedisDistributedLock.releaseLock(refreshToken, refreshToken);
+				}
+			}
 		}
-		return Long.valueOf(rst);
-	}
-
-	/**
-	 * 根据sessionId获取数据，支持转型为指定的clazz<br/>
-	 * 如果有数据则将redis超时推后dynaSessionConstants.getSessionTimeout()的时间<br/>
-	 *
-	 * @param sessionId
-	 * @return
-	 */
-	public UserTicket getUser(String sessionId) {
-		String sessionData = getSession(sessionId);
-		if (StringUtils.isBlank(sessionData)) {
-			return null;
-		}
-		// 推迟redis session过期时间
-		defer(sessionId);
-//        DTO userDto = JSONObject.parseObject(JSONObject.parseObject(sessionData).get(SessionConstants.LOGGED_USER).toString(), DTO.class);
-//        return DTOUtils.proxyInstance(userDto, UserTicket.class);
-		// 直接返回FastJSON的JDK代理对象
-		UserTicket userTicket = JSONObject.parseObject(JSONObject.parseObject(sessionData).get(SessionConstants.LOGGED_USER).toString(), UserTicket.class);
-//        DTOUtils.bean2Instance(userTicket, UserTicket.class);
-		return userTicket;
-
+		return userToken;
 	}
 
 	/**
 	 * 推迟redis session过期时间
 	 * 
-	 * @param sessionId
+	 * @param refreshToken
+	 * @param userTicket
 	 */
-	private void defer(String sessionId) {
-		// 推后SessionConstants.SESSIONID_USERID_KEY + sessionId : userId :
-		// dynaSessionConstants.getSessionTimeout()
-		redisUtil.expire(SessionConstants.SESSIONID_USERID_KEY + sessionId, dynaSessionConstants.getSessionTimeout(), TimeUnit.SECONDS);
-		// 先根据sessionId找到用户id
-		// SessionConstants.SESSIONID_USERID_KEY + sessionId : userId :
-		// dynaSessionConstants.getSessionTimeout()
-		String userId = getUserIdBySessionId(sessionId);
-		// 再根据userId，推后sessionId
-		// 推后SessionConstants.USERID_SESSIONID_KEY + userId : sessionId :
-		// dynaSessionConstants.getSessionTimeout()
-		redisUtil.expire(SessionConstants.USERID_SESSIONID_KEY + userId, dynaSessionConstants.getSessionTimeout(), TimeUnit.SECONDS);
-		// 推后SessionConstants.USER_SYSTEM_KEY + userId : systems :
-		// dynaSessionConstants.getSessionTimeout()
-		redisUtil.expire(SessionConstants.USER_SYSTEM_KEY + userId, dynaSessionConstants.getSessionTimeout(), TimeUnit.SECONDS);
-		// 推后SessionConstants.USER_MENU_URL_KEY + userId : menuUrls :
-		// dynaSessionConstants.getSessionTimeout()
-		redisUtil.expire(SessionConstants.USER_MENU_URL_KEY + userId, dynaSessionConstants.getSessionTimeout(), TimeUnit.SECONDS);
-		// 推后SessionConstants.USER_RESOURCE_CODE_KEY + userId ： resourceCodes :
-		// dynaSessionConstants.getSessionTimeout()
-		redisUtil.expire(SessionConstants.USER_RESOURCE_CODE_KEY + userId, dynaSessionConstants.getSessionTimeout(), TimeUnit.SECONDS);
-		// 推后SessionConstants.USER_DATA_AUTH_KEY + userId : userDataAuths :
-		// dynaSessionConstants.getSessionTimeout()
-		redisUtil.expire(SessionConstants.USER_DATA_AUTH_KEY + userId, dynaSessionConstants.getSessionTimeout(), TimeUnit.SECONDS);
+	public void defer(String refreshToken, UserTicket userTicket) {
+		Integer systemType = userTicket.getSystemType();
+		Long userId = userTicket.getId();
+		Long refreshTokenTimeout = dynaSessionConstants.getRefreshTokenTimeout(systemType);
+		//推后当前refreshToken保存的用户信息
+		redisUtil.expire(KeyBuilder.buildRefreshTokenKey(refreshToken), dynaSessionConstants.getRefreshTokenTimeout(systemType), TimeUnit.SECONDS);
+		redisUtil.expire(KeyBuilder.buildUserIdRefreshTokenKey(userTicket.getId().toString(), systemType), dynaSessionConstants.getRefreshTokenTimeout(systemType), TimeUnit.SECONDS);
+		//推后用户权限信息
+		redisUtil.expire(KeyBuilder.buildUserSystemKey(userId.toString(), userTicket.getSystemType()), refreshTokenTimeout, TimeUnit.SECONDS);
+		redisUtil.expire(KeyBuilder.buildUserMenuUrlKey(userId.toString(), userTicket.getSystemType()), refreshTokenTimeout, TimeUnit.SECONDS);
+		redisUtil.expire(KeyBuilder.buildUserResourceCodeKey(userId.toString(), userTicket.getSystemType()), refreshTokenTimeout, TimeUnit.SECONDS);
+		redisUtil.expire(KeyBuilder.buildUserDataAuthKey(userId.toString(), userTicket.getSystemType()), refreshTokenTimeout, TimeUnit.SECONDS);
 	}
 
 	/**
-	 * 推迟redis token过期时间
-	 * 
-	 * @param token
+	 * 根据refreshToken清空redis中的RefreshToken和UserIdRefreshToken
+	 * @param refreshToken
 	 */
-	private void deferToken(String token) {
-		// 推后SessionConstants.SESSIONID_USERID_KEY + sessionId : userId :
-		// dynaSessionConstants.getSessionTimeout()
-		redisUtil.expire(SessionConstants.TOKEN_USERID_KEY + token, dynaSessionConstants.getTokenTimeout(), TimeUnit.SECONDS);
-		// 先根据sessionId找到用户id
-		// SessionConstants.SESSIONID_USERID_KEY + sessionId : userId :
-		// dynaSessionConstants.getSessionTimeout()
-		String userId = getUserIdByToken(token);
-		// 再根据userId，推后sessionId
-		// 推后SessionConstants.USERID_SESSIONID_KEY + userId : sessionId :
-		// dynaSessionConstants.getSessionTimeout()
-		redisUtil.expire(SessionConstants.USERID_TOKEN_KEY + userId, dynaSessionConstants.getTokenTimeout(), TimeUnit.SECONDS);
-		// 推后SessionConstants.USER_SYSTEM_KEY + userId : systems :
-		// dynaSessionConstants.getSessionTimeout()
-		redisUtil.expire(SessionConstants.USER_SYSTEM_TOKEN_KEY + userId, dynaSessionConstants.getTokenTimeout(), TimeUnit.SECONDS);
-		// 推后SessionConstants.USER_MENU_URL_KEY + userId : menuUrls :
-		// dynaSessionConstants.getSessionTimeout()
-		redisUtil.expire(SessionConstants.USER_MENU_URL_TOKEN_KEY + userId, dynaSessionConstants.getTokenTimeout(), TimeUnit.SECONDS);
-		// 推后SessionConstants.USER_RESOURCE_CODE_KEY + userId ： resourceCodes :
-		// dynaSessionConstants.getSessionTimeout()
-		redisUtil.expire(SessionConstants.USER_RESOURCE_CODE_TOKEN_KEY + userId, dynaSessionConstants.getTokenTimeout(), TimeUnit.SECONDS);
-		// 推后SessionConstants.USER_DATA_AUTH_KEY + userId : userDataAuths :
-		// dynaSessionConstants.getSessionTimeout()
-		redisUtil.expire(SessionConstants.USER_DATA_AUTH_TOKEN_KEY + userId, dynaSessionConstants.getTokenTimeout(), TimeUnit.SECONDS);
-	}
-
-	private String getUserIdByToken(String token) {
-		return sessionRedisManager.getUserIdByToken(token);
-	}
-
-	/**
-	 * 根据sessionId获取String数据<br/>
-	 * 如果有数据则将redis超时推后dynaSessionConstants.getSessionTimeout()的时间
-	 * 
-	 * @param sessionId
-	 * @return
-	 */
-	private String getSession(String sessionId) {
-		String sessionData = redisUtil.get(SessionConstants.SESSION_KEY_PREFIX + sessionId, String.class);
-		if (sessionData != null) {
-			redisUtil.expire(SessionConstants.SESSION_KEY_PREFIX + sessionId, dynaSessionConstants.getSessionTimeout(), TimeUnit.SECONDS);
+	public void clearByRefreshToken(String refreshToken) {
+		// 参考loginServiceImpl.login(LoginDto loginDto)和loginServiceImpl.makeRedisTag()方法
+		// ------------------------------------------------
+		String userTicketJSON = redisUtil.get(KeyBuilder.buildRefreshTokenKey(refreshToken), String.class);
+		if (!StringUtils.isEmpty(userTicketJSON)) {
+			UserTicket userTicket = JSON.parseObject(userTicketJSON, UserTicket.class);
+			redisUtil.remove(KeyBuilder.buildUserIdRefreshTokenKey(userTicket.getId().toString(), userTicket.getSystemType()));
 		}
-		return sessionData;
+		redisUtil.remove(KeyBuilder.buildRefreshTokenKey(refreshToken));
+
 	}
 
 	/**
-	 * 根据用户id获取sessionId列表
-	 * 
+	 * 根据userId清空用户redis中的refreshToken数据，返回被清空的refreshToken列表
+	 * 如果该用户没有refreshToken，则返回null
 	 * @param userId
 	 * @return
 	 */
-	public List<String> getSessionIdsByUserId(String userId) {
-		return sessionRedisManager.getSessionIdsByUserId(userId);
-	}
-
-	/**
-	 * 根据sessionId取用户id
-	 * 
-	 * @param sessionId
-	 * @return
-	 */
-	public String getUserIdBySessionId(String sessionId) {
-		return sessionRedisManager.getUserIdBySessionId(sessionId);
-	}
-
-	/**
-	 * 根据sessionId取用户名
-	 * 
-	 * @param sessionId
-	 * @return
-	 */
-	public String getUserNameBySessionId(String sessionId) {
-		return sessionRedisManager.getUserNameBySessionId(sessionId);
-	}
-
-	public UserTicket getTokenUser(String token) {
-		String sessionData = getToken(token);
-		if (StringUtils.isBlank(sessionData)) {
+	public Set<String> clearByUserId(Long userId, Integer systemType) {
+		Set<String> refreshTokens = this.findRefreshTokensByUserId(userId.toString(), systemType);
+		if (CollectionUtils.isEmpty(refreshTokens)) {
 			return null;
 		}
-		// 推迟redis session过期时间
-		deferToken(token);
-		// 直接返回FastJSON的JDK代理对象
-		UserTicket userTicket = JSONObject.parseObject(JSONObject.parseObject(sessionData).get(SessionConstants.LOGGED_USER).toString(), UserTicket.class);
-		return userTicket;
+		for (String oldRefreshToken : refreshTokens) {
+			this.redisUtil.remove(KeyBuilder.buildRefreshTokenKey(oldRefreshToken));
+		}
+		this.redisUtil.remove(KeyBuilder.buildUserIdRefreshTokenKey(userId.toString(), systemType));
+		return refreshTokens;
 	}
 
-	private String getToken(String token) {
-		String sessionData = redisUtil.get(SessionConstants.TOKEN_KEY_PREFIX + token, String.class);
-		if (sessionData != null) {
-			redisUtil.expire(SessionConstants.TOKEN_KEY_PREFIX + token, dynaSessionConstants.getTokenTimeout(), TimeUnit.SECONDS);
+	/**
+	 * 根据用户id获取refreshTokens
+	 * @param userId
+	 * @return
+	 */
+	public Set<String> findRefreshTokensByUserId(String userId, Integer systemType) {
+		BoundSetOperations<String, String> userIdSessionIds = redisUtil.getRedisTemplate().boundSetOps(KeyBuilder.buildUserIdRefreshTokenKey(userId, systemType));
+//		List<String> sessionIds = Lists.newArrayList();
+//		//根据类型过滤
+//		for(String sessionId : userIdSessionIds.members()) {
+//			sessionIds.add(sessionId);
+//		}
+		return userIdSessionIds.members();
+	}
+
+	/**
+	 * 获取当前在线的用户ID
+	 * @return
+	 */
+	public List<String> listOnlineUserIds() {
+		Set<String> keys = redisUtil.getRedisTemplate().keys(SessionConstants.USERID_REFRESH_TOKEN_KEY + "*");
+		if (keys == null || keys.isEmpty()) {
+			return Lists.newArrayList();
 		}
-		return sessionData;
+		List<String> userIds = Lists.newArrayList();
+		for (String key : keys) {
+			userIds.add(key.substring(SessionConstants.USERID_REFRESH_TOKEN_KEY.length()));
+		}
+		return userIds;
 	}
 
 }

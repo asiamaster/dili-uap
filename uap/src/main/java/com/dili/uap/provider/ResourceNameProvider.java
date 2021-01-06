@@ -63,16 +63,16 @@ public class ResourceNameProvider extends BatchDisplayTextProviderSupport {
 		//忽略大小写关联
 		batchProviderMeta.setIgnoreCaseToRef(true);
 		//主DTO与关联DTO的关联(java bean)属性(外键), 这里取resource_link表的resourceId字段
-		batchProviderMeta.setFkField("resourceCode");
+		batchProviderMeta.setFkField("resourceId");
 		//关联(数据库)表的主键的字段名，默认取id，这里写出来用于示例用法
-		batchProviderMeta.setRelationTablePkField("code");
+		batchProviderMeta.setRelationTablePkField("id");
 		return batchProviderMeta;
 	}
 
 	@Override
 	protected List getFkList(List<String> relationIds, Map metaMap) {
 		ResourceDto resourceDto = DTOUtils.newInstance(ResourceDto.class);
-		resourceDto.setCodes(relationIds);
+		resourceDto.setIds(relationIds);
 		return resourceService.listByExample(resourceDto);
 	}
 

@@ -27,22 +27,17 @@
     modified, type
   </sql>
 
-  <select id="listByUserId" parameterType="Long" resultType="com.dili.uap.sdk.domain.Systems">
+  <select id="listByUserId" resultType="com.dili.uap.sdk.domain.Systems">
     select distinct s.id, s.code, s.name, s.url, s.icon_url, s.logo_url, s.type, s.order_number, s.index_url, s.description, s.is_client
     from systems s, menu m, user_role ur, role_menu rm
     where m.system_id  = s.id
     and m.id = rm.menu_id
     and rm.role_id = ur.role_id
     and ur.user_id = #{userId}
+    <if test="systemType != null">
+    and s.type = #{systemType}
+    </if>
     order by s.order_number asc
   </select>
-  <select id="listByUserId2" parameterType="Long" resultType="map">
-    select distinct s.id, s.code, s.name, s.url, s.icon_url, s.logo_url, s.type, s.order_number, s.index_url, s.description, s.is_client
-    from systems s, menu m, user_role ur, role_menu rm
-    where m.system_id  = s.id
-    and m.id = rm.menu_id
-    and rm.role_id = ur.role_id
-    and ur.user_id = #{userId}
-    order by s.order_number asc
-  </select>
+  
 </mapper>

@@ -7,7 +7,7 @@ import java.util.TimeZone;
 /**
  *  日期工具
  */
-public final class DateUtils {
+public final class UapDateUtils {
     public static Date date(int year, int month, int day) {
         return date(year, month, day, 0, 0, 0);
     }
@@ -111,6 +111,6 @@ public final class DateUtils {
         return calendar.getTime();
     }
 
-    private DateUtils() {
+    private UapDateUtils() {
     }
 }

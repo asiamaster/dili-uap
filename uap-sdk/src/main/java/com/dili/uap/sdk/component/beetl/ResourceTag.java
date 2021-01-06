@@ -2,6 +2,7 @@ package com.dili.uap.sdk.component.beetl;
 
 import com.dili.ss.domain.BaseOutput;
 import com.dili.uap.sdk.domain.UserTicket;
+import com.dili.uap.sdk.glossary.SystemType;
 import com.dili.uap.sdk.redis.UserResourceRedis;
 import com.dili.uap.sdk.redis.UserUrlRedis;
 import com.dili.uap.sdk.rpc.ResourceRpc;
@@ -32,6 +33,7 @@ public class ResourceTag extends Tag {
 
 	@Autowired
 	private UserUrlRedis userUrlRedis;
+	@SuppressWarnings("all")
 	@Autowired
 	private ResourceRpc resourceRpc;
 
@@ -79,7 +81,7 @@ public class ResourceTag extends Tag {
 	 * @return 是否成功写出
 	 */
 	private boolean writeByCode(String code, String checkMenu, UserTicket userTicket){
-		if (userResourceRedis.checkUserResourceRight(userTicket.getId(), code)) {
+		if (userResourceRedis.checkUserResourceRight(userTicket.getId(), SystemType.WEB.getCode(),  code)) {
 			if(StringUtils.isBlank(checkMenu)) {
 				write();
 				return true;
@@ -107,7 +109,7 @@ public class ResourceTag extends Tag {
 	 * @param userTicket
 	 */
 	private void writeByUrl(String url, UserTicket userTicket) {
-		if (userUrlRedis.checkUserMenuUrlRight(userTicket.getId(), url)) {
+		if (userUrlRedis.checkUserMenuUrlRight(userTicket.getId(), userTicket.getSystemType(), url)) {
 			write();
 		}
 	}

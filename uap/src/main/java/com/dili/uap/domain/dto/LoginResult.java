@@ -9,13 +9,13 @@ import com.dili.uap.sdk.domain.User;
  */
 public interface LoginResult extends IDTO {
 
-    //登录会话id
-    String getSessionId();
-    void setSessionId(String sessionId);
-    
-    //登录token
-    String getToken();
-    void setToken(String token);
+    //访问token
+    String getAccessToken();
+    void setAccessToken(String accessToken);
+
+    //刷新token
+    String getRefreshToken();
+    void setRefreshToken(String refreshToken);
 
     //登录成功后的返回地址
     String getLoginPath();

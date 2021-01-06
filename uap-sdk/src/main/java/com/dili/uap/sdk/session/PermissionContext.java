@@ -4,9 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.util.SpringUtil;
 import com.dili.uap.sdk.domain.UserTicket;
-import com.dili.uap.sdk.redis.DataAuthRedis;
-import com.dili.uap.sdk.redis.UserRedis;
-import com.dili.uap.sdk.redis.UserUrlRedis;
+import com.dili.uap.sdk.service.AuthService;
 import com.dili.uap.sdk.util.WebContent;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -38,19 +36,13 @@ public class PermissionContext {
 	// 查询字符串
 	private String queryString;
 
-	private String sessionId;
+	private String accessToken;
 
-	private String token;
-
-	private Long userId;
+	private String refreshToken;
 
 	private ManageConfig config;
 
-	private UserRedis userRedis;
-
-	private UserUrlRedis userResRedis;
-
-	private DataAuthRedis dataAuthRedis;
+	private AuthService authService;
 
 	private String domain;
 
@@ -59,9 +51,7 @@ public class PermissionContext {
 		setConfig(conf);
 		this.resp = resp;
 		this.handler = handler;
-		userRedis = SpringUtil.getBean(UserRedis.class);
-		userResRedis = SpringUtil.getBean(UserUrlRedis.class);
-		dataAuthRedis = SpringUtil.getBean(DataAuthRedis.class);
+		authService = SpringUtil.getBean(AuthService.class);
 		this.domain = domain;
 	}
 
@@ -152,7 +142,7 @@ public class PermissionContext {
 	}
 
 	/**
-	 * 没有权限
+	 * 登录没有权限的处理
 	 */
 	public void nonPermission() {
 		try {
@@ -172,6 +162,10 @@ public class PermissionContext {
 		return;
 	}
 
+	/**
+	 * loginCheck的URL没有权限的处理
+	 * @throws IOException
+	 */
 	public void noAccess() throws IOException {
 		String requestType = req.getHeader("X-Requested-With");
 		if (requestType == null) {
@@ -183,6 +177,10 @@ public class PermissionContext {
 		resp.flushBuffer();
 	}
 
+	/**
+	 * 未登录(登录超时)的处理
+	 * @throws IOException
+	 */
 	public void noLogin() throws IOException {
 		String requestType = req.getHeader("X-Requested-With");
 		if (requestType == null) {
@@ -194,76 +192,62 @@ public class PermissionContext {
 		resp.flushBuffer();
 	}
 
-	public String getSessionId() {
-		if (sessionId == null) {
-			// 首先读取链接中的session
-			sessionId = req.getParameter(SessionConstants.SESSION_ID);
-			if (StringUtils.isBlank(sessionId)) {
-				sessionId = req.getHeader(SessionConstants.SESSION_ID);
+	/**
+	 * 从URL参数、header和Cookie中获取Token
+	 * 没有取到，返回null
+	 * @return
+	 */
+	public String getAccessToken() {
+		if (accessToken == null) {
+			// 首先读取链接中的token
+			accessToken = req.getParameter(SessionConstants.ACCESS_TOKEN_KEY);
+			if (StringUtils.isBlank(accessToken)) {
+				accessToken = req.getHeader(SessionConstants.ACCESS_TOKEN_KEY);
 			}
-			if (StringUtils.isNotBlank(sessionId)) {
-				WebContent.setCookie(SessionConstants.SESSION_ID, sessionId);
+			if (StringUtils.isNotBlank(accessToken)) {
+				WebContent.setCookie(SessionConstants.ACCESS_TOKEN_KEY, accessToken);
 			} else {
-				sessionId = WebContent.getCookieVal(SessionConstants.SESSION_ID);
+				accessToken = WebContent.getCookieVal(SessionConstants.ACCESS_TOKEN_KEY);
 			}
 		}
-		return sessionId;
+		return accessToken;
 	}
 
-	public UserTicket getUser() {
-		String sessionId = getSessionId();
-		if (sessionId == null) {
-			String token = getToken();
-			if (StringUtils.isBlank(token)) {
-				return null;
+	/**
+	 * 从URL参数、header和Cookie中获取Token
+	 * 没有取到，返回null
+	 * @return
+	 */
+	public String getRefreshToken() {
+		if (refreshToken == null) {
+			// 首先读取链接中的token
+			refreshToken = req.getParameter(SessionConstants.REFRESH_TOKEN_KEY);
+			if (StringUtils.isBlank(refreshToken)) {
+				refreshToken = req.getHeader(SessionConstants.REFRESH_TOKEN_KEY);
 			}
-			return getUserRedis().getTokenUser(token);
-		}
-		return getUserRedis().getUser(sessionId);
-	}
-
-	public String getToken() {
-		if (token == null) {
-			// 首先读取链接中的session
-			token = req.getHeader(SessionConstants.TOKEN);
-		}
-		return token;
-	}
-
-	public UserTicket getAuthorizer() {
-		String authKey = req.getParameter(SessionConstants.AUTH_KEY);
-		if (StringUtils.isBlank(authKey)) {
-			authKey = req.getHeader(SessionConstants.AUTH_KEY);
-			if (StringUtils.isBlank(authKey)) {
-				return null;
+			if (StringUtils.isNotBlank(refreshToken)) {
+				WebContent.setCookie(SessionConstants.REFRESH_TOKEN_KEY, refreshToken);
+			} else {
+				refreshToken = WebContent.getCookieVal(SessionConstants.REFRESH_TOKEN_KEY);
 			}
 		}
-		return userRedis.getUser(authKey);
+		return refreshToken;
 	}
 
-	public Long getUserId() {
-		if (getSessionId() == null) {
+	/**
+	 * 从URL参数、header和Cookie中获取Token，获取用户信息
+	 * @return
+	 */
+	public UserTicket getUserTicket() {
+		String accessToken = getAccessToken();
+		if (accessToken == null) {
 			return null;
 		}
-		if (userId == null) {
-			userId = userRedis.getSessionUserId(getSessionId());
+		String refreshToken = getRefreshToken();
+		if (refreshToken == null) {
+			return null;
 		}
-		return userId;
+		return authService.getUserTicket(accessToken, refreshToken);
 	}
 
-	public void setSessionId(String sessionId) {
-		this.sessionId = sessionId;
-	}
-
-	public UserRedis getUserRedis() {
-		return userRedis;
-	}
-
-	public UserUrlRedis getUserResRedis() {
-		return userResRedis;
-	}
-
-	public DataAuthRedis getDataAuthRedis() {
-		return dataAuthRedis;
-	}
 }

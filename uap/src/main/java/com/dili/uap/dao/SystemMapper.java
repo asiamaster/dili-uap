@@ -2,9 +2,9 @@ package com.dili.uap.dao;
 
 import com.dili.ss.base.MyMapper;
 import com.dili.uap.sdk.domain.Systems;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
-import java.util.Map;
 
 public interface SystemMapper extends MyMapper<Systems> {
 
@@ -13,7 +13,6 @@ public interface SystemMapper extends MyMapper<Systems> {
      * @param userId
      * @return
      */
-    List<Systems> listByUserId(Long userId);
+    List<Systems> listByUserId(@Param("userId")Long userId, @Param("systemType") Integer systemType);
 
-    List<Map> listByUserId2(Long userId);
 }

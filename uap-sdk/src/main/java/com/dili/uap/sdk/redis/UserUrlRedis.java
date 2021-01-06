@@ -1,12 +1,14 @@
 package com.dili.uap.sdk.redis;
 
 import com.dili.uap.sdk.exception.ParameterException;
-import com.dili.uap.sdk.session.SessionConstants;
+import com.dili.uap.sdk.util.KeyBuilder;
 import com.dili.uap.sdk.util.ManageRedisUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Set;
 
 /**
  * 用户和菜单URL redis操作
@@ -25,12 +27,12 @@ public class UserUrlRedis {
      * @param url
      * @return
      */
-    public boolean checkUserMenuUrlRight(Long userId, String url) {
+    public boolean checkUserMenuUrlRight(Long userId, Integer systemType, String url) {
         if (userId == null) {
             throw new ParameterException("用户id或菜单url不能为空");
         }
         // 去掉http和https前缀, 判断用户权限
-        return checkRedisUserMenuUrl(userId, url.trim().replace("http://", "").replace("https://", ""));
+        return checkRedisUserMenuUrl(userId, systemType, url.trim().replace("http://", "").replace("https://", ""));
     }
 
     /**
@@ -38,11 +40,11 @@ public class UserUrlRedis {
      * @param userId
      * @return
      */
-    public Object getUserMenus(Long userId){
+    public Set<String> getUserMenus(Long userId, Integer systemType){
         if (userId == null) {
             throw new ParameterException("用户id不能为空");
         }
-        String key = SessionConstants.USER_MENU_URL_KEY + userId;
+        String key = KeyBuilder.buildUserMenuUrlKey(userId.toString(), systemType);
         return redisUtil.getRedisTemplate().boundSetOps(key).members();
     }
 
@@ -50,11 +52,12 @@ public class UserUrlRedis {
      * 从redis根据用户id判断是否有菜单URL的访问权限
      *
      * @param userId
+     * @param systemType
      * @param menuUrl
      * @return
      */
-    private boolean checkRedisUserMenuUrl(Long userId, String menuUrl) {
-        return isMemberKey(SessionConstants.USER_MENU_URL_KEY + userId.toString(), menuUrl);
+    private boolean checkRedisUserMenuUrl(Long userId, Integer systemType, String menuUrl) {
+        return isMemberKey(KeyBuilder.buildUserMenuUrlKey(userId.toString(), systemType), menuUrl);
     }
 
     /**

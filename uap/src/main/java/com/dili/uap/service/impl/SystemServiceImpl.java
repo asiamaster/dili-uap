@@ -8,16 +8,14 @@ import com.dili.uap.dao.MenuMapper;
 import com.dili.uap.dao.SystemConfigMapper;
 import com.dili.uap.dao.SystemMapper;
 import com.dili.uap.sdk.domain.*;
-import com.dili.uap.sdk.domain.Systems;
 import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.service.SystemService;
-
-import java.util.Date;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * 由MyBatis Generator工具自动生成 This file was generated on 2018-05-22 16:24:56.
@@ -132,17 +130,17 @@ public class SystemServiceImpl extends BaseServiceImpl<Systems, Long> implements
 	}
 
 	@Override
-	public List<Systems> listByUserId(Long userId) {
-		return getActualDao().listByUserId(userId);
+	public List<Systems> listByUserId(Long userId, Integer systemType) {
+		return getActualDao().listByUserId(userId, systemType);
 	}
 
 	@Override
-	public List<Systems> listByUserId(String param) {
+	public List<Systems> listByLoginUser(String queryParam) {
 		UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
 		if(userTicket == null){
 			return null;
 		}
-		return getActualDao().listByUserId(userTicket.getId());
+		return getActualDao().listByUserId(userTicket.getId(), userTicket.getSystemType());
 	}
 
 	/**

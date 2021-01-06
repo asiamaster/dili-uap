@@ -3,7 +3,7 @@ package com.dili.uap.sdk.redis;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.sdk.domain.Systems;
 import com.dili.uap.sdk.exception.ParameterException;
-import com.dili.uap.sdk.session.SessionConstants;
+import com.dili.uap.sdk.util.KeyBuilder;
 import com.dili.uap.sdk.util.ManageRedisUtil;
 import com.dili.uap.sdk.util.SerializeUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -33,12 +33,12 @@ public class UserSystemRedis {
      * @param systemCode    系统编码
      * @return
      */
-    public boolean checkUserSystemRight(Long userId, String systemCode) {
+    public boolean checkUserSystemRight(Long userId, Integer systemType, String systemCode) {
         if (userId == null || StringUtils.isBlank(systemCode)) {
             throw new ParameterException("用户id或系统编码不能为空");
         }
         // 去掉http和https前缀, 判断用户权限
-        return checkRedisUserSystemByCode(userId, systemCode);
+        return checkRedisUserSystemByCode(userId, systemType, systemCode);
     }
 
     /**
@@ -46,8 +46,8 @@ public class UserSystemRedis {
      * @param userId
      * @return
      */
-    public List<Systems> getRedisUserSystems(Long userId){
-        String mes = (String)this.redisUtil.get(SessionConstants.USER_SYSTEM_KEY + userId.toString());
+    public List<Systems> getRedisUserSystems(Long userId, Integer systemType){
+        String mes = (String)redisUtil.get(KeyBuilder.buildUserSystemKey(userId.toString(), systemType));
         if(StringUtils.isBlank(mes)){
             return new ArrayList<>();
         }
@@ -73,8 +73,8 @@ public class UserSystemRedis {
      * @param systemCode
      * @return
      */
-    private boolean checkRedisUserSystemByCode(Long userId, String systemCode) {
-        List<Systems> systems = getRedisUserSystems(userId);
+    private boolean checkRedisUserSystemByCode(Long userId, Integer systemType, String systemCode) {
+        List<Systems> systems = getRedisUserSystems(userId, systemType);
         for(Systems system : systems){
             if(system.getCode().equals(systemCode)){
                 return true;

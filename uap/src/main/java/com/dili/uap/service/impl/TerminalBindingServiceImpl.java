@@ -6,7 +6,7 @@ import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.dao.TerminalBindingMapper;
 import com.dili.uap.domain.TerminalBinding;
 import com.dili.uap.sdk.domain.UserTicket;
-import com.dili.uap.sdk.redis.UserRedis;
+import com.dili.uap.sdk.service.AuthService;
 import com.dili.uap.service.TerminalBindingService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class TerminalBindingServiceImpl extends BaseServiceImpl<TerminalBinding, Long> implements TerminalBindingService {
 
 	@Autowired
-	private UserRedis userRedis;
+	private AuthService authService;
 
 	public TerminalBindingMapper getActualDao() {
 		return (TerminalBindingMapper) getDao();
@@ -28,8 +28,8 @@ public class TerminalBindingServiceImpl extends BaseServiceImpl<TerminalBinding,
 
 	@Transactional(rollbackFor = Exception.class)
 	@Override
-	public BaseOutput<Object> bindByToken(String token, String terminalId) {
-		UserTicket user = this.userRedis.getTokenUser(token);
+	public BaseOutput<Object> bindByToken(String accessToken, String refreshToken, String terminalId) {
+		UserTicket user = this.authService.getUserTicket(accessToken, refreshToken);
 		if (user == null) {
 			return BaseOutput.failure("获取用户信息失败");
 		}

@@ -4,7 +4,7 @@ import com.dili.ss.metadata.FieldMeta;
 import com.dili.ss.metadata.ValuePair;
 import com.dili.ss.metadata.ValuePairImpl;
 import com.dili.ss.metadata.ValueProvider;
-import com.dili.uap.glossary.SystemType;
+import com.dili.uap.sdk.glossary.SystemType;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

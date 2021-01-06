@@ -1,7 +1,17 @@
 package com.dili.uap.controller;
 
-import javax.servlet.http.HttpServletRequest;
-
+import com.dili.logger.sdk.annotation.BusinessLogger;
+import com.dili.logger.sdk.base.LoggerContext;
+import com.dili.logger.sdk.glossary.LoggerConstant;
+import com.dili.ss.domain.BaseOutput;
+import com.dili.ss.dto.DTOUtils;
+import com.dili.uap.domain.dto.LoginDto;
+import com.dili.uap.sdk.domain.UserTicket;
+import com.dili.uap.sdk.session.SessionContext;
+import com.dili.uap.sdk.util.WebContent;
+import com.dili.uap.service.LoginService;
+import com.dili.uap.service.UserService;
+import com.dili.uap.utils.WebUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -12,19 +22,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.dili.logger.sdk.annotation.BusinessLogger;
-import com.dili.logger.sdk.base.LoggerContext;
-import com.dili.logger.sdk.glossary.LoggerConstant;
-import com.dili.ss.domain.BaseOutput;
-import com.dili.ss.dto.DTOUtils;
-import com.dili.uap.domain.dto.LoginDto;
-import com.dili.uap.sdk.domain.UserTicket;
-import com.dili.uap.sdk.session.SessionConstants;
-import com.dili.uap.sdk.session.SessionContext;
-import com.dili.uap.sdk.util.WebContent;
-import com.dili.uap.service.LoginService;
-import com.dili.uap.service.UserService;
-import com.dili.uap.utils.WebUtil;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 登录控制器
@@ -109,30 +107,28 @@ public class LoginController {
 	}
 
 	/**
-	 * 根据sessionId登录
-	 * 
-	 * @param sessionId
+	 * 根据accessToken和refreshToken登录
+	 * @param accessToken
+	 * @param refreshToken
 	 * @param modelMap
-	 * @param request
 	 * @return
 	 */
-	@BusinessLogger(businessType = "login_management", content = "系统登录:${system}，sessionId:${sessionId}", operationType = "login", systemCode = "UAP")
+	@BusinessLogger(businessType = "login_management", content = "系统登录:${system}，accessToken:${accessToken}，refreshToken:${refreshToken}", operationType = "login", systemCode = "UAP")
 	@RequestMapping(value = "/loginBySession.action", method = { RequestMethod.GET, RequestMethod.POST })
-	public String loginBySessionAction(String sessionId, ModelMap modelMap, HttpServletRequest request) {
+	public String loginBySessionAction(String accessToken, String refreshToken, ModelMap modelMap) {
 		// 如果有登录用户名和密码，并且登录系统是UAP，则跳到平台首页，并加载登录数据
 		// 如果没有登录用户名和密码，并且登录系统是UAP，则跳到平台首页，不加载登录数据
 		// 如果没有登录用户名和密码，并且登录系统不是UAP，则跳到系统首页，不加载登录数据
 		// 如果用户名和密码不为空，则需要加载登录数据
-		if (StringUtils.isNotBlank(sessionId)) {
-			BaseOutput<Boolean> output = loginService.loginBySession(sessionId);
-			// 登录失败后跳到登录页
-			if (!output.isSuccess()) {
-				// 登录失败放入登录结果信息
-				modelMap.put("msg", output.getMessage());
-				return INDEX_PATH;
-			} else {
-				LoggerContext.put("sessionId", sessionId);
-			}
+		BaseOutput<Boolean> output = loginService.loginByTokens(accessToken, refreshToken);
+		// 登录失败后跳到登录页
+		if (!output.isSuccess()) {
+			// 登录失败放入登录结果信息
+			modelMap.put("msg", output.getMessage());
+			return INDEX_PATH;
+		} else {
+			LoggerContext.put("accessToken", accessToken);
+			LoggerContext.put("refreshToken", refreshToken);
 		}
 		// 跳转到平台首页，参数带上系统编码
 		return IndexController.REDIRECT_INDEX_PAGE;
@@ -151,7 +147,7 @@ public class LoginController {
 	public @ResponseBody BaseOutput logoutAction(String systemCode, @RequestParam(required = false) Long userId, HttpServletRequest request) {
 		UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
 		if (userTicket != null) {
-			this.userService.logout(WebContent.getPC().getSessionId());
+			this.userService.logout(WebContent.getPC().getAccessToken());
 			// 没有userId则取userTicket
 			userId = userId == null ? userTicket == null ? null : userTicket.getId() : userId;
 			// 如果有用户id，则记录登出日志
@@ -159,11 +155,6 @@ public class LoginController {
 				LoggerContext.put(LoggerConstant.LOG_SYSTEM_CODE_KEY, systemCode);
 				loginService.logLogout(userTicket);
 			}
-		}
-		try {
-			WebContent.setCookie(SessionConstants.COOKIE_SESSION_ID, null);
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 		return BaseOutput.success();
 	}

@@ -1,6 +1,9 @@
 package com.dili.uap.sdk.session;
 
+import com.dili.ss.util.SpringUtil;
 import com.dili.uap.sdk.domain.UserTicket;
+import com.dili.uap.sdk.redis.DataAuthRedis;
+import com.dili.uap.sdk.service.AuthService;
 import com.dili.uap.sdk.service.UserInfoApiService;
 import com.dili.uap.sdk.util.WebContent;
 
@@ -17,6 +20,10 @@ public class SessionContext {
 
 	private UserInfoApiService userInfoApiService;
 
+	private DataAuthRedis dataAuthRedis;
+
+	private AuthService authService;
+
 	public static void resetLocal() {
 		holder.remove();
 	}
@@ -24,6 +31,8 @@ public class SessionContext {
 	private SessionContext() {
 		PermissionContext config = (PermissionContext) WebContent.get(SessionConstants.MANAGE_PERMISSION_CONTEXT);
 		this.pc = config;
+		dataAuthRedis = SpringUtil.getBean(DataAuthRedis.class);
+		authService = SpringUtil.getBean(AuthService.class);
 		holder.set(this);
 	}
 
@@ -41,10 +50,7 @@ public class SessionContext {
 
 	public UserTicket getUserTicket() {
 		if (userTicket == null) {
-			userTicket = pc.getUserRedis().getUser(pc.getSessionId());
-			if (userTicket == null) {
-				userTicket = pc.getUserRedis().getTokenUser(pc.getToken());
-			}
+			userTicket = authService.getUserTicket(pc.getAccessToken(), pc.getRefreshToken());
 		}
 		return userTicket;
 	}
@@ -58,21 +64,12 @@ public class SessionContext {
 	}
 
 	/**
-	 * 这个方法好像是个后门，暂时改为私有方法
-	 * 
-	 * @return
-	 */
-	private UserTicket getAuthorizer() {
-		return pc.getAuthorizer();
-	}
-
-	/**
 	 * 获取当前数据权限DataAuth 的Map
 	 * 
 	 * @return
 	 */
 	public List<Map> dataAuth() {
-		return pc.getDataAuthRedis().dataAuth(getUserTicket().getId());
+		return dataAuthRedis.dataAuth(getUserTicket().getId());
 	}
 
 	public UserInfoApiService fetchUserApi() {
@@ -93,18 +90,7 @@ public class SessionContext {
 		if (getUserTicket() == null || getUserTicket().getId() == null) {
 			return list;
 		}
-		return WebContent.getPC().getDataAuthRedis().dataAuth(type, getUserTicket().getId());
-	}
-
-	/**
-	 * 判断是否可以访问
-	 * 
-	 * @param method
-	 * @param url
-	 * @return
-	 */
-	public static synchronized boolean hasAccess(String method, String url) {
-		return WebContent.getPC().getUserResRedis().checkUserMenuUrlRight(WebContent.getPC().getUserId(), url);
+		return dataAuthRedis.dataAuth(type, getUserTicket().getId());
 	}
 
 }

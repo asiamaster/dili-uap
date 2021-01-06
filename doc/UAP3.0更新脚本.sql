@@ -1,0 +1,13 @@
+# resource_link
+ALTER TABLE `resource_link` DROP COLUMN `resource_code`;
+alter table resource_link add resource_id BIGINT AFTER id;
+UPDATE resource_link rl, resource r SET rl.resource_id = r.id WHERE r.`code` = rl.resource_code
+
+# resource
+ALTER TABLE `resource` add `system_type` INT AFTER `code`;
+
+# menu
+ALTER TABLE `menu` add `system_type` INT AFTER `type`;
+
+UPDATE resource r SET r.system_type=1;
+UPDATE menu m SET m.system_type=1;

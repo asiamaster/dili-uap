@@ -15,17 +15,16 @@ import com.dili.uap.manager.DataAuthManager;
 import com.dili.uap.sdk.component.DataAuthSource;
 import com.dili.uap.sdk.domain.DataAuthRef;
 import com.dili.uap.sdk.domain.Systems;
-import com.dili.uap.sdk.domain.UserPushInfo;
 import com.dili.uap.sdk.domain.UserTicket;
+import com.dili.uap.sdk.glossary.SystemType;
 import com.dili.uap.sdk.redis.DataAuthRedis;
 import com.dili.uap.sdk.redis.UserRedis;
 import com.dili.uap.sdk.redis.UserSystemRedis;
-import com.dili.uap.sdk.rpc.SystemConfigRpc;
+import com.dili.uap.sdk.service.AuthService;
 import com.dili.uap.service.*;
 import com.dili.uap.utils.WebUtil;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -78,7 +77,7 @@ public class AuthenticationApi {
 	private String rsaPrivateKey;
 
 	@Autowired
-	private SystemConfigRpc systemConfigRpc;
+	private AuthService authService;
 	@Autowired
 	private UserPushInfoService userPushInfoService;
 	@Autowired
@@ -108,7 +107,7 @@ public class AuthenticationApi {
 		// 设置ip和hosts,用于记录登录日志
 		loginDto.setIp(WebUtil.getRemoteIP(request));
 		loginDto.setHost(request.getRemoteHost());
-		return loginService.login(loginDto);
+		return loginService.loginWeb(loginDto);
 	}
 
 	/**
@@ -121,11 +120,6 @@ public class AuthenticationApi {
 	@RequestMapping(value = "/loginFromApp.api", method = { RequestMethod.POST })
 	@ResponseBody
 	public BaseOutput loginFromApp(@RequestBody String json, HttpServletRequest request) {
-//		try {
-//			json = decryptRSA(json);
-//		} catch (Exception e) {
-//			return BaseOutput.failure(e.getMessage());
-//		}
 		JSONObject jsonObject = JSONObject.parseObject(json);
 		LoginDto loginDto = DTOUtils.newInstance(LoginDto.class);
 		loginDto.setUserName(jsonObject.getString("userName"));
@@ -141,16 +135,16 @@ public class AuthenticationApi {
 		// 设置ip和hosts,用于记录登录日志
 		loginDto.setIp(WebUtil.getRemoteIP(request));
 		loginDto.setHost(request.getRemoteHost());
-		BaseOutput<LoginResult> output = loginService.loginFromApp(loginDto);
+		BaseOutput<LoginResult> output = loginService.loginApp(loginDto);
 		if (!output.isSuccess()) {
 			return output;
 		}
-		UserTicket userTicket = this.userRedis.getTokenUser(output.getData().getToken());
-		Map param = new HashMap(2);
+		UserTicket userTicket = authService.getUserTicket(output.getData().getAccessToken(), output.getData().getRefreshToken());
+		Map param = new HashMap(4);
 		param.put("userId", output.getData().getUser().getId());
 		return BaseOutput.successData(new HashMap<String, Object>() {
 			{
-				put("token", output.getData().getToken());
+				put("token", output.getData().getAccessToken());
 				put("user", userTicket);
 			}
 		});
@@ -159,79 +153,53 @@ public class AuthenticationApi {
 	/**
 	 * 绑定终端号
 	 * 
-	 * @param token      登录token
+	 * @param accessToken
+	 * @param refreshToken
 	 * @param terminalId 终端号
 	 * @return
 	 */
 	@ResponseBody
 	@RequestMapping("/bindTerminal.api")
-	public BaseOutput<Object> bindTerminal(@RequestParam String token, @RequestParam String terminalId) {
-		return this.terminalBindingService.bindByToken(token, terminalId);
+	public BaseOutput<Object> bindTerminal(@RequestParam String accessToken, @RequestParam String refreshToken, @RequestParam String terminalId) {
+		return this.terminalBindingService.bindByToken(accessToken, refreshToken, terminalId);
 	}
 
 	/**
-	 * 用户登录验证，返回新的sessionId
+	 * 用户登录验证，返回LoginResult
 	 * 
-	 * @param json
+	 * @param json userName和password
 	 * @return
 	 */
-	@RequestMapping(value = "/validate.api", method = { RequestMethod.POST })
+	@PostMapping(value = "/validate.api")
 	@ResponseBody
-	public BaseOutput validate(@RequestBody String json) {
+	public BaseOutput<LoginResult> validate(@RequestBody String json) {
 		try {
 			json = decryptRSA(json);
 		} catch (Exception e) {
 			return BaseOutput.failure(e.getMessage());
 		}
-		BaseOutput output = systemConfigRpc.list(null);
 		JSONObject jsonObject = JSONObject.parseObject(json);
 		LoginDto loginDto = DTOUtils.newInstance(LoginDto.class);
 		loginDto.setUserName(jsonObject.getString("userName"));
 		loginDto.setPassword(jsonObject.getString("password"));
-		return loginService.validateSaveSession(loginDto);
-	}
-
-	/**
-	 * 用户登录验证，返回新的sessionId
-	 * 
-	 * @param json
-	 * @return
-	 */
-	@RequestMapping(value = "/validateAndGetUserInfo.api", method = { RequestMethod.POST })
-	@ResponseBody
-	public BaseOutput validateAndGetUserInfo(@RequestBody String json) {
-		BaseOutput output = this.validate(json);
-		if (!output.isSuccess()) {
-			return output;
-		}
-		UserTicket userTicket = this.userRedis.getUser(output.getData().toString());
-		return BaseOutput.successData(new HashMap<String, Object>() {
-			{
-				put("sessionId", output.getData().toString());
-				put("userTicket", userTicket);
-			}
-		});
+		return loginService.loginWeb(loginDto);
 	}
 
 	/**
 	 * 根据sessionId判断用户是否登录 无返回信息
-	 * 
-	 * @param json
+	 * @param accessToken
+	 * @param refreshToken
 	 * @return
 	 */
-	@RequestMapping(value = "/authentication.api", method = { RequestMethod.POST })
+	@PostMapping(value = "/authentication.api")
 	@ResponseBody
-	public BaseOutput authentication(@RequestBody String json) {
+	public BaseOutput authentication(@RequestParam String accessToken, @RequestParam String refreshToken) {
 		try {
-			json = decryptRSA(json);
+			authService.getUserTicket(accessToken, refreshToken);
+			return BaseOutput.success();
 		} catch (Exception e) {
 			return BaseOutput.failure(e.getMessage());
 		}
-		String sessionId = getSessionIdByJson(json);
-		if (StringUtils.isBlank(sessionId)) {
-			return BaseOutput.failure("会话id不存在").setCode(ResultCode.PARAMS_ERROR);
-		}
-		return userRedis.getSessionUserId(sessionId) == null ? BaseOutput.failure("未登录").setCode(ResultCode.NOT_AUTH_ERROR) : BaseOutput.success("已登录");
 	}
 
 	/**
@@ -244,27 +212,28 @@ public class AuthenticationApi {
 	@RequestMapping(value = "/appLoginout.api", method = { RequestMethod.POST })
 	@ResponseBody
 	public BaseOutput appLoginout(@RequestBody String json, HttpServletRequest request) {
-		String sessionId = getSessionIdByJson(json);
-		String token = null;
-		if (StringUtils.isBlank(sessionId)) {
-			token = getTokenByJson(json);
-			if (StringUtils.isBlank(token)) {
-				return BaseOutput.failure("会话id不存在").setCode(ResultCode.PARAMS_ERROR);
-			}
-		}
-		UserTicket userTicket = null;
-		if (StringUtils.isNotEmpty(sessionId)) {
-			userTicket = this.userRedis.getUser(sessionId);
-		} else {
-			userTicket = this.userRedis.getTokenUser(token);
-		}
-		if (userTicket == null) {
-			return BaseOutput.failure("未获取到登录用户信息");
-		}
-		UserPushInfo condition = DTOUtils.newInstance(UserPushInfo.class);
-		condition.setUserId(userTicket.getId());
-		this.userPushInfoService.deleteByExample(condition);
-		userService.logout(sessionId);
+		//TODO
+//		String sessionId = getSessionIdByJson(json);
+//		String token = null;
+//		if (StringUtils.isBlank(sessionId)) {
+//			token = getTokenByJson(json);
+//			if (StringUtils.isBlank(token)) {
+//				return BaseOutput.failure("会话id不存在").setCode(ResultCode.PARAMS_ERROR);
+//			}
+//		}
+//		UserTicket userTicket = null;
+//		if (StringUtils.isNotEmpty(sessionId)) {
+//			userTicket = this.userRedis.getUser(sessionId);
+//		} else {
+//			userTicket = this.userRedis.getTokenUser(token);
+//		}
+//		if (userTicket == null) {
+//			return BaseOutput.failure("未获取到登录用户信息");
+//		}
+//		UserPushInfo condition = DTOUtils.newInstance(UserPushInfo.class);
+//		condition.setUserId(userTicket.getId());
+//		this.userPushInfoService.deleteByExample(condition);
+//		userService.logout(sessionId);
 		return BaseOutput.success("登出成功");
 	}
 
@@ -275,147 +244,98 @@ public class AuthenticationApi {
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(value = "/loginout.api", method = { RequestMethod.POST })
+	@RequestMapping(value = "/logout.api", method = { RequestMethod.POST })
 	@ResponseBody
-	public BaseOutput loginout(@RequestBody String json, HttpServletRequest request) {
-		String sessionId = getSessionIdByJson(json);
-		if (StringUtils.isBlank(sessionId)) {
-			return BaseOutput.failure("会话id不存在").setCode(ResultCode.PARAMS_ERROR);
-		}
-		userService.logout(sessionId);
+	public BaseOutput logout(@RequestParam String refreshToken) {
+		userService.logout(refreshToken);
 		return BaseOutput.success("登出成功");
 	}
 
 	/**
-	 * 根据sessionId取用户名
-	 * 
-	 * @param json
-	 * @return
-	 */
-	@RequestMapping(value = "/getUserNameBySessionId.api", method = { RequestMethod.POST })
-	@ResponseBody
-	public BaseOutput getUserNameBySessionId(@RequestBody String json) {
-		String sessionId = getSessionIdByJson(json);
-		if (StringUtils.isBlank(sessionId)) {
-			return BaseOutput.failure("会话id不存在").setCode(ResultCode.PARAMS_ERROR);
-		}
-		String userName = userRedis.getUserNameBySessionId(sessionId);
-		return userName == null ? BaseOutput.failure("未登录").setCode(ResultCode.NOT_AUTH_ERROR) : BaseOutput.success(userName);
-	}
-
-	/**
 	 * 根据sessionId获取系统权限列表，如果未登录将返回空
-	 * 
-	 * @param json
+	 * @param accessToken
+	 * @param refreshToken
 	 * @return
 	 */
 	@RequestMapping(value = "/listSystems.api", method = { RequestMethod.POST })
 	@ResponseBody
-	public BaseOutput<List<Systems>> listSystems(@RequestBody String json) {
-		String sessionId = getSessionIdByJson(json);
-		if (StringUtils.isBlank(sessionId)) {
-			return BaseOutput.failure("会话id不存在").setCode(ResultCode.PARAMS_ERROR);
-		}
-		Long userId = userRedis.getSessionUserId(sessionId);
-		if (userId == null) {
+	public BaseOutput<List<Systems>> listSystems(@RequestParam String accessToken, @RequestParam String refreshToken) {
+		UserTicket userTicket = authService.getUserTicket(accessToken, refreshToken);
+		if (userTicket == null) {
 			return BaseOutput.failure("用户未登录").setCode(ResultCode.NOT_AUTH_ERROR);
 		}
-		return BaseOutput.success("调用成功").setData(userSystemRedis.getRedisUserSystems(userId));
+		return BaseOutput.success("调用成功").setData(userSystemRedis.getRedisUserSystems(userTicket.getId(), userTicket.getSystemType()));
 	}
 
 	/**
 	 * 获取菜单权限列表
-	 * 
-	 * @param json
+	 * @param accessToken
+	 * @param refreshToken
+	 * @param systemId
 	 * @return
 	 */
-	@RequestMapping(value = "/listMenus.api", method = { RequestMethod.POST })
+	@PostMapping(value = "/listMenus.api")
 	@ResponseBody
-	public BaseOutput<Object> listMenus(@RequestBody String json) {
-		JSONObject jsonObject = JSONObject.parseObject(json);
-		String sessionId = jsonObject.getString("sessionId");
-		String systemId = jsonObject.getString("systemId");
-		if (StringUtils.isBlank(sessionId)) {
-			return BaseOutput.failure("会话id不存在").setCode(ResultCode.PARAMS_ERROR);
-		}
-		Long userId = userRedis.getSessionUserId(sessionId);
-		if (userId == null) {
+	public BaseOutput<Object> listMenus(@RequestParam String accessToken, @RequestParam String refreshToken, @RequestParam(required = false) Long systemId) {
+		UserTicket userTicket = authService.getUserTicket(accessToken, refreshToken);
+		if (userTicket == null) {
 			return BaseOutput.failure("用户未登录").setCode(ResultCode.NOT_AUTH_ERROR);
 		}
-		Map param = new HashMap(2);
-		param.put("userId", userId);
+		Map param = new HashMap(4);
+		param.put("userId", userTicket.getId());
 		param.put("systemId", systemId);
 		return BaseOutput.success("调用成功").setData(this.menuMapper.listClientMenus(param));
 	}
 
 	/**
 	 * 获取资源权限列表
-	 * 
-	 * @param json
+	 * @param accessToken
+	 * @param refreshToken
+	 * @param systemId
 	 * @return
 	 */
-	@RequestMapping(value = "/listResources.api", method = { RequestMethod.POST })
+	@PostMapping(value = "/listResources.api")
 	@ResponseBody
-	public BaseOutput<List<Resource>> listResources(@RequestBody String json) {
-		JSONObject jsonObject = JSONObject.parseObject(json);
-		String sessionId = jsonObject.getString("sessionId");
-		Long systemId = jsonObject.getLong("systemId");
-		if (StringUtils.isBlank(sessionId)) {
-			return BaseOutput.failure("会话id不存在").setCode(ResultCode.PARAMS_ERROR);
-		}
-		Long userId = userRedis.getSessionUserId(sessionId);
-		if (userId == null) {
+	public BaseOutput<List<Resource>> listResources(@RequestParam String accessToken, @RequestParam String refreshToken, @RequestParam(required = false) Long systemId) {
+		UserTicket userTicket = authService.getUserTicket(accessToken, refreshToken);
+		if (userTicket == null) {
 			return BaseOutput.failure("用户未登录").setCode(ResultCode.NOT_AUTH_ERROR);
 		}
 		if (systemId == null) {
-			return BaseOutput.success("调用成功").setData(this.resourceMapper.listByUserId(userId));
+			return BaseOutput.success("调用成功").setData(this.resourceMapper.listByUserId(userTicket.getId(), SystemType.WEB.getCode()));
 		}
-		return BaseOutput.success("调用成功").setData(this.resourceMapper.listByUserIdAndSystemId(userId, systemId));
+		return BaseOutput.success("调用成功").setData(this.resourceMapper.listByUserIdAndSystemId(userTicket.getId(), systemId));
 	}
 
 	/**
 	 * 获取数据权限列表
-	 * 
-	 * @param json
+	 * @param accessToken
+	 * @param refreshToken
 	 * @return
 	 */
-	@RequestMapping(value = "/listDataAuthes.api", method = { RequestMethod.POST })
+	@PostMapping(value = "/listDataAuthes.api")
 	@ResponseBody
-	public BaseOutput<List<Map>> listDataAuthes(@RequestBody String json) {
-		JSONObject jsonObject = JSONObject.parseObject(json);
-		String sessionId = jsonObject.getString("sessionId");
-		String refCode = jsonObject.getString("refCode");
-		if (StringUtils.isBlank(sessionId)) {
-			return BaseOutput.failure("会话id不存在").setCode(ResultCode.PARAMS_ERROR);
-		}
-		Long userId = userRedis.getSessionUserId(sessionId);
-		if (userId == null) {
+	public BaseOutput<List<Map>> listDataAuthes(@RequestParam String accessToken, @RequestParam String refreshToken, @RequestParam String refCode) {
+		UserTicket userTicket = authService.getUserTicket(accessToken, refreshToken);
+		if (userTicket == null) {
 			return BaseOutput.failure("用户未登录").setCode(ResultCode.NOT_AUTH_ERROR);
 		}
-		// 返回UserDataAuth列表
-		return BaseOutput.success("调用成功").setData(dataAuthManager.listUserDataAuthesByRefCode(userId, refCode));
+		//返回UserDataAuth列表
+		return BaseOutput.success("调用成功").setData(dataAuthManager.listUserDataAuthesByRefCode(userTicket.getId(), refCode));
 	}
 
 	/**
 	 * 获取数据权限详情列表
-	 * 
-	 * @param json
+	 * @param accessToken
+	 * @param refreshToken
+	 * @param refCode
 	 * @return
 	 */
 	@RequestMapping(value = "/listDataAuthDetails.api", method = { RequestMethod.POST })
 	@ResponseBody
-	public BaseOutput<Map<String, Map>> listDataAuthDetails(@RequestBody String json) {
-		JSONObject jsonObject = JSONObject.parseObject(json);
-		String sessionId = jsonObject.getString("sessionId");
-		String refCode = jsonObject.getString("refCode");
-		if (StringUtils.isBlank(sessionId)) {
-			return BaseOutput.failure("会话id不存在").setCode(ResultCode.PARAMS_ERROR);
-		}
-		if (StringUtils.isBlank(refCode)) {
-			return BaseOutput.failure("refCode不存在").setCode(ResultCode.PARAMS_ERROR);
-		}
-		Long userId = userRedis.getSessionUserId(sessionId);
-		if (userId == null) {
+	public BaseOutput<Map<String, Map>> listDataAuthDetails(@RequestParam String accessToken, @RequestParam String refreshToken, @RequestParam String refCode) {
+		UserTicket userTicket = authService.getUserTicket(accessToken, refreshToken);
+		if (userTicket == null) {
 			return BaseOutput.failure("用户未登录").setCode(ResultCode.NOT_AUTH_ERROR);
 		}
 		// 查询数据权限引用dataAuthRef
@@ -426,7 +346,7 @@ public class AuthenticationApi {
 			return BaseOutput.failure("数据权限引用不存在");
 		}
 		// 从Redis获取用户有权限的UserDataAuth列表
-		List<Map> userDataAuthes = this.dataAuthRedis.dataAuth(refCode, userId);
+		List<Map> userDataAuthes = this.dataAuthRedis.dataAuth(refCode, userTicket.getId());
 		if (CollectionUtils.isEmpty(userDataAuthes)) {
 			return BaseOutput.success("调用成功").setData(userDataAuthes);
 		}
@@ -442,72 +362,25 @@ public class AuthenticationApi {
 	 * @param json
 	 * @return
 	 */
-	@RequestMapping(value = "/changePwd.api", method = { RequestMethod.GET, RequestMethod.POST })
+	@PostMapping(value = "/changePwd.api")
 	@ResponseBody
 	public BaseOutput changePwd(@RequestBody String json) {
 		JSONObject jsonObject = JSONObject.parseObject(json);
-		String sessionId = jsonObject.getString("sessionId");
+		String accessToken = jsonObject.getString("accessToken");
+		String refreshToken = jsonObject.getString("refreshToken");
 		String oldPassword = jsonObject.getString("oldPassword");
 		String newPassword = jsonObject.getString("newPassword");
 		String confirmPassword = jsonObject.getString("confirmPassword");
-		if (StringUtils.isBlank(sessionId)) {
-			return BaseOutput.failure("会话id不存在").setCode(ResultCode.PARAMS_ERROR);
+		UserTicket userTicket = authService.getUserTicket(accessToken, refreshToken);
+		if (userTicket == null) {
+			return BaseOutput.failure("用户未登录").setCode(ResultCode.NOT_AUTH_ERROR);
 		}
-		Long userId = userRedis.getSessionUserId(sessionId);
 		UserDto userDto = DTOUtils.newInstance(UserDto.class);
-		userDto.setId(userId);
+		userDto.setId(userTicket.getId());
 		userDto.setNewPassword(newPassword);
 		userDto.setConfirmPassword(confirmPassword);
 		userDto.setOldPassword(oldPassword);
-		return userService.changePwd(userId, userDto);
-	}
-
-	/**
-	 * 修改密码
-	 * 
-	 * @param json
-	 * @return
-	 */
-	@RequestMapping(value = "/changePwdByToken.api", method = { RequestMethod.GET, RequestMethod.POST })
-	@ResponseBody
-	public BaseOutput changePwdByToken(@RequestBody String json) {
-		JSONObject jsonObject = JSONObject.parseObject(json);
-		String token = jsonObject.getString("token");
-		String oldPassword = jsonObject.getString("oldPassword");
-		String newPassword = jsonObject.getString("newPassword");
-		String confirmPassword = jsonObject.getString("confirmPassword");
-		if (StringUtils.isBlank(token)) {
-			return BaseOutput.failure("会话id不存在").setCode(ResultCode.PARAMS_ERROR);
-		}
-		Long userId = userRedis.getTokenUserId(token);
-		UserDto userDto = DTOUtils.newInstance(UserDto.class);
-		userDto.setId(userId);
-		userDto.setNewPassword(newPassword);
-		userDto.setConfirmPassword(confirmPassword);
-		userDto.setOldPassword(oldPassword);
-		return userService.changePwd(userId, userDto);
-	}
-
-	/**
-	 * 从json中获取sessionId
-	 * 
-	 * @param json
-	 * @return
-	 */
-	private String getSessionIdByJson(String json) {
-		JSONObject jsonObject = JSONObject.parseObject(json);
-		return jsonObject.getString("sessionId");
-	}
-
-	/**
-	 * 从json中获取token
-	 * 
-	 * @param json
-	 * @return
-	 */
-	private String getTokenByJson(String json) {
-		JSONObject jsonObject = JSONObject.parseObject(json);
-		return jsonObject.getString("token");
+		return userService.changePwd(userTicket.getId(), userDto);
 	}
 
 	/**

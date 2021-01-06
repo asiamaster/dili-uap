@@ -1,20 +1,8 @@
 package com.dili.uap.api;
 
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.alibaba.csp.sentinel.EntryType;
 import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.alibaba.csp.sentinel.slots.block.BlockException;
-import com.alibaba.fastjson.JSONObject;
 import com.dili.bpmc.sdk.domain.TaskMapping;
 import com.dili.bpmc.sdk.dto.Assignment;
 import com.dili.ss.constant.ResultCode;
@@ -25,7 +13,12 @@ import com.dili.uap.sdk.domain.Firm;
 import com.dili.uap.sdk.domain.FirmState;
 import com.dili.uap.sdk.domain.dto.FirmDto;
 import com.dili.uap.service.FirmService;
-import com.google.common.collect.Lists;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * 由MyBatis Generator工具自动生成 This file was generated on 2017-07-11 16:56:50.
@@ -126,7 +119,7 @@ public class FirmApi {
 
 	/**
 	 * 流控中心获取市场创建人接口
-	 * 
+	 *
 	 * @param taskMapping
 	 * @return
 	 */

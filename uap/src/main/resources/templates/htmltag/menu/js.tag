@@ -147,6 +147,7 @@ function addResourceLink() {
             return;
         }
     }
+
     $.ajax({
         type: "POST",
         url: "${contextPath}/resource/addResourceLink.action",
@@ -160,7 +161,7 @@ function addResourceLink() {
             if (null == opts.url || "" == opts.url) {
                 opts.url = "${contextPath}/resource/listResourceLink.action";
             }
-            $("#grid3").datagrid("load", bindGridMeta2Data("grid3", {resourceCode:selected1.code}));
+            $("#grid3").datagrid("load", bindGridMeta2Data("grid3", {resourceCode:selected1.id}));
         },
         error: function () {
             swal('错误', '远程访问失败', 'error');
@@ -340,7 +341,7 @@ function clickResource(index, row) {
         opts.url = "${contextPath}/resource/listResourceLink.action";
     }
     // 渲染权限列表
-    $("#grid3").datagrid("load", bindGridMeta2Data("grid3", {resourceCode:row.code}));
+    $("#grid3").datagrid("load", bindGridMeta2Data("grid3", {resourceId:row.id}));
     $("#grid3").datagrid('getPanel').removeClass('lines-both lines-no lines-right lines-bottom').addClass("lines-bottom");
 }
 /**

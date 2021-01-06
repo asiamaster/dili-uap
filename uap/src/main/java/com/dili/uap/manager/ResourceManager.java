@@ -1,9 +1,5 @@
 package com.dili.uap.manager;
 
-import javax.validation.constraints.NotNull;
-
-import com.dili.uap.sdk.validator.ModifyView;
-
 /**
  * 资源管理者
  * 
@@ -17,13 +13,19 @@ public interface ResourceManager {
 	 * 
 	 * @param userId
 	 */
-	void initUserResourceCodeInRedis(Long userId);
+	void initWebUserResourceCodeInRedis(Long userId);
 
 	/**
 	 * 初始化用户APP资源权限到redis
 	 * 
 	 * @param userId
 	 */
-	void initUserResourceCodeTokenInRedis(Long userId);
+	void initAppUserResourceCodeInRedis(Long userId);
 
+	/**
+	 * 初始化用户资源权限到redis
+	 * @param userId
+	 * @param systemType
+	 */
+	void initUserResourceCodeInRedis(Long userId, Integer systemType);
 }

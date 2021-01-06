@@ -112,10 +112,6 @@ public class WebContent {
 		return map.get(key);
 	}
 
-	public static void clean() {
-		local.set(null);
-	}
-
 	public static void setCookie(String key, String val) {
 		setCookie(key, val, SessionConstants.COOKIE_TIMEOUT, getCookieDomain(getRequest().getRequestURL().toString()));
 	}
@@ -144,6 +140,16 @@ public class WebContent {
 		} catch (UnsupportedEncodingException e) {
 			throw new RuntimeException("cookie写入失败");
 		}
+	}
+
+	/**
+	 * 设置ResponseHeader
+	 * @param key
+	 * @param val
+	 */
+	public static void setResponseHeader(String key, String val) {
+		HttpServletResponse resp = WebContent.getResponse();
+		resp.setHeader(key, val);
 	}
 
 	public static String getCookie(String key) {

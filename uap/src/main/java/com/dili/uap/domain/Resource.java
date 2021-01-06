@@ -52,6 +52,13 @@ public interface Resource extends IBaseDomain {
 
     void setCode(String code);
 
+    @Column(name = "`system_type`")
+    @FieldDef(label="系统类型", maxLength = 2)
+    @EditMode(editor = FieldEditor.Number, required = false)
+    Integer getSystemType();
+
+    void setSystemType(Integer systemType);
+
     @Column(name = "`created`")
     @FieldDef(label="创建时间")
     @EditMode(editor = FieldEditor.Datetime, required = true)

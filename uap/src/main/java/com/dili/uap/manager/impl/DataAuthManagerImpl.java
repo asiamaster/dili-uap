@@ -5,8 +5,9 @@ import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.dao.UserDataAuthMapper;
 import com.dili.uap.manager.DataAuthManager;
 import com.dili.uap.sdk.domain.UserDataAuth;
+import com.dili.uap.sdk.glossary.SystemType;
 import com.dili.uap.sdk.session.DynaSessionConstants;
-import com.dili.uap.sdk.session.SessionConstants;
+import com.dili.uap.sdk.util.KeyBuilder;
 import com.dili.uap.sdk.util.ManageRedisUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,21 +36,13 @@ public class DataAuthManagerImpl implements DataAuthManager {
 	private DynaSessionConstants dynaSessionConstants;
 
 	@Override
-	public void initUserDataAuthesInRedis(Long userId) {
-		UserDataAuth userDataAuth = DTOUtils.newInstance(UserDataAuth.class);
-		userDataAuth.setUserId(userId);
-		// 查询数据权限，需要合并下面的部门数据权限列表
-		List<UserDataAuth> userDataAuths = this.userDataAuthMapper.select(userDataAuth);
-		String key = SessionConstants.USER_DATA_AUTH_KEY + userId;
-		this.redisUtil.remove(key);
-		if (CollectionUtils.isEmpty(userDataAuths)) {
-			return;
-		}
-		BoundSetOperations<String, Object> ops = this.redisUtil.getRedisTemplate().boundSetOps(key);
-		ops.expire(dynaSessionConstants.getSessionTimeout(), TimeUnit.SECONDS);
-		for (UserDataAuth dataAuth : userDataAuths) {
-			ops.add(JSON.toJSONString(dataAuth));
-		}
+	public void initWebUserDataAuthesInRedis(Long userId) {
+		initUserDataAuthesInRedis(userId, SystemType.WEB.getCode());
+	}
+
+	@Override
+	public void initAppUserDataAuthesInRedis(Long userId) {
+		initUserDataAuthesInRedis(userId, SystemType.APP.getCode());
 	}
 
 	@Override
@@ -67,19 +60,24 @@ public class DataAuthManagerImpl implements DataAuthManager {
 		return this.userDataAuthMapper.select(userDataAuth);
 	}
 
-	@Override
-	public void initUserDataAuthesTokenInRedis(Long userId) {
+	/**
+	 * 初始化数据权限到redis
+	 * @param userId
+	 * @param systemType
+	 */
+	public void initUserDataAuthesInRedis(Long userId, Integer systemType) {
 		UserDataAuth userDataAuth = DTOUtils.newInstance(UserDataAuth.class);
 		userDataAuth.setUserId(userId);
 		// 查询数据权限，需要合并下面的部门数据权限列表
 		List<UserDataAuth> userDataAuths = this.userDataAuthMapper.select(userDataAuth);
-		String key = SessionConstants.USER_DATA_AUTH_TOKEN_KEY + userId;
+		String key = KeyBuilder.buildUserDataAuthKey(userId.toString(), systemType);
 		this.redisUtil.remove(key);
 		if (CollectionUtils.isEmpty(userDataAuths)) {
 			return;
 		}
 		BoundSetOperations<String, Object> ops = this.redisUtil.getRedisTemplate().boundSetOps(key);
-		ops.expire(dynaSessionConstants.getTokenTimeout(), TimeUnit.SECONDS);
+		Long sessionTimeout = SystemType.WEB.getCode().equals(systemType) ? dynaSessionConstants.getWebRefreshTokenTimeout() : dynaSessionConstants.getAppRefreshTokenTimeout();
+		ops.expire(sessionTimeout, TimeUnit.SECONDS);
 		for (UserDataAuth dataAuth : userDataAuths) {
 			ops.add(JSON.toJSONString(dataAuth));
 		}

@@ -10,37 +10,9 @@
     <result column="push_id" jdbcType="VARCHAR" property="pushId" />
     <result column="platform" jdbcType="VARCHAR" property="platform" />
   </resultMap>
-  <sql id="Base_Column_List">
-    <!--
-      WARNING - @mbg.generated
-    -->
-    id, user_id, push_id, platform
-  </sql>
-  <select id="selectBy" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    <!--
-      WARNING - @mbg.generated
-    -->
-    select 
-    <include refid="Base_Column_List" />
-    from user_push_info
-    where id = #{id,jdbcType=BIGINT}
-  </select>
-  <update id="updateBy" parameterType="com.dili.uap.sdk.domain.UserPushInfo">
-    <!--
-      WARNING - @mbg.generated
-    -->
-    update user_push_info
-    <set>
-      <if test="userId != null">
-        user_id = #{userId,jdbcType=BIGINT},
-      </if>
-      <if test="pushId != null">
-        push_id = #{pushId,jdbcType=VARCHAR},
-      </if>
-      <if test="platform != null">
-        platform = #{platform,jdbcType=VARCHAR},
-      </if>
-    </set>
-    where id = #{id,jdbcType=BIGINT}
-  </update>
+
+  <!-- 根据角色ID删除角色-菜单 信息 -->
+  <delete id="deleteByUserIdOrPushId" >
+    delete from user_push_info where user_id = #{userId} or push_id = #{pushId}
+  </delete>
 </mapper>

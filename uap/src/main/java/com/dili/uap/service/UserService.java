@@ -141,7 +141,7 @@ public interface UserService extends BaseService<User, Long> {
 	 * @param userId 用户ID
 	 * @return
 	 */
-	BaseOutput forcedOffline(Long userId);
+	BaseOutput forcedOffline(Long userId, Integer systemType);
 
 	/**
 	 * 根据用户，查询用户对应角色，部门信息

@@ -100,6 +100,13 @@ public interface Menu extends IBaseDomain, IMybatisForceParams {
 
 	void setType(Integer type);
 
+	@Column(name = "`system_type`")
+	@FieldDef(label="系统类型", maxLength = 2)
+	@EditMode(editor = FieldEditor.Number, required = false)
+	Integer getSystemType();
+
+	void setSystemType(Integer systemType);
+
 	@Column(name = "`icon_cls`")
 	@FieldDef(label = "菜单图标", maxLength = 40)
 	@EditMode(editor = FieldEditor.Text, required = false)

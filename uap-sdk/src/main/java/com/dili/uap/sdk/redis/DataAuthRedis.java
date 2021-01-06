@@ -74,7 +74,7 @@ public class DataAuthRedis {
     public List<Map> dataAuth(Long userId) {
         BoundSetOperations<String, String> boundSetOperations = redisUtil.getRedisTemplate().boundSetOps (SessionConstants.USER_DATA_AUTH_KEY + userId);
         List<Map> dataAuthMap = new ArrayList<>();
-        if(boundSetOperations.size()<=0) {
+        if(boundSetOperations.size() <= 0) {
             return dataAuthMap;
         }
         //根据类型过滤

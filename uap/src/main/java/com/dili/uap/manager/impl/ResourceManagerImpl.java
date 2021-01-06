@@ -3,11 +3,10 @@ package com.dili.uap.manager.impl;
 import com.dili.uap.dao.ResourceMapper;
 import com.dili.uap.domain.Resource;
 import com.dili.uap.manager.ResourceManager;
+import com.dili.uap.sdk.glossary.SystemType;
 import com.dili.uap.sdk.session.DynaSessionConstants;
-import com.dili.uap.sdk.session.SessionConstants;
+import com.dili.uap.sdk.util.KeyBuilder;
 import com.dili.uap.sdk.util.ManageRedisUtil;
-import com.dili.uap.sdk.validator.ModifyView;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -19,8 +18,6 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
-import javax.validation.constraints.NotNull;
 
 /**
  *
@@ -41,30 +38,23 @@ public class ResourceManagerImpl implements ResourceManager {
 	private DynaSessionConstants dynaSessionConstants;
 
 	@Override
-	public void initUserResourceCodeInRedis(Long userId) {
-		List<Resource> resources = this.resourceMapper.listByUserId(userId);
-		if (CollectionUtils.isEmpty(resources)) {
-			return;
-		}
-		List<String> codes = new ArrayList<>(resources.size());
-		for (Resource resource : resources) {
-			if (StringUtils.isNotBlank(resource.getCode())) {
-				codes.add(resource.getCode());
-			}
-		}
-		if (CollectionUtils.isEmpty(codes)) {
-			return;
-		}
-		String key = SessionConstants.USER_RESOURCE_CODE_KEY + userId;
-		this.redisUtils.remove(key);
-		BoundSetOperations<String, Object> ops = this.redisUtils.getRedisTemplate().boundSetOps(key);
-		ops.expire(dynaSessionConstants.getSessionTimeout(), TimeUnit.SECONDS);
-		ops.add(codes.toArray());
+	public void initWebUserResourceCodeInRedis(Long userId) {
+		initUserResourceCodeInRedis(userId, SystemType.WEB.getCode());
 	}
 
 	@Override
-	public void initUserResourceCodeTokenInRedis(Long userId) {
-		List<Resource> resources = this.resourceMapper.listByUserId(userId);
+	public void initAppUserResourceCodeInRedis(Long userId) {
+		initUserResourceCodeInRedis(userId, SystemType.APP.getCode());
+	}
+
+	/**
+	 * 初始化用户资源权限到redis
+	 * @param userId
+	 * @param systemType
+	 */
+	@Override
+	public void initUserResourceCodeInRedis(Long userId, Integer systemType) {
+		List<Resource> resources = this.resourceMapper.listByUserId(userId, systemType);
 		if (CollectionUtils.isEmpty(resources)) {
 			return;
 		}
@@ -77,10 +67,11 @@ public class ResourceManagerImpl implements ResourceManager {
 		if (CollectionUtils.isEmpty(codes)) {
 			return;
 		}
-		String key = SessionConstants.USER_RESOURCE_CODE_TOKEN_KEY + userId;
+		String key = KeyBuilder.buildUserResourceCodeKey(userId.toString(), systemType);
 		this.redisUtils.remove(key);
 		BoundSetOperations<String, Object> ops = this.redisUtils.getRedisTemplate().boundSetOps(key);
-		ops.expire(dynaSessionConstants.getTokenTimeout(), TimeUnit.SECONDS);
+		ops.expire(dynaSessionConstants.getRefreshTokenTimeout(systemType), TimeUnit.SECONDS);
 		ops.add(codes.toArray());
 	}
+
 }

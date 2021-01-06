@@ -1,8 +1,8 @@
 package com.dili.uap.manager;
 
-import java.util.List;
-
 import com.dili.uap.sdk.domain.UserDataAuth;
+
+import java.util.List;
 
 /**
  * 数据权限管理者
@@ -17,7 +17,7 @@ public interface DataAuthManager {
 	 * 
 	 * @param userId 用户id
 	 */
-	void initUserDataAuthesInRedis(Long userId);
+	void initWebUserDataAuthesInRedis(Long userId);
 
 	/**
 	 * 根据用户id和数据权限引用编码获取指定数据权限
@@ -41,6 +41,12 @@ public interface DataAuthManager {
 	 * 
 	 * @param userId 用户id
 	 */
-	void initUserDataAuthesTokenInRedis(Long userId);
+	void initAppUserDataAuthesInRedis(Long userId);
 
+	/**
+	 * 初始化数据权限到redis
+	 * @param userId
+	 * @param systemType
+	 */
+	void initUserDataAuthesInRedis(Long userId, Integer systemType);
 }

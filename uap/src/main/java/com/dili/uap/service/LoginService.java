@@ -20,20 +20,12 @@ public interface LoginService {
 	BaseOutput<String> validate(LoginDto loginDto);
 
 	/**
-	 * 验证用户名和密码
-	 * 
-	 * @param loginDto
-	 * @return
-	 */
-	BaseOutput<String> validateSaveSession(LoginDto loginDto);
-
-	/**
 	 * 根据用户名和密码登录，返回登录结果DTO
 	 * 
 	 * @param loginDto
 	 * @return
 	 */
-	BaseOutput<LoginResult> login(LoginDto loginDto);
+	BaseOutput<LoginResult> loginWeb(LoginDto loginDto);
 
 	/**
 	 * 登录并标记(标记到Cookie) 根据用户名和密码登录，返回是否登录成功
@@ -46,17 +38,17 @@ public interface LoginService {
 	/**
 	 * 记录登出日志
 	 * 
-	 * @param loginLog
+	 * @param user
 	 */
 	void logLogout(UserTicket user);
 
 	/**
-	 * 根据sessionId登录
-	 * 
-	 * @param sessionId
+	 * 根据accessToken和refreshToken登录
+	 * @param accessToken
+	 * @param refreshToken
 	 * @return
 	 */
-	BaseOutput<Boolean> loginBySession(String sessionId);
+	BaseOutput<Boolean> loginByTokens(String accessToken, String refreshToken);
 
 	/**
 	 * 锁定用户
@@ -72,5 +64,5 @@ public interface LoginService {
 	 * @param loginDto
 	 * @return
 	 */
-	BaseOutput<LoginResult> loginFromApp(LoginDto loginDto);
+	BaseOutput<LoginResult> loginApp(LoginDto loginDto);
 }

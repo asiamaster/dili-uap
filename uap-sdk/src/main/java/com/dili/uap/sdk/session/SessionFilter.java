@@ -2,7 +2,6 @@ package com.dili.uap.sdk.session;
 
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
-import com.dili.ss.util.SpringUtil;
 import com.dili.uap.sdk.domain.Menu;
 import com.dili.uap.sdk.domain.SystemExceptionLog;
 import com.dili.uap.sdk.domain.UserTicket;
@@ -21,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import javax.security.auth.login.LoginException;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -41,16 +41,19 @@ public class SessionFilter implements Filter {
 	private ManageConfig config;
 	// 过滤器配置，留待使用
 	private FilterConfig filterConfig;
-
+	@SuppressWarnings("all")
 	@Autowired
 	private MenuRpc menuRpc;
 
 	@Autowired
 	private UserUrlRedis userResRedis;
 
+	@SuppressWarnings("all")
 	@Autowired
 	private SystemExceptionLogRpc systemExceptionLogRpc;
 
+	@Resource
+	DynaSessionConstants dynaSessionConstants;
 	@Override
 	public void destroy() {
 	}
@@ -62,40 +65,44 @@ public class SessionFilter implements Filter {
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain filter) throws IOException, ServletException {
-		WebContent.resetLocal();
-		SessionContext.resetLocal();
-		HttpServletRequest req = (HttpServletRequest) request;
-		HttpServletResponse resp = (HttpServletResponse) response;
-		WebContent.put(req);
-		WebContent.put(resp);
-		String domain = SpringUtil.getBean(DynaSessionConstants.class).getUapContextPath();
-		PermissionContext pc = new PermissionContext(req, resp, this, config, domain);
-		WebContent.put(SessionConstants.MANAGE_PERMISSION_CONTEXT, pc);
-		// 如果是框架导出，需要手动设置SessionId到Header中，因为restful取不到cookies
-		if (pc.getReq().getRequestURI().trim().endsWith("/export/serverExport.action")) {
-			MutableHttpServletRequest mreq = new MutableHttpServletRequest(req);
-			mreq.putHeader(SessionConstants.SESSION_ID, pc.getSessionId());
-			req = mreq;
-		}
-		// 判断是否要(include或exclude)权限检查, 不过滤就直接放过
-		if (!config.hasChecked()) {
-			filter.doFilter(req, resp);
-			return;
-		}
-		WebContent.put(req);
-		WebContent.put(resp);
-		// 如果作登录验证，则不进行其它权限验证
-		if (config.isLoginCheck()) {
-			if (pc.getUser() == null) {
-				pc.noAccess();
-				systemExceptionLog(pc, new LoginException("用户未登录"));
-			} else {
-				filter.doFilter(req, resp);
-				SessionContext.remove();
+		try {
+			HttpServletRequest req = (HttpServletRequest) request;
+			HttpServletResponse resp = (HttpServletResponse) response;
+			//添加可以返回自定义header信息
+			resp.setHeader("Access-Control-Expose-Headers",SessionConstants.ACCESS_TOKEN_KEY);
+			//设置跨域的时候还要设置一个Cache-Control,无的话会导致前端无法从缓存获取头token
+			resp.setHeader("Cache-Control", "no-store");
+			WebContent.put(req);
+			WebContent.put(resp);
+			PermissionContext pc = new PermissionContext(req, resp, this, config, dynaSessionConstants.getUapContextPath());
+			WebContent.put(SessionConstants.MANAGE_PERMISSION_CONTEXT, pc);
+			// 如果是框架导出，需要手动设置SessionId到Header中，因为restful取不到cookies
+			if (pc.getReq().getRequestURI().trim().endsWith("/export/serverExport.action")) {
+				MutableHttpServletRequest mreq = new MutableHttpServletRequest(req);
+				mreq.putHeader(SessionConstants.SESSION_ID, pc.getAccessToken());
+				req = mreq;
+				WebContent.put(req);
 			}
-			return;
+			// 判断是否要(include或exclude)权限检查, 不过滤就直接放过
+			if (!config.hasChecked()) {
+				filter.doFilter(req, resp);
+				return;
+			}
+			// 如果作登录验证，则不进行其它权限验证
+			if (config.isLoginCheck()) {
+				if (pc.getUserTicket() == null) {
+					pc.noAccess();
+					systemExceptionLog(pc, new LoginException("用户未登录"));
+				} else {
+					filter.doFilter(req, resp);
+				}
+				return;
+			}
+			proxyHandle(req, resp, filter);
+		}finally {
+			WebContent.resetLocal();
+			SessionContext.resetLocal();
 		}
-		proxyHandle(req, resp, filter);
 	}
 
 	/**
@@ -126,7 +133,7 @@ public class SessionFilter implements Filter {
 			pc.noLogin();
 		} catch (NotAccessPermissionException e) {
 			if (log.isInfoEnabled()) {
-				log.info("用户{Session:" + pc.getSessionId() + ", userId:" + pc.getUserId() + "}没有访问" + pc.getUrl() + "权限！");
+				log.info("没有访问" + pc.getUrl() + "权限！");
 			}
 			pc.nonPermission();
 		} catch (Exception e) {
@@ -200,13 +207,14 @@ public class SessionFilter implements Filter {
 	 * @param pc
 	 */
 	private void checkUser(PermissionContext pc) {
-		UserTicket user = pc.getUser();
+		UserTicket user = pc.getUserTicket();
 		if (user == null) {
 			throw new NotLoginException();
 		}
-		if (userResRedis.checkUserMenuUrlRight(user.getId(), pc.getUrl())) {
+		if (userResRedis.checkUserMenuUrlRight(user.getId(), user.getSystemType(), pc.getUrl())) {
 			return;
 		}
+
 		// 检测授权
 //        UserTicket auth = pc.getAuthorizer();
 //        if(auth == null){

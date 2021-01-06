@@ -1,9 +1,5 @@
 package com.dili.uap.manager;
 
-import javax.validation.constraints.NotNull;
-
-import com.dili.uap.sdk.validator.ModifyView;
-
 /**
  * 系统管理者
  * 
@@ -17,13 +13,19 @@ public interface SystemManager {
 	 * 
 	 * @param userId
 	 */
-	void initUserSystemInRedis(Long userId);
+	void initWebUserSystemInRedis(Long userId);
 
 	/**
 	 * 初始化用户移动端系统列表到redis
 	 * 
 	 * @param userId
 	 */
-	void initUserSystemTokenInRedis(Long id);
+	void initAppUserSystemInRedis(Long userId);
 
+	/**
+	 * 根据系统类型初始化用户系统列表到redis
+	 *
+	 * @param userId
+	 */
+	void initUserSystemInRedis(Long userId, Integer systemType);
 }

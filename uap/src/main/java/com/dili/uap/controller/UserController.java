@@ -14,7 +14,9 @@ import com.dili.uap.constants.UapConstants;
 import com.dili.uap.domain.dto.UserDto;
 import com.dili.uap.sdk.component.DataAuthSource;
 import com.dili.uap.sdk.domain.*;
+import com.dili.uap.sdk.exception.NotLoginException;
 import com.dili.uap.sdk.glossary.DataAuthType;
+import com.dili.uap.sdk.glossary.SystemType;
 import com.dili.uap.sdk.service.DataAuthSourceService;
 import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.sdk.validator.AddView;
@@ -69,8 +71,12 @@ public class UserController {
 	 */
 	@RequestMapping(value = "/index.html", method = RequestMethod.GET)
 	public String index(ModelMap modelMap) {
-		String firmCode = SessionContext.getSessionContext().getUserTicket().getFirmCode();
-		Long departmentId = SessionContext.getSessionContext().getUserTicket().getDepartmentId();
+		UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
+		if(userTicket == null){
+			throw new NotLoginException();
+		}
+		String firmCode = userTicket.getFirmCode();
+		Long departmentId = userTicket.getDepartmentId();
 		// 用户是否属于集团
 		Boolean isGroup = false;
 		Firm query = DTOUtils.newInstance(Firm.class);
@@ -539,7 +545,7 @@ public class UserController {
 	@RequestMapping(value = "/forcedOffline.action", method = { RequestMethod.GET, RequestMethod.POST })
 	public @ResponseBody BaseOutput forcedOffline(Long id) {
 		User user = this.userService.get(id);
-		BaseOutput output = userService.forcedOffline(id);
+		BaseOutput output = userService.forcedOffline(id, SystemType.WEB.getCode());
 		if (output.isSuccess()) {
 			LoggerContext.put(LoggerConstant.LOG_BUSINESS_CODE_KEY, user.getUserName());
 			LoggerContext.put(LoggerConstant.LOG_BUSINESS_ID_KEY, user.getId());

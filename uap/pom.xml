@@ -176,8 +176,6 @@
 			<version>2.5.1</version>
 		</dependency>
 
-
-
 		<!-- if you enable json support in spring mvc. -->
 		<dependency>
 			<groupId>org.codehaus.jackson</groupId>

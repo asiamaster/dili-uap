@@ -11,13 +11,19 @@ public interface MenuManager {
 	 * 
 	 * @param userId
 	 */
-	void initUserMenuUrlsInRedis(Long userId);
+	void initWebUserMenuUrlsInRedis(Long userId);
 
 	/**
 	 * 初始化移动端用户菜单列表到redis
 	 * 
 	 * @param userId
 	 */
-	void initUserMenuUrlsTokenInRedis(Long userId);
+	void initAppUserMenuUrlsInRedis(Long userId);
 
+	/**
+	 * 初始化用户菜单URL到redis
+	 * @param userId
+	 * @param systemType
+	 */
+	void initUserMenuUrlsInRedis(Long userId, Integer systemType);
 }

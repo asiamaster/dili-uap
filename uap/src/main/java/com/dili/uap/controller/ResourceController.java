@@ -1,17 +1,5 @@
 package com.dili.uap.controller;
 
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.collections4.CollectionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.dili.logger.sdk.annotation.BusinessLogger;
 import com.dili.logger.sdk.base.LoggerContext;
 import com.dili.logger.sdk.glossary.LoggerConstant;
@@ -24,6 +12,17 @@ import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.service.ResourceLinkService;
 import com.dili.uap.service.ResourceService;
+import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * 由MyBatis Generator工具自动生成 This file was generated on 2018-05-21 16:46:27.
@@ -98,7 +97,7 @@ public class ResourceController {
 	 * @param resourceLink
 	 * @return
 	 */
-	@BusinessLogger(businessType = "resource_management", content = "菜单资源绑定：菜单id${menuId}", operationType = "addResourceLink", systemCode = "UAP")
+	@BusinessLogger(businessType = "resource_management", content = "菜单资源绑定：菜单id${menuId}, 资源id${resourceId}", operationType = "addResourceLink", systemCode = "UAP")
 	@RequestMapping(value = "/addResourceLink.action", method = { RequestMethod.GET, RequestMethod.POST })
 	public @ResponseBody BaseOutput addResourceLink(ResourceLink resourceLink) {
 		List<ResourceLink> resourceLinks = resourceLinkService.list(resourceLink);
@@ -106,7 +105,7 @@ public class ResourceController {
 			resourceLinkService.insertSelective(resourceLink);
 			BaseOutput output = BaseOutput.success("绑定资源链接成功").setData(resourceLink.getId());
 			if (output.isSuccess()) {
-				LoggerContext.put(LoggerConstant.LOG_BUSINESS_CODE_KEY, resourceLink.getResourceCode());
+				LoggerContext.put("resourceId", resourceLink.getResourceId());
 				LoggerContext.put(LoggerConstant.LOG_BUSINESS_ID_KEY, resourceLink.getId());
 				LoggerContext.put("menuId", resourceLink.getMenuId());
 				UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
@@ -128,12 +127,12 @@ public class ResourceController {
 	 * @param id
 	 * @return
 	 */
-	@BusinessLogger(businessType = "resource_management", content = "菜单资源绑定：菜单id${menuId}", operationType = "deleteResourceLink", systemCode = "UAP")
+	@BusinessLogger(businessType = "resource_management", content = "菜单资源绑定：菜单id${menuId}, 资源id${resourceId}", operationType = "deleteResourceLink", systemCode = "UAP")
 	@RequestMapping(value = "/deleteResourceLink.action", method = { RequestMethod.GET, RequestMethod.POST })
 	public @ResponseBody BaseOutput deleteResourceLink(@RequestParam Long id) {
 		ResourceLink resourceLink = this.resourceLinkService.get(id);
 		resourceLinkService.delete(id);
-		LoggerContext.put(LoggerConstant.LOG_BUSINESS_CODE_KEY, resourceLink.getResourceCode());
+		LoggerContext.put("resourceId", resourceLink.getResourceId());
 		LoggerContext.put(LoggerConstant.LOG_BUSINESS_ID_KEY, resourceLink.getId());
 		LoggerContext.put("menuId", resourceLink.getMenuId());
 		UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
@@ -184,13 +183,13 @@ public class ResourceController {
 			// 如果菜单树上点的节点是菜单， 需要设置当前节点的父节点
 			resource.setMenuId(Long.parseLong(menuId.substring(5)));
 		}
+		resourceService.updateSelective(resource);
 		// 级联更新ResourceLink,先获取原始ResourceCode
 		Resource resource1 = resourceService.get(resource.getId());
 		ResourceLink resourceLinkCondition = DTOUtils.newInstance(ResourceLink.class);
-		resourceLinkCondition.setResourceCode(resource1.getCode());
-		resourceService.updateSelective(resource);
+		resourceLinkCondition.setResourceId(resource1.getId());
 		ResourceLink resourceLink = DTOUtils.newInstance(ResourceLink.class);
-		resourceLink.setResourceCode(resource.getCode());
+		resourceLink.setResourceId(resource.getId());
 		resourceLinkService.updateSelectiveByExample(resourceLink, resourceLinkCondition);
 		return BaseOutput.success("修改成功");
 	}
@@ -207,7 +206,7 @@ public class ResourceController {
 		Resource resource = resourceService.get(id);
 		resourceService.delete(id);
 		ResourceLink resourceLinkCondition = DTOUtils.newInstance(ResourceLink.class);
-		resourceLinkCondition.setResourceCode(resource.getCode());
+		resourceLinkCondition.setResourceId(id);
 		resourceLinkService.deleteByExample(resourceLinkCondition);
 		return BaseOutput.success("删除成功");
 	}

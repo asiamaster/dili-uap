@@ -23,12 +23,12 @@ public interface ResourceLink extends IBaseDomain {
 
     void setId(Long id);
 
-    @Column(name = "`resource_code`")
-    @FieldDef(label="resourceCode", maxLength = 50)
+    @Column(name = "`resource_id`")
+    @FieldDef(label="resourceId", maxLength = 50)
     @EditMode(editor = FieldEditor.Text, required = false)
-    String getResourceCode();
+    Long getResourceId();
 
-    void setResourceCode(String resourceCode);
+    void setResourceId(Long resourceId);
 
     @Column(name = "`menu_id`")
     @FieldDef(label="menuId")

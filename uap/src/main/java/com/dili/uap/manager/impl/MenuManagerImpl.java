@@ -3,8 +3,9 @@ package com.dili.uap.manager.impl;
 import com.dili.uap.dao.MenuMapper;
 import com.dili.uap.manager.MenuManager;
 import com.dili.uap.sdk.domain.Menu;
+import com.dili.uap.sdk.glossary.SystemType;
 import com.dili.uap.sdk.session.DynaSessionConstants;
-import com.dili.uap.sdk.session.SessionConstants;
+import com.dili.uap.sdk.util.KeyBuilder;
 import com.dili.uap.sdk.util.ManageRedisUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -27,6 +28,7 @@ import java.util.concurrent.TimeUnit;
 public class MenuManagerImpl implements MenuManager {
 	private final static Logger LOG = LoggerFactory.getLogger(MenuManagerImpl.class);
 
+	@SuppressWarnings("all")
 	@Autowired
 	private MenuMapper menuMapper;
 
@@ -37,31 +39,26 @@ public class MenuManagerImpl implements MenuManager {
 	private DynaSessionConstants dynaSessionConstants;
 
 	@Override
-	public void initUserMenuUrlsInRedis(Long userId) {
-		List<String> urls = new ArrayList<>();
-		Map param = new HashMap<>();
-		param.put("userId", userId);
-		List<Menu> menus = this.menuMapper.listByUserAndSystemId(param);
-		if (CollectionUtils.isEmpty(menus)) {
-			return;
-		}
-		for (Menu menu : menus) {
-			if (menu != null && StringUtils.isNotBlank(menu.getUrl())) {
-				urls.add(menu.getUrl().trim().replace("http://", "").replace("https://", ""));
-			}
-		}
-		String key = SessionConstants.USER_MENU_URL_KEY + userId;
-		this.redisUtils.remove(key);
-		BoundSetOperations<String, Object> ops = this.redisUtils.getRedisTemplate().boundSetOps(key);
-		ops.expire(dynaSessionConstants.getSessionTimeout(), TimeUnit.SECONDS);
-		ops.add(urls.toArray());
+	public void initWebUserMenuUrlsInRedis(Long userId) {
+		initUserMenuUrlsInRedis(userId, SystemType.WEB.getCode());
 	}
 
 	@Override
-	public void initUserMenuUrlsTokenInRedis(Long userId) {
+	public void initAppUserMenuUrlsInRedis(Long userId) {
+		initUserMenuUrlsInRedis(userId, SystemType.APP.getCode());
+	}
+
+	/**
+	 * 初始化用户菜单URL到redis
+	 * @param userId
+	 * @param systemType
+	 */
+	@Override
+	public void initUserMenuUrlsInRedis(Long userId, Integer systemType) {
 		List<String> urls = new ArrayList<>();
 		Map param = new HashMap<>();
 		param.put("userId", userId);
+		param.put("systemType", systemType);
 		List<Menu> menus = this.menuMapper.listByUserAndSystemId(param);
 		if (CollectionUtils.isEmpty(menus)) {
 			return;
@@ -71,10 +68,10 @@ public class MenuManagerImpl implements MenuManager {
 				urls.add(menu.getUrl().trim().replace("http://", "").replace("https://", ""));
 			}
 		}
-		String key = SessionConstants.USER_MENU_URL_TOKEN_KEY + userId;
+		String key = KeyBuilder.buildUserMenuUrlKey(userId.toString(), systemType);
 		this.redisUtils.remove(key);
 		BoundSetOperations<String, Object> ops = this.redisUtils.getRedisTemplate().boundSetOps(key);
-		ops.expire(dynaSessionConstants.getSessionTimeout(), TimeUnit.SECONDS);
+		ops.expire(dynaSessionConstants.getWebRefreshTokenTimeout(), TimeUnit.SECONDS);
 		ops.add(urls.toArray());
 	}
 
