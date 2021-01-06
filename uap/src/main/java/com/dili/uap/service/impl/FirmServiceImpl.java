@@ -453,11 +453,13 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 			if (this.isNeedClaim(taskId)) {
 				BaseOutput<String> output = this.taskRpc.claim(taskId, user.getId().toString());
 				if (!output.isSuccess()) {
+					LOGGER.error(output.getMessage());
 					throw new AppException("签收流程任务失败");
 				}
 			}
 			BaseOutput<String> output = this.taskRpc.complete(taskId);
 			if (!output.isSuccess()) {
+				LOGGER.error(output.getMessage());
 				throw new AppException("执行流程任务失败");
 			}
 		} else {
@@ -466,12 +468,14 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 			startProcessInstanceDto.setBusinessKey(id.toString());
 			BaseOutput<ProcessInstanceMapping> output = this.runtimeRpc.startProcessInstanceByKey(startProcessInstanceDto);
 			if (!output.isSuccess()) {
+				LOGGER.error(output.getMessage());
 				throw new AppException("执行流程任务失败");
 			}
 			firm.setProcessDefinitionId(output.getData().getProcessDefinitionId());
 			firm.setProcessInstanceId(output.getData().getProcessInstanceId());
 			rows = this.getActualDao().updateByPrimaryKeySelective(firm);
 			if (rows <= 0) {
+				LOGGER.error(output.getMessage());
 				throw new AppException("更新流程信息失败");
 			}
 		}
@@ -532,6 +536,7 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 	private boolean isNeedClaim(String taskId) {
 		BaseOutput<TaskMapping> output = this.taskRpc.getById(taskId);
 		if (!output.isSuccess()) {
+			LOGGER.error(output.getMessage());
 			throw new AppException("查询流程任务失败");
 		}
 		return StringUtils.isBlank(output.getData().getAssignee());
@@ -601,6 +606,7 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 
 		BaseOutput<TaskMapping> output = this.taskRpc.getById(taskId);
 		if (!output.isSuccess()) {
+			LOGGER.error(output.getMessage());
 			throw new AppException("查询流程任务失败");
 		}
 		if (StringUtils.isBlank(output.getData().getAssignee())) {
@@ -640,6 +646,7 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 		if (StringUtils.isNotBlank(taskId)) {
 			BaseOutput<TaskMapping> output = this.taskRpc.getById(taskId);
 			if (!output.isSuccess()) {
+				LOGGER.error(output.getMessage());
 				throw new AppException("查询流程任务失败");
 			}
 			if (StringUtils.isBlank(output.getData().getAssignee())) {
