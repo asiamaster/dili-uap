@@ -85,6 +85,9 @@ public class FirmApi {
 		if (firm.getFirmState() == null) {
 			firm.setFirmState(FirmState.ENABLED.getValue());
 		}
+		if (firm.getDeleted() == null) {
+			firm.setDeleted(false);
+		}
 		return BaseOutput.success().setData(firmService.listByExample(firm));
 	}
 
@@ -138,6 +141,5 @@ public class FirmApi {
 		assignment.setAssignee(map.get("creatorId").toString());
 		return BaseOutput.successData(assignment);
 	}
-
 
 }
