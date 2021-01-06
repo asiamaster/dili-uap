@@ -12,6 +12,7 @@ import com.dili.uap.sdk.domain.UserDataAuth;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 由MyBatis Generator工具自动生成 This file was generated on 2018-05-18 10:46:46.
@@ -216,10 +217,10 @@ public interface UserService extends BaseService<User, Long> {
 	/**
 	 * 根据部门id获取各部门人数
 	 *
-	 * @param departmentIds   部门id集合
+	 * @param map{departmentIds:部门id集合;date:截止创建日期}
 	 * @return
 	 */
-	List<HashMap<Long,Integer>> getUserCountByDepartmentIds(List<Long> departmentIds);
+	List<HashMap<Long,Integer>> getUserCountByDepartmentIds(Map<String,Object> map);
 
 	/**
 	 * 将superiorId置空

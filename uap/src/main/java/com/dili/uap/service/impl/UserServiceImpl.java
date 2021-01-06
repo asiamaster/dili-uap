@@ -762,8 +762,8 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 	}
 
 	@Override
-	public List<HashMap<Long, Integer>> getUserCountByDepartmentIds(List<Long> departmentIds) {
-		return userMapper.getUserCountByDepartmentIds(departmentIds);
+	public List<HashMap<Long, Integer>> getUserCountByDepartmentIds(Map<String,Object> map) {
+		return userMapper.getUserCountByDepartmentIds(map);
 	}
 
 	@Override

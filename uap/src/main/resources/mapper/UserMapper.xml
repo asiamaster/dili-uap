@@ -198,19 +198,20 @@
 		WHERE superior_id = #{superiorId,jdbcType=BIGINT}
 	</update>
 
-	<select id="getUserCountByDepartmentIds" parameterType="list" resultType="java.util.HashMap">
+	<select id="getUserCountByDepartmentIds" parameterType="java.util.Map" resultType="java.util.HashMap">
 		SELECT
 			department_id departmentId
 			,count(department_id) userCount
 		FROM
 			`user`
-
-		<if test="departmentIds != null and departmentIds !=''">
 		WHERE
+		    created &lt;= #{date}
+		<if test="departmentIds != null and departmentIds !=''">
+		AND
 			department_id
 		IN
-			<foreach open="(" close=")" collection="departmentIds" item="deptId" separator=",">
-				#{deptId}
+			<foreach open="(" close=")" collection="departmentIds" item="departmentId" separator=",">
+				#{departmentId}
 			</foreach>
 		</if>
 		GROUP BY

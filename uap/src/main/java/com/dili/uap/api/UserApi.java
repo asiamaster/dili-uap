@@ -6,6 +6,7 @@ import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.domain.PageOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.dto.IDTO;
+import com.dili.ss.util.DateUtils;
 import com.dili.uap.component.ResumeLockedUserJob;
 import com.dili.uap.dao.DepartmentMapper;
 import com.dili.uap.domain.ScheduleMessage;
@@ -27,9 +28,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * 由MyBatis Generator工具自动生成 This file was generated on 2017-07-11 16:56:50.
@@ -324,20 +323,28 @@ public class UserApi {
 	 * 根据部门id获取部门人数
 	 *
 	 * @param ids eg:1,2,3
+	 * @param date 截止创建日期,yyyy-MM-dd
 	 * @return
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/getUserCountByDepartmentIds.api", method = { RequestMethod.GET, RequestMethod.POST })
-	public BaseOutput getUserCountByDepartmentIds(@RequestParam String ids) {
+	public BaseOutput getUserCountByDepartmentIds(@RequestParam String ids,@RequestParam String date) {
 		List<HashMap<Long, Integer>> list;
-		if(StringUtils.isBlank(ids)){
-			list = userService.getUserCountByDepartmentIds(null);
-		}else{
+		Map<String,Object> map = new HashMap<>();
+		if(StringUtils.isBlank(date)){
+			date = DateUtils.format(new Date(),"yyyy-MM-dd");
+		}
+		map.put("date",date+" 23:59:59");
+		List<Long> longList = null;
+		if(StringUtils.isNotBlank(ids)){
 			String str[] = ids.split(",");
 			Long longIds[] = (Long[]) ConvertUtils.convert(str, Long.class);
-			List<Long> longList = Arrays.asList(longIds);
-			list = userService.getUserCountByDepartmentIds(longList);
+			longList = Arrays.asList(longIds);
+			map.put("departmentIds",longList);
+			list = userService.getUserCountByDepartmentIds(map);
 		}
+		map.put("departmentIds",longList);
+		list = userService.getUserCountByDepartmentIds(map);
 		return BaseOutput.success().setData(list);
 	}
 }

@@ -105,8 +105,9 @@ public interface UserRpc {
 	 * 根据部门id获取部门人数
 	 *
 	 * @param ids eg:1,2,3
+	 * @param date 截止创建日期,yyyy-MM-dd
 	 * @return
 	 */
 	@POST("/userApi/getUserCountByDepartmentIds.api")
-	BaseOutput getUserCountByDepartmentIds(@ReqParam("ids") String ids);
+	BaseOutput getUserCountByDepartmentIds(@ReqParam("ids") String ids, @ReqParam("date") String date);
 }
