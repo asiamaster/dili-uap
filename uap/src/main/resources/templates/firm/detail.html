@@ -1,0 +1,150 @@
+
+<#body>
+<style>
+.order_number {
+	height: 36px;
+	line-height: 35px;
+	font-size: 22px;
+	color: dodgerblue;
+	float: left;
+}
+
+.information {
+	height: 36px;
+	line-height: 40px;
+	font-size: 16px;
+	float: left;
+	font-family: 'Microsoft Tai Le Bold', 'Microsoft Tai Le';
+	color: rgba(0, 0, 0, 0.847058823529412);
+	font-weight: 700;
+	font-style: normal;
+}
+</style>
+<div class="easyui-layout" fit="true">
+	<!-- ====================================================================================================================== -->
+	<!-- 中央布局 -->
+	<!-- ====================================================================================================================== -->
+	<!-- 表格 -->
+	<div region="center" style="width: 100%; padding-left: 20px; padding-bottom: 20px; padding-top: 5px;" title="编辑商户" height="auto">
+		<div style="padding-left: 5px; color: red; font-weight: bold; font-size: 20px;">${firm.serialNumber!}</div>
+		<form id="_form" class="easyui-form" method="post" fit="true">
+			<table width="800px">
+				<tr>
+					<td style="padding: 5px;">
+						<div class="order_number">❶&nbsp</div>
+						<div class="information">基本信息</div>
+					</td>
+				</tr>
+				<tr>
+					<td style="padding: 5px;"><input class="easyui-textbox" readonly="readonly" name="name" id="name" value="${firm.name!}" style="width: 90%"
+						data-options="label:'企业名称:', validType:'length[0,50]'" required="true" /></td>
+				</tr>
+				<tr>
+					<td style="padding: 5px;"><input class="easyui-textbox" readonly="readonly" name="simpleName" id="simpleName" value="${firm.simpleName!}" style="width: 90%"
+						data-options="label:'企业简称:', validType:'length[0,10]'" required="true" /></td>
+				</tr>
+				<tr>
+					<td style="padding: 5px;"><input class="easyui-textbox" readonly="readonly" name="code" id="code" value="${firm.code!}" style="width: 90%"
+						data-options="label:'企业简码:', validType:'length[0,20]'" required="true" /></td>
+				</tr>
+				<tr>
+					<td style="padding: 5px;"><input class="easyui-textbox" readonly="readonly" value="${firm.industry!}" name="industry" id="industry" style="width: 90%" data-options="label:'所属行业:'" /></td>
+				</tr>
+				<tr>
+					<td style="padding: 5px;"><input class="easyui-textbox" name="certificateType" readonly="readonly" value="${firm.certificateType!}" id="certificateType" style="width: 35%"
+						data-options="label:'企业证件:'" /> <input class="easyui-textbox" readonly="readonly" name="certificateNumber" id="certificateNumber" value="${firm.certificateNumber!}" style="width: 55%"
+						data-options="prompt:'证件号',validType:'length[0,18]'" required="true" /></td>
+				</tr>
+				<tr>
+					<td style="padding: 5px;"><input class="easyui-textbox" name="effectTime" readonly="readonly" id="effectTime" value="${firm.effectTime!,dateFormat='yyyy-MM-dd'}" style="width: 50%"
+						data-options="label:'营业期限:',prompt:'生效时间'" /> <input class="easyui-textbox" name="failureTime" id="failureTime" readonly="readonly" value="${firm.failureTime!,dateFormat='yyyy-MM-dd'}"
+						style="width: 40%" data-options="prompt:'失效时间'" /></td>
+				</tr>
+				<tr>
+					<td style="padding: 5px;"><input class="easyui-textbox" readonly="readonly" value="${firm.registeredProvinceId!}" name="registeredProvinceId" id="registeredProvinceId" style="width: 36%"
+						data-options="label:'企业注册地址:'" /> <input class="easyui-textbox" readonly="readonly" value="${firm.registeredCityId!}" name="registeredCityId" id="registeredCityId" style="width: 27%"
+						data-options="" /> <input class="easyui-textbox" readonly="readonly" value="${firm.registeredDistrictId!}" name="registeredDistrictId" id="registeredDistrictId" style="width: 27%"
+						data-options="" /></td>
+				</tr>
+				<tr>
+					<td style="padding: 5px;"><input class="easyui-textbox" readonly="readonly" name="registeredDetailAddress" id="registeredDetailAddress" value="${firm.registeredDetailAddress!}"
+						style="width: 90%" data-options="label:'注册所在地详细地址:',labelWidth:145, validType:'length[0,50]'" /></td>
+				</tr>
+				<tr>
+					<td style="padding: 5px;"><input class="easyui-textbox" readonly="readonly" value="${firm.actualProvinceId!}" name="actualProvinceId" id="actualProvinceId" style="width: 36%"
+						data-options="label:'实际经营地址:'" /> <input class="easyui-textbox" readonly="readonly" value="${firm.actualCityId!}" name="actualCityId" id="actualCityId" style="width: 27%" data-options="" /> <input
+						class="easyui-textbox" readonly="readonly" value="${firm.actualDistrictId!}" name="actualDistrictId" id="actualDistrictId" style="width: 27%" data-options="" required="true" /></td>
+				</tr>
+				<tr>
+					<td style="padding: 5px;"><input class="easyui-textbox" readonly="readonly" name="actualDetailAddress" id="actualDetailAddress" value="${firm.actualDetailAddress!}" style="width: 90%"
+						data-options="label:'实际经营所在地详细地址:',labelWidth:170, validType:'length[0,50]'" required="true" /></td>
+				</tr>
+				<tr>
+					<td style="padding: 5px;">
+						<div class="order_number">❷&nbsp</div>
+						<div class="information">法人信息</div>
+					</td>
+				</tr>
+				<tr>
+					<td style="padding: 5px;"><input class="easyui-textbox" readonly="readonly" name="legalPersonName" id="legalPersonName" value="${firm.legalPersonName!}" style="width: 90%"
+						data-options="label:'法人 名称:', validType:'length[0,20]'" /></td>
+				</tr>
+				<tr>
+					<td style="padding: 5px;"><input class="easyui-textbox" readonly="readonly" value="${firm.legalPersonCertificateType!}" name="legalPersonCertificateType" id="legalPersonCertificateType"
+						style="width: 30%" data-options="
+								label:'法人证件:'" /> <input class="easyui-textbox" readonly="readonly" name="legalPersonCertificateNumber" id="legalPersonCertificateNumber"
+						value="${firm.legalPersonCertificateNumber!}" style="width: 60%" data-options="prompt:'证件号:', validType:'length[0,18]'" required="true" /></td>
+				</tr>
+				<tr>
+					<td style="padding: 5px;"><input class="easyui-textbox" readonly="readonly" value="${decode(firm.longTermEffictive,true,'是',false,'否','不知道了')}" name="longTermEffictive"
+						id="longTermEffictive" style="width: 30%" data-options="
+									label:'是否长期有效:'" required="true" /> <%if(firm.longTermEffictive){%> <input class="easyui-textbox" disabled="disabled"
+						name="certificateValidityPeriod" id="certificateValidityPeriod" style="width: 60%" data-options="prompt:'证件有效期:',editable:false" required="true" /> <%}else{%> <input class="easyui-datebox"
+						readonly="readonly" name="certificateValidityPeriod" id="certificateValidityPeriod" value="${firm.certificateValidityPeriod!,dateFormat='yyyy-MM-dd'}" style="width: 60%"
+						data-options="prompt:'证件有效期:',editable:false" required="true" /> <%}%></td>
+				</tr>
+				<tr>
+					<td style="padding: 5px;">
+						<div class="order_number">❸&nbsp</div>
+						<div class="information">对公账户信息</div>
+					</td>
+				</tr>
+				<tr>
+					<td style="padding: 5px;"><input class="easyui-textbox" value="${firm.depositBank!}" readonly="readonly" name="depositBank" id="depositBank" style="width: 90%" data-options="label:'开户银行:'" /></td>
+				</tr>
+				<tr>
+					<td style="padding: 5px;"><input class="easyui-textbox" value="${firmBank.province!}" readonly="readonly" name="bankProvinceId" id="bankProvinceId" style="width: 38%"
+						data-options="label:'开户行地区:'" /> <input class="easyui-textbox" readonly="readonly" value="${firmBank.city!}" name="bankCityId" id="bankCityId" style="width: 26%" data-options="" /> <input
+						class="easyui-textbox" readonly="readonly" value="${firmBank.bankName!}" name="depositBankUnionInfoId" id="depositBankUnionInfoId" style="width: 30%" data-options="" /></td>
+				</tr>
+				<tr>
+					<td style="padding: 5px;"><input class="easyui-textbox" readonly="readonly" name="bankAccount" id="bankAccount" value="${firm.bankAccount!}" style="width: 90%"
+						data-options="label:'银行账号:', validType:'length[9,19]'" required="true" /></td>
+				</tr>
+				<tr>
+					<td style="padding: 5px;">
+						<div class="order_number">❹&nbsp</div>
+						<div class="information">安全信息</div>
+					</td>
+				</tr>
+				<tr>
+					<td style="padding: 5px;"><input class="easyui-textbox" name="telephone" id="telephone" readonly="readonly" value="${firm.telephone!}" style="width: 90%"
+						data-options="label:'绑定电话:', validType:['length[0,12]','checkCellphone']" required="true" /></td>
+				</tr>
+				<tr>
+					<td style="padding: 5px;"><input class="easyui-textbox" readonly="readonly" name="email" id="email" value="${firm.email!}" style="width: 90%"
+						data-options="label:'邮箱:', validType:['length[0,40]','email']" required="true" /></td>
+				</tr>
+				<tr>
+				    <td>
+					   <a href="javascript:void(0);" class="easyui-linkbutton" style="margin-left: 50%" data-options="iconCls:'icon-search',onClick:function(){window.location.href='${contextPath!}/firm/index.html';}">返回</a>
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+</div>
+
+<!-- ====================================================================================================================== --> <!-- style & script 分隔线 --> <!-- ====================================================================================================================== -->
+
+</#body>
