@@ -391,6 +391,7 @@ public class FirmController {
 			modelMap.addAttribute("user", this.userService.get(firm.getUserId()));
 		} else {
 			User user = DTOUtils.newInstance(User.class);
+			user.setUserName(firm.getSimpleName());
 			user.setCellphone(firm.getTelephone());
 			user.setEmail(firm.getEmail());
 			modelMap.addAttribute("user", user);
