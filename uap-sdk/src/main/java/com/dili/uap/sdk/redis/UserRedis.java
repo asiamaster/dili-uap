@@ -157,7 +157,7 @@ public class UserRedis {
 		}
 		List<String> userIds = Lists.newArrayList();
 		for (String key : keys) {
-			userIds.add(key.substring(SessionConstants.USERID_REFRESH_TOKEN_KEY.length()));
+			userIds.add(key.substring(SessionConstants.USERID_REFRESH_TOKEN_KEY.length()+2));
 		}
 		return userIds;
 	}
