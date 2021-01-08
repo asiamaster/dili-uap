@@ -762,7 +762,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 	}
 
 	@Override
-	public List<HashMap<Long, Integer>> getUserCountByDepartmentIds(Map<String,Object> map) {
+	public List<HashMap<String, Object>> getUserCountByDepartmentIds(Map<String,Object> map) {
 		return userMapper.getUserCountByDepartmentIds(map);
 	}
 

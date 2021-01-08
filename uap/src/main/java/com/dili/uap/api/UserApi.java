@@ -329,7 +329,7 @@ public class UserApi {
 	@ResponseBody
 	@RequestMapping(value = "/getUserCountByDepartmentIds.api", method = { RequestMethod.GET, RequestMethod.POST })
 	public BaseOutput getUserCountByDepartmentIds(@RequestParam String ids,@RequestParam String date) {
-		List<HashMap<Long, Integer>> list;
+		List<HashMap<String, Object>> list;
 		Map<String,Object> map = new HashMap<>();
 		if(StringUtils.isBlank(date)){
 			date = DateUtils.format(new Date(),"yyyy-MM-dd");
