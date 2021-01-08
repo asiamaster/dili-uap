@@ -150,9 +150,10 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, Long> implements Menu
 	public List<Map> listSystemMenu() {
 		List<Map> menuTrees = getActualDao().listSystemMenu();
 		menuTrees.forEach(menuTree -> {
-			Map<String, String> attr = new HashMap<>(2);
+			Map<String, String> attr = new HashMap<>(4);
 			attr.put("type", menuTree.get("type").toString());
 			attr.put("systemId", menuTree.get("system_id").toString());
+			attr.put("systemType", menuTree.getOrDefault("system_type", "1").toString());
 			menuTree.put("attributes", attr);
 		});
 		menuTrees.sort((o1, o2) -> {

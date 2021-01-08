@@ -2,7 +2,6 @@ package com.dili.uap.service;
 
 import com.dili.ss.base.BaseService;
 import com.dili.uap.domain.Resource;
-import com.dili.uap.sdk.domain.dto.UserResourceQueryDto;
 
 import java.util.List;
 
@@ -35,4 +34,10 @@ public interface ResourceService extends BaseService<Resource, Long> {
 	 * @return
 	 */
 	List<String> listResourceCodesByUserId(Long userId, List<String> resourceCodes);
+
+	/**
+	 * 根据资源id删除资源和资源链接，以及角色菜单关系
+	 * @param id
+	 */
+	void deleteResourceAndLink(Long id);
 }

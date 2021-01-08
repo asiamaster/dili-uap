@@ -2,12 +2,9 @@ package com.dili.uap.controller;
 
 import com.dili.logger.sdk.annotation.BusinessLogger;
 import com.dili.logger.sdk.base.LoggerContext;
-import com.dili.logger.sdk.glossary.LoggerConstant;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.domain.dto.LoginDto;
-import com.dili.uap.sdk.domain.UserTicket;
-import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.sdk.util.WebContent;
 import com.dili.uap.service.LoginService;
 import com.dili.uap.service.UserService;
@@ -145,17 +142,7 @@ public class LoginController {
 	@BusinessLogger(businessType = "login_management", content = "${msg}", operationType = "logout")
 	@RequestMapping(value = "/logout.action", produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody BaseOutput logoutAction(String systemCode, @RequestParam(required = false) Long userId, HttpServletRequest request) {
-		UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
-		if (userTicket != null) {
-			this.userService.logout(WebContent.getPC().getAccessToken());
-			// 没有userId则取userTicket
-			userId = userId == null ? userTicket == null ? null : userTicket.getId() : userId;
-			// 如果有用户id，则记录登出日志
-			if (userId != null) {
-				LoggerContext.put(LoggerConstant.LOG_SYSTEM_CODE_KEY, systemCode);
-				loginService.logLogout(userTicket);
-			}
-		}
+		this.userService.logout(WebContent.getPC().getAccessToken());
 		return BaseOutput.success();
 	}
 

@@ -53,7 +53,7 @@ public class UserRedis {
 		UserTicket userTicket = JSON.parseObject(userTicketJSON, UserTicket.class);
 		userToken.setUserTicket(userTicket);
 		//锁定获取accessToken
-		if (uapRedisDistributedLock.tryGetLock(refreshToken, refreshToken, 10L)) {
+		if (uapRedisDistributedLock.tryGetLockSync(refreshToken, refreshToken, 10L)) {
 			try {
 				// 先从缓存中取 accessToken，
 				// 如果取到，则说明前一个过期的请求已经生成了accessToken(并可能也推后了redis过期时长)
@@ -63,16 +63,18 @@ public class UserRedis {
 					userToken.setTokenStep(TokenStep.REFRESH_CACHE.getCode());
 				}else {// 根据redis中的userTicket重新签发
 					String accessToken = jwtService.generateTokenByRSA256(userTicket, SystemType.getSystemType(userTicket.getSystemType()));
-					redisUtil.set(refreshToken+":cache", accessToken);
+					redisUtil.set(refreshToken+":cache", accessToken, 10L);
 					userToken.setAccessToken(accessToken);
 					userToken.setTokenStep(TokenStep.REFRESH_TOKEN.getCode());
 				}
-			}finally {
+			} finally {
 				//完成后释放锁
 				if (uapRedisDistributedLock.exists(refreshToken)) {
 					uapRedisDistributedLock.releaseLock(refreshToken, refreshToken);
 				}
 			}
+		}else{
+			System.out.println("获取分布式锁失败");
 		}
 		return userToken;
 	}
@@ -88,8 +90,8 @@ public class UserRedis {
 		Long userId = userTicket.getId();
 		Long refreshTokenTimeout = dynaSessionConstants.getRefreshTokenTimeout(systemType);
 		//推后当前refreshToken保存的用户信息
-		redisUtil.expire(KeyBuilder.buildRefreshTokenKey(refreshToken), dynaSessionConstants.getRefreshTokenTimeout(systemType), TimeUnit.SECONDS);
-		redisUtil.expire(KeyBuilder.buildUserIdRefreshTokenKey(userTicket.getId().toString(), systemType), dynaSessionConstants.getRefreshTokenTimeout(systemType), TimeUnit.SECONDS);
+		redisUtil.expire(KeyBuilder.buildRefreshTokenKey(refreshToken), refreshTokenTimeout, TimeUnit.SECONDS);
+		redisUtil.expire(KeyBuilder.buildUserIdRefreshTokenKey(userTicket.getId().toString(), systemType), refreshTokenTimeout, TimeUnit.SECONDS);
 		//推后用户权限信息
 		redisUtil.expire(KeyBuilder.buildUserSystemKey(userId.toString(), userTicket.getSystemType()), refreshTokenTimeout, TimeUnit.SECONDS);
 		redisUtil.expire(KeyBuilder.buildUserMenuUrlKey(userId.toString(), userTicket.getSystemType()), refreshTokenTimeout, TimeUnit.SECONDS);

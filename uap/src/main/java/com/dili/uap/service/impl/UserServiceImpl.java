@@ -62,6 +62,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 
 	@Autowired
 	private UserRedis userRedis;
+	@SuppressWarnings("all")
 	@Autowired
 	private ProjectRpc projectRpc;
 
@@ -95,8 +96,8 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 	@Override
 	public void logout(String refreshToken) {
 		this.userRedis.clearByRefreshToken(refreshToken);
-		WebContent.setCookie(SessionConstants.COOKIE_ACCESS_TOKEN, null);
-		WebContent.setCookie(SessionConstants.COOKIE_REFRESH_TOKEN, null);
+		WebContent.setCookie(SessionConstants.ACCESS_TOKEN_KEY, null);
+		WebContent.setCookie(SessionConstants.REFRESH_TOKEN_KEY, null);
 		WebContent.setCookie(SessionConstants.COOKIE_LOGIN_PATH_KEY, null);
 	}
 

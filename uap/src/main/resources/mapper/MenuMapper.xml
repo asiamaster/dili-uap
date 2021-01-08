@@ -245,7 +245,7 @@
 		,m.`system_type`
 		,s.code system_code
 		,s.name system_name
-		,s.`type`
+		,s.`type` system_type
 		from menu m, `systems` s where m.system_id = s.id
 		and m.url=#{url}
 	</select>
@@ -259,6 +259,7 @@
 		,m.`type`
 		,m.`system_id`
 		,m.`order_number`
+		,m.`system_type`
 		from menu m where `type` in( 0, 1) order by m.order_number)
 		union all
 		select concat('sys_',s.id) as id
@@ -268,6 +269,7 @@
 		,4 as 'type'
 		,s.id as system_id
 		,null as order_number
+		,s.`type` system_type
 		from `systems` s
 	</select>
 </mapper>

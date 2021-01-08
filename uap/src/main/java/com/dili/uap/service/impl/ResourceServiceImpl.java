@@ -1,10 +1,14 @@
 package com.dili.uap.service.impl;
 
 import com.dili.ss.base.BaseServiceImpl;
+import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.dao.ResourceMapper;
 import com.dili.uap.domain.Resource;
+import com.dili.uap.domain.ResourceLink;
+import com.dili.uap.service.ResourceLinkService;
 import com.dili.uap.service.ResourceService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -15,6 +19,9 @@ import java.util.Map;
  */
 @Service
 public class ResourceServiceImpl extends BaseServiceImpl<Resource, Long> implements ResourceService {
+
+	@javax.annotation.Resource
+	ResourceLinkService resourceLinkService;
 
 	public ResourceMapper getActualDao() {
 		return (ResourceMapper) getDao();
@@ -36,5 +43,18 @@ public class ResourceServiceImpl extends BaseServiceImpl<Resource, Long> impleme
 	@Override
 	public List<String> listResourceCodesByUserId(Long userId, List<String> resourceCodes) {
 		return this.getActualDao().listResourceCodesByUserId(userId, resourceCodes);
+	}
+
+	@Transactional
+	@Override
+	public void deleteResourceAndLink(Long id){
+		// 级联更新ResourceLink,先获取原始ResourceCode
+		delete(id);
+		ResourceLink resourceLinkCondition = DTOUtils.newInstance(ResourceLink.class);
+		resourceLinkCondition.setResourceId(id);
+		List<ResourceLink> resourceLinks = resourceLinkService.list(resourceLinkCondition);
+		resourceLinks.forEach(t -> {
+			resourceLinkService.deleteResourceLink(t.getId());
+		});
 	}
 }

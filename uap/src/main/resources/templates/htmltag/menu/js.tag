@@ -151,17 +151,20 @@ function addResourceLink() {
     $.ajax({
         type: "POST",
         url: "${contextPath}/resource/addResourceLink.action",
-        data: {resourceCode: selected1.code, menuId: selected2.id},
+        data: {resourceId: selected1.id, menuId: selected2.id},
         processData: true,
         dataType: "json",
         async: true,
         success: function (output) {
+            if(!output.success){
+                return;
+            }
             // 新加的resource可能没有为资源链接列表grid添加url，所以这里需要判断，并添加
             var opts = $("#grid3").datagrid("options");
             if (null == opts.url || "" == opts.url) {
                 opts.url = "${contextPath}/resource/listResourceLink.action";
             }
-            $("#grid3").datagrid("load", bindGridMeta2Data("grid3", {resourceCode:selected1.id}));
+            $("#grid3").datagrid("load", bindGridMeta2Data("grid3", {resourceId:selected1.id}));
         },
         error: function () {
             swal('错误', '远程访问失败', 'error');
@@ -503,7 +506,7 @@ function bindEditMenuGrid(node) {
                 // row:row
                 // });
                 // 为菜单添加相应的节点
-                addMenuNode(row, row["type"]);
+                addMenuNode(row);
             }else{
                 updateMenuNode(row);
             }
@@ -515,6 +518,7 @@ function bindEditMenuGrid(node) {
         extendParams: function (row) {
             return {
                 systemId: $("#grid1").data('systemId'),
+                systemType: $("#grid1").data('systemType'),
                 menuId: $("#grid1").data('menuId')
             }
         },
@@ -526,8 +530,9 @@ function bindEditMenuGrid(node) {
             <%}%>
         }
     });
-    // 设置当前菜单节点选中的全局变量：systemId和menuId， 用于新增和修改
+    // 设置当前菜单节点选中的全局变量：systemId、systemType和menuId， 用于新增和修改
     $("#grid1").data('systemId', node.attributes.systemId);
+    $("#grid1").data('systemType', node.attributes.systemType);
     $("#grid1").data('menuId', node.id);
 }
 
@@ -568,7 +573,8 @@ function bindEditResourceGrid(node) {
         },
         extendParams: function (row) {
             return {
-                menuId: $("#grid1").data('menuId')
+                menuId: $("#grid1").data('menuId'),
+                systemType: $("#grid1").data('systemType')
             }
         },
         canEdit: function (row) {
@@ -579,8 +585,9 @@ function bindEditResourceGrid(node) {
             <%}%>
         }
     });
-    // 设置当前菜单节点选中的全局变量：menuId， 用于新增和修改
+    // 设置当前菜单节点选中的全局变量：menuId，systemType 用于新增和修改
     $("#grid1").data('menuId', node.id);
+    $("#grid1").data('systemType', node.attributes.systemType);
 }
 
 /**
@@ -624,6 +631,7 @@ function bindInternalLinksGrid(node) {
         extendParams: function (row) {
             return {
                 systemId: $("#grid2").data('systemId'),
+                systemType: $("#grid2").data('systemType'),
                 menuId: $("#grid2").data('menuId'),
                 type : 2
             }
@@ -636,27 +644,26 @@ function bindInternalLinksGrid(node) {
             <%}%>
         }
     });
-    // 设置当前菜单节点选中的全局变量：systemId和menuId， 用于新增和修改
+    // 设置当前菜单节点选中的全局变量：systemId、systemType和menuId， 用于新增和修改
     $("#grid2").data('systemId', node.attributes.systemId);
+    $("#grid2").data('systemType', node.attributes.systemType);
     $("#grid2").data('menuId', node.id);
 }
 
 /**
  * 在当前选中的节点添加菜单树子节点
  * 
- * @param row
- *            必需id和name字段
- * @param menuType
- *            菜单类型
+ * @param row   grid1的行数据
+ *
  */
-function addMenuNode(row, menuType) {
+function addMenuNode(row) {
     var selected = $('#menuTree').tree('getSelected');
     $("#menuTree").tree("append",{
         parent : selected.target,
         data : [{
             id : "menu_"+row.id,
             name : row.name,
-            attributes : {type: menuType, systemId : $("#grid1").data('systemId')}
+            attributes : {type: row["type"], systemId : $("#grid1").data('systemId'), systemType: $("#grid1").data('systemType')}
         }]
     })
 }
@@ -672,7 +679,7 @@ function updateMenuNode(row) {
     $("#menuTree").tree("update",{
         target : node.target,
         text : row.name,
-        attributes : {type: row.type, systemId : $("#grid1").data('systemId')}
+        attributes : {type: row["type"], systemId : $("#grid1").data('systemId'), systemType: $("#grid1").data('systemType')}
     })
 }
 

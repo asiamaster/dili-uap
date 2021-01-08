@@ -36,9 +36,9 @@ public class SessionConstants {
 	// Cookie过期时间(秒) 1天
 	public static Integer COOKIE_TIMEOUT = 86400;
 	// 登录accessToken
-	public static final String COOKIE_ACCESS_TOKEN = ACCESS_TOKEN_KEY;
+//	public static final String COOKIE_ACCESS_TOKEN = ACCESS_TOKEN_KEY;
 	// 登录refreshToken
-	public static final String COOKIE_REFRESH_TOKEN = REFRESH_TOKEN_KEY;
+//	public static final String COOKIE_REFRESH_TOKEN = REFRESH_TOKEN_KEY;
 //	// 用户id
 //	public static final String COOKIE_USER_ID_KEY = APPLICATION_NAME + "userId";
 //	// 用户名

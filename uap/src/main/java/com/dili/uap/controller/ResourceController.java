@@ -16,10 +16,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -98,26 +95,14 @@ public class ResourceController {
 	 * @return
 	 */
 	@BusinessLogger(businessType = "resource_management", content = "菜单资源绑定：菜单id${menuId}, 资源id${resourceId}", operationType = "addResourceLink", systemCode = "UAP")
-	@RequestMapping(value = "/addResourceLink.action", method = { RequestMethod.GET, RequestMethod.POST })
+	@PostMapping(value = "/addResourceLink.action")
 	public @ResponseBody BaseOutput addResourceLink(ResourceLink resourceLink) {
-		List<ResourceLink> resourceLinks = resourceLinkService.list(resourceLink);
-		if (resourceLinks.isEmpty()) {
-			resourceLinkService.insertSelective(resourceLink);
-			BaseOutput output = BaseOutput.success("绑定资源链接成功").setData(resourceLink.getId());
-			if (output.isSuccess()) {
-				LoggerContext.put("resourceId", resourceLink.getResourceId());
-				LoggerContext.put(LoggerConstant.LOG_BUSINESS_ID_KEY, resourceLink.getId());
-				LoggerContext.put("menuId", resourceLink.getMenuId());
-				UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
-				if (userTicket != null) {
-					LoggerContext.put(LoggerConstant.LOG_OPERATOR_ID_KEY, userTicket.getId());
-					LoggerContext.put(LoggerConstant.LOG_OPERATOR_NAME_KEY, userTicket.getRealName());
-					LoggerContext.put(LoggerConstant.LOG_MARKET_ID_KEY, userTicket.getFirmId());
-				}
-			}
-			return output;
-		} else {
-			return BaseOutput.success("已经绑定资源链接").setData(resourceLink.getId());
+
+		try {
+			resourceLinkService.addResourceLink(resourceLink);
+			return BaseOutput.success("绑定资源链接成功").setData(resourceLink.getId());
+		} catch (Exception e) {
+			return BaseOutput.success(e.getMessage()).setData(resourceLink.getId());
 		}
 	}
 
@@ -130,17 +115,7 @@ public class ResourceController {
 	@BusinessLogger(businessType = "resource_management", content = "菜单资源绑定：菜单id${menuId}, 资源id${resourceId}", operationType = "deleteResourceLink", systemCode = "UAP")
 	@RequestMapping(value = "/deleteResourceLink.action", method = { RequestMethod.GET, RequestMethod.POST })
 	public @ResponseBody BaseOutput deleteResourceLink(@RequestParam Long id) {
-		ResourceLink resourceLink = this.resourceLinkService.get(id);
-		resourceLinkService.delete(id);
-		LoggerContext.put("resourceId", resourceLink.getResourceId());
-		LoggerContext.put(LoggerConstant.LOG_BUSINESS_ID_KEY, resourceLink.getId());
-		LoggerContext.put("menuId", resourceLink.getMenuId());
-		UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
-		if (userTicket != null) {
-			LoggerContext.put(LoggerConstant.LOG_OPERATOR_ID_KEY, userTicket.getId());
-			LoggerContext.put(LoggerConstant.LOG_OPERATOR_NAME_KEY, userTicket.getRealName());
-			LoggerContext.put(LoggerConstant.LOG_MARKET_ID_KEY, userTicket.getFirmId());
-		}
+		resourceLinkService.deleteResourceLink(id);
 		return BaseOutput.success("删除资源链接成功");
 	}
 
@@ -203,11 +178,12 @@ public class ResourceController {
 	@RequestMapping(value = "/delete.action", method = { RequestMethod.GET, RequestMethod.POST })
 	public @ResponseBody BaseOutput delete(Long id) {
 		// 级联更新ResourceLink,先获取原始ResourceCode
-		Resource resource = resourceService.get(id);
-		resourceService.delete(id);
-		ResourceLink resourceLinkCondition = DTOUtils.newInstance(ResourceLink.class);
-		resourceLinkCondition.setResourceId(id);
-		resourceLinkService.deleteByExample(resourceLinkCondition);
-		return BaseOutput.success("删除成功");
+		try {
+			resourceService.deleteResourceAndLink(id);
+			return BaseOutput.success("删除成功");
+		} catch (Exception e) {
+			return BaseOutput.success("删除失败:"+e.getMessage());
+		}
+
 	}
 }

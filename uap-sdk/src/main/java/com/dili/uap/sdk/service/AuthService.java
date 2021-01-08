@@ -81,9 +81,9 @@ public class AuthService {
     private void setCookieAndDefer(UserToken userToken){
         if(TokenStep.REFRESH_TOKEN.getCode().equals(userToken.getTokenStep())) {
             //变更web端cookie中的accessToken
-            WebContent.setCookie(SessionConstants.COOKIE_ACCESS_TOKEN, userToken.getAccessToken());
+            WebContent.setCookie(SessionConstants.ACCESS_TOKEN_KEY, userToken.getAccessToken());
             //在response header中通知C端和移动端accessToken变更
-            WebContent.setResponseHeader(SessionConstants.COOKIE_ACCESS_TOKEN, userToken.getAccessToken());
+            WebContent.setResponseHeader(SessionConstants.ACCESS_TOKEN_KEY, userToken.getAccessToken());
             userRedis.defer(userToken.getRefreshToken(), userToken.getUserTicket());
         }
     }
