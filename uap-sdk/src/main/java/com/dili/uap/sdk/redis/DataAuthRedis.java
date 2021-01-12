@@ -2,6 +2,7 @@ package com.dili.uap.sdk.redis;
 
 import com.alibaba.fastjson.JSONObject;
 import com.dili.uap.sdk.session.SessionConstants;
+import com.dili.uap.sdk.util.KeyBuilder;
 import com.dili.uap.sdk.util.ManageRedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundSetOperations;
@@ -26,8 +27,8 @@ public class DataAuthRedis {
      * @param userId    用户id
      * @return  UserDataAuth列表
      */
-    public List<Map> dataAuth(String refCode, Long userId) {
-        BoundSetOperations<String, String> boundSetOperations = redisUtil.getRedisTemplate().boundSetOps (SessionConstants.USER_DATA_AUTH_KEY + userId);
+    public List<Map> dataAuth(String refCode, Long userId, Integer systemType) {
+        BoundSetOperations<String, String> boundSetOperations = redisUtil.getRedisTemplate().boundSetOps (KeyBuilder.buildUserDataAuthKey(userId.toString(), systemType));
         List<Map> dataAuthList = new ArrayList<>();
         if(boundSetOperations.size() <= 0) {
             return dataAuthList;

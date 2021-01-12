@@ -43,16 +43,16 @@ public interface MenuMapper extends MyMapper<Menu> {
 
 	/**
 	 * 列出所有系统和菜单
-	 * 
+	 * 用于菜单管理
 	 * @return
 	 */
 	List<Map> listSystemMenu();
 
 	/**
-	 * 查询客户端菜单
+	 * 查询客户端需要的系统和菜单
 	 * 
 	 * @param param
 	 * @return
 	 */
-	List<ClientMenuDto> listClientMenus(Map<String, Object> param);
+	List<ClientMenuDto> listSystemAndMenus(Map<String, Object> param);
 }

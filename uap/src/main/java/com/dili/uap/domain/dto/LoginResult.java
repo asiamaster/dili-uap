@@ -1,7 +1,7 @@
 package com.dili.uap.domain.dto;
 
 import com.dili.ss.dto.IDTO;
-import com.dili.uap.sdk.domain.User;
+import com.dili.uap.sdk.domain.UserTicket;
 
 /**
  * 登录结果
@@ -22,6 +22,6 @@ public interface LoginResult extends IDTO {
     void setLoginPath(String loginPath);
 
     //登录用户
-    User getUser();
-    void setUser(User user);
+    UserTicket getUser();
+    void setUser(UserTicket user);
 }

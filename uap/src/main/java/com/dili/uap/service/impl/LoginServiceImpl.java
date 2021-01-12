@@ -56,7 +56,7 @@ import java.util.concurrent.TimeUnit;
 public class LoginServiceImpl implements LoginService {
 
 	private final static Logger LOG = LoggerFactory.getLogger(LoginServiceImpl.class);
-
+	@SuppressWarnings("all")
 	@Autowired
 	private UserMapper userMapper;
 
@@ -87,7 +87,7 @@ public class LoginServiceImpl implements LoginService {
 
 	@Autowired
 	private DataAuthManager dataAuthManager;
-
+	@SuppressWarnings("all")
 	@Autowired
 	private SystemConfigMapper systemConfigMapper;
 
@@ -99,10 +99,10 @@ public class LoginServiceImpl implements LoginService {
 
 	@Resource
 	private DynaSessionConstants dynaSessionConstants;
-
+	@SuppressWarnings("all")
 	@Autowired
 	private FirmMapper firmMapper;
-
+	@SuppressWarnings("all")
 	@Autowired
 	private UserPushInfoMapper userPushInfoMapper;
 
@@ -121,7 +121,7 @@ public class LoginServiceImpl implements LoginService {
 	@Transactional(rollbackFor = Exception.class)
 	@Override
 	public BaseOutput<LoginResult> loginApp(LoginDto loginDto) {
-		BaseOutput<LoginResult> result = this.login(loginDto, SystemType.APP.getCode());
+		BaseOutput<LoginResult> result = login(loginDto, SystemType.APP.getCode());
 		if (!result.isSuccess()) {
 			return result;
 		}
@@ -222,7 +222,7 @@ public class LoginServiceImpl implements LoginService {
 			LoginResult loginResult = DTOUtils.newInstance(LoginResult.class);
 			// 返回用户信息需要屏蔽用户的密码
 			user.setPassword(null);
-			loginResult.setUser(user);
+			loginResult.setUser(userTicket);
 			String accessToken = jwtService.generateTokenByRSA256(userTicket, SystemType.getSystemType(systemType));
 			//刷新token
 			String refreshToken = UUID.randomUUID().toString();

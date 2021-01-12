@@ -19,7 +19,8 @@ public interface DataAuthSourceService {
     List listDataAuthes(String param);
 
     /**
-     *  values 解析为指定的数据权限来源
+     * 将数据权限value解析为指定的数据权限详情
+     * 用于鉴权接口的获取数据权限详情列表
      * @param param     data_auth_ref表的param字段内容
      * @param values    user_data_auth的value字段列表
      * @return  Map key为数据权限id, 值为数据权限转义后的行数据

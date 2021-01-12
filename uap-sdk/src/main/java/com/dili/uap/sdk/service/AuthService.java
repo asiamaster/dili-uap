@@ -8,6 +8,8 @@ import com.dili.uap.sdk.redis.UserRedis;
 import com.dili.uap.sdk.session.SessionConstants;
 import com.dili.uap.sdk.util.JwtService;
 import com.dili.uap.sdk.util.WebContent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -19,6 +21,7 @@ import javax.annotation.Resource;
  */
 @Service
 public class AuthService {
+    private static final Logger log = LoggerFactory.getLogger(AuthService.class);
     @Resource
     private JwtService jwtService;
     @Resource
@@ -43,7 +46,7 @@ public class AuthService {
         if(userToken == null){
             return null;
         }
-        setCookieAndDefer(userToken);
+        setCookieResponseAndDefer(userToken);
         return userToken.getUserTicket();
     }
 
@@ -70,7 +73,7 @@ public class AuthService {
         if(userToken == null){
             return null;
         }
-        setCookieAndDefer(userToken);
+        setCookieResponseAndDefer(userToken);
         return userToken;
     }
 
@@ -78,7 +81,7 @@ public class AuthService {
      * 只有重新签发accessToken才设置cookie和response header，并且推后redis超时
      * @param userToken
      */
-    private void setCookieAndDefer(UserToken userToken){
+    private void setCookieResponseAndDefer(UserToken userToken){
         if(TokenStep.REFRESH_TOKEN.getCode().equals(userToken.getTokenStep())) {
             //变更web端cookie中的accessToken
             WebContent.setCookie(SessionConstants.ACCESS_TOKEN_KEY, userToken.getAccessToken());

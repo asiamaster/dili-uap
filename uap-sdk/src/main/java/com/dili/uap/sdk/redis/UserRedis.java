@@ -13,6 +13,8 @@ import com.dili.uap.sdk.util.KeyBuilder;
 import com.dili.uap.sdk.util.ManageRedisUtil;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.BoundSetOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -28,6 +30,7 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class UserRedis {
 
+	private static final Logger log = LoggerFactory.getLogger(UserRedis.class);
 	@Resource
 	private ManageRedisUtil redisUtil;
 	@Resource
@@ -52,7 +55,7 @@ public class UserRedis {
 		userToken.setRefreshToken(refreshToken);
 		UserTicket userTicket = JSON.parseObject(userTicketJSON, UserTicket.class);
 		userToken.setUserTicket(userTicket);
-		//锁定获取accessToken
+		//锁定获取accessToken，10秒
 		if (uapRedisDistributedLock.tryGetLockSync(refreshToken, refreshToken, 10L)) {
 			try {
 				// 先从缓存中取 accessToken，
@@ -74,7 +77,8 @@ public class UserRedis {
 				}
 			}
 		}else{
-			System.out.println("获取分布式锁失败");
+			log.error("获取分布式锁失败");
+			return null;
 		}
 		return userToken;
 	}

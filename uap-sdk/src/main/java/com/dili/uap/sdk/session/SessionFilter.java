@@ -123,8 +123,6 @@ public class SessionFilter implements Filter {
 			checkIframe(pc);
 			// 登录鉴权
 			checkUser(pc);
-			// 设置导航面包屑到RequestAttribute
-			setNavAttr(pc);
 			filter.doFilter(request, response);
 		} catch (RedirectException e) {
 			pc.sendRedirect(e.getPath());
@@ -214,7 +212,6 @@ public class SessionFilter implements Filter {
 		if (userResRedis.checkUserMenuUrlRight(user.getId(), user.getSystemType(), pc.getUrl())) {
 			return;
 		}
-
 		// 检测授权
 //        UserTicket auth = pc.getAuthorizer();
 //        if(auth == null){

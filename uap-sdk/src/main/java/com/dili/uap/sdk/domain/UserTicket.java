@@ -1,6 +1,5 @@
 package com.dili.uap.sdk.domain;
 
-import com.dili.ss.dto.IDTO;
 import com.dili.ss.metadata.FieldEditor;
 import com.dili.ss.metadata.annotation.EditMode;
 import com.dili.ss.metadata.annotation.FieldDef;
@@ -11,7 +10,7 @@ import java.util.Date;
 /**
  * 用户登录凭证
  */
-public interface UserTicket extends IDTO {
+public interface UserTicket extends User {
 	@FieldDef(label="主键")
 	@EditMode(editor = FieldEditor.Number, required = true)
 	Long getId();
