@@ -87,5 +87,5 @@ public interface UserMapper extends MyMapper<User> {
 	 * @param map{departmentIds:部门id集合;date:截止创建日期}
 	 * @return
 	 */
-	List<HashMap<Long,Integer>> getUserCountByDepartmentIds(Map<String,Object> map);
+	List<HashMap<String, Object>> getUserCountByDepartmentIds(Map<String,Object> map);
 }
