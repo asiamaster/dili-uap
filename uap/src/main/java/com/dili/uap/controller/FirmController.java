@@ -100,7 +100,7 @@ public class FirmController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/list.action", method = { RequestMethod.GET, RequestMethod.POST })
-	public @ResponseBody String list(Firm firm) throws Exception {
+	public @ResponseBody String list(FirmQueryDto firm) throws Exception {
 		firm.setDeleted(false);
 		return firmService.listEasyuiPageByExample(firm, true).toString();
 	}

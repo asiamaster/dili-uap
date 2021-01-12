@@ -171,6 +171,10 @@
             swal('警告','请选中一条数据', 'warning');
             return;
         }
+        if (!selected.parentId) {
+        	swal('警告','该节点未市场信息，只作展示，不能进行其他操作！', 'warning');
+            return;
+        }
         $('#roleMenuAndResourceDlg').dialog('open');
         $('#roleMenuAndResourceDlg').dialog('center');
         $('#roleMenuAndResourceGrid').treegrid("clearChecked");

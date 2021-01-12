@@ -291,12 +291,12 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 			example = new Example(Department.class);
 			example.createCriteria().andIn("firmCode", firmCodes);
 			List<Department> departments = this.departmentMapper.selectByExample(example);
-			example = new Example(UserDataAuth.class);
-			List<Long> departmentIds = new ArrayList<Long>(firms.size());
-			departments.forEach(d -> departmentIds.add(d.getId()));
-			example.createCriteria().andEqualTo("refCode", DataAuthType.DEPARTMENT.getCode()).andEqualTo("userId", adminUser.getId()).andIn("value", departmentIds);
-			this.userDataAuthMapper.deleteByExample(example);
 			if (CollectionUtils.isNotEmpty(departments)) {
+				example = new Example(UserDataAuth.class);
+				List<Long> departmentIds = new ArrayList<Long>(firms.size());
+				departments.forEach(d -> departmentIds.add(d.getId()));
+				example.createCriteria().andEqualTo("refCode", DataAuthType.DEPARTMENT.getCode()).andEqualTo("userId", adminUser.getId()).andIn("value", departmentIds);
+				this.userDataAuthMapper.deleteByExample(example);
 				List<UserDataAuth> dataAuthList = new ArrayList<UserDataAuth>(departments.size());
 				for (Department d : departments) {
 					UserDataAuth depDataAuth = DTOUtils.newInstance(UserDataAuth.class);
