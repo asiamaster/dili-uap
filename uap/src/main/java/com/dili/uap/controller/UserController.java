@@ -32,6 +32,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -60,6 +61,24 @@ public class UserController {
 	private DataAuthRefService dataAuthRefService;
 	@Value("${uap.adminName:admin}")
 	private String adminName;
+
+	/**
+	 * 空数据
+	 * @return
+	 */
+	@GetMapping(value = "/empty.action")
+	public @ResponseBody BaseOutput empty() {
+		return BaseOutput.success();
+	}
+
+	/**
+	 * 空页面
+	 * @return
+	 */
+	@GetMapping(value = "/blank.html")
+	public String blank() {
+		return "user/blank";
+	}
 
 	/**
 	 * 跳转到User页面
