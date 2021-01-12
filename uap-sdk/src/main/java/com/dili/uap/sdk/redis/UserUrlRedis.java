@@ -67,9 +67,6 @@ public class UserUrlRedis {
      * @return
      */
     private Boolean isMemberKey(String key, Object value){
-        long start = System.currentTimeMillis();
-        Boolean member = redisUtil.getRedisTemplate().boundSetOps(key).isMember(value);
-        System.out.println("isMemberKey耗时:"+ (System.currentTimeMillis()-start)+"ms");
-        return member;
+        return redisUtil.getRedisTemplate().boundSetOps(key).isMember(value);
     }
 }

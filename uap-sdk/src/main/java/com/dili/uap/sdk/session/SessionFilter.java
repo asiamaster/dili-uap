@@ -120,7 +120,7 @@ public class SessionFilter implements Filter {
 		}
 		try {
 			// iframe
-			checkIframe(pc);
+//			checkIframe(pc);
 			// 登录鉴权
 			checkUser(pc);
 			filter.doFilter(request, response);

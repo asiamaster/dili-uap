@@ -87,7 +87,7 @@ public class DynaSessionConstants {
 	 * 移动端accessToken超时
 	 * @param appAccessTokenTimeout
 	 */
-	@Value("${uap.appAccessTokenTimeout:1800}")
+	@Value("${uap.appAccessTokenTimeout:3600}")
 	public void setAppAccessTokenTimeout(Long appAccessTokenTimeout) {
 		APP_ACCESS_TOKEN_TIMEOUT = appAccessTokenTimeout;
 	}
@@ -101,7 +101,7 @@ public class DynaSessionConstants {
 	}
 
 	/**
-	 * 移动端refreshToken超时
+	 * 移动端refreshToken超时，默认一个月
 	 * @param appRefreshTokenTimeout
 	 */
 	@Value("${uap.appRefreshTokenTimeout:2592000}")
