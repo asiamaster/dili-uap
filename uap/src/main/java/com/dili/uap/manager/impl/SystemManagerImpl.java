@@ -2,16 +2,17 @@ package com.dili.uap.manager.impl;
 
 import com.dili.uap.dao.SystemMapper;
 import com.dili.uap.manager.SystemManager;
+import com.dili.uap.sdk.config.DynamicConfig;
 import com.dili.uap.sdk.domain.Systems;
 import com.dili.uap.sdk.glossary.SystemType;
-import com.dili.uap.sdk.session.DynaSessionConstants;
+import com.dili.uap.sdk.service.redis.ManageRedisUtil;
 import com.dili.uap.sdk.util.KeyBuilder;
-import com.dili.uap.sdk.util.ManageRedisUtil;
 import com.dili.uap.sdk.util.SerializeUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.util.Base64;
 import java.util.List;
 
@@ -21,11 +22,11 @@ public class SystemManagerImpl implements SystemManager {
 	@Autowired
 	private SystemMapper systemMapper;
 
-	@Autowired
+	@Resource(name="manageRedisUtil")
 	private ManageRedisUtil redisUtils;
 
 	@Autowired
-	private DynaSessionConstants dynaSessionConstants;
+	private DynamicConfig dynamicConfig;
 
 	@Override
 	public void initWebUserSystemInRedis(Long userId) {
@@ -51,6 +52,6 @@ public class SystemManagerImpl implements SystemManager {
 		String key = KeyBuilder.buildUserSystemKey(userId.toString(), systemType);
 		this.redisUtils.remove(key);
 		// 使用BASE64编码被序列化为byte[]的对象
-		this.redisUtils.set(key, Base64.getEncoder().encodeToString(SerializeUtil.serialize(systems)), dynaSessionConstants.getWebRefreshTokenTimeout());
+		this.redisUtils.set(key, Base64.getEncoder().encodeToString(SerializeUtil.serialize(systems)), dynamicConfig.getWebRefreshTokenTimeout());
 	}
 }

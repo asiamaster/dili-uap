@@ -2,7 +2,7 @@ package com.dili.uap.sdk.component.beetl;
 
 import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.glossary.SystemType;
-import com.dili.uap.sdk.redis.UserResourceRedis;
+import com.dili.uap.sdk.service.redis.UserResourceRedis;
 import com.dili.uap.sdk.session.SessionContext;
 import org.beetl.core.Context;
 import org.beetl.core.Function;

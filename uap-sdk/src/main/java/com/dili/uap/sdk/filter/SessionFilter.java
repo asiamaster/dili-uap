@@ -1,7 +1,10 @@
-package com.dili.uap.sdk.session;
+package com.dili.uap.sdk.filter;
 
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
+import com.dili.uap.sdk.config.DynamicConfig;
+import com.dili.uap.sdk.config.ManageConfig;
+import com.dili.uap.sdk.constant.SessionConstants;
 import com.dili.uap.sdk.domain.Menu;
 import com.dili.uap.sdk.domain.SystemExceptionLog;
 import com.dili.uap.sdk.domain.UserTicket;
@@ -9,9 +12,11 @@ import com.dili.uap.sdk.exception.NotAccessPermissionException;
 import com.dili.uap.sdk.exception.NotLoginException;
 import com.dili.uap.sdk.exception.RedirectException;
 import com.dili.uap.sdk.glossary.ExceptionType;
-import com.dili.uap.sdk.redis.UserUrlRedis;
 import com.dili.uap.sdk.rpc.MenuRpc;
 import com.dili.uap.sdk.rpc.SystemExceptionLogRpc;
+import com.dili.uap.sdk.service.redis.UserUrlRedis;
+import com.dili.uap.sdk.session.PermissionContext;
+import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.sdk.util.WebContent;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
@@ -53,7 +58,7 @@ public class SessionFilter implements Filter {
 	private SystemExceptionLogRpc systemExceptionLogRpc;
 
 	@Resource
-	DynaSessionConstants dynaSessionConstants;
+	DynamicConfig dynamicConfig;
 	@Override
 	public void destroy() {
 	}
@@ -69,12 +74,12 @@ public class SessionFilter implements Filter {
 			HttpServletRequest req = (HttpServletRequest) request;
 			HttpServletResponse resp = (HttpServletResponse) response;
 			//添加可以返回自定义header信息
-			resp.setHeader("Access-Control-Expose-Headers",SessionConstants.ACCESS_TOKEN_KEY);
+			resp.setHeader("Access-Control-Expose-Headers", SessionConstants.ACCESS_TOKEN_KEY);
 			//设置跨域的时候还要设置一个Cache-Control,无的话会导致前端无法从缓存获取头token
 			resp.setHeader("Cache-Control", "no-store");
 			WebContent.put(req);
 			WebContent.put(resp);
-			PermissionContext pc = new PermissionContext(req, resp, this, config, dynaSessionConstants.getUapContextPath());
+			PermissionContext pc = new PermissionContext(req, resp, this, config, dynamicConfig.getUapContextPath());
 			WebContent.put(SessionConstants.MANAGE_PERMISSION_CONTEXT, pc);
 			// 如果是框架导出，需要手动设置SessionId到Header中，因为restful取不到cookies
 			if (pc.getReq().getRequestURI().trim().endsWith("/export/serverExport.action")) {

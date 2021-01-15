@@ -1,4 +1,4 @@
-package com.dili.uap.sdk.redis;
+package com.dili.uap.sdk.service.redis;
 
 import com.dili.ss.redis.service.RedisDistributedLock;
 import org.slf4j.Logger;

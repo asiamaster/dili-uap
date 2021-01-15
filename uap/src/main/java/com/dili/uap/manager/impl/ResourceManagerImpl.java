@@ -3,10 +3,10 @@ package com.dili.uap.manager.impl;
 import com.dili.uap.dao.ResourceMapper;
 import com.dili.uap.domain.Resource;
 import com.dili.uap.manager.ResourceManager;
+import com.dili.uap.sdk.config.DynamicConfig;
 import com.dili.uap.sdk.glossary.SystemType;
-import com.dili.uap.sdk.session.DynaSessionConstants;
+import com.dili.uap.sdk.service.redis.ManageRedisUtil;
 import com.dili.uap.sdk.util.KeyBuilder;
-import com.dili.uap.sdk.util.ManageRedisUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -31,11 +31,11 @@ public class ResourceManagerImpl implements ResourceManager {
 	@Autowired
 	private ResourceMapper resourceMapper;
 
-	@Autowired
+	@javax.annotation.Resource(name="manageRedisUtil")
 	private ManageRedisUtil redisUtils;
 
 	@Autowired
-	private DynaSessionConstants dynaSessionConstants;
+	private DynamicConfig dynamicConfig;
 
 	@Override
 	public void initWebUserResourceCodeInRedis(Long userId) {
@@ -70,7 +70,7 @@ public class ResourceManagerImpl implements ResourceManager {
 		String key = KeyBuilder.buildUserResourceCodeKey(userId.toString(), systemType);
 		this.redisUtils.remove(key);
 		BoundSetOperations<String, Object> ops = this.redisUtils.getRedisTemplate().boundSetOps(key);
-		ops.expire(dynaSessionConstants.getRefreshTokenTimeout(systemType), TimeUnit.SECONDS);
+		ops.expire(dynamicConfig.getRefreshTokenTimeout(systemType), TimeUnit.SECONDS);
 		ops.add(codes.toArray());
 	}
 

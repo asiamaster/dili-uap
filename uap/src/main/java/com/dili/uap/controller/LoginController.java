@@ -2,6 +2,7 @@ package com.dili.uap.controller;
 
 import com.dili.logger.sdk.annotation.BusinessLogger;
 import com.dili.logger.sdk.base.LoggerContext;
+import com.dili.logger.sdk.glossary.LoggerConstant;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.domain.dto.LoginDto;
@@ -142,7 +143,9 @@ public class LoginController {
 	@BusinessLogger(businessType = "login_management", content = "${msg}", operationType = "logout")
 	@RequestMapping(value = "/logout.action", produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody BaseOutput logoutAction(String systemCode, @RequestParam(required = false) Long userId, HttpServletRequest request) {
-		this.userService.logout(WebContent.getPC().getAccessToken());
+		this.userService.logout(WebContent.getPermissionContext().getRefreshToken());
+		LoggerContext.put(LoggerConstant.LOG_SYSTEM_CODE_KEY, systemCode);
+		LoggerContext.put("msg", "用户["+userId+"]登出");
 		return BaseOutput.success();
 	}
 

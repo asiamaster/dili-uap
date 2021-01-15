@@ -1,6 +1,6 @@
 package com.dili.uap.sdk.boot;
 
-import com.dili.uap.sdk.session.ManageConfig;
+import com.dili.uap.sdk.config.ManageConfig;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext;

@@ -1,7 +1,7 @@
 package com.dili.uap.sdk.component.beetl;
 
 import com.dili.uap.sdk.domain.UserTicket;
-import com.dili.uap.sdk.redis.UserResourceRedis;
+import com.dili.uap.sdk.service.redis.UserResourceRedis;
 import com.dili.uap.sdk.session.SessionContext;
 import org.beetl.core.Context;
 import org.beetl.core.Function;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 public class UserTicketFunction implements Function {
 
 	@Autowired
-    UserResourceRedis userResourceRedis;
+	UserResourceRedis userResourceRedis;
 
 	@Override
 	public Object call(Object[] objects, Context context) {

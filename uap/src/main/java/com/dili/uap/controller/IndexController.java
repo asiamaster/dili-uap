@@ -7,14 +7,14 @@ import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.exception.AppException;
 import com.dili.ss.mvc.util.RequestUtils;
 import com.dili.uap.constants.UapConstants;
+import com.dili.uap.sdk.constant.SessionConstants;
 import com.dili.uap.sdk.domain.Systems;
 import com.dili.uap.sdk.domain.User;
 import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.exception.NotLoginException;
 import com.dili.uap.sdk.glossary.SystemType;
-import com.dili.uap.sdk.redis.UserSystemRedis;
-import com.dili.uap.sdk.redis.UserUrlRedis;
-import com.dili.uap.sdk.session.SessionConstants;
+import com.dili.uap.sdk.service.redis.UserSystemRedis;
+import com.dili.uap.sdk.service.redis.UserUrlRedis;
 import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.sdk.util.WebContent;
 import com.dili.uap.service.MenuService;
@@ -50,7 +50,7 @@ public class IndexController {
 	public static final String USERDETAIL_PATH = "index/userDetail";
 	public static final String CHANGEPWD_PATH = "index/changePwd";
 
-	@Value("${bpmc.server.address:bpmc.server.address=https://bpmc.diligrp.com}")
+	@Value("${bpmc.server.address:https://bpmc.diligrp.com}")
 	private String bpmcUrl;
 
 	@Autowired

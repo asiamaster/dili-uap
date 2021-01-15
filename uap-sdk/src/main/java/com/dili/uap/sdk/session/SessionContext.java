@@ -1,10 +1,12 @@
 package com.dili.uap.sdk.session;
 
 import com.dili.ss.util.SpringUtil;
+import com.dili.uap.sdk.config.ManageConfig;
+import com.dili.uap.sdk.constant.SessionConstants;
 import com.dili.uap.sdk.domain.UserTicket;
-import com.dili.uap.sdk.redis.DataAuthRedis;
 import com.dili.uap.sdk.service.AuthService;
 import com.dili.uap.sdk.service.UserInfoApiService;
+import com.dili.uap.sdk.service.redis.DataAuthRedis;
 import com.dili.uap.sdk.util.WebContent;
 
 import java.util.ArrayList;

@@ -17,7 +17,7 @@
 	</parent>
 	<modules>
 		<module>uap-sdk</module>
-		<module>uap</module>
+<!--		<module>uap</module>-->
 	</modules>
 
 	<properties>

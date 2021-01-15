@@ -22,14 +22,14 @@ import com.dili.uap.manager.DataAuthManager;
 import com.dili.uap.manager.MenuManager;
 import com.dili.uap.manager.ResourceManager;
 import com.dili.uap.manager.SystemManager;
+import com.dili.uap.sdk.config.DynamicConfig;
+import com.dili.uap.sdk.constant.SessionConstants;
 import com.dili.uap.sdk.domain.*;
 import com.dili.uap.sdk.glossary.SystemType;
 import com.dili.uap.sdk.service.AuthService;
-import com.dili.uap.sdk.session.DynaSessionConstants;
-import com.dili.uap.sdk.session.SessionConstants;
-import com.dili.uap.sdk.util.JwtService;
+import com.dili.uap.sdk.service.JwtService;
+import com.dili.uap.sdk.service.redis.ManageRedisUtil;
 import com.dili.uap.sdk.util.KeyBuilder;
-import com.dili.uap.sdk.util.ManageRedisUtil;
 import com.dili.uap.sdk.util.WebContent;
 import com.dili.uap.service.LoginService;
 import com.dili.uap.utils.MD5Util;
@@ -73,7 +73,7 @@ public class LoginServiceImpl implements LoginService {
 	@Value("${pwd.error.count:3}")
 	private Integer pwdErrorCount;
 
-	@Autowired
+	@Resource(name="manageRedisUtil")
 	private ManageRedisUtil redisUtil;
 
 	@Autowired
@@ -98,7 +98,7 @@ public class LoginServiceImpl implements LoginService {
 	private AuthService authService;
 
 	@Resource
-	private DynaSessionConstants dynaSessionConstants;
+	private DynamicConfig dynamicConfig;
 	@SuppressWarnings("all")
 	@Autowired
 	private FirmMapper firmMapper;
@@ -292,7 +292,7 @@ public class LoginServiceImpl implements LoginService {
 	 * @param systemType 不同系统类型，超时时间不同
 	 */
 	private void saveTokenInRedis(UserTicket user, String refreshToken, Integer systemType) {
-		Long refreshTokenTimeOut = dynaSessionConstants.getRefreshTokenTimeout(systemType);
+		Long refreshTokenTimeOut = dynamicConfig.getRefreshTokenTimeout(systemType);
 		// 用于在SDK中根据sessionId获取用户信息，如果sessionId不存在，过期或者被挤，都会被权限系统拦截
 		this.redisUtil.set(KeyBuilder.buildRefreshTokenKey(refreshToken), JSON.toJSONString(user), refreshTokenTimeOut);
 		// redis: userID - token

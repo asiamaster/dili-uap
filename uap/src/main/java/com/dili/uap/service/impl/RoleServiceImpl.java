@@ -31,7 +31,6 @@ import com.dili.uap.domain.UserRole;
 import com.dili.uap.domain.dto.SystemResourceDto;
 import com.dili.uap.glossary.MenuType;
 import com.dili.uap.glossary.Yn;
-import com.dili.uap.sdk.domain.Menu;
 import com.dili.uap.sdk.domain.Role;
 import com.dili.uap.sdk.domain.Systems;
 import com.dili.uap.sdk.domain.UserTicket;

@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Created by jk on 2017/5/11.
+ * 未使用类
  */
 public abstract class AbstractApiService {
     private static final Logger log = LoggerFactory.getLogger(AbstractApiService.class);

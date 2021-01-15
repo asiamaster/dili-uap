@@ -1,6 +1,6 @@
 package com.dili.uap.sdk.util;
 
-import com.dili.uap.sdk.session.SessionConstants;
+import com.dili.uap.sdk.constant.SessionConstants;
 
 /**
  * 构建用户登录保存到Redis的Key

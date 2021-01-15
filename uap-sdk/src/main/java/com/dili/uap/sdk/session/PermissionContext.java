@@ -3,6 +3,8 @@ package com.dili.uap.sdk.session;
 import com.alibaba.fastjson.JSON;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.util.SpringUtil;
+import com.dili.uap.sdk.config.ManageConfig;
+import com.dili.uap.sdk.constant.SessionConstants;
 import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.service.AuthService;
 import com.dili.uap.sdk.util.WebContent;

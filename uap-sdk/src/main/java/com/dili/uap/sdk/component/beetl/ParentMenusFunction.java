@@ -1,8 +1,8 @@
 package com.dili.uap.sdk.component.beetl;
 
+import com.dili.uap.sdk.constant.SessionConstants;
 import com.dili.uap.sdk.rpc.MenuRpc;
 import com.dili.uap.sdk.session.PermissionContext;
-import com.dili.uap.sdk.session.SessionConstants;
 import com.dili.uap.sdk.util.WebContent;
 import org.beetl.core.Context;
 import org.beetl.core.Function;

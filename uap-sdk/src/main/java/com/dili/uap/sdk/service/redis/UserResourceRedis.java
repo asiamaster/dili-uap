@@ -1,12 +1,12 @@
-package com.dili.uap.sdk.redis;
+package com.dili.uap.sdk.service.redis;
 
 import com.dili.uap.sdk.exception.ParameterException;
 import com.dili.uap.sdk.util.KeyBuilder;
-import com.dili.uap.sdk.util.ManageRedisUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
 
 /**
  * 用户资源redis操作
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 public class UserResourceRedis {
     private static final Logger log = LoggerFactory.getLogger(UserResourceRedis.class);
 
-    @Autowired
+    @Resource(name="manageRedisUtil")
     private ManageRedisUtil redisUtil;
 
     /**

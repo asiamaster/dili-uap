@@ -1,4 +1,4 @@
-package com.dili.uap.sdk.session;
+package com.dili.uap.sdk.constant;
 
 /**
  * session常量

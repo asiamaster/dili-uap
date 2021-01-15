@@ -2,11 +2,11 @@ package com.dili.uap.manager.impl;
 
 import com.dili.uap.dao.MenuMapper;
 import com.dili.uap.manager.MenuManager;
+import com.dili.uap.sdk.config.DynamicConfig;
 import com.dili.uap.sdk.domain.Menu;
 import com.dili.uap.sdk.glossary.SystemType;
-import com.dili.uap.sdk.session.DynaSessionConstants;
+import com.dili.uap.sdk.service.redis.ManageRedisUtil;
 import com.dili.uap.sdk.util.KeyBuilder;
-import com.dili.uap.sdk.util.ManageRedisUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundSetOperations;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,11 +33,11 @@ public class MenuManagerImpl implements MenuManager {
 	@Autowired
 	private MenuMapper menuMapper;
 
-	@Autowired
+	@Resource(name="manageRedisUtil")
 	private ManageRedisUtil redisUtils;
 
 	@Autowired
-	private DynaSessionConstants dynaSessionConstants;
+	private DynamicConfig dynamicConfig;
 
 	@Override
 	public void initWebUserMenuUrlsInRedis(Long userId) {
@@ -71,7 +72,7 @@ public class MenuManagerImpl implements MenuManager {
 		String key = KeyBuilder.buildUserMenuUrlKey(userId.toString(), systemType);
 		this.redisUtils.remove(key);
 		BoundSetOperations<String, Object> ops = this.redisUtils.getRedisTemplate().boundSetOps(key);
-		ops.expire(dynaSessionConstants.getWebRefreshTokenTimeout(), TimeUnit.SECONDS);
+		ops.expire(dynamicConfig.getWebRefreshTokenTimeout(), TimeUnit.SECONDS);
 		ops.add(urls.toArray());
 	}
 

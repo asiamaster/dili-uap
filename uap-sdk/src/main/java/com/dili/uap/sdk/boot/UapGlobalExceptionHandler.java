@@ -76,7 +76,7 @@ public class UapGlobalExceptionHandler {
      * @param e
      * @return
      */
-    @ExceptionHandler(Exception.class)
+        @ExceptionHandler(Exception.class)
     public String defultExcepitonHandler(HttpServletRequest request, HttpServletResponse response, Exception e) throws IOException {
         Exception exception = e;
         e.printStackTrace();

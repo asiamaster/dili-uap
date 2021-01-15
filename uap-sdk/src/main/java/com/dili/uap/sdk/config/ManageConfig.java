@@ -1,9 +1,12 @@
-package com.dili.uap.sdk.session;
+package com.dili.uap.sdk.config;
 
-import com.dili.uap.sdk.util.ManageRedisUtil;
+import com.dili.uap.sdk.service.redis.ManageRedisUtil;
 import com.dili.uap.sdk.util.WebContent;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -13,14 +16,14 @@ import java.util.regex.Pattern;
  * 找不到就读取conf/manage.properties<BR>
  * Created by asiamaster on 2017/7/4 0004.
  */
-//@Component
+@Component
 //@ConfigurationProperties(prefix = "manage",locations = {"classpath:conf/manage-${spring.profiles.active}.properties"})
-//@ConfigurationProperties(prefix = "manage")
-//@PropertySource({"classpath:conf/manage-${spring.profiles.active}.properties"})
-public class ManageProfileConfig {
+@ConfigurationProperties(prefix = "manage")
+@PropertySource({"classpath:conf/manage.properties"})
+public class ManageConfig {
 
 //	@Value("${manage.domain}")
-	private String domain;
+//	private String domain;
 	//是否开启过滤
 //	@Value("${manage.enable}")
 	private Boolean enable = true;
@@ -41,13 +44,14 @@ public class ManageProfileConfig {
 	private List<String> excludesExt;
 	private List<String> loginChecksExt;
 
+
 	//是否必须在框架内
 //	@Value("${manage.mustIframe}")
 	private Boolean mustIframe = true;
 
 	private Boolean userLimitOne = false;
 
-	@Autowired
+	@Resource(name="manageRedisUtil")
 	private ManageRedisUtil redisUtil;
 
 	/**
@@ -69,6 +73,29 @@ public class ManageProfileConfig {
 			return false;
 		}
 		return urlFilter(excludes);
+	}
+
+	/**
+	 * 验证指定URI是否排除
+	 * @return
+	 */
+	public boolean isExclude(String uri) {
+		return urlFilter(excludes, uri);
+	}
+
+	/**
+	 * 验证uri是否匹配patternStrs
+	 * @param patternStrs
+	 * @param uri
+	 * @return
+	 */
+	private Boolean urlFilter(List<String> patternStrs, String uri){
+		for(String str : patternStrs){
+			if(Pattern.compile(str).matcher(uri).find()){
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private Boolean urlFilter(List<String> patternStrs){
@@ -110,9 +137,9 @@ public class ManageProfileConfig {
 		return false;
 	}
 
-	public String getDomain() {
-		return domain;
-	}
+//	public String getDomain() {
+//		return domain;
+//	}
 
 	public ManageRedisUtil getRedisUtil() {
 		return redisUtil;
@@ -138,9 +165,9 @@ public class ManageProfileConfig {
 		return mustIframe;
 	}
 
-	public void setDomain(String domain) {
-		this.domain = domain;
-	}
+//	public void setDomain(String domain) {
+//		this.domain = domain;
+//	}
 
 	public void setEnable(Boolean enable) {
 		this.enable = enable;

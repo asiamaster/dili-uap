@@ -1,13 +1,13 @@
 package com.dili.uap.sdk.component.beetl;
 
 import com.dili.ss.domain.BaseOutput;
+import com.dili.uap.sdk.constant.SessionConstants;
 import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.glossary.SystemType;
-import com.dili.uap.sdk.redis.UserResourceRedis;
-import com.dili.uap.sdk.redis.UserUrlRedis;
 import com.dili.uap.sdk.rpc.ResourceRpc;
+import com.dili.uap.sdk.service.redis.UserResourceRedis;
+import com.dili.uap.sdk.service.redis.UserUrlRedis;
 import com.dili.uap.sdk.session.PermissionContext;
-import com.dili.uap.sdk.session.SessionConstants;
 import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.sdk.util.WebContent;
 import org.apache.commons.lang3.StringUtils;

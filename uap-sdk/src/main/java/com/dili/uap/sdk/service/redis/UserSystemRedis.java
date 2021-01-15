@@ -1,17 +1,16 @@
-package com.dili.uap.sdk.redis;
+package com.dili.uap.sdk.service.redis;
 
 import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.sdk.domain.Systems;
 import com.dili.uap.sdk.exception.ParameterException;
 import com.dili.uap.sdk.util.KeyBuilder;
-import com.dili.uap.sdk.util.ManageRedisUtil;
 import com.dili.uap.sdk.util.SerializeUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -24,7 +23,7 @@ import java.util.List;
 public class UserSystemRedis {
     private static final Logger log = LoggerFactory.getLogger(UserSystemRedis.class);
 
-    @Autowired
+    @Resource(name="manageRedisUtil")
     private ManageRedisUtil redisUtil;
 
     /**

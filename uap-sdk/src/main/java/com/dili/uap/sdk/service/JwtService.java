@@ -1,4 +1,4 @@
-package com.dili.uap.sdk.util;
+package com.dili.uap.sdk.service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -12,11 +12,12 @@ import com.dili.ss.exception.InternalException;
 import com.dili.ss.util.DateUtils;
 import com.dili.ss.util.RSAKeyPair;
 import com.dili.ss.util.RSAUtils;
+import com.dili.uap.sdk.config.DynamicConfig;
 import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.glossary.SystemType;
-import com.dili.uap.sdk.session.DynaSessionConstants;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
@@ -38,9 +39,14 @@ public class JwtService {
      * 声明数据key
      */
     private static final String CLAIM_DATA_KEY = "data";
-    @Resource
-    private DynaSessionConstants dynaSessionConstants;
 
+    @Resource
+    private DynamicConfig dynamicConfig;
+
+    @PostConstruct
+    public void init() throws Exception {
+        RSAUtils.getRSAKeyPair(dynamicConfig.getPublicKey(), dynamicConfig.getPrivateKey());
+    }
     /**
      * 获取签发的token，返回给前端
      * @param user
@@ -52,7 +58,7 @@ public class JwtService {
         RSAKeyPair rsa256Key = null;
         try {
             rsa256Key = RSAUtils.getRSAKeyPair();
-        } catch (NoSuchAlgorithmException e) {
+        } catch (Exception e) {
             throw new InternalException(e.getMessage());
         }
         Algorithm algorithm = Algorithm.RSA256(
@@ -71,7 +77,7 @@ public class JwtService {
         RSAKeyPair rsa256Key = null;
         try {
             rsa256Key = RSAUtils.getRSAKeyPair();
-        } catch (NoSuchAlgorithmException e) {
+        } catch (Exception e) {
             throw new InternalException(e.getMessage());
         }
         Algorithm algorithm = Algorithm.RSA256(
@@ -90,7 +96,7 @@ public class JwtService {
         RSAKeyPair rsa256Key = null;
         try {
             rsa256Key = RSAUtils.getRSAKeyPair();
-        } catch (NoSuchAlgorithmException e) {
+        } catch (Exception e) {
             throw new InternalException(e.getMessage());
         }
         Algorithm algorithm = Algorithm.RSA256(
@@ -173,7 +179,7 @@ public class JwtService {
                 // 生成签名的时间
                 .withIssuedAt(new Date())
                 // 生成签名的有效期
-                .withExpiresAt(DateUtils.addSeconds(new Date(),dynaSessionConstants.getAccessTokenTimeout(systemType.getCode()).intValue()))
+                .withExpiresAt(DateUtils.addSeconds(new Date(), dynamicConfig.getAccessTokenTimeout(systemType.getCode()).intValue()))
                 //TODO 测试有效期时间很短
 //                .withExpiresAt(DateUtils.addSeconds(new Date(),20))
                 //存数据

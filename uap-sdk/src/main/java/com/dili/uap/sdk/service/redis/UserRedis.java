@@ -1,16 +1,15 @@
-package com.dili.uap.sdk.redis;
+package com.dili.uap.sdk.service.redis;
 
 import com.alibaba.fastjson.JSON;
 import com.dili.ss.dto.DTOUtils;
+import com.dili.uap.sdk.config.DynamicConfig;
+import com.dili.uap.sdk.constant.SessionConstants;
 import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.domain.dto.UserToken;
 import com.dili.uap.sdk.glossary.SystemType;
 import com.dili.uap.sdk.glossary.TokenStep;
-import com.dili.uap.sdk.session.DynaSessionConstants;
-import com.dili.uap.sdk.session.SessionConstants;
-import com.dili.uap.sdk.util.JwtService;
+import com.dili.uap.sdk.service.JwtService;
 import com.dili.uap.sdk.util.KeyBuilder;
-import com.dili.uap.sdk.util.ManageRedisUtil;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -31,14 +30,14 @@ import java.util.concurrent.TimeUnit;
 public class UserRedis {
 
 	private static final Logger log = LoggerFactory.getLogger(UserRedis.class);
-	@Resource
+	@Resource(name="manageRedisUtil")
 	private ManageRedisUtil redisUtil;
 	@Resource
 	private JwtService jwtService;
 	@Resource
-	private DynaSessionConstants dynaSessionConstants;
+	private DynamicConfig dynamicConfig;
 	@Resource
-	UapRedisDistributedLock uapRedisDistributedLock;
+    UapRedisDistributedLock uapRedisDistributedLock;
 
 	/**
 	 * 申请新的accessToken
@@ -92,7 +91,7 @@ public class UserRedis {
 	public void defer(String refreshToken, UserTicket userTicket) {
 		Integer systemType = userTicket.getSystemType();
 		Long userId = userTicket.getId();
-		Long refreshTokenTimeout = dynaSessionConstants.getRefreshTokenTimeout(systemType);
+		Long refreshTokenTimeout = dynamicConfig.getRefreshTokenTimeout(systemType);
 		//推后当前refreshToken保存的用户信息
 		redisUtil.expire(KeyBuilder.buildRefreshTokenKey(refreshToken), refreshTokenTimeout, TimeUnit.SECONDS);
 		redisUtil.expire(KeyBuilder.buildUserIdRefreshTokenKey(userTicket.getId().toString(), systemType), refreshTokenTimeout, TimeUnit.SECONDS);

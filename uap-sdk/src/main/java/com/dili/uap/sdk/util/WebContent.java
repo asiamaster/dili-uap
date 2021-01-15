@@ -1,10 +1,12 @@
 package com.dili.uap.sdk.util;
 
-import com.dili.uap.sdk.session.ManageConfig;
+import com.dili.uap.sdk.config.ManageConfig;
+import com.dili.uap.sdk.constant.SessionConstants;
 import com.dili.uap.sdk.session.PermissionContext;
-import com.dili.uap.sdk.session.SessionConstants;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationContext;
+import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.servlet.FrameworkServlet;
 
@@ -23,7 +25,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
- * MVC容器 User: juqkai (juqkai@gmail.com) Date: 13-9-25 上午11:12
+ * MVC容器
  */
 public class WebContent {
 	private static Pattern ip = Pattern.compile("^(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[0-9]{1,2})(\\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[0-9]{1,2})){3}$");
@@ -34,8 +36,16 @@ public class WebContent {
 		return (HttpServletRequest) get("req");
 	}
 
+	public static ServerHttpRequest getServerHttpRequest() {
+		return (ServerHttpRequest) get("req");
+	}
+
 	public static HttpServletResponse getResponse() {
 		return (HttpServletResponse) get("resp");
+	}
+
+	public static ServerHttpResponse getServerHttpResponse() {
+		return (ServerHttpResponse) get("resp");
 	}
 
 	/**
@@ -43,7 +53,7 @@ public class WebContent {
 	 * 
 	 * @return
 	 */
-	public static PermissionContext getPC() {
+	public static PermissionContext getPermissionContext() {
 		return (PermissionContext) WebContent.get(SessionConstants.MANAGE_PERMISSION_CONTEXT);
 	}
 
@@ -52,8 +62,8 @@ public class WebContent {
 	 * 
 	 * @return
 	 */
-	public static ManageConfig getMC() {
-		return getPC().getConfig();
+	public static ManageConfig getManageConfig() {
+		return getPermissionContext().getConfig();
 	}
 
 	public static void resetLocal() {
@@ -69,7 +79,6 @@ public class WebContent {
 		HttpServletRequest req = (HttpServletRequest) get("req");
 		ApplicationContext context = WebApplicationContextUtils.getWebApplicationContext(req.getSession().getServletContext());
 		if (context == null) {
-
 			ServletContext sc = req.getSession().getServletContext();
 			Enumeration e = sc.getAttributeNames();
 			while (e.hasMoreElements()) {
@@ -81,8 +90,6 @@ public class WebContent {
 					}
 				}
 			}
-//            String key = FrameworkServlet.SERVLET_CONTEXT_PREFIX + "dispatcherServlet";
-//            context = WebApplicationContextUtils.getWebApplicationContext(req.getSession().getServletContext(), key);
 		}
 		return context;
 	}
@@ -117,7 +124,7 @@ public class WebContent {
 	}
 
 	public static void setCookie(String key, String val, String domain) {
-		setCookie(key, val, SessionConstants.COOKIE_TIMEOUT, getCookieDomain(getRequest().getRequestURL().toString()));
+		setCookie(key, val, SessionConstants.COOKIE_TIMEOUT, domain);
 	}
 
 	/**
@@ -143,13 +150,21 @@ public class WebContent {
 	}
 
 	/**
-	 * 设置ResponseHeader
+	 * 设置Response Header
 	 * @param key
 	 * @param val
 	 */
 	public static void setResponseHeader(String key, String val) {
-		HttpServletResponse resp = WebContent.getResponse();
-		resp.setHeader(key, val);
+		WebContent.getResponse().setHeader(key, val);
+	}
+
+	/**
+	 * 设置ServerHttpResponse Header
+	 * @param key
+	 * @param val
+	 */
+	public static void setServerHttpResponseHeader(String key, String val) {
+		WebContent.getServerHttpResponse().getHeaders().add(key, val);
 	}
 
 	public static String getCookie(String key) {
@@ -177,7 +192,7 @@ public class WebContent {
 		}
 	}
 
-	private static String getCookieDomain(URI uri) throws URISyntaxException {
+	private static String getCookieDomain(URI uri) {
 		String host = uri.getHost();
 		if (ip.matcher(host).find()) {
 			return host;

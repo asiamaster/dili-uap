@@ -1,4 +1,4 @@
-package com.dili.uap.sdk.util;
+package com.dili.uap.sdk.service.redis;
 
 import com.alibaba.fastjson.JSON;
 import org.springframework.data.redis.core.RedisTemplate;
