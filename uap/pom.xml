@@ -245,10 +245,10 @@
 			<artifactId>sentinel-datasource-nacos</artifactId>
 			<version>1.8.0</version>
 		</dependency>
-<!--		<dependency>-->
-<!--			<groupId>org.springframework.boot</groupId>-->
-<!--			<artifactId>spring-boot-starter-websocket</artifactId>-->
-<!--		</dependency>-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-websocket</artifactId>
+		</dependency>
 		<!-- 公共信息 -->
 		<dependency>
 			<groupId>com.dili</groupId>

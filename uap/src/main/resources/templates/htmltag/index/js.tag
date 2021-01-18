@@ -1,9 +1,11 @@
 <script>
     var websocket = null;
     if('WebSocket' in window) {
-        websocket = new WebSocket("ws://uap.diligrp.com/websocket/webSocketByTomcat/"+document.getElementById('sessionId').value);
+        websocket = new WebSocket("ws://uap.diligrp.com/ws/message");
     } else if('MozWebSocket' in window) {
-        websocket = new MozWebSocket("ws://uap.diligrp.com/websocket/webSocketByTomcat/"+document.getElementById('sessionId').value);
+        websocket = new MozWebSocket("ws://uap.diligrp.com/ws/message");
+    }else{
+        setMessageInnerHTML("浏览器不支持WebSocket");
     }
 
     //连接发生错误的回调方法
@@ -18,7 +20,14 @@
 
     //接收到消息的回调方法
     websocket.onmessage = function (event) {
-        setMessageInnerHTML(event.data);
+        // setMessageInnerHTML(event.data);
+        $.messager.show({
+            title:'我的消息',
+            msg:event.data,
+            timeout:5000,
+            showSpeed:700,
+            showType:'fade'
+        });
     }
 
     //连接关闭的回调方法

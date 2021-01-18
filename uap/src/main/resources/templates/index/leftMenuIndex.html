@@ -78,6 +78,38 @@
         transform: scale(1.1);
         cursor:pointer;
     }
+
+    /*$.messager.show 样式调整 st*/
+    .window .window-header {
+         background: transparent;
+        padding: 0px 0px 0px 0px;
+    }
+    .window {
+        overflow: hidden;
+        padding: 0px;
+        /* border-width: 1px; */
+        border-style: solid;
+    }
+    .window, .window .window-body {
+        border-color: #d0d0d0;
+    }
+    .panel-tool a {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        opacity: 0.8;
+        filter: alpha(opacity=60);
+        margin: 0 0 0 2px;
+        vertical-align: middle;
+    }
+    .panel-icon, .panel-tool {
+        position: absolute;
+        top: 50%;
+        margin-top: -8px;
+        height: 18px;
+        overflow: hidden;
+    }
+    /*$.messager.show 样式调整 end*/
 </style>
 <script type="text/javascript">
     //sm加载过滤器
@@ -157,6 +189,11 @@
     <!-- 中央布局 -->
     <!-- ====================================================================================================================== -->
     <div region="center" style="width:100%;border:0px;" height="auto" >
+        <input id="text" type="text"/> <button onclick="send()">发送消息</button>
+        <hr/>
+        <button onclick="closeWebSocket()">关闭WebSocket连接</button>
+        <hr/>
+        <div id="message"></div>
         <div id="mainPanel" class="easyui-panel" style="width: 100%; height: 100%;" border="false" data-options="">
         </div>
     </div>
@@ -192,6 +229,7 @@
 <!-- ====================================================================================================================== -->
 <!-- style & script 分隔线 -->
 <!-- ====================================================================================================================== -->
+<#index_js/>
 
 <script type="text/javascript">
     <%if(has(taskCenterUrl)){%>
