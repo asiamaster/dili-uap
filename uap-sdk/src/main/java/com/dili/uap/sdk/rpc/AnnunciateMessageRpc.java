@@ -13,6 +13,12 @@ import com.dili.uap.sdk.domain.dto.AnnunciateMessage;
 @Restful("${uap.contextPath}")
 public interface AnnunciateMessageRpc {
 
+	/**
+	 * 发送平台公告
+	 * 目标对象不存在，无法发送, 返回BaseOutput.failure
+	 * @param annunciateMessage
+	 * @return
+	 */
 	@POST("/api/ws/sendAnnunciate")
 	BaseOutput sendAnnunciate(@VOBody AnnunciateMessage annunciateMessage);
 

@@ -1,9 +1,9 @@
 package com.dili.uap.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.dili.logger.sdk.domain.BusinessLog;
 import com.dili.logger.sdk.rpc.BusinessLogRpc;
 import com.dili.ss.domain.BaseOutput;
+import com.dili.ss.domain.EasyuiPageOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.dto.IBaseDomain;
 import com.dili.ss.exception.AppException;
@@ -244,17 +244,19 @@ public class IndexController {
 		message.put("id", "1");
 		message.put("title", "标题1");
 		message.put("type", 1);
+		message.put("readState", 1);
 		message.put("sendTime", new Date());
 		List<Map<String, Object>> messages = new ArrayList<>();
 		messages.add(message);
 		message = new HashMap<>();
 		message.put("id", "2");
 		message.put("type", 2);
+		message.put("readState", 2);
 		message.put("title", "标题2");
 		message.put("sendTime", new Date());
 		messages.add(message);
 		List<Map> maps = ValueProviderUtils.buildDataByProvider(idto, messages);
-		return JSON.toJSONString(maps);
+		return new EasyuiPageOutput((long)maps.size(), maps).toString();
 	}
 
 	/**

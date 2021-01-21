@@ -1,5 +1,27 @@
 
 <script>
+   /**
+    * 初始化用户列表组件
+    */
+   function initGrid() {
+      var pager = $("#messageGrid").datagrid('getPager');
+      pager.pagination({
+              <#controls_paginationOpts/>,
+              buttons:[
+                 {
+                    text:'√全部标记为已读',
+                    handler:function(){
+
+                    }
+                 },{
+                     text:'×全部删除',
+                     handler:function(){
+
+                     }
+                  }
+               ]
+      });
+   }
    // 消息列表查询
    function queryGrid() {
       var opts = $("#messageGrid").datagrid("options");
@@ -11,12 +33,20 @@
 
    //主题点击后跳转到消息详情
    function showDetailFmt(value, row, index) {
-      return "<a class='cursorPointerTransform' onclick='showDetail("+row.id+")'>"+value+"</a>";
+      if(row.readState == 1) {
+         return "<a class='cursorPointerTransform' onclick='showDetail(" + row.id + ")'>" + value + "</a>";
+      }else{
+         return "<a class='cursorPointerTransform' style='color:#bbbbbb;' onclick='showDetail(" + row.id + ")'>" + value + "</a>";
+      }
    }
 
    //操作格式化器
    function operationFmt(value, row, index){
-      return "<a class='cursorPointerTransform' onclick='markAsRead("+row.id+")'>√标记为已读</a>&nbsp;<a class='cursorPointerTransform' onclick='deleteMessage("+row.id+")'>×删除</a>";
+      if(row.readState == 1) {
+         return "<a class='cursorPointerTransform' onclick='markAsRead(" + row.id + ")'>√标记为已读</a>&nbsp;<a class='cursorPointerTransform' onclick='deleteMessage(" + row.id + ")'>×删除</a>";
+      }else{
+         return "<a class='cursorPointerTransform' onclick='deleteMessage(" + row.id + ")'>×删除</a>";
+      }
    }
 
    //标记为已读
@@ -30,13 +60,14 @@
    }
 
    $(function () {
+      initGrid();
       queryGrid();
    });
 </script>
 
 <table class="easyui-datagrid" title="消息列表" id="messageGrid"  fitColumns="true" noheader="true" rownumbers="true" remoteSort="false"
        loadMsg="数据加载中..." singleSelect="true" method="post" multiSort="false" align="center" fit="true" striped="true"
-       idField="id"  data-options="">
+       pagination="true" pagePosition="top" idField="id" pageSize="50" data-options="pageList:[50,100,200]">
    <thead>
    <tr>
       <th data-options="field:'id',align:'center', hidden:true">ID</th>
