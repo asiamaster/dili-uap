@@ -2,8 +2,8 @@ package com.dili.uap.filter;
 
 import com.alibaba.fastjson.JSONException;
 import com.dili.uap.sdk.constant.SessionConstants;
-import com.dili.uap.sdk.session.PermissionContext;
-import com.dili.uap.sdk.util.WebContent;
+import com.dili.uap.sdk.domain.UserTicket;
+import com.dili.uap.sdk.session.SessionContext;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.http.server.ServletServerHttpRequest;
@@ -38,12 +38,17 @@ public class WebSocketInterceptor implements HandshakeInterceptor {
             if(null != request.getURI().getQuery()) {
                 attributes.putAll(getParamMapByQueryUrl(request.getURI().getQuery()));
             }
-            PermissionContext pc = (PermissionContext) WebContent.get(SessionConstants.MANAGE_PERMISSION_CONTEXT);
-            String refreshToken = pc.getRefreshToken();
-            if(refreshToken == null){
+//            PermissionContext pc = (PermissionContext) WebContent.get(SessionConstants.MANAGE_PERMISSION_CONTEXT);
+//            String refreshToken = pc.getRefreshToken();
+//            if(refreshToken == null){
+//                return false;
+//            }pc.getUserTicket()
+//            attributes.put(SessionConstants.REFRESH_TOKEN_KEY, refreshToken);
+            UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
+            if(userTicket == null){
                 return false;
             }
-            attributes.put(SessionConstants.REFRESH_TOKEN_KEY, refreshToken);
+            attributes.put(SessionConstants.USER_ID_KEY, userTicket.getId());
         }
         return true;
     }

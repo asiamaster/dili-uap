@@ -1,0 +1,50 @@
+
+<script>
+   // 消息列表查询
+   function queryGrid() {
+      var opts = $("#messageGrid").datagrid("options");
+      if (null == opts.url || "" == opts.url) {
+         opts.url = "${contextPath}/index/message/list.action";
+      }
+      $("#messageGrid").datagrid("load", bindMetadata("messageGrid"));
+   }
+
+   //主题点击后跳转到消息详情
+   function showDetailFmt(value, row, index) {
+      return "<a class='cursorPointerTransform' onclick='showDetail("+row.id+")'>"+value+"</a>";
+   }
+
+   //操作格式化器
+   function operationFmt(value, row, index){
+      return "<a class='cursorPointerTransform' onclick='markAsRead("+row.id+")'>√标记为已读</a>&nbsp;<a class='cursorPointerTransform' onclick='deleteMessage("+row.id+")'>×删除</a>";
+   }
+
+   //标记为已读
+   function markAsRead(id){
+      alert("markAsRead:"+id);
+   }
+
+   //删除消息
+   function deleteMessage(id){
+      alert("deleteMessage:"+id);
+   }
+
+   $(function () {
+      queryGrid();
+   });
+</script>
+
+<table class="easyui-datagrid" title="消息列表" id="messageGrid"  fitColumns="true" noheader="true" rownumbers="true" remoteSort="false"
+       loadMsg="数据加载中..." singleSelect="true" method="post" multiSort="false" align="center" fit="true" striped="true"
+       idField="id"  data-options="">
+   <thead>
+   <tr>
+      <th data-options="field:'id',align:'center', hidden:true">ID</th>
+      <th width="664" data-options="field:'title', formatter:showDetailFmt, sortable:false, align:'center', resizable:'true', fixed:'false'">主题</th>
+      <th width="100" data-options="field:'type', _provider:'annunciateMessageTypeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">类型</th>
+      <th width="160" data-options="field:'sendTime', formatter:datetimeFormatter, sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">时间</th>
+      <th width="160" data-options="field:'operation', formatter:operationFmt,sortable:false, align:'center', resizable:'false', fixed:'false'">操作</th>
+   </tr>
+   </thead>
+</table>
+

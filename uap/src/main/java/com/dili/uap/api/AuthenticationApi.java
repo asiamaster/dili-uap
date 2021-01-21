@@ -37,6 +37,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
+ * 鉴权接口
  * Created by asiam on 2018/6/7 0007.
  */
 @Controller

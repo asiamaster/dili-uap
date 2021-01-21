@@ -29,11 +29,12 @@ public class UapWebSocketHandler extends TextWebSocketHandler {
      */
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        Object refreshToken = session.getAttributes().get(SessionConstants.REFRESH_TOKEN_KEY);
-        if (refreshToken != null) {
+//        Object refreshToken = session.getAttributes().get(SessionConstants.REFRESH_TOKEN_KEY);
+        Long userId = (Long)session.getAttributes().get(SessionConstants.USER_ID_KEY);
+        if (userId != null) {
             // 用户连接成功，放入在线用户缓存
-            if(!WsSessionManager.containsKey(refreshToken.toString())) {
-                WsSessionManager.add(refreshToken.toString(), session);
+            if(!WsSessionManager.containsKey(userId.toString())) {
+                WsSessionManager.add(userId.toString(), session);
             }
         } else {
             throw new RuntimeException("用户登录已经失效!");
@@ -51,9 +52,9 @@ public class UapWebSocketHandler extends TextWebSocketHandler {
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         // 获得客户端传来的消息
         String payload = message.getPayload();
-        Object token = session.getAttributes().get(SessionConstants.REFRESH_TOKEN_KEY);
-        log.debug("server 接收到 " + token + " 发送的 " + payload);
-        session.sendMessage(new TextMessage("server 发送给 " + token + " 消息 " + payload + " " + LocalDateTime.now().toString()));
+        Long userId = (Long)session.getAttributes().get(SessionConstants.USER_ID_KEY);
+        log.debug("server 接收到用户[" + userId + "]发送的消息:" + payload);
+        session.sendMessage(new TextMessage("server 发送给用户[" + userId + "]消息:" + payload + ",时间:" + LocalDateTime.now().toString()));
     }
 
     /**
@@ -65,10 +66,11 @@ public class UapWebSocketHandler extends TextWebSocketHandler {
      */
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-        Object token = session.getAttributes().get(SessionConstants.REFRESH_TOKEN_KEY);
-        if (token != null) {
+//        Object token = session.getAttributes().get(SessionConstants.REFRESH_TOKEN_KEY);
+        Long userId = (Long)session.getAttributes().get(SessionConstants.USER_ID_KEY);
+        if (userId != null) {
             // 用户退出，移除缓存
-            WsSessionManager.remove(token.toString());
+            WsSessionManager.remove(userId.toString());
         }
     }
 }
