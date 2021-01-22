@@ -176,8 +176,6 @@
     }
 
 
-    //保存右下弹出消息框，用于关闭
-    var messagerShowWin;
     //标记列表中的操作按钮可以点击
     var markBtnFlag = true;
     /**
@@ -247,9 +245,9 @@
      * 在消息提示右边的数字和右上的消息图标点击后显示消息列表
      * @param closeMessager 是否关闭弹出消息
      */
-    function showMessages(closeMessager){
-        if(closeMessager){
-            messagerShowWin.window("close");
+    function showMessages(id, closeMessager){
+        if(closeMessager && id){
+            $("#messagerWin"+id).window("close");
         }
         $("#messageWin").window({
             title:'我的消息',
@@ -271,7 +269,7 @@
             markAsRead(id);
         }
         if(closeMessager){
-            messagerShowWin.window("close");
+            $("#messagerWin"+id).window("close");
         }
         $("#messageWin").window({
             title:'消息详情',

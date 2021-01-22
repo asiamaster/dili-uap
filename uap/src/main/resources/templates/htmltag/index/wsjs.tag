@@ -1,5 +1,7 @@
 <script>
     var websocket = null;
+    //保存右下弹出消息框id，用于关闭
+    var messagerShowWinId;
     if('WebSocket' in window) {
         websocket = new WebSocket("ws://uap.diligrp.com/ws/message");
     } else if('MozWebSocket' in window) {
@@ -33,15 +35,20 @@
             title = "业务消息";
         }
         //组装消息内容，包含消息内容和未读条数
-        let unreadCount = "<div style='float: right; margin:0 auto;' class='red-point cursorPointerTransform' onclick='javascript:showMessages(true)'>"+annunciateMessage.unreadCount+"</div>";
+        let unreadCount = "<div style='float: right; margin:0 auto;' class='red-point cursorPointerTransform' onclick='javascript:showMessages("+id+",true)'>"+annunciateMessage.unreadCount+"</div>";
         var content = annunciateMessage.title.length > 50 ? annunciateMessage.title.substr(0, 60) +"......" : annunciateMessage.title;
         //组装内容和未读数html
         let msg = "<a style='width:246px;height:80px;float:left;' class='cursorPointer' onclick='javascript:showDetail("+id+", true, true)'>"+content+"</a>"+ unreadCount;
         //显示时间，默认3秒
         let timeout = annunciateMessage.timeout == null ? 3000 : annunciateMessage.timeout;
         $("#uncreadCount").html(annunciateMessage.unreadCount);
-        messagerShowWin = $.messager.show({
-            id:'messagerShow',
+        //关闭前一个窗口
+        if(messagerShowWinId != null){
+            $("#"+messagerShowWinId).window("close");
+        }
+        messagerShowWinId = "messagerWin"+id;
+        $.messager.show({
+            id:messagerShowWinId,
             title:title,
             msg: msg,
             timeout:timeout,
