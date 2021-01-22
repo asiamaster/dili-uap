@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 /**
@@ -34,10 +35,10 @@ public class WebSocketApi {
         try {
             WebSocketSession webSocketSession = WsSessionManager.get(annunciateMessage.getTargetId());
             //如果连接在本地，则直接发(多实例，用户的连接可能在其它UAP实例)
-//            if(webSocketSession != null){
-//                webSocketSession.sendMessage(new TextMessage(JSON.toJSONString(annunciateMessage)));
-//                return BaseOutput.success("消息发送成功");
-//            }
+            if(webSocketSession != null){
+                webSocketSession.sendMessage(new TextMessage(JSON.toJSONString(annunciateMessage)));
+                return BaseOutput.success("消息发送成功");
+            }
             //如果当前服务器没有连接，则发送广播消息
             rabbitMQMessageService.send(RabbitConfiguration.UAP_TOPIC_EXCHANGE, RabbitConfiguration.UAP_ANNUNCIATE_KEY, JSON.toJSONString(annunciateMessage));
             return BaseOutput.success("消息发送成功");
