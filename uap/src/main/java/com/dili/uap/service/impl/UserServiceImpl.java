@@ -770,4 +770,9 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 	public Integer updateBySuperiorId(Long superiorId) {
 		return userMapper.updateBySuperiorId(superiorId);
 	}
+
+	@Override
+	public List<HashMap<Long, Long>> getUserCountByDepartments(List<Map<String,Object>> map) {
+		return userMapper.getUserCountByDepartments(map);
+	}
 }

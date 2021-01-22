@@ -104,4 +104,8 @@
         </if>
         GROUP BY f.code)
 	</select>
+
+    <select id="getSeniorDepartmentIds" resultType="Long">
+		SELECT DISTINCT(parent_id) FROM department WHERE parent_id IS NOT NULL
+	</select>
 </mapper>

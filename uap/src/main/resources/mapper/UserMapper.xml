@@ -200,22 +200,37 @@
 
 	<select id="getUserCountByDepartmentIds" parameterType="java.util.Map" resultType="java.util.HashMap">
 		SELECT
-			department_id departmentId
-			,count(department_id) userCount
+		u.department_id departmentId
+		,f.id firmId
+		,count(u.department_id) userCount
 		FROM
-			`user`
+		`user` u
+		LEFT JOIN
+		`firm` f
+		ON
+		u.firm_code = f.code
 		WHERE
-		    created &lt;= #{date}
+		u.created &lt;= #{date}  AND department_id IS NOT NULL
 		<if test="departmentIds != null and departmentIds !=''">
-		AND
-			department_id
-		IN
+			AND
+			u.department_id
+			IN
 			<foreach open="(" close=")" collection="departmentIds" item="departmentId" separator=",">
 				#{departmentId}
 			</foreach>
 		</if>
 		GROUP BY
-			department_id;
+		u.department_id;
+	</select>
+
+	<select id="getUserCountByDepartments" parameterType="list" resultType="java.util.HashMap">
+		<foreach open="(" close=")" collection="list" item="map" separator="union all">
+			SELECT count(1) userCount,${map.seniorId} seniorId,f.id firmId FROM `user` u LEFT JOIN `firm` f ON u.firm_code = f.code
+			WHERE u.created &lt;= #{map.date} AND f.code = #{map.firmCode} AND department_id IN
+			<foreach open="(" close=")" collection="map.ids" item="departmentId" separator=",">
+				#{departmentId}
+			</foreach>
+		</foreach>
 	</select>
 
 </mapper>
