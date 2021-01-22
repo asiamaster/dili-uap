@@ -271,6 +271,36 @@ public class IndexController {
 	}
 
 	/**
+	 * 标记全部消息为已读
+	 *
+	 * @return
+	 */
+	@PostMapping(value = "/message/markAllRead.action")
+	@ResponseBody
+	public BaseOutput markAllRead() {
+		UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
+		if(userTicket == null){
+			return BaseOutput.failure("未登录!");
+		}
+		return BaseOutput.success();
+	}
+
+	/**
+	 * 删除全部消息
+	 *
+	 * @return
+	 */
+	@PostMapping(value = "/message/deleteAllMessage.action")
+	@ResponseBody
+	public BaseOutput deleteAllMessage() {
+		UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
+		if(userTicket == null){
+			return BaseOutput.failure("未登录!");
+		}
+		return BaseOutput.success();
+	}
+
+	/**
 	 * 删除消息
 	 *
 	 * @return

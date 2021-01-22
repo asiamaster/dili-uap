@@ -1,5 +1,58 @@
 
 <script>
+   //标记列表中的操作按钮可以点击
+   var markBtnFlag = true;
+   /**
+    * 消息请求
+    */
+   function request(url, data, btnId) {
+      if(!markBtnFlag){
+         swal('错误', '操作太快了', 'error');
+         return;
+      }
+      disableBtn(btnId);
+      $.ajax({
+         type : "POST",
+         url : url,
+         data : data,
+         processData : true,
+         dataType : "json",
+         async : true,
+         success : function(data) {
+            enableBtn(btnId);
+            if (data.code == "200") {
+               $("#messageGrid").datagrid("reload");
+            } else {
+               swal('错误', data.message, 'error');
+            }
+         },
+         error : function() {
+            enableBtn(btnId);
+            swal('错误', '远程访问失败', 'error');
+         }
+      });
+   }
+
+   /**
+    * 禁用按钮
+    */
+   function disableBtn(btnId) {
+      if(btnId == null){
+         markBtnFlag = false
+      }else{
+         $('#'+btnId).linkbutton('disable');
+      }
+   }
+   /**
+    * 启用按钮
+    */
+   function enableBtn(btnId) {
+      if(btnId == null){
+         markBtnFlag = true
+      }else{
+         $('#'+btnId).linkbutton('enable');
+      }
+   }
    /**
     * 初始化用户列表组件
     */
@@ -9,14 +62,16 @@
               <#controls_paginationOpts/>,
               buttons:[
                  {
+                    id:'markAllReadBtn',
                     text:'√全部标记为已读',
                     handler:function(){
-
+                       request("${contextPath}/index/message/markAllRead.action", {}, "markAllReadBtn");
                     }
                  },{
+                     id:'deleteAllMessageBtn',
                      text:'×全部删除',
                      handler:function(){
-
+                        request("${contextPath}/index/message/deleteAllMessage.action", {}, "deleteAllMessageBtn");
                      }
                   }
                ]
@@ -51,12 +106,12 @@
 
    //标记为已读
    function markAsRead(id){
-      alert("markAsRead:"+id);
+      request("${contextPath}/index/message/markAsRead.action", {id:id});
    }
 
    //删除消息
    function deleteMessage(id){
-      alert("deleteMessage:"+id);
+      request("${contextPath}/index/message/deleteMessage.action", {id:id});
    }
 
    $(function () {
