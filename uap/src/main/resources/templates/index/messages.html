@@ -1,58 +1,5 @@
 
 <script>
-   //标记列表中的操作按钮可以点击
-   var markBtnFlag = true;
-   /**
-    * 消息请求
-    */
-   function request(url, data, btnId) {
-      if(!markBtnFlag){
-         swal('错误', '操作太快了', 'error');
-         return;
-      }
-      disableBtn(btnId);
-      $.ajax({
-         type : "POST",
-         url : url,
-         data : data,
-         processData : true,
-         dataType : "json",
-         async : true,
-         success : function(data) {
-            enableBtn(btnId);
-            if (data.code == "200") {
-               $("#messageGrid").datagrid("reload");
-            } else {
-               swal('错误', data.message, 'error');
-            }
-         },
-         error : function() {
-            enableBtn(btnId);
-            swal('错误', '远程访问失败', 'error');
-         }
-      });
-   }
-
-   /**
-    * 禁用按钮
-    */
-   function disableBtn(btnId) {
-      if(btnId == null){
-         markBtnFlag = false
-      }else{
-         $('#'+btnId).linkbutton('disable');
-      }
-   }
-   /**
-    * 启用按钮
-    */
-   function enableBtn(btnId) {
-      if(btnId == null){
-         markBtnFlag = true
-      }else{
-         $('#'+btnId).linkbutton('enable');
-      }
-   }
    /**
     * 初始化用户列表组件
     */
@@ -89,7 +36,7 @@
    //主题点击后跳转到消息详情
    function showDetailFmt(value, row, index) {
       if(row.readState == 1) {
-         return "<a class='cursorPointerTransform' onclick='showDetail(" + row.id + ")'>" + value + "</a>";
+         return "<a class='cursorPointerTransform' onclick='showDetail(" + row.id + ", true)'>" + value + "</a>";
       }else{
          return "<a class='cursorPointerTransform' style='color:#bbbbbb;' onclick='showDetail(" + row.id + ")'>" + value + "</a>";
       }
@@ -104,16 +51,6 @@
       }
    }
 
-   //标记为已读
-   function markAsRead(id){
-      request("${contextPath}/index/message/markAsRead.action", {id:id});
-   }
-
-   //删除消息
-   function deleteMessage(id){
-      request("${contextPath}/index/message/deleteMessage.action", {id:id});
-   }
-
    $(function () {
       initGrid();
       queryGrid();
@@ -122,9 +59,10 @@
 
 <table class="easyui-datagrid" title="消息列表" id="messageGrid"  fitColumns="true" noheader="true" rownumbers="true" remoteSort="false"
        loadMsg="数据加载中..." singleSelect="true" method="post" multiSort="false" align="center" fit="true" striped="true"
-       pagination="true" pagePosition="top" idField="id" pageSize="50" data-options="pageList:[50,100,200]">
+       pagination="true" pagePosition="top" idField="id" pageSize="30" data-options="pageList:[30, 50, 100]">
    <thead>
    <tr>
+      <!-- annunciateItemId，用于标记为已读和删除 -->
       <th data-options="field:'id',align:'center', hidden:true">ID</th>
       <th width="664" data-options="field:'title', formatter:showDetailFmt, sortable:false, align:'center', resizable:'true', fixed:'false'">主题</th>
       <th width="100" data-options="field:'type', _provider:'annunciateMessageTypeProvider', sortable:true, order:'asc', align:'center', resizable:'true', fixed:'false'">类型</th>

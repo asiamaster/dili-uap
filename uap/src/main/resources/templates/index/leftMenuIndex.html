@@ -175,8 +175,76 @@
         return convertTree(jsonData);
     }
 
+
+    //保存右下弹出消息框，用于关闭
+    var messagerShowWin;
+    //标记列表中的操作按钮可以点击
+    var markBtnFlag = true;
     /**
-     * 显示消息列表
+     * 消息请求
+     */
+    function request(url, data, btnId) {
+        if(!markBtnFlag){
+            swal('错误', '操作太快了', 'error');
+            return;
+        }
+        disableBtn(btnId);
+        $.ajax({
+            type : "POST",
+            url : url,
+            data : data,
+            processData : true,
+            dataType : "json",
+            async : true,
+            success : function(data) {
+                enableBtn(btnId);
+                if (data.code == "200") {
+                    $("#messageGrid").datagrid("reload");
+                } else {
+                    swal('错误', data.message, 'error');
+                }
+            },
+            error : function() {
+                enableBtn(btnId);
+                swal('错误', '远程访问失败', 'error');
+            }
+        });
+    }
+    /**
+     * 根据annunciateItemId标记为已读
+     */
+    function markAsRead(id){
+        request("${contextPath}/index/message/markAsRead.action", {id:id});
+    }
+
+    /**
+     * 根据annunciateItemId删除消息
+     */
+    function deleteMessage(id){
+        request("${contextPath}/index/message/deleteMessage.action", {id:id});
+    }
+    /**
+     * 禁用按钮
+     */
+    function disableBtn(btnId) {
+        if(btnId == null){
+            markBtnFlag = false
+        }else{
+            $('#'+btnId).linkbutton('disable');
+        }
+    }
+    /**
+     * 启用按钮
+     */
+    function enableBtn(btnId) {
+        if(btnId == null){
+            markBtnFlag = true
+        }else{
+            $('#'+btnId).linkbutton('enable');
+        }
+    }
+    /**
+     * 在消息提示右边的数字和右上的消息图标点击后显示消息列表
      */
     function showMessages(){
         $("#messageWin").window({
@@ -188,8 +256,19 @@
         $("#messageWin").window("open");
     }
 
-    //跳转到消息详情
-    function showDetail(id) {
+    /**
+     * 在消息提示和列表消息点击后跳转到消息详情
+     * @param id
+     * @param unread
+     * @param closeMessager
+     */
+    function showDetail(id, unread, closeMessager) {
+        if(unread){
+            markAsRead(id);
+        }
+        if(closeMessager){
+            messagerShowWin.window("close");
+        }
         $("#messageWin").window({
             title:'消息详情',
             closed:false,
@@ -303,7 +382,7 @@
 <!-- ====================================================================================================================== -->
 <!-- style & script 分隔线 -->
 <!-- ====================================================================================================================== -->
-<#index_js/>
+<#index_wsjs/>
 
 <script type="text/javascript">
     <%if(has(taskCenterUrl)){%>

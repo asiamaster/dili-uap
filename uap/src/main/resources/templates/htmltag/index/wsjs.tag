@@ -36,11 +36,12 @@
         let unreadCount = "<div style='float: right; margin:0 auto;' class='red-point cursorPointerTransform' onclick='javascript:showMessages()'>"+annunciateMessage.unreadCount+"</div>";
         var content = annunciateMessage.title.length > 50 ? annunciateMessage.title.substr(0, 60) +"......" : annunciateMessage.title;
         //组装内容和未读数html
-        let msg = "<a style='width:246px;height:80px;float:left;' class='cursorPointer' onclick='javascript:showDetail("+id+")'>"+content+"</a>"+ unreadCount;
+        let msg = "<a style='width:246px;height:80px;float:left;' class='cursorPointer' onclick='javascript:showDetail("+id+", true, true)'>"+content+"</a>"+ unreadCount;
         //显示时间，默认3秒
         let timeout = annunciateMessage.timeout == null ? 3000 : annunciateMessage.timeout;
         $("#uncreadCount").html(annunciateMessage.unreadCount);
-        $.messager.show({
+        messagerShowWin = $.messager.show({
+            id:'messagerShow',
             title:title,
             msg: msg,
             timeout:timeout,
