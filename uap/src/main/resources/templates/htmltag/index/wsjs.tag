@@ -33,7 +33,7 @@
             title = "业务消息";
         }
         //组装消息内容，包含消息内容和未读条数
-        let unreadCount = "<div style='float: right; margin:0 auto;' class='red-point cursorPointerTransform' onclick='javascript:showMessages()'>"+annunciateMessage.unreadCount+"</div>";
+        let unreadCount = "<div style='float: right; margin:0 auto;' class='red-point cursorPointerTransform' onclick='javascript:showMessages(true)'>"+annunciateMessage.unreadCount+"</div>";
         var content = annunciateMessage.title.length > 50 ? annunciateMessage.title.substr(0, 60) +"......" : annunciateMessage.title;
         //组装内容和未读数html
         let msg = "<a style='width:246px;height:80px;float:left;' class='cursorPointer' onclick='javascript:showDetail("+id+", true, true)'>"+content+"</a>"+ unreadCount;

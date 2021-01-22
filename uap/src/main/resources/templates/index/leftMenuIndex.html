@@ -245,8 +245,12 @@
     }
     /**
      * 在消息提示右边的数字和右上的消息图标点击后显示消息列表
+     * @param closeMessager 是否关闭弹出消息
      */
-    function showMessages(){
+    function showMessages(closeMessager){
+        if(closeMessager){
+            messagerShowWin.window("close");
+        }
         $("#messageWin").window({
             title:'我的消息',
             closed:false,

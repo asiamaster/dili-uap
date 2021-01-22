@@ -19,9 +19,13 @@ public class RabbitConfiguration {
 
     public static final String UAP_TOPIC_EXCHANGE = "diligrp.uap.topicExchange";
     public static final String UAP_ADD_USER_KEY = "diligrp.uap.addUserKey";
-    public static final String UAP_CHANGE_PASSWORD_KEY = "diligrp.uap.changePasswordKey";
     public static final String UAP_ADD_USER_QUEUE = "uap.addUser.queue";
+
+    public static final String UAP_CHANGE_PASSWORD_KEY = "diligrp.uap.changePasswordKey";
     public static final String UAP_CHANGE_PASSWORD_QUEUE = "uap.changePassword.queue";
+
+    public static final String UAP_ANNUNCIATE_KEY = "diligrp.uap.annunciateKey";
+    public static final String UAP_ANNUNCIATE_QUEUE = "uap.annunciate.queue";
 
     @Bean
     public MessageConverter messageConverter() {
@@ -33,14 +37,13 @@ public class RabbitConfiguration {
         return new TopicExchange(UAP_TOPIC_EXCHANGE, true, false);
     }
 
+    /**
+     * 添加和更新用户时发消息
+     * @return
+     */
     @Bean
     public Queue addUserQueue() {
         return new Queue(UAP_ADD_USER_QUEUE, true, false, false);
-    }
-
-    @Bean
-    public Queue changePasswordQueue() {
-        return new Queue(UAP_CHANGE_PASSWORD_QUEUE, true, false, false);
     }
 
     @Bean
@@ -48,10 +51,31 @@ public class RabbitConfiguration {
         return BindingBuilder.bind(addUserQueue()).to(topicExchange()).with(UAP_ADD_USER_KEY);
     }
 
+    /**
+     * 更新用户密码时发消息
+     * @return
+     */
+    @Bean
+    public Queue changePasswordQueue() {
+        return new Queue(UAP_CHANGE_PASSWORD_QUEUE, true, false, false);
+    }
+
     @Bean
     public Binding changePasswordBinding() {
         return BindingBuilder.bind(changePasswordQueue()).to(topicExchange()).with(UAP_CHANGE_PASSWORD_KEY);
     }
 
+    /**
+     * 接收实时平台公告
+     * @return
+     */
+    @Bean
+    public Queue annunciateQueue() {
+        return new Queue(UAP_ANNUNCIATE_QUEUE, true, false, false);
+    }
 
+    @Bean
+    public Binding annunciateBinding() {
+        return BindingBuilder.bind(annunciateQueue()).to(topicExchange()).with(UAP_ANNUNCIATE_KEY);
+    }
 }
