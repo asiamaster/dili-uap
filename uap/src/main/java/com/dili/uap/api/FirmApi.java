@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.csp.sentinel.EntryType;
 import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.alibaba.csp.sentinel.slots.block.BlockException;
-import com.alibaba.fastjson.JSONObject;
 import com.dili.bpmc.sdk.domain.TaskMapping;
 import com.dili.bpmc.sdk.dto.Assignment;
 import com.dili.ss.constant.ResultCode;
@@ -25,7 +24,6 @@ import com.dili.uap.sdk.domain.Firm;
 import com.dili.uap.sdk.domain.FirmState;
 import com.dili.uap.sdk.domain.dto.FirmDto;
 import com.dili.uap.service.FirmService;
-import com.google.common.collect.Lists;
 
 /**
  * 由MyBatis Generator工具自动生成 This file was generated on 2017-07-11 16:56:50.
@@ -72,7 +70,7 @@ public class FirmApi {
 	public BaseOutput<String> getFirmSerialNumberBlockHandler(BlockException e) {
 		return BaseOutput.failure("限流阻塞:" + e.getRule()).setCode(ResultCode.FLOW_LIMIT);
 	}
-
+	
 	/**
 	 * 查询公司
 	 * 
