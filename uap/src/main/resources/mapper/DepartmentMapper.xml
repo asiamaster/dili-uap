@@ -10,7 +10,7 @@
     <result column="firm_code" jdbcType="VARCHAR" property="firmCode" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="code" jdbcType="VARCHAR" property="code" />
-    <result column="department_type" jdbcType="BIT" property="departmentType" />
+    <result column="department_type" jdbcType="INTEGER" property="departmentType" />
     <result column="description" jdbcType="VARCHAR" property="description" />
     <result column="created_id" jdbcType="BIGINT" property="createdId" />
     <result column="created" jdbcType="TIMESTAMP" property="created" />
@@ -47,13 +47,14 @@
         ,null AS created
         ,null AS modified
         ,null AS modified_id
+        ,null AS departmentType  
         union all
 
         SELECT
         concat('department_',id) AS id
         ,case when parent_id is null then concat('firm_',firm_code) else concat('department_',parent_id) end as parentId
         , firm_code AS firmCode, name, code, description, created_id, created, modified,
-        modified_id
+        modified_id,department_type AS departmentType
         FROM
         department d
         WHERE 1=1
