@@ -209,14 +209,14 @@
         });
     }
     /**
-     * 根据annunciateItemId标记为已读
+     * 根据annunciateId标记为已读
      */
     function markAsRead(id){
         request("${contextPath}/index/message/markAsRead.action", {id:id});
     }
 
     /**
-     * 根据annunciateItemId删除消息
+     * 根据annunciateId删除消息
      */
     function deleteMessage(id){
         request("${contextPath}/index/message/deleteMessage.action", {id:id});

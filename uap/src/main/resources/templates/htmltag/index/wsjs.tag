@@ -23,7 +23,45 @@
     //接收到消息的回调方法
     websocket.onmessage = function (event) {
         let annunciateMessage = JSON.parse(event.data);
+        //消息通知
+        if(annunciateMessage.eventType == 1){
+            showMessage(annunciateMessage);
+        }
+        //消息撤销
+        else if(annunciateMessage.eventType == 2){
+            withdrawMessage(annunciateMessage);
+        }
+    }
+
+    //连接关闭的回调方法
+    websocket.onclose = function () {
+        console.log("WebSocket连接关闭");
+    }
+
+    //监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
+    window.onbeforeunload = function () {
+        closeWebSocket();
+    }
+
+    /**
+     * 撤回一条消息
+     */
+    function withdrawMessage(annunciateMessage) {
+        //annunciate的id，用于撤销消息详情
+        let id = annunciateMessage.id;
+        var unreadCount = parseInt($("#msgUncreadCount").html());
+        $("#msgUncreadCount").html(unreadCount-1);
+        $("#uncreadCount").html(unreadCount-1);
+        $("#annunciateTitle").html("消息已撤销");
+    }
+    /**
+     * 显示推送消息
+     * @param annunciateMessage
+     */
+    function showMessage(annunciateMessage) {
+        //消息类型
         let type = annunciateMessage.type;
+        //annunciate的id，用于显示消息详情
         let id = annunciateMessage.id;
         // 消息标题
         var title = "";
@@ -35,10 +73,11 @@
             title = "业务消息";
         }
         //组装消息内容，包含消息内容和未读条数
-        let unreadCount = "<div style='float: right; margin:0 auto;' class='red-point cursorPointerTransform' onclick='javascript:showMessages("+id+",true)'>"+annunciateMessage.unreadCount+"</div>";
+        let unreadCount = "<div id='msgUncreadCount' style='float: right; margin:0 auto;' class='red-point cursorPointerTransform' onclick='javascript:showMessages("+id+",true)'>"+annunciateMessage.unreadCount+"</div>";
+        //截取60个字
         var content = annunciateMessage.title.length > 50 ? annunciateMessage.title.substr(0, 60) +"......" : annunciateMessage.title;
         //组装内容和未读数html
-        let msg = "<a style='width:246px;height:80px;float:left;' class='cursorPointer' onclick='javascript:showDetail("+id+", true, true)'>"+content+"</a>"+ unreadCount;
+        let msg = "<a id='annunciateTitle' style='width:246px;height:80px;float:left;' class='cursorPointer' onclick='javascript:showDetail("+id+", true, true)'>"+content+"</a>"+ unreadCount;
         //显示时间，默认3秒
         let timeout = annunciateMessage.timeout == null ? 3000 : annunciateMessage.timeout;
         $("#uncreadCount").html(annunciateMessage.unreadCount);
@@ -58,16 +97,6 @@
         });
     }
 
-    //连接关闭的回调方法
-    websocket.onclose = function () {
-        console.log("WebSocket连接关闭");
-    }
-
-    //监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
-    window.onbeforeunload = function () {
-        closeWebSocket();
-    }
-
     //将消息显示在网页上
     function setMessageInnerHTML(innerHTML) {
         document.getElementById('message').innerHTML += innerHTML + '<br/>';
@@ -79,8 +108,8 @@
     }
 
     //发送消息
-    function send() {
-        var message = document.getElementById('text').value;
-        websocket.send(message);
-    }
+    // function send() {
+    //     var message = document.getElementById('text').value;
+    //     websocket.send(message);
+    // }
 </script>

@@ -196,6 +196,11 @@
 		</dependency>
 		<dependency>
 			<groupId>com.dili</groupId>
+			<artifactId>cms-sdk</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.dili</groupId>
 			<artifactId>ss-processor</artifactId>
 			<version>${sharp-sword.version}</version>
 		</dependency>

@@ -1,5 +1,7 @@
 package com.dili.uap.controller;
 
+import com.dili.cms.sdk.dto.AnnunciateVo;
+import com.dili.cms.sdk.rpc.AnnunciateRpc;
 import com.dili.logger.sdk.domain.BusinessLog;
 import com.dili.logger.sdk.rpc.BusinessLogRpc;
 import com.dili.ss.domain.BaseOutput;
@@ -7,7 +9,6 @@ import com.dili.ss.domain.EasyuiPageOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.dto.IBaseDomain;
 import com.dili.ss.exception.AppException;
-import com.dili.ss.metadata.ValueProviderUtils;
 import com.dili.ss.mvc.util.RequestUtils;
 import com.dili.uap.constants.UapConstants;
 import com.dili.uap.sdk.constant.SessionConstants;
@@ -33,7 +34,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 首页控制器
@@ -71,6 +73,9 @@ public class IndexController {
 
 	@Autowired
 	private BusinessLogRpc businessLogRpc;
+
+	@Autowired
+	private AnnunciateRpc annunciateRpc;
 
 	/**
 	 * 跳转到权限主页面
@@ -201,12 +206,17 @@ public class IndexController {
 	/**
 	 * 跳转到消息详情
 	 * @param request
-	 * @param id
+	 * @param id annunciate的id，用于显示消息详情
 	 * @return
 	 */
 	@GetMapping(value = "/messageDetail.html")
 	public String messageDetail(@RequestParam Long id, HttpServletRequest request) {
-		request.setAttribute("content","<html><p style='color:red;'>["+id+"]内容...</p></html>");
+		BaseOutput<String> output = annunciateRpc.getContentById(id);
+		if(!output.isSuccess()){
+			return output.getMessage();
+		}
+
+		request.setAttribute("content","<html><p style='color:red;'>"+output.getData()+"</p></html>");
 		return "index/messageDetail";
 	}
 
@@ -240,23 +250,35 @@ public class IndexController {
 	@PostMapping(value = "/message/list.action")
 	@ResponseBody
 	public String messagesData(IBaseDomain idto) throws Exception {
-		Map<String, Object> message = new HashMap<>();
-		message.put("id", "1");
-		message.put("title", "标题1");
-		message.put("type", 1);
-		message.put("readState", 1);
-		message.put("sendTime", new Date());
-		List<Map<String, Object>> messages = new ArrayList<>();
-		messages.add(message);
-		message = new HashMap<>();
-		message.put("id", "2");
-		message.put("type", 2);
-		message.put("readState", 2);
-		message.put("title", "标题2");
-		message.put("sendTime", new Date());
-		messages.add(message);
-		List<Map> maps = ValueProviderUtils.buildDataByProvider(idto, messages);
-		return new EasyuiPageOutput((long)maps.size(), maps).toString();
+//		Map<String, Object> message = new HashMap<>();
+//		message.put("id", "1");
+//		message.put("title", "标题1");
+//		message.put("type", 1);
+//		message.put("readState", 1);
+//		message.put("sendTime", new Date());
+//		List<Map<String, Object>> messages = new ArrayList<>();
+//		messages.add(message);
+//		message = new HashMap<>();
+//		message.put("id", "2");
+//		message.put("type", 2);
+//		message.put("readState", 2);
+//		message.put("title", "标题2");
+//		message.put("sendTime", new Date());
+//		messages.add(message);
+//		List<Map> maps = ValueProviderUtils.buildDataByProvider(idto, messages);
+//		return new EasyuiPageOutput((long)maps.size(), maps).toString();
+
+		UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
+		if(userTicket  == null){
+			return "";
+		}
+		BaseOutput<List<AnnunciateVo>> output = annunciateRpc.getListByUserId(userTicket.getId());
+		if(!output.isSuccess()){
+			return "";
+		}
+		List<AnnunciateVo> data = output.getData();
+		data.stream().forEach(t->t.setType(1));
+		return new EasyuiPageOutput((long)data.size(), data).toString();
 	}
 
 	/**
@@ -267,7 +289,11 @@ public class IndexController {
 	@PostMapping(value = "/message/markAsRead.action")
 	@ResponseBody
 	public BaseOutput markAsRead(@RequestParam Long id) {
-		return BaseOutput.success();
+		UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
+		if(userTicket  == null){
+			return BaseOutput.failure("用户未登录");
+		}
+		return annunciateRpc.readByIdAndTargetId(id, userTicket.getId());
 	}
 
 	/**
@@ -282,7 +308,7 @@ public class IndexController {
 		if(userTicket == null){
 			return BaseOutput.failure("未登录!");
 		}
-		return BaseOutput.success();
+		return annunciateRpc.readByUserId(userTicket.getId());
 	}
 
 	/**
@@ -297,7 +323,7 @@ public class IndexController {
 		if(userTicket == null){
 			return BaseOutput.failure("未登录!");
 		}
-		return BaseOutput.success();
+		return annunciateRpc.deleteByUserId(userTicket.getId());
 	}
 
 	/**
@@ -308,7 +334,11 @@ public class IndexController {
 	@PostMapping(value = "/message/deleteMessage.action")
 	@ResponseBody
 	public BaseOutput deleteMessage(@RequestParam Long id) {
-		return BaseOutput.success();
+		UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
+		if(userTicket == null){
+			return BaseOutput.failure("未登录!");
+		}
+		return annunciateRpc.deleteByIdAndTargetId(id, userTicket.getId());
 	}
 
 	/**

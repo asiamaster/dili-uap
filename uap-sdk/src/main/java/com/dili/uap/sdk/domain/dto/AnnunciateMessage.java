@@ -4,8 +4,26 @@ import com.dili.ss.dto.IBaseDomain;
 
 /**
  * 通告消息
+ * @author wm
  */
 public interface AnnunciateMessage extends IBaseDomain {
+
+    /**
+     * 调用API发送消息时是annunciate的id，用于显示消息详情
+     * 调用API撤销消息时是annunciate的id，用于处理需要撤销的消息(目前前端暂未处理)
+     * @return
+     */
+    @Override
+    Long getId();
+    @Override
+    void setId(Long id);
+
+    /**
+     * 公告项id， 用于标记消息为已读和删除
+     * @return
+     */
+    Long getItemId();
+    void setItemId(Long itemId);
 
     /**
      * 目标id，必填
@@ -50,4 +68,11 @@ public interface AnnunciateMessage extends IBaseDomain {
      */
     Integer getTimeout();
     void setTimeout(Integer timeout);
+
+    /**
+     * 事件类型， 1: 发送公告， 2: 撤销公告
+     * @return
+     */
+    Integer getEventType();
+    void setEventType(Integer eventType);
 }

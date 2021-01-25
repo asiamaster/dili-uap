@@ -35,7 +35,7 @@ public class UserListener {
      * @throws Exception
      */
     @RabbitListener(queues = "#{rabbitConfiguration.UAP_ADD_USER_QUEUE}")
-    public void addUser(Channel channel, Message message) throws Exception {
+    public void addUser(Channel channel, Message message) {
         logger.info("收到消息: " + message);
         try {
             String data = new String(message.getBody(), "UTF-8");
@@ -53,7 +53,7 @@ public class UserListener {
      * @throws Exception
      */
     @RabbitListener(queues = "#{rabbitConfiguration.UAP_CHANGE_PASSWORD_QUEUE}")
-    public void changePassword(Channel channel, Message message) throws Exception {
+    public void changePassword(Channel channel, Message message) {
         logger.info("收到消息: " + message);
         try {
             String data = new String(message.getBody(), "UTF-8");
@@ -93,7 +93,7 @@ public class UserListener {
      * @param channel
      * @param message
      */
-    public void handleException(Channel channel, Message message){
+    private void handleException(Channel channel, Message message){
         // redelivered = true, 表明该消息是重复处理消息
         Boolean redelivered = message.getMessageProperties().getRedelivered();
         try {
