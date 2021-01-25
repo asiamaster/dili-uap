@@ -81,4 +81,11 @@ public interface DepartmentService extends BaseService<Department, Long> {
 	 * @return
 	 */
 	List<Map> listUserDepartment(String firmCode);
+
+	/**
+	 * 获取所有有子部门的部门
+	 *
+	 * @return
+	 */
+	List<Long> getSeniorDepartmentIds();
 }

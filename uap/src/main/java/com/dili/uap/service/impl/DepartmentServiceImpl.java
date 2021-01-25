@@ -210,4 +210,9 @@ public class DepartmentServiceImpl extends BaseServiceImpl<Department, Long> imp
 		});
 		return list;
 	}
+
+	@Override
+	public List<Long> getSeniorDepartmentIds() {
+		return this.getActualDao().getSeniorDepartmentIds();
+	}
 }

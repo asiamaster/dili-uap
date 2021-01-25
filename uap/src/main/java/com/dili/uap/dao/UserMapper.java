@@ -88,4 +88,12 @@ public interface UserMapper extends MyMapper<User> {
 	 * @return
 	 */
 	List<HashMap<String, Object>> getUserCountByDepartmentIds(Map<String,Object> map);
+
+	/**
+	 * 根据部门ids获取几个部门总人数
+	 *
+	 * @param map{seniorId:上级部门id;ids:下级部门id集合(包含上级部门id);firmCode:市场code;date:截止创建日期}
+	 * @return
+	 */
+	List<HashMap<Long, Long>> getUserCountByDepartments(List<Map<String,Object>> map);
 }

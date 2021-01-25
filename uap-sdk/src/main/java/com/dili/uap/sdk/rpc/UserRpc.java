@@ -109,5 +109,5 @@ public interface UserRpc {
 	 * @return
 	 */
 	@POST("/userApi/getUserCountByDepartmentIds.api")
-	BaseOutput getUserCountByDepartmentIds(@ReqParam("ids") String ids, @ReqParam("date") String date);
+	BaseOutput<Object> getUserCountByDepartmentIds(@ReqParam("ids") String ids, @ReqParam("date") String date);
 }
