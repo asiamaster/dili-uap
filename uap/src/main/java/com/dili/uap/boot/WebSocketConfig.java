@@ -2,7 +2,11 @@ package com.dili.uap.boot;
 
 import com.dili.uap.filter.WebSocketInterceptor;
 import com.dili.uap.handler.UapWebSocketHandler;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
@@ -38,4 +42,16 @@ public class WebSocketConfig implements WebSocketConfigurer {
         registry.addHandler(uapWebSocketHandler, "/ws/message").addInterceptors(webSocketInterceptor).setAllowedOrigins("*");
     }
 
+    /**
+     * 解决websocket和spring的定时注解冲突
+     * @return
+     */
+    @Bean
+    @Primary
+    public TaskScheduler taskScheduler() {
+        ThreadPoolTaskScheduler scheduling = new ThreadPoolTaskScheduler();
+        scheduling.setPoolSize(10);
+        scheduling.initialize();
+        return scheduling;
+    }
 }

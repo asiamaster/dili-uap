@@ -13,11 +13,11 @@
 	<parent>
 		<artifactId>dili-parent</artifactId>
 		<groupId>com.dili</groupId>
-		<version>3.7.1-SNAPSHOT</version>
+		<version>3.7.2-SNAPSHOT</version>
 	</parent>
 	<modules>
 		<module>uap-sdk</module>
-<!--		<module>uap</module>-->
+		<module>uap</module>
 	</modules>
 
 	<properties>

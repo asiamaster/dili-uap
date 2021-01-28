@@ -88,7 +88,7 @@
 		<dependency>
 			<groupId>com.dili</groupId>
 			<artifactId>bpmc-sdk</artifactId>
-			<version>1.4.0-SNAPSHOT</version>
+			<version>1.4.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.dili</groupId>
@@ -254,6 +254,7 @@
 			<artifactId>commons-web</artifactId>
 			<version>1.3.4-SNAPSHOT</version>
 		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/com.alibaba/dubbo -->
 		<!-- <dependency> -->
 		<!-- <groupId>com.alibaba</groupId> -->

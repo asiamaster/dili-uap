@@ -5,12 +5,15 @@ import com.dili.ss.retrofitful.annotation.RestfulScan;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.server.WebServerFactoryCustomizer;
+import org.springframework.boot.web.servlet.server.ConfigurableServletWebServerFactory;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.client.RestTemplate;
 import tk.mybatis.spring.annotation.MapperScan;
@@ -37,7 +40,7 @@ import java.text.DecimalFormat;
 // @EnableEncryptableProperties
 //@EncryptablePropertySource(name = "EncryptedProperties", value = "classpath:conf/security.properties")
 // @ServletComponentScan
-// @EnableScheduling
+@EnableScheduling
 @SpringBootApplication
 @EnableTransactionManagement
 @EnableDiscoveryClient
@@ -75,5 +78,19 @@ public class UapApplication extends SpringBootServletInitializer implements Comm
 		DecimalFormat decimalFormat = new DecimalFormat("#,###");
 		System.out.println("maxMemory:" + decimalFormat.format(maxMemory) + ",totalMemory:" + decimalFormat.format(totalMemory) + ",freeMemory:" + decimalFormat.format(freeMemory));
 		System.out.println("项目启动完成!");
+	}
+
+	/**
+	 * 设置服务端口
+	 */
+	@SuppressWarnings("rawtypes")
+	@Bean
+	public WebServerFactoryCustomizer webServerFactoryCustomizer(){
+		return new WebServerFactoryCustomizer<ConfigurableServletWebServerFactory>() {
+			@Override
+			public void customize(ConfigurableServletWebServerFactory factory) {
+				factory.setPort(80);
+			}
+		};
 	}
 }

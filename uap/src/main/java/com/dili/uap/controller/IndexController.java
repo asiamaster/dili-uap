@@ -1,11 +1,10 @@
 package com.dili.uap.controller;
 
-import com.dili.cms.sdk.dto.AnnunciateVo;
+import com.dili.cms.sdk.dto.AnnunciateDto;
 import com.dili.cms.sdk.rpc.AnnunciateRpc;
 import com.dili.logger.sdk.domain.BusinessLog;
 import com.dili.logger.sdk.rpc.BusinessLogRpc;
 import com.dili.ss.domain.BaseOutput;
-import com.dili.ss.domain.EasyuiPageOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.dto.IBaseDomain;
 import com.dili.ss.exception.AppException;
@@ -272,13 +271,18 @@ public class IndexController {
 		if(userTicket  == null){
 			return "";
 		}
-		BaseOutput<List<AnnunciateVo>> output = annunciateRpc.getListByUserId(userTicket.getId());
-		if(!output.isSuccess()){
-			return "";
-		}
-		List<AnnunciateVo> data = output.getData();
-		data.stream().forEach(t->t.setType(1));
-		return new EasyuiPageOutput((long)data.size(), data).toString();
+		AnnunciateDto annunciateDto = DTOUtils.newInstance(AnnunciateDto.class);
+		annunciateDto.setTargetId(userTicket.getId());
+//		return "";
+		return annunciateRpc.getListByTargetId(annunciateDto);
+//		BaseOutput<String> output = annunciateRpc.getListByTargetId(annunciateDto);
+//		if(!output.isSuccess()){
+//			return "";
+//		}
+//		return output.getData();
+//		List<AnnunciateVo> data = output.getData();
+//		data.stream().forEach(t->t.setType(1));
+//		return new EasyuiPageOutput((long)data.size(), data).toString();
 	}
 
 	/**
