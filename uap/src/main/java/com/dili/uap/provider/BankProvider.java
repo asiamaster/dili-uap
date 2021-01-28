@@ -39,6 +39,9 @@ public class BankProvider implements ValueProvider {
 
 	@Override
 	public String getDisplayText(Object val, Map metaMap, FieldMeta fieldMeta) {
+		if (val == null) {
+			return "";
+		}
 		BankDto query = new BankDto();
 		query.setId(Long.valueOf(val.toString()));
 		BaseOutput<List<BankDto>> output = this.bankRpc.list(query);

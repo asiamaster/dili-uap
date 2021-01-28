@@ -96,9 +96,9 @@
 						value="${firm.legalPersonCertificateNumber!}" style="width: 60%" data-options="prompt:'证件号:', validType:'length[0,18]'" required="true" /></td>
 				</tr>
 				<tr>
-					<td style="padding: 5px;"><input class="easyui-textbox" readonly="readonly" value="${decode(firm.longTermEffictive,true,'是',false,'否','不知道了')}" name="longTermEffictive"
+					<td style="padding: 5px;"><input class="easyui-textbox" readonly="readonly" value="<%if(isNotEmpty(firm.longTermEffictive)&&firm.longTermEffictive==true){%>是<%}else if(isNotEmpty(firm.longTermEffictive)&&firm.longTermEffictive==false){%>否<%}%>" name="longTermEffictive"
 						id="longTermEffictive" style="width: 30%" data-options="
-									label:'是否长期有效:'" required="true" /> <%if(firm.longTermEffictive){%> <input class="easyui-textbox" disabled="disabled"
+									label:'是否长期有效:'" required="true" /> <%if(isNotEmpty(firm.longTermEffictive)&&firm.longTermEffictive){%> <input class="easyui-textbox" disabled="disabled"
 						name="certificateValidityPeriod" id="certificateValidityPeriod" style="width: 60%" data-options="prompt:'证件有效期:',editable:false" required="true" /> <%}else{%> <input class="easyui-datebox"
 						readonly="readonly" name="certificateValidityPeriod" id="certificateValidityPeriod" value="${firm.certificateValidityPeriod!,dateFormat='yyyy-MM-dd'}" style="width: 60%"
 						data-options="prompt:'证件有效期:',editable:false" required="true" /> <%}%></td>
