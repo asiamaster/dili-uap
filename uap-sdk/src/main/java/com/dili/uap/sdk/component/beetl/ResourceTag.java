@@ -114,6 +114,9 @@ public class ResourceTag extends Tag {
 		}
 	}
 
+	/**
+	 * write
+	 */
 	private void write(){
 		try {
 			ctx.byteWriter.write(getBodyContent());

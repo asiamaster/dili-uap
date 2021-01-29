@@ -56,13 +56,6 @@ public interface AnnunciateMessage extends IBaseDomain {
     void setType(Integer type);
 
     /**
-     * 未读消息数，必填
-     * @return
-     */
-    Integer getUnreadCount();
-    void setUnreadCount(Integer unreadCount);
-
-    /**
      * 消息显示时间(毫秒)，默认3秒，非必填
      * @return
      */

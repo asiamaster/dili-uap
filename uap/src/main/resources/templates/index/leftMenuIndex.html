@@ -180,6 +180,9 @@
     var markBtnFlag = true;
     /**
      * 消息请求
+     * @param url
+     * @param data  入参
+     * @param btnId 屏蔽的按钮id，为空时会标记消息列表中的操作按钮不能点击
      */
     function request(url, data, btnId) {
         if(!markBtnFlag){
@@ -265,9 +268,11 @@
      * @param closeMessager
      */
     function showDetail(id, unread, closeMessager) {
+        //标记为已读
         if(unread){
             markAsRead(id);
         }
+        //关闭右下弹出消息
         if(closeMessager){
             $("#messagerWin"+id).window("close");
         }
@@ -306,7 +311,7 @@
                         <img class="cursorPointerTransform" style="vertical-align: middle;" onclick="toTaskCenter();" src="${contextPath}/resources/images/icon/task-32.png"></img>&nbsp;&nbsp;
                         <%}%>
                         <img class="cursorPointerTransform" style="vertical-align: middle" onclick="showMessages();" src="${contextPath}/resources/images/icon/bell-30.png"></img>
-                        <span id="uncreadCount" class="red-point cursorPointerTransform" onclick="showMessages();" style="vertical-align: top;padding: 3px;border-radius: 5px;font-size: 13px;">0</span>
+                        <span id="unreadCount" class="red-point cursorPointerTransform" onclick="showMessages();" style="vertical-align: top;padding: 3px;border-radius: 5px;font-size: 13px;">0</span>
                         <a id="menubutton_right" href="#" class="easyui-menubutton" data-options="menu:'#menu_right', plain:true, hasDownArrow:false">${username}</a>
                     </div>
                     <div id="menu_right" style="width:100px" data-options="zIndex:'110000' , align:'left', noline:true, onClick:systemClickHandler, minWidth:108" itemHeight="40">
@@ -533,6 +538,24 @@
             }
         });
     }
+    //获取未读消息数
+    function getUnreadCount(){
+        $.ajax({
+            type : "POST",
+            url : "${contextPath!}/index/message/getUnreadCount.action",
+            processData : true,
+            dataType : "json",
+            async : true,
+            success : function(output) {
+                if (output.success) {
+                    $("#unreadCount").html(output.data);
+                }
+            },
+            error : function() {
+                swal('错误', '远程访问失败', 'error');
+            }
+        });
+    }
     $(function () {
         <% if(userState == @com.dili.uap.glossary.UserState.INACTIVE.getCode()){%>
             //如果用户未激活，则弹框要求用户修改密码
@@ -548,6 +571,7 @@
         <%if(system.code!=@com.dili.uap.constants.UapConstants.UAP_SYSTEM_CODE){%>
             loadMenu("${system.id}");
         <%}%>
+        getUnreadCount();
         renderPage("主页", "${system.indexUrl!"about:blank"}");
     });
 </script>

@@ -5,7 +5,6 @@ import com.dili.commons.rabbitmq.RabbitMQMessageService;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.redis.delayqueue.annotation.StreamListener;
-import com.dili.ss.redis.delayqueue.consts.DelayQueueConstants;
 import com.dili.ss.redis.delayqueue.dto.DelayMessage;
 import com.dili.ss.redis.delayqueue.impl.DistributedRedisDelayQueueImpl;
 import com.dili.ss.util.DateUtils;
@@ -14,16 +13,10 @@ import com.dili.uap.glossary.WsEventType;
 import com.dili.uap.manager.WsSessionManager;
 import com.dili.uap.sdk.domain.dto.AnnunciateMessage;
 import com.dili.uap.sdk.domain.dto.AnnunciateMessages;
-import io.lettuce.core.ScriptOutputType;
-import io.lettuce.core.api.async.RedisAsyncCommands;
-import io.lettuce.core.cluster.api.async.RedisAdvancedClusterAsyncCommands;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.serializer.RedisSerializer;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -68,69 +61,6 @@ public class WebSocketApi {
         delayMessage.setDelayTime(System.currentTimeMillis() + delayMessage.getDelayTime());
         logger.info(DateUtils.format(new Date())+"添加消息:"+delayMessage.getBody());
         redisDelayQueue.push(delayMessage);
-    }
-
-
-    /**
-     * test
-     */
-    @GetMapping(value = "/test")
-    public void test(){
-        final String LUA_SCRIPT;
-        StringBuilder sb = new StringBuilder(512);
-        //KEY1:delay:wait:testTopic, KEY2:META_TOPIC_ACTIVE, KEY3:delay:active:testTopic
-        //ARGV1:System.currentTimeMillis(), ARGV2:delay:active:testTopic
-        //------------------------------------------------------------------------------------
-        //返回有序集合KEYS[1]:(delay:wait:topic)中小于ARGV[1]:System.currentTimeMillis()score区间的成员(DelayMessage.body)，只取一条(就像SQL中的 SELECT LIMIT offset, count )
-//        sb.append("local val = redis.call('zrangebyscore', KEYS[1], '-inf', ARGV[1], 'limit', 0, 1)\n");
-        sb.append("local val = redis.call('zrangebyscore', KEYS[1], '-inf', ARGV[1])\n");
-//        sb.append("redis.call('sadd', 'delay:val:length', '长度:'..tostring(#val))\n");
-        sb.append("if(next(val) ~= nil) then\n");
-        //向META_TOPIC_ACTIVE(zset)集合中添加topicKey(delay:active:topic)
-        sb.append("    redis.call('sadd', KEYS[2], ARGV[2])\n");
-        //移除有序集合KEYS[1](delay:wait:topic)中zrangebyscore取出的数据
-        sb.append("    redis.call('zremrangebyscore', KEYS[1], '-inf', ARGV[1])\n");
-        //向KEYS[3]:topicKey(delay:active:topic)列表中循环插入所有数组元素
-        sb.append("  for i = 1, #val, 1 do\n");
-//        sb.append("    redis.call('sadd', 'delay:i', tostring(i))\n");
-//        sb.append("    redis.call('sadd', 'delay:val:item', val[i])\n");
-        //unpack()函数是接受一个数组来作为输入参数，并默认从下标为1开始返回所有元素。
-        sb.append("    redis.call('rpush', KEYS[3], val[i])\n");
-        sb.append("  end\n");
-        sb.append("  return 1\n");
-        sb.append("end\n");
-        sb.append("return 0");
-        LUA_SCRIPT = sb.toString();
-        String activeTopic = "delay:active:testTopic";
-
-        Object[] keys = new Object[]{serialize("delay:wait:testTopic"), serialize(DelayQueueConstants.META_TOPIC_ACTIVE), serialize(activeTopic)};
-        Object[] values = new Object[]{serialize(String.valueOf(System.currentTimeMillis())), serialize(activeTopic)};
-        Long result = redisTemplate.execute((RedisCallback<Long>) connection -> {
-            Object nativeConnection = connection.getNativeConnection();
-            if (nativeConnection instanceof RedisAsyncCommands) {
-                RedisAsyncCommands commands = (RedisAsyncCommands) nativeConnection;
-                return (Long) commands.getStatefulConnection().sync().eval(LUA_SCRIPT, ScriptOutputType.INTEGER, keys, values);
-            } else if (nativeConnection instanceof RedisAdvancedClusterAsyncCommands) {
-                RedisAdvancedClusterAsyncCommands commands = (RedisAdvancedClusterAsyncCommands) nativeConnection;
-                return (Long) commands.getStatefulConnection().sync().eval(LUA_SCRIPT, ScriptOutputType.INTEGER, keys, values);
-            }
-            return 0L;
-        });
-        if(result != null && result > 0) {
-            logger.info("延迟队列[2]，消息到期进入执行队列({}): {}", activeTopic);
-        }
-    }
-
-    /**
-     * serialize
-     * @param key
-     * @return
-     */
-    private byte[] serialize(String key) {
-        RedisSerializer<String> stringRedisSerializer =
-                (RedisSerializer<String>) redisTemplate.getKeySerializer();
-        //lettuce连接包下序列化键值，否则无法用默认的ByteArrayCodec解析
-        return stringRedisSerializer.serialize(key);
     }
 
     /**

@@ -44,14 +44,14 @@
     }
 
     /**
-     * 撤回一条消息
+     * 撤回一条消息，未读消息减1
      */
     function withdrawMessage(annunciateMessage) {
         //annunciate的id，用于撤销消息详情
         let id = annunciateMessage.id;
-        var unreadCount = parseInt($("#msgUncreadCount").html());
-        $("#msgUncreadCount").html(unreadCount-1);
-        $("#uncreadCount").html(unreadCount-1);
+        var unreadCount = parseInt($("#msgUnreadCount").html());
+        $("#msgUnreadCount").html(unreadCount-1);
+        $("#unreadCount").html(unreadCount-1);
         $("#annunciateTitle").html("消息已撤销");
     }
     /**
@@ -65,22 +65,22 @@
         let id = annunciateMessage.id;
         // 消息标题
         var title = "";
-        if(type == ${@com.dili.uap.sdk.glossary.AnnunciateMessageType.ANNUNCIATE.getCode()}){
+        if(type == ${@com.dili.cms.sdk.glossary.AnnunciateType.PLATFFORM.getValue()}){
             title = "平台公告";
-        }else if(type == ${@com.dili.uap.sdk.glossary.AnnunciateMessageType.TODO.getCode()}){
+        }else if(type == ${@com.dili.cms.sdk.glossary.AnnunciateType.WAIT_DO.getValue()}){
             title = "待办事宜";
-        }else if(type == ${@com.dili.uap.sdk.glossary.AnnunciateMessageType.BUSINESS.getCode()}){
+        }else if(type == ${@com.dili.cms.sdk.glossary.AnnunciateType.BUSINESS.getValue()}){
             title = "业务消息";
         }
+        var unreadCountHtml = $("#unreadCount").html();
         //组装消息内容，包含消息内容和未读条数
-        let unreadCount = "<div id='msgUncreadCount' style='float: right; margin:0 auto;' class='red-point cursorPointerTransform' onclick='javascript:showMessages("+id+",true)'>"+annunciateMessage.unreadCount+"</div>";
+        let unreadCount = "<div id='msgUnreadCount' style='float: right; margin:0 auto;' class='red-point cursorPointerTransform' onclick='javascript:showMessages("+id+",true)'>"+unreadCountHtml+"</div>";
         //截取60个字
         var content = annunciateMessage.title.length > 50 ? annunciateMessage.title.substr(0, 60) +"......" : annunciateMessage.title;
         //组装内容和未读数html
         let msg = "<a id='annunciateTitle' style='width:246px;height:80px;float:left;' class='cursorPointer' onclick='javascript:showDetail("+id+", true, true)'>"+content+"</a>"+ unreadCount;
         //显示时间，默认3秒
         let timeout = annunciateMessage.timeout == null ? 3000 : annunciateMessage.timeout;
-        $("#uncreadCount").html(annunciateMessage.unreadCount);
         //关闭前一个窗口
         if(messagerShowWinId != null){
             $("#"+messagerShowWinId).window("close");

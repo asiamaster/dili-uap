@@ -1,6 +1,6 @@
 package com.dili.uap.controller;
 
-import com.dili.cms.sdk.dto.AnnunciateDto;
+import com.dili.cms.sdk.dto.AnnunciateQueryDto;
 import com.dili.cms.sdk.rpc.AnnunciateRpc;
 import com.dili.logger.sdk.domain.BusinessLog;
 import com.dili.logger.sdk.rpc.BusinessLogRpc;
@@ -271,10 +271,14 @@ public class IndexController {
 		if(userTicket  == null){
 			return "";
 		}
-		AnnunciateDto annunciateDto = DTOUtils.newInstance(AnnunciateDto.class);
+		AnnunciateQueryDto annunciateDto = DTOUtils.asInstance(idto, AnnunciateQueryDto.class);
 		annunciateDto.setTargetId(userTicket.getId());
 //		return "";
-		return annunciateRpc.getListByTargetId(annunciateDto);
+		BaseOutput<String> output = annunciateRpc.getListByTargetId(annunciateDto);
+		if(!output.isSuccess()){
+			return "";
+		}
+		return output.getData();
 //		BaseOutput<String> output = annunciateRpc.getListByTargetId(annunciateDto);
 //		if(!output.isSuccess()){
 //			return "";
@@ -283,6 +287,24 @@ public class IndexController {
 //		List<AnnunciateVo> data = output.getData();
 //		data.stream().forEach(t->t.setType(1));
 //		return new EasyuiPageOutput((long)data.size(), data).toString();
+	}
+
+	/**
+	 * 标记消息为已读
+	 *
+	 * @return
+	 */
+	@PostMapping(value = "/message/getUnreadCount.action")
+	@ResponseBody
+	public BaseOutput<Integer> getUnreadCount(@RequestParam(required = false) Long userId) {
+		if(userId != null){
+			return annunciateRpc.getNoReadCountByTargetId(userId);
+		}
+		UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
+		if(userTicket  == null){
+			return BaseOutput.failure("用户未登录");
+		}
+		return annunciateRpc.getNoReadCountByTargetId(userTicket.getId());
 	}
 
 	/**
