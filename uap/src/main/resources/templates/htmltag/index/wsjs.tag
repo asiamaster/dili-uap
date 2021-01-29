@@ -50,8 +50,10 @@
         //annunciate的id，用于撤销消息详情
         let id = annunciateMessage.id;
         var unreadCount = parseInt($("#msgUnreadCount").html());
-        $("#msgUnreadCount").html(unreadCount-1);
-        $("#unreadCount").html(unreadCount-1);
+        if(unreadCount > 0){
+            $("#msgUnreadCount").html(unreadCount-1);
+            $("#unreadCount").html(unreadCount-1);
+        }
         $("#annunciateTitle").html("消息已撤销");
     }
     /**
@@ -74,7 +76,7 @@
         }
         var unreadCountHtml = $("#unreadCount").html();
         //组装消息内容，包含消息内容和未读条数
-        let unreadCount = "<div id='msgUnreadCount' style='float: right; margin:0 auto;' class='red-point cursorPointerTransform' onclick='javascript:showMessages("+id+",true)'>"+unreadCountHtml+"</div>";
+        let unreadCount = "<div id='msgUnreadCount' style='float: right; margin:0 auto;' class='red-point cursorPointerTransform' onclick='javascript:showMessages("+id+",true)'>"+(parseInt(unreadCountHtml)+1)+"</div>";
         //截取60个字
         var content = annunciateMessage.title.length > 50 ? annunciateMessage.title.substr(0, 60) +"......" : annunciateMessage.title;
         //组装内容和未读数html
