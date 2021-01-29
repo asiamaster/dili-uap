@@ -334,7 +334,7 @@ public class IndexController {
 		if(userTicket == null){
 			return BaseOutput.failure("未登录!");
 		}
-		return annunciateRpc.readByUserId(userTicket.getId());
+		return annunciateRpc.readByTargetId(userTicket.getId());
 	}
 
 	/**
@@ -349,7 +349,7 @@ public class IndexController {
 		if(userTicket == null){
 			return BaseOutput.failure("未登录!");
 		}
-		return annunciateRpc.deleteByUserId(userTicket.getId());
+		return annunciateRpc.deleteByTargetId(userTicket.getId());
 	}
 
 	/**
