@@ -28,7 +28,7 @@ function approve(){
                 swal('警告','请选中一条数据', 'warning');
                 return;
             }
-            if (selected.$_firmState!=3) {
+            if (selected.$_firmState!=3&&selected.$_firmState!=1) {
             	swal('错误','当前状态不能编辑', 'error');
             	return;
             }

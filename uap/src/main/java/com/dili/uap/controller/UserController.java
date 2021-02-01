@@ -117,6 +117,23 @@ public class UserController {
 		return userService.list(user);
 	}
 
+
+	/**
+	 * 查询User
+	 *
+	 * @param user
+	 * @return
+	 */
+	@RequestMapping(value = "/superiorlist.action", method = { RequestMethod.GET, RequestMethod.POST })
+	@ResponseBody
+	public List<User> superiorlist(User user) {
+		List<User> list = userService.list(user);
+		for(User userDemo:list){
+			userDemo.setUserName(userDemo.getRealName()+"("+userDemo.getUserName()+")");
+		}
+		return list;
+	}
+
 	/**
 	 * 分页查询User
 	 * 

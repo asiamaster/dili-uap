@@ -30,7 +30,7 @@ public class UserProvider extends BatchDisplayTextProviderAdaptor {
             return (Map)metaMap.get(ESCAPE_FILEDS_KEY);
         }else {
             Map<String, String> map = new HashMap<>();
-            map.put(metaMap.get(FIELD_KEY).toString(), "userName");
+            map.put(metaMap.get(FIELD_KEY).toString(), "realName");
             return map;
         }
     }

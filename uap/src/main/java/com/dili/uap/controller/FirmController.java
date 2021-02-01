@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -80,6 +81,9 @@ public class FirmController {
 	private UserService userService;
 	@Autowired
 	private RoleService roleService;
+
+	@Value("${uap.adminName:admin}")
+	private String adminName;
 
 	/**
 	 * 跳转到Firm页面
@@ -261,7 +265,13 @@ public class FirmController {
 	@ResponseBody
 	@RequestMapping("/listAll.action")
 	public List<Firm> listAll() {
-		return this.firmService.list(DTOUtils.newInstance(Firm.class));
+		UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
+		String userName = userTicket.getUserName();
+		Firm firm = DTOUtils.newInstance(Firm.class);
+		if(!adminName.equals(userName)){
+			firm.setCode(userTicket.getFirmCode());
+		}
+		return this.firmService.list(firm);
 	}
 
 	/**

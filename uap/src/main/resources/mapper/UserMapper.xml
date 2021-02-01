@@ -69,7 +69,7 @@
 				and ur.role_id = #{roleId}
 			</if>
 			<if test="keywords != null and keywords != ''">
-				and (u.user_name = #{keywords} or u.cellphone = #{keywords})
+				and (u.user_name like <![CDATA[concat('%',#{keywords},'%')]]> or u.cellphone = #{keywords} or u.real_name like <![CDATA[concat('%',#{keywords},'%')]]>)
 			</if>
 			<if test="lastLoginTimeStart != null">
                 and last_login_time <![CDATA[>=]]> #{lastLoginTimeStart}

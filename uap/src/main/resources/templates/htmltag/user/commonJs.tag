@@ -74,7 +74,7 @@
     function loadSuperiors(firmCode,controlId) {
         // var obj = {id: '', userName: '-- 全部 --'};
         if (firmCode){
-            $.post('${contextPath!}/user/list.action', {firmCode: firmCode}, function (ret) {
+            $.post('${contextPath!}/user/superiorlist.action', {firmCode: firmCode}, function (ret) {
                 if (ret) {
                     //动态添加'全部'
                     // ret.unshift(obj);

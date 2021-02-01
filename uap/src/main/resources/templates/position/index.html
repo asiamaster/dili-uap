@@ -130,6 +130,8 @@
     <!-- style & script 分隔线 -->
     <!-- ====================================================================================================================== -->
     <script type="text/javascript">
+        var firmCode = '${firmCode!}';
+
         $(function () {
             queryGrid();
         });
@@ -140,6 +142,8 @@
             $('#dlg').dialog('center');
             $('#_form').form('clear');
             formFocus("_form", "_positionName");
+            $("#_firmCode").combobox("enable");
+            $("#_firmCode").combobox('select', firmCode);
         }
 
         //打开修改窗口
@@ -155,6 +159,8 @@
             var formData = $.extend({},selected);
             formData = addKeyStartWith(getOriginalData(formData),"_");
             $('#_form').form('load', formData);
+            $("#_firmCode").combobox("disable");
+            // $("#_firmCode").textbox("initValue", selected.firmCode);
         }
 
         function saveOrUpdate(){

@@ -62,7 +62,7 @@ public interface Position extends IBaseDomain {
     @Column(name = "`firm_code`")
     @FieldDef(label="归属市场编码", maxLength = 50)
     @EditMode(editor = FieldEditor.Text, required = true)
-    @NotNull(message = "所属市场不能为空", groups = { AddView.class,ModifyView.class })
+    @NotNull(message = "所属市场不能为空", groups = { AddView.class })
     String getFirmCode();
 
     void setFirmCode(String firmCode);
