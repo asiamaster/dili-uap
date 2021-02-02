@@ -78,6 +78,7 @@ public class DepartmentServiceImpl extends BaseServiceImpl<Department, Long> imp
 		}
 		// 更新市场管理员权限
 		Firm firm = this.firmService.getByCode(department.getFirmCode());
+		Long firmUserId = firm.getUserId();
 		if (firm.getUserId() != null && !firm.getUserId().equals(user.getId())) {
 			User adminUser = this.userMapper.selectByPrimaryKey(firm.getUserId());
 			userDataAuth = DTOUtils.newInstance(UserDataAuth.class);
@@ -91,7 +92,7 @@ public class DepartmentServiceImpl extends BaseServiceImpl<Department, Long> imp
 		}
 		while (firm.getParentId() != null) {
 			firm = this.firmMapper.selectByPrimaryKey(firm.getParentId());
-			if (firm.getUserId() != null && !firm.getUserId().equals(user.getId())) {
+			if (firm.getUserId() != null && !firm.getUserId().equals(user.getId()) && !firm.getUserId().equals(firmUserId)) {
 				User adminUser = this.userMapper.selectByPrimaryKey(firm.getUserId());
 				userDataAuth = DTOUtils.newInstance(UserDataAuth.class);
 				userDataAuth.setRefCode(DataAuthType.DEPARTMENT.getCode());
