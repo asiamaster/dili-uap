@@ -159,7 +159,7 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 			return BaseOutput.failure("已存在相同编码的商户");
 		}
 		Firm firm = this.getActualDao().selectByPrimaryKey(dto.getId());
-		if (!firm.getFirmState().equals(FirmState.UNREVIEWED.getValue())) {
+		if (!firm.getFirmState().equals(FirmState.UNREVIEWED.getValue())&&!firm.getFirmState().equals(FirmState.ENABLED.getValue())) {
 			return BaseOutput.failure("当前状态不能修改商户信息");
 		}
 		Firm query = DTOUtils.newInstance(Firm.class);
