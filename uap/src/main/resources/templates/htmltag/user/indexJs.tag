@@ -526,6 +526,7 @@
             var searchVal=$("#searchTree").val();
             $("#menuTree").tree("search", searchVal);
         });
+        $("#menuTreePanel").height($("#menuTreePanel").height()-29);
     });
 
     // 表格查询

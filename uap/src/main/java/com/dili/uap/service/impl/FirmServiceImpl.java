@@ -159,7 +159,7 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 			return BaseOutput.failure("已存在相同编码的商户");
 		}
 		Firm firm = this.getActualDao().selectByPrimaryKey(dto.getId());
-		if (!firm.getFirmState().equals(FirmState.UNREVIEWED.getValue())) {
+		if (!firm.getFirmState().equals(FirmState.UNREVIEWED.getValue())&&!firm.getFirmState().equals(FirmState.ENABLED.getValue())) {
 			return BaseOutput.failure("当前状态不能修改商户信息");
 		}
 		Firm query = DTOUtils.newInstance(Firm.class);
@@ -291,12 +291,12 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 			example = new Example(Department.class);
 			example.createCriteria().andIn("firmCode", firmCodes);
 			List<Department> departments = this.departmentMapper.selectByExample(example);
-			example = new Example(UserDataAuth.class);
-			List<Long> departmentIds = new ArrayList<Long>(firms.size());
-			departments.forEach(d -> departmentIds.add(d.getId()));
-			example.createCriteria().andEqualTo("refCode", DataAuthType.DEPARTMENT.getCode()).andEqualTo("userId", adminUser.getId()).andIn("value", departmentIds);
-			this.userDataAuthMapper.deleteByExample(example);
 			if (CollectionUtils.isNotEmpty(departments)) {
+				example = new Example(UserDataAuth.class);
+				List<Long> departmentIds = new ArrayList<Long>(firms.size());
+				departments.forEach(d -> departmentIds.add(d.getId()));
+				example.createCriteria().andEqualTo("refCode", DataAuthType.DEPARTMENT.getCode()).andEqualTo("userId", adminUser.getId()).andIn("value", departmentIds);
+				this.userDataAuthMapper.deleteByExample(example);
 				List<UserDataAuth> dataAuthList = new ArrayList<UserDataAuth>(departments.size());
 				for (Department d : departments) {
 					UserDataAuth depDataAuth = DTOUtils.newInstance(UserDataAuth.class);
@@ -453,11 +453,13 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 			if (this.isNeedClaim(taskId)) {
 				BaseOutput<String> output = this.taskRpc.claim(taskId, user.getId().toString());
 				if (!output.isSuccess()) {
+					LOGGER.error(output.getMessage());
 					throw new AppException("签收流程任务失败");
 				}
 			}
 			BaseOutput<String> output = this.taskRpc.complete(taskId);
 			if (!output.isSuccess()) {
+				LOGGER.error(output.getMessage());
 				throw new AppException("执行流程任务失败");
 			}
 		} else {
@@ -466,12 +468,14 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 			startProcessInstanceDto.setBusinessKey(id.toString());
 			BaseOutput<ProcessInstanceMapping> output = this.runtimeRpc.startProcessInstanceByKey(startProcessInstanceDto);
 			if (!output.isSuccess()) {
+				LOGGER.error(output.getMessage());
 				throw new AppException("执行流程任务失败");
 			}
 			firm.setProcessDefinitionId(output.getData().getProcessDefinitionId());
 			firm.setProcessInstanceId(output.getData().getProcessInstanceId());
 			rows = this.getActualDao().updateByPrimaryKeySelective(firm);
 			if (rows <= 0) {
+				LOGGER.error(output.getMessage());
 				throw new AppException("更新流程信息失败");
 			}
 		}
@@ -532,6 +536,7 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 	private boolean isNeedClaim(String taskId) {
 		BaseOutput<TaskMapping> output = this.taskRpc.getById(taskId);
 		if (!output.isSuccess()) {
+			LOGGER.error(output.getMessage());
 			throw new AppException("查询流程任务失败");
 		}
 		return StringUtils.isBlank(output.getData().getAssignee());
@@ -575,6 +580,7 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 		if (!"false".equalsIgnoreCase(paymentFlag)) {
 			PaymentFirmDto paymentFirmDto = new PaymentFirmDto();
 			paymentFirmDto.setMchId(firm.getId());
+			paymentFirmDto.setParentId(firm.getParentId());
 			paymentFirmDto.setCode(firm.getCode());
 			paymentFirmDto.setName(firm.getName());
 			paymentFirmDto.setAddress(firm.getActualDetailAddress());
@@ -600,6 +606,7 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 
 		BaseOutput<TaskMapping> output = this.taskRpc.getById(taskId);
 		if (!output.isSuccess()) {
+			LOGGER.error(output.getMessage());
 			throw new AppException("查询流程任务失败");
 		}
 		if (StringUtils.isBlank(output.getData().getAssignee())) {
@@ -639,6 +646,7 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 		if (StringUtils.isNotBlank(taskId)) {
 			BaseOutput<TaskMapping> output = this.taskRpc.getById(taskId);
 			if (!output.isSuccess()) {
+				LOGGER.error(output.getMessage());
 				throw new AppException("查询流程任务失败");
 			}
 			if (StringUtils.isBlank(output.getData().getAssignee())) {

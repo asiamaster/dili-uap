@@ -28,7 +28,7 @@ function approve(){
                 swal('警告','请选中一条数据', 'warning');
                 return;
             }
-            if (selected.$_firmState!=3) {
+            if (selected.$_firmState!=3&&selected.$_firmState!=1) {
             	swal('错误','当前状态不能编辑', 'error');
             	return;
             }
@@ -100,6 +100,15 @@ function approve(){
             });
         }
 
+        function viewDetail(){
+        	var selected = $("#grid").datagrid("getSelected");
+            if (null == selected) {
+                swal('警告','请选中一条数据', 'warning');
+                return;
+            }
+            window.location.href='${contextPath!}/firm/detail.html?id='+selected.id;
+        }
+        
         // 全局按键事件
         function getKey(e){
             e = e || window.event;
@@ -115,9 +124,13 @@ function approve(){
         function updateAdminUser(){
         	  var selected = $("#grid").datagrid("getSelected");
               if (null == selected) {
-                  swal('警告','请选中一条数据', 'warning');
-                  return;
+                swal('警告','请选中一条数据', 'warning');
+                return;
               }	
+              if (selected.$_firmState != 1) {
+                swal('警告','当前状态不能编辑商户超级管理员', 'warning');
+                return;
+              }
               window.location.href='${contextPath!}/firm/editAdminUser.html?id='+selected.id;
         }
 

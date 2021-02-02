@@ -1,29 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.dili.uap.dao.DepartmentMapper">
-    <resultMap id="BaseResultMap" type="com.dili.uap.sdk.domain.Department">
-        <!--
-          WARNING - @mbg.generated
-        -->
-        <id column="id" jdbcType="BIGINT" property="id"/>
-        <result column="parent_id" jdbcType="BIGINT" property="parentId"/>
-        <result column="firm_code" jdbcType="VARCHAR" property="firmCode"/>
-        <result column="name" jdbcType="VARCHAR" property="name"/>
-        <result column="code" jdbcType="VARCHAR" property="code"/>
-        <result column="description" jdbcType="VARCHAR" property="description"/>
-        <result column="created_id" jdbcType="BIGINT" property="createdId"/>
-        <result column="created" jdbcType="TIMESTAMP" property="created"/>
-        <result column="modified" jdbcType="TIMESTAMP" property="modified"/>
-        <result column="modified_id" jdbcType="BIGINT" property="modifiedId"/>
-    </resultMap>
-
-    <sql id="Base_Column_List">
-        <!--
-          WARNING - @mbg.generated
-        -->
-        id, parent_id, firm_code, name, code, description, created_id, created, modified,
-        modified_id
-    </sql>
+  <resultMap id="BaseResultMap" type="com.dili.uap.sdk.domain.Department">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="parent_id" jdbcType="BIGINT" property="parentId" />
+    <result column="firm_code" jdbcType="VARCHAR" property="firmCode" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="department_type" jdbcType="INTEGER" property="departmentType" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="created_id" jdbcType="BIGINT" property="createdId" />
+    <result column="created" jdbcType="TIMESTAMP" property="created" />
+    <result column="modified" jdbcType="TIMESTAMP" property="modified" />
+    <result column="modified_id" jdbcType="BIGINT" property="modifiedId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    id, parent_id, firm_code, name, code, department_type, description, created_id, created, 
+    modified, modified_id
+  </sql>
+  <select id="selectBy" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    select 
+    <include refid="Base_Column_List" />
+    from department
+    where id = #{id,jdbcType=BIGINT}
+  </select>
 
     <!-- 根据firmcode查询部门 -->
     <select id="listDepartments" parameterType="map" resultType="map">
@@ -38,13 +47,14 @@
         ,null AS created
         ,null AS modified
         ,null AS modified_id
+        ,null AS departmentType  
         union all
 
         SELECT
         concat('department_',id) AS id
         ,case when parent_id is null then concat('firm_',firm_code) else concat('department_',parent_id) end as parentId
         , firm_code AS firmCode, name, code, description, created_id, created, modified,
-        modified_id
+        modified_id,department_type AS departmentType
         FROM
         department d
         WHERE 1=1
@@ -58,19 +68,8 @@
             </if>
         </if>
     </select>
-	<select id="findByUserId" parameterType="Long" resultMap="BaseResultMap">
-		<!-- WARNING - @mbg.generated -->
-		select
-		d.id, d.parent_id, d.firm_code, d.name, d.code, d.description, d.created_id, d.created, d.modified,
-        d.modified_id
-		from department d inner join `user` u on d.id =
-		u.department_id
-		where
-		u.id = #{userId}
-	</select>
 	
-	<select id="getChildDepartments" parameterType="java.lang.Long"
-		resultMap="BaseResultMap">
+	<select id="getChildDepartments" parameterType="java.lang.Long" resultMap="BaseResultMap">
 		{call getChildDepartments(#{id})}
 	</select>
 
@@ -105,5 +104,9 @@
             code = #{firmCode}
         </if>
         GROUP BY f.code)
+	</select>
+
+    <select id="getSeniorDepartmentIds" resultType="Long">
+		SELECT DISTINCT(parent_id) FROM department WHERE parent_id IS NOT NULL
 	</select>
 </mapper>

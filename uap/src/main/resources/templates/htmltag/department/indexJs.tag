@@ -1,5 +1,16 @@
 <script type="text/javascript">
 
+    function departmentTypeFormatter(val,row){
+    	switch(val){
+    	case 1:
+    	   return '业务部门';
+    	case 2:
+    	   return '行政部门';
+    	default:
+    	   return '';
+    	}
+    }
+
     function openInsert() {
     	 <#resource code="insertDepartment">
         $("#grid").dataGridEditor().insert();
@@ -38,12 +49,12 @@
         }
     }
     /**
-     * 绑定页面回车事件，以及初始化页面时的光标定位
-     *
-     * @formId 表单ID
-     * @elementName 光标定位在指点表单元素的name属性的值
-     * @submitFun 表单提交需执行的任务
-     */
+	 * 绑定页面回车事件，以及初始化页面时的光标定位
+	 * 
+	 * @formId 表单ID
+	 * @elementName 光标定位在指点表单元素的name属性的值
+	 * @submitFun 表单提交需执行的任务
+	 */
     $(function () {
 
         $("#grid").dataGridEditor({
@@ -55,7 +66,8 @@
                 $("#btnSave").show();
                 $("#btnCancel").show();
             },
-            onEndEdit: function () {
+            onEndEdit: function (row) {
+            	row.children=undefined;
                 $("#btnSave").hide();
                 $("#btnCancel").hide();
             },

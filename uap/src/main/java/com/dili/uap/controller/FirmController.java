@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -48,6 +49,7 @@ import com.dili.uap.rpc.BankRpc;
 import com.dili.uap.rpc.BankUnionInfoRpc;
 import com.dili.uap.sdk.domain.DataDictionaryValue;
 import com.dili.uap.sdk.domain.Firm;
+import com.dili.uap.sdk.domain.FirmState;
 import com.dili.uap.sdk.domain.User;
 import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.session.SessionContext;
@@ -80,6 +82,9 @@ public class FirmController {
 	@Autowired
 	private RoleService roleService;
 
+	@Value("${uap.adminName:admin}")
+	private String adminName;
+
 	/**
 	 * 跳转到Firm页面
 	 * 
@@ -99,7 +104,7 @@ public class FirmController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/list.action", method = { RequestMethod.GET, RequestMethod.POST })
-	public @ResponseBody String list(Firm firm) throws Exception {
+	public @ResponseBody String list(FirmQueryDto firm) throws Exception {
 		firm.setDeleted(false);
 		return firmService.listEasyuiPageByExample(firm, true).toString();
 	}
@@ -260,7 +265,13 @@ public class FirmController {
 	@ResponseBody
 	@RequestMapping("/listAll.action")
 	public List<Firm> listAll() {
-		return this.firmService.list(DTOUtils.newInstance(Firm.class));
+		UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
+		String userName = userTicket.getUserName();
+		Firm firm = DTOUtils.newInstance(Firm.class);
+		if(!adminName.equals(userName)){
+			firm.setCode(userTicket.getFirmCode());
+		}
+		return this.firmService.list(firm);
 	}
 
 	/**
@@ -382,10 +393,15 @@ public class FirmController {
 	@GetMapping("/editAdminUser.html")
 	public String editAdminUserView(@RequestParam Long id, ModelMap modelMap) {
 		Firm firm = this.firmService.get(id);
+		if (!firm.getFirmState().equals(FirmState.ENABLED.getValue())) {
+			LOGGER.warn("商户当前状态不能设置管理员");
+			return "redirect:/firm/index.html";
+		}
 		if (firm.getUserId() != null) {
 			modelMap.addAttribute("user", this.userService.get(firm.getUserId()));
 		} else {
 			User user = DTOUtils.newInstance(User.class);
+			user.setUserName(firm.getSimpleName());
 			user.setCellphone(firm.getTelephone());
 			user.setEmail(firm.getEmail());
 			modelMap.addAttribute("user", user);
@@ -462,6 +478,10 @@ public class FirmController {
 	public String approveView(@RequestParam Long id, @RequestParam String taskId, @RequestParam Boolean isNeedClaim, ModelMap modelMap) throws Exception {
 		modelMap.addAttribute("taskId", taskId);
 		Firm firm = this.firmService.get(id);
+		if (!firm.getFirmState().equals(FirmState.APPROVING.getValue())) {
+			LOGGER.warn("当前状态不能审批");
+			return "redirect:/firm/index.html";
+		}
 		Map<Object, Object> metadata = new HashMap<Object, Object>();
 
 		metadata.put("depositBank", "bankProvider");
@@ -581,6 +601,87 @@ public class FirmController {
 //			}
 //		}
 		return output;
+	}
+
+	/**
+	 * 查看详情
+	 * 
+	 * @param id
+	 * @return
+	 * @throws Exception 
+	 */
+	@GetMapping("/detail.html")
+	public String detail(@RequestParam Long id, ModelMap modelMap) throws Exception {
+		Firm firm = this.firmService.get(id);
+		modelMap.addAttribute("firm", firm);
+		Map<Object, Object> metadata = new HashMap<Object, Object>();
+
+		metadata.put("depositBank", "bankProvider");
+
+		JSONObject legalPersonCertificateTypeProvider = new JSONObject();
+		legalPersonCertificateTypeProvider.put(ValueProvider.PROVIDER_KEY, "dataDictionaryValueProvider");
+		legalPersonCertificateTypeProvider.put(ValueProvider.QUERY_PARAMS_KEY, "{\"dd_code\":\"legalPersonCertificateType\",\"firm_code\":\"group\"}");
+		metadata.put("legalPersonCertificateType", legalPersonCertificateTypeProvider);
+
+		JSONObject industryProvider = new JSONObject();
+		industryProvider.put(ValueProvider.PROVIDER_KEY, "dataDictionaryValueProvider");
+		industryProvider.put(ValueProvider.QUERY_PARAMS_KEY, "{\"dd_code\":\"industry\",\"firm_code\":\"group\"}");
+		metadata.put("industry", industryProvider);
+
+		JSONObject enterpriseCertificateTypeProvider = new JSONObject();
+		enterpriseCertificateTypeProvider.put(ValueProvider.PROVIDER_KEY, "dataDictionaryValueProvider");
+		enterpriseCertificateTypeProvider.put(ValueProvider.QUERY_PARAMS_KEY, "{\"dd_code\":\"enterpriseCertificateType\",\"firm_code\":\"group\"}");
+		metadata.put("certificateType", enterpriseCertificateTypeProvider);
+
+		firm.setMetadata(metadata);
+		Map firmMap = ValueProviderUtils.buildDataByProvider(metadata, Arrays.asList(firm)).get(0);
+		List<Long> cityIds = new ArrayList<Long>();
+		cityIds.add(firm.getActualCityId());
+		cityIds.add(firm.getActualDistrictId());
+		cityIds.add(firm.getActualProvinceId());
+		cityIds.add(firm.getRegisteredCityId());
+		cityIds.add(firm.getRegisteredDistrictId());
+		cityIds.add(firm.getRegisteredProvinceId());
+		CityQueryDto query = new CityQueryDto();
+		query.setIdList(cityIds);
+		BaseOutput<List<CityDto>> output = this.cityRpc.listByExample(query);
+		if (output.isSuccess()) {
+			CityDto actualCity = output.getData().stream().filter(c -> c.getId().equals(firm.getActualCityId())).findFirst().orElse(null);
+			if (actualCity != null) {
+				firmMap.put("actualCityId", actualCity.getName());
+			}
+			CityDto actualDistrict = output.getData().stream().filter(c -> c.getId().equals(firm.getActualDistrictId())).findFirst().orElse(null);
+			if (actualDistrict != null) {
+				firmMap.put("actualDistrictId", actualDistrict.getName());
+			}
+			CityDto actualProvince = output.getData().stream().filter(c -> c.getId().equals(firm.getActualProvinceId())).findFirst().orElse(null);
+			if (actualProvince != null) {
+				firmMap.put("actualProvinceId", actualProvince.getName());
+			}
+			CityDto registeredCity = output.getData().stream().filter(c -> c.getId().equals(firm.getRegisteredCityId())).findFirst().orElse(null);
+			if (registeredCity != null) {
+				firmMap.put("registeredCityId", registeredCity.getName());
+			}
+			CityDto registeredDistrict = output.getData().stream().filter(c -> c.getId().equals(firm.getRegisteredDistrictId())).findFirst().orElse(null);
+			if (registeredDistrict != null) {
+				firmMap.put("registeredDistrictId", registeredDistrict.getName());
+			}
+			CityDto registeredProvince = output.getData().stream().filter(c -> c.getId().equals(firm.getRegisteredProvinceId())).findFirst().orElse(null);
+			if (registeredProvince != null) {
+				firmMap.put("registeredProvinceId", registeredProvince.getName());
+			}
+		} else {
+			LOGGER.error(output.getMessage());
+		}
+		BankUnionInfoDto bankQuery = new BankUnionInfoDto();
+		bankQuery.setId(firm.getDepositBankUnionInfoId());
+		BaseOutput<List<BankUnionInfoDto>> bankOutput = this.bankUnionInfoRpc.list(bankQuery);
+		if (CollectionUtils.isNotEmpty(bankOutput.getData())) {
+			BankUnionInfoDto buiDto = bankOutput.getData().get(0);
+			modelMap.addAttribute("firmBank", buiDto);
+		}
+		modelMap.addAttribute("firm", firmMap);
+		return "firm/detail";
 	}
 
 }

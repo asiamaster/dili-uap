@@ -34,6 +34,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -118,6 +122,23 @@ public class UserController {
 	@ResponseBody
 	public List<User> list(User user) {
 		return userService.list(user);
+	}
+
+
+	/**
+	 * 查询User
+	 *
+	 * @param user
+	 * @return
+	 */
+	@RequestMapping(value = "/superiorlist.action", method = { RequestMethod.GET, RequestMethod.POST })
+	@ResponseBody
+	public List<User> superiorlist(User user) {
+		List<User> list = userService.list(user);
+		for(User userDemo:list){
+			userDemo.setUserName(userDemo.getRealName()+"("+userDemo.getUserName()+")");
+		}
+		return list;
 	}
 
 	/**
@@ -209,6 +230,7 @@ public class UserController {
 	public BaseOutput delete(Long id) {
 		User user = userService.get(id);
 		userService.delete(id);
+		userService.updateBySuperiorId(id);
 		BaseOutput<Object> output = BaseOutput.success("删除成功");
 		if (output.isSuccess()) {
 			LoggerContext.put(LoggerConstant.LOG_BUSINESS_CODE_KEY, user.getUserName());

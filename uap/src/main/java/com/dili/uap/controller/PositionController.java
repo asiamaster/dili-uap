@@ -1,14 +1,11 @@
 package com.dili.uap.controller;
 
-import com.alibaba.fastjson.JSONArray;
 import com.dili.logger.sdk.annotation.BusinessLogger;
 import com.dili.logger.sdk.base.LoggerContext;
 import com.dili.logger.sdk.glossary.LoggerConstant;
 import com.dili.ss.domain.BaseOutput;
-import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.dto.IDTO;
 import com.dili.uap.domain.Position;
-import com.dili.uap.sdk.domain.Firm;
 import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.sdk.validator.AddView;
@@ -19,6 +16,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.annotation.Validated;
@@ -39,6 +37,9 @@ public class PositionController {
     @Autowired
     private FirmService firmService;
 
+    @Value("${uap.adminName:admin}")
+    private String adminName;
+
     /**
      * 跳转到Position页面
      * @param modelMap
@@ -46,8 +47,18 @@ public class PositionController {
      */
     @RequestMapping(value="/index.html", method = RequestMethod.GET)
     public String index(ModelMap modelMap) {
-        Firm query = DTOUtils.newInstance(Firm.class);
-        modelMap.put("firms", JSONArray.toJSONString(firmService.list(query)));
+//        UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
+//        String userName = userTicket.getUserName();
+//        boolean isAdmin = false;
+//        Firm query = DTOUtils.newInstance(Firm.class);
+//        if(adminName.equals(userName)){
+//            isAdmin = true;
+//        }else{
+//            query.setCode(userTicket.getFirmCode());
+//        }
+//        modelMap.put("isAdmin", isAdmin);
+//        modelMap.put("firms", JSONArray.toJSONString(firmService.list(query)));
+        modelMap.put("firmCode", SessionContext.getSessionContext().getUserTicket().getFirmCode());
         return "position/index";
     }
 
@@ -59,6 +70,11 @@ public class PositionController {
      */
     @RequestMapping(value="/listPage.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody String listPage(Position position) throws Exception {
+        UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
+        String userName = userTicket.getUserName();
+        if(!adminName.equals(userName)){
+            position.setFirmCode(userTicket.getFirmCode());
+        }
         return positionService.listEasyuiPageByExample(position, true).toString();
     }
 

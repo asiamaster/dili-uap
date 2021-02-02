@@ -78,7 +78,7 @@ public class DepartmentServiceImpl extends BaseServiceImpl<Department, Long> imp
 		}
 		// 更新市场管理员权限
 		Firm firm = this.firmService.getByCode(department.getFirmCode());
-		if (firm.getUserId() != null) {
+		if (firm.getUserId() != null && !firm.getUserId().equals(user.getId())) {
 			User adminUser = this.userMapper.selectByPrimaryKey(firm.getUserId());
 			userDataAuth = DTOUtils.newInstance(UserDataAuth.class);
 			userDataAuth.setRefCode(DataAuthType.DEPARTMENT.getCode());
@@ -91,7 +91,7 @@ public class DepartmentServiceImpl extends BaseServiceImpl<Department, Long> imp
 		}
 		while (firm.getParentId() != null) {
 			firm = this.firmMapper.selectByPrimaryKey(firm.getParentId());
-			if (firm.getUserId() != null) {
+			if (firm.getUserId() != null && !firm.getUserId().equals(user.getId())) {
 				User adminUser = this.userMapper.selectByPrimaryKey(firm.getUserId());
 				userDataAuth = DTOUtils.newInstance(UserDataAuth.class);
 				userDataAuth.setRefCode(DataAuthType.DEPARTMENT.getCode());
@@ -209,5 +209,10 @@ public class DepartmentServiceImpl extends BaseServiceImpl<Department, Long> imp
 			map.put("attributes",attributes);
 		});
 		return list;
+	}
+
+	@Override
+	public List<Long> getSeniorDepartmentIds() {
+		return this.getActualDao().getSeniorDepartmentIds();
 	}
 }

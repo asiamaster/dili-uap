@@ -12,6 +12,20 @@ $(function() {
 
 });
 
+function selectAll(){
+	 var datas = $("#roleMenuAndResourceGrid").treegrid("getData");
+	 $(datas).each(function(index,item){
+        $("#roleMenuAndResourceGrid").treegrid("checkNode", item.treeId);	 	
+	 });
+}
+
+function disselectAll(){
+	var datas = $("#roleMenuAndResourceGrid").treegrid("getData");
+     $(datas).each(function(index,item){
+        $("#roleMenuAndResourceGrid").treegrid("uncheckNode", item.treeId);       
+     });
+}
+
 /**
  * 打开权限设置页面
  */
@@ -160,7 +174,7 @@ $(function(){
         }
     });
 });
-//隐藏空格
+// 隐藏空格
 function spaceHidden(){
     var serialNumber = document.getElementById('serialNumber').innerHTML;
     if (serialNumber == '' || serialNumber == null || typeof(serialNumber) == 'undefined' ) {

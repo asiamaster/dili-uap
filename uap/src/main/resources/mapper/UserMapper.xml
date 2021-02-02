@@ -69,7 +69,7 @@
 				and ur.role_id = #{roleId}
 			</if>
 			<if test="keywords != null and keywords != ''">
-				and (u.user_name = #{keywords} or u.cellphone = #{keywords})
+				and (u.user_name like <![CDATA[concat('%',#{keywords},'%')]]> or u.cellphone = #{keywords} or u.real_name like <![CDATA[concat('%',#{keywords},'%')]]>)
 			</if>
 			<if test="lastLoginTimeStart != null">
                 and last_login_time <![CDATA[>=]]> #{lastLoginTimeStart}
@@ -191,5 +191,46 @@
 		SET position_id = NULL
 		WHERE position_id = #{positionId,jdbcType=BIGINT}
 	</update>
+
+	<update id="updateBySuperiorId"  parameterType="java.lang.Long">
+		UPDATE user
+		SET superior_id = NULL
+		WHERE superior_id = #{superiorId,jdbcType=BIGINT}
+	</update>
+
+	<select id="getUserCountByDepartmentIds" parameterType="java.util.Map" resultType="java.util.HashMap">
+		SELECT
+		u.department_id departmentId
+		,f.id firmId
+		,count(u.department_id) userCount
+		FROM
+		`user` u
+		LEFT JOIN
+		`firm` f
+		ON
+		u.firm_code = f.code
+		WHERE
+		u.created &lt;= #{date}  AND department_id IS NOT NULL
+		<if test="departmentIds != null and departmentIds !=''">
+			AND
+			u.department_id
+			IN
+			<foreach open="(" close=")" collection="departmentIds" item="departmentId" separator=",">
+				#{departmentId}
+			</foreach>
+		</if>
+		GROUP BY
+		u.department_id;
+	</select>
+
+	<select id="getUserCountByDepartments" parameterType="list" resultType="java.util.HashMap">
+		<foreach open="(" close=")" collection="list" item="map" separator="union all">
+			SELECT count(1) userCount,${map.seniorId} seniorId,f.id firmId FROM `user` u LEFT JOIN `firm` f ON u.firm_code = f.code
+			WHERE u.created &lt;= #{map.date} AND f.code = #{map.firmCode} AND department_id IN
+			<foreach open="(" close=")" collection="map.ids" item="departmentId" separator=",">
+				#{departmentId}
+			</foreach>
+		</foreach>
+	</select>
 
 </mapper>

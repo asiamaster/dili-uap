@@ -8,6 +8,7 @@ import com.dili.uap.dao.UserMapper;
 import com.dili.uap.domain.Position;
 import com.dili.uap.service.PositionService;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,12 +34,20 @@ public class PositionServiceImpl extends BaseServiceImpl<Position, Long> impleme
     public BaseOutput save(Position position) {
 
         Position queryPositionName = DTOUtils.newInstance(Position.class);
+        if(StringUtils.isBlank(position.getFirmCode())){
+            if(null == position.getId()){
+                return BaseOutput.failure("新增职位市场不能为空!");
+            }
+            Position positionById = getActualDao().selectByPrimaryKey(position.getId());
+            position.setFirmCode(positionById.getFirmCode());
+        }
+
         queryPositionName.setPositionName(position.getPositionName());
         queryPositionName.setFirmCode(position.getFirmCode());
         List<Position> positionNameList = getActualDao().select(queryPositionName);
 
         Position queryPositionCode = DTOUtils.newInstance(Position.class);
-        queryPositionCode.setPositionName(position.getPositionName());
+        queryPositionCode.setPositionCode(position.getPositionCode());
         queryPositionCode.setFirmCode(position.getFirmCode());
         List<Position> positionCodeList = getActualDao().select(queryPositionCode);
         int resultCount = 0;
@@ -55,14 +64,14 @@ public class PositionServiceImpl extends BaseServiceImpl<Position, Long> impleme
         }else {
         //职位修改
             if (CollectionUtils.isNotEmpty(positionNameList)) {
-                boolean result = positionNameList.stream().anyMatch(p -> !p.getId().equals(position.getId()));
-                if(result){
+                boolean result = positionNameList.stream().anyMatch(p -> p.getId().equals(position.getId()));
+                if(!result){
                     return BaseOutput.failure("该市场下职位名称已存在");
                 }
             }
             if (CollectionUtils.isNotEmpty(positionCodeList)) {
-                boolean result = positionCodeList.stream().anyMatch(p -> !p.getId().equals(position.getId()));
-                if(result){
+                boolean result = positionCodeList.stream().anyMatch(p -> p.getId().equals(position.getId()));
+                if(!result){
                     return BaseOutput.failure("该市场下职位编码已存在");
                 }
             }

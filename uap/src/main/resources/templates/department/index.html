@@ -30,6 +30,17 @@
 										}
 									}">部门名称
                     </th>
+                     <th width="20%" data-options="field:'departmentType',formatter:departmentTypeFormatter,editor:{type : 'combobox',
+                    options : {
+                       required:true,
+                       editable:false,
+                       valueField:'value',
+                       textField:'label',
+                       data:[
+                           {label:'业务部门',value:1},
+                           {label:'运营部门',value:2}]
+                    }
+                   }">部门类型</th>
                     <th data-options="field:'code',width:'20%'">编码</th>
                     <th data-options="field:'created',formatter:dateToStringFormatter,width:'20%'">创建时间</th>
                     <th data-options="field:'modified',formatter:dateToStringFormatter,width:'20%'">修改时间</th>

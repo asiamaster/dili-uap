@@ -1,5 +1,6 @@
 
 <#body>
+<#firm_editAdminUserJs />
 <div class="easyui-layout" fit="true">
 	<!-- ====================================================================================================================== -->
 	<!-- 中央布局 -->
@@ -55,8 +56,12 @@
 						</td>
 					</tr>
 					<tr>
-						<td style="padding: 5px;"><a id="btn" href="javascript:void(0);" class="easyui-linkbutton" style="margin-left: 40%" data-options="iconCls:'icon-save',onClick:saveOrUpdate">提交</a> <a
-							id="btn" href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'icon-search',onClick:function(){window.location.href='${contextPath!}/firm/index.html';}">返回</a></td>
+						<td style="padding: 5px;">
+						  <a id="btn" href="javascript:void(0);" class="easyui-linkbutton" style="margin-left: 40%" data-options="iconCls:'icon-save',onClick:saveOrUpdate">提交</a> 
+						  <a id="btn" href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'icon-search',onClick:function(){window.location.href='${contextPath!}/firm/index.html';}">返回</a>
+						  <a id="btn" href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'icon-search',onClick:function(){selectAll();}">全选</a>
+						  <a id="btn" href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'icon-search',onClick:function(){disselectAll();}">全不选</a>
+					   </td>
 					</tr>
 				</table>
 			</form>
@@ -66,7 +71,5 @@
 </div>
 
 <!-- ====================================================================================================================== --> <!-- style & script 分隔线 --> <!-- ====================================================================================================================== -->
-
-<#firm_editAdminUserJs />
 
 </#body>

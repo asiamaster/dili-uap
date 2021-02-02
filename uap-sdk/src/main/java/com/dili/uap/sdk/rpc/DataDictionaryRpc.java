@@ -21,7 +21,7 @@ public interface DataDictionaryRpc {
 
 	@POST("/dataDictionaryApi/listDataDictionaryValue.api")
 	BaseOutput<List<DataDictionaryValue>> listDataDictionaryValue(@VOBody DataDictionaryValue dataDictionaryValue);
-	
+
 	@POST("/dataDictionaryApi/listDataDictionaryValueByDto.api")
 	BaseOutput<List<DataDictionaryValue>> listDataDictionaryValueByDto(@VOBody DataDictionaryValueQueryDto dataDictionaryValue);
 
@@ -52,4 +52,13 @@ public interface DataDictionaryRpc {
 	 */
 	@POST("/insertDataDictionaryDto.api")
 	public BaseOutput<Object> insertDataDictionaryDto(@VOBody UapDataDictionaryDto dataDictionaryDto);
+
+	/**
+	 * 根据登录人所输市场返回数据字典值
+	 * 
+	 * @param ddCode 数据字典编码
+	 * @return
+	 */
+	@POST("/dataDictionaryApi/listLoginUserFirmDataDictionaryValueByDdCode.api")
+	BaseOutput<List<DataDictionaryValue>> listLoginUserFirmDataDictionaryValueByDdCode(@ReqParam("ddCode") String ddCode);
 }

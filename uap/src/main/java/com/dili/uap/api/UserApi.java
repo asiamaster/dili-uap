@@ -6,19 +6,22 @@ import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.domain.PageOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.dto.IDTO;
+import com.dili.ss.util.DateUtils;
 import com.dili.uap.component.ResumeLockedUserJob;
-import com.dili.uap.dao.DepartmentMapper;
 import com.dili.uap.domain.ScheduleMessage;
 import com.dili.uap.domain.dto.UserDepartmentRole;
 import com.dili.uap.domain.dto.UserDepartmentRoleQuery;
 import com.dili.uap.domain.dto.UserDto;
 import com.dili.uap.glossary.UserState;
+import com.dili.uap.sdk.domain.Department;
 import com.dili.uap.sdk.domain.User;
 import com.dili.uap.sdk.domain.dto.UserQuery;
+import com.dili.uap.service.DepartmentService;
 import com.dili.uap.service.LoginService;
 import com.dili.uap.service.RoleService;
 import com.dili.uap.service.UserService;
 import com.github.pagehelper.Page;
+import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +29,14 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Date;
+import java.util.Arrays;
 
 /**
  * 由MyBatis Generator工具自动生成 This file was generated on 2017-07-11 16:56:50.
@@ -38,7 +48,7 @@ public class UserApi {
 	UserService userService;
 
 	@Autowired
-	DepartmentMapper departmentMapper;
+	DepartmentService departmentService;
 
 	@Autowired
 	ResumeLockedUserJob resumeLockedUserJob;
@@ -315,5 +325,65 @@ public class UserApi {
 			return BaseOutput.failure(output.getMessage());
 		}
 		return output;
+	}
+
+	/**
+	 * 根据部门id获取部门人数
+	 *
+	 * @param ids eg:1,2,3
+	 * @param date 截止创建日期,yyyy-MM-dd
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getUserCountByDepartmentIds.api", method = { RequestMethod.GET, RequestMethod.POST })
+	public BaseOutput getUserCountByDepartmentIds(@RequestParam String ids,@RequestParam String date) {
+		HashMap<String,Object> resultMap = new HashMap<>();
+		HashMap<Long, Set<Long>> seniorDepartment = new HashMap<>();
+		List<Map<String,Object>> queryList = new ArrayList<>();
+
+		List<Long> longList = departmentService.getSeniorDepartmentIds();
+		for(int i = 0;i<longList.size();i++){
+			Set<Long> subordinateDepartmentIds = new HashSet<>();
+			Long seniorDepartmentId = longList.get(i);
+			List<Department> childDepartments = departmentService.getChildDepartments(seniorDepartmentId);
+			childDepartments.stream().forEach(c -> {
+				subordinateDepartmentIds.add(c.getId());
+			});
+			seniorDepartment.put(seniorDepartmentId,subordinateDepartmentIds);
+			Map<String,Object> map = new HashMap<>();
+			map.put("seniorId",seniorDepartmentId);
+			map.put("ids",subordinateDepartmentIds);
+			map.put("firmCode",childDepartments.get(0).getFirmCode());
+			map.put("date",date+" 23:59:59");
+			queryList.add(map);
+		}
+
+		List<HashMap<String, Object>> list;
+		Map<String,Object> map = new HashMap<>();
+		if(StringUtils.isBlank(date)){
+			date = DateUtils.format(new Date(),"yyyy-MM-dd");
+		}
+		map.put("date",date+" 23:59:59");
+		List<Long> isList = null;
+		if(StringUtils.isNotBlank(ids)){
+			String str[] = ids.split(",");
+			Long longIds[] = (Long[]) ConvertUtils.convert(str, Long.class);
+			isList = Arrays.asList(longIds);
+		}
+		map.put("departmentIds",isList);
+		list = userService.getUserCountByDepartmentIds(map);
+		HashMap<String,Long> userCountData = new HashMap<>();
+		list.stream().forEach(countMap ->{
+			userCountData.put(countMap.get("firmId")+"-"+countMap.get("departmentId"), (Long) countMap.get("userCount"));
+		});
+
+		List<HashMap<Long, Long>> userCountByDepartments = userService.getUserCountByDepartments(queryList);
+		userCountByDepartments.stream().forEach(countMap ->{
+			userCountData.put(countMap.get("firmId")+"-"+countMap.get("seniorId"), countMap.get("userCount"));
+		});
+
+		resultMap.put("userCountData",userCountData);
+		resultMap.put("seniorDepartment",seniorDepartment);
+		return BaseOutput.success().setData(resultMap);
 	}
 }

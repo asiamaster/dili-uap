@@ -10,21 +10,16 @@
 		</div>
 	</div>
 	<div style="width: 210px;" height="95%" align="left" data-options="region:'west',title:'用户管理',split:true, hideCollapsedContent:false,expandMode:'dock'" >
-		<input data-options="iconCls:'icon-search'" style="width:100%;border:2px solid #cccccc" id="searchTree">
-		<ul id="menuTree" class="easyui-tree" lines="false" url="${contextPath}/department/listUserDepartment.action"
-			data-options="loadFilter:treeLoadFilter, _idField:'id', _textField:'name', _parentIdField:'parent_id',
-				onSelect:queryTree" />
-<!--		<tr>-->
-<!--			<td style="padding: 5px;"><input class="easyui-combotree" name="_departmentId" panelWidth="auto" panelHeight="300" editable="true" id="_departmentIdTree" style="width: 100%; height: 28px;"  required=true-->
-<!--											 data-options="labelAlign:'right',label:'',_idField:'id',_textField:'name',_parentIdField:'parentId',loadFilter:treeLoadFilter"></td>-->
-<!--		</tr>-->
+		<input data-options="iconCls:'icon-search'" style="width:100%;height:28px;border-radius:5px;border:1px solid #cccccc" id="searchTree">
+		<div class="easyui-panel" fit="true" style="width: 100%;" id="menuTreePanel">
+			<ul id="menuTree" class="easyui-tree" lines="false" url="${contextPath}/department/listUserDepartment.action"
+				data-options="loadFilter:treeLoadFilter, _idField:'id', _textField:'name', _parentIdField:'parent_id',
+					onSelect:queryTree"/>
+		</div>
 	</div>
 	<div region="center">
 		<div class="easyui-layout" fit="true" region="center">
-			<div region="north" align="center" border="false">
-		<!--		<div id="nav" style="padding-left: 15px; padding-top: 10px;" align="left">-->
-		<!--			<#nav />-->
-		<!--		</div>-->
+			<div region="north" height="130px" align="center" border="false">
 				<!-- =========================================================表单========================================================= -->
 				<div class="easyui-panel" style="width: 100%;" align="left" border="false">
 					<form id="form" class="easyui-form" method="post" fit="true">
@@ -58,7 +53,7 @@
 								<#comboProvider _id="state" _provider='userStateProvider' _queryParams='{emptyText:"-- 全部 --"}' />
 							</div>
 							<div class="search-item">
-								<input class="easyui-textbox" name="keywords" id="keywords" style="width: 160px" data-options="prompt:'用户账号/联系手机'" />
+								<input class="easyui-textbox" name="keywords" id="keywords" style="width: 160px" data-options="prompt:'用户账号/联系手机/真实姓名'" />
 							</div>
 							<div class="search-item" style="width:450px;">
 								<input class="easyui-datetimebox" name="lastLoginTimeStart" id="lastLoginTimeStart" style="width: 59%" data-options="labelAlign:'right',editable:false,labelWidth:100" panelHeight="auto" label="最后登录时间:" />-
@@ -160,7 +155,7 @@
 					data-options="labelAlign:'right',label:'卡号:', validType:'bankCard'" /></td>
 			</tr>
 			<tr>
-				<td style="padding: 5px;"><input class="easyui-combobox" name="_firmCode" id="_firmCode" panelWidth="auto" panelHeight="300" required="true" editable="false" style="width: 85%; height: 28px;"
+				<td style="padding: 5px;"><input class="easyui-combobox" name="_firmCode" id="_firmCode" panelWidth="auto" panelHeight="270" required="true" editable="false" style="width: 85%; height: 28px;"
 					data-options="labelAlign:'right',label:'&lowast;归属市场:',valueField:'code',textField:'name',
                                         onLoadSuccess:function(){
                                            $('#_firmCode').combobox('select',firmCode);
@@ -171,7 +166,7 @@
 				</td>
 			</tr>
 			<tr>
-				<td style="padding: 5px;"><input class="easyui-combotree" name="_departmentId" panelWidth="auto" panelHeight="300" editable="true" id="_departmentId" style="width: 85%; height: 28px;"  required=true
+				<td style="padding: 5px;"><input class="easyui-combotree" name="_departmentId" panelWidth="auto" panelHeight="230" editable="true" id="_departmentId" style="width: 85%; height: 28px;"  required=true
 					data-options="labelAlign:'right',label:'&lowast;归属部门:',_idField:'id',_textField:'name',_parentIdField:'parentId',loadFilter:treeLoadFilter,onLoadSuccess:editDepartmentLoadSuccess"></td>
 			</tr>
 			<tr>

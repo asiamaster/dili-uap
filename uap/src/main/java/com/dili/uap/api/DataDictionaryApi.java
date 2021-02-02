@@ -21,7 +21,9 @@ import com.dili.uap.domain.dto.DataDictionaryDto;
 import com.dili.uap.sdk.domain.DataDictionary;
 import com.dili.uap.sdk.domain.DataDictionaryValue;
 import com.dili.uap.sdk.domain.Firm;
+import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.domain.dto.DataDictionaryValueQueryDto;
+import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.service.DataDictionaryService;
 import com.dili.uap.service.DataDictionaryValueService;
 import com.dili.uap.service.FirmService;
@@ -118,6 +120,29 @@ public class DataDictionaryApi {
 	public BaseOutput<List<DataDictionaryValue>> listDataDictionaryValueByDdCode(@RequestParam("ddCode") String ddCode) {
 		DataDictionaryValue dataDictionaryValue = DTOUtils.newInstance(DataDictionaryValue.class);
 		dataDictionaryValue.setDdCode(ddCode);
+		// 默认按orderNumber排序
+		if (dataDictionaryValue.getOrderNumber() != null) {
+			dataDictionaryValue.setOrder("orderNumber");
+		}
+		return BaseOutput.success().setData(this.dataDictionaryValueService.listByExample(dataDictionaryValue));
+	}
+
+	/**
+	 * 根据登录人所属市场数据字典编码查询数据字典值
+	 * 
+	 * @param ddCode
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/listLoginUserFirmDataDictionaryValueByDdCode.api", method = { RequestMethod.GET, RequestMethod.POST })
+	public BaseOutput<List<DataDictionaryValue>> listLoginUserFirmDataDictionaryValueByDdCode(@RequestParam("ddCode") String ddCode) {
+		UserTicket user = SessionContext.getSessionContext().getUserTicket();
+		if (user == null) {
+			return BaseOutput.failure("用户未登录");
+		}
+		DataDictionaryValue dataDictionaryValue = DTOUtils.newInstance(DataDictionaryValue.class);
+		dataDictionaryValue.setDdCode(ddCode);
+		dataDictionaryValue.setFirmCode(user.getFirmCode());
 		// 默认按orderNumber排序
 		if (dataDictionaryValue.getOrderNumber() != null) {
 			dataDictionaryValue.setOrder("orderNumber");
