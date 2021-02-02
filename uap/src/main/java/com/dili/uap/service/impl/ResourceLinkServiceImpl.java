@@ -13,9 +13,7 @@ import com.dili.uap.service.ResourceLinkService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 由MyBatis Generator工具自动生成
@@ -37,7 +35,7 @@ public class ResourceLinkServiceImpl extends BaseServiceImpl<ResourceLink, Long>
         }
         insertSelective(resourceLink);
         deleteRoleMenuByResourceId(resourceLink.getResourceId());
-        batchInsertRoleLink(resourceLink.getMenuId(), resourceLink.getResourceId());
+        batchInsertRoleMenuByResourceId(resourceLink.getMenuId(), resourceLink.getResourceId());
         //记录日志
         LoggerContext.put("resourceId", resourceLink.getResourceId());
         LoggerContext.put(LoggerConstant.LOG_BUSINESS_ID_KEY, resourceLink.getId());
@@ -57,11 +55,13 @@ public class ResourceLinkServiceImpl extends BaseServiceImpl<ResourceLink, Long>
     }
 
     @Override
-    public int batchInsertRoleLink(Long menuId, Long resourceId) {
-        Map<String, Long> param = new HashMap<>(4);
-        param.put("menuId", menuId);
-        param.put("resourceId", resourceId);
-        return getActualDao().batchInsertRoleLink(param);
+    public int batchInsertRoleMenuByResourceId(Long menuId, Long resourceId) {
+        return getActualDao().batchInsertRoleMenuByResourceId(menuId, resourceId);
+    }
+
+    @Override
+    public int batchInsertRoleMenuByRoleIdAndResourceIds(Long roleId, List<Long> resourceIds) {
+        return getActualDao().batchInsertRoleMenuByRoleIdAndResourceIds(roleId, resourceIds);
     }
 
     @Override

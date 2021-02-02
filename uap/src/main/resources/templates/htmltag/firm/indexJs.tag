@@ -1,3 +1,4 @@
+<script type="text/javascript">
 function approve(){
 	var selected = $("#grid").datagrid("getSelected");
     if (null == selected) {
@@ -206,3 +207,5 @@ function approve(){
             // 表格仅显示下边框
             $('#grid').datagrid('getPanel').removeClass('lines-both lines-no lines-right lines-bottom').addClass("lines-bottom");
         })
+
+</script>

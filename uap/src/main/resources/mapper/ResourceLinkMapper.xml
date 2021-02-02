@@ -24,12 +24,23 @@
     WHERE rl.resource_id=#{resourceId}
   </delete>
 
-    <!--  根据有资源权限的角色， 批量新增角色菜单关系  -->
-  <insert id="batchInsertRoleLink" parameterType="map">
+  <!--  根据有资源权限的角色， 批量新增角色菜单关系  -->
+  <insert id="batchInsertRoleMenuByResourceId" >
     INSERT INTO role_menu (role_id, menu_id)
-    select rr.role_id, #{menuId} menu_id
+    select distinct rr.role_id, #{menuId} menu_id
     FROM role_resource rr
     WHERE rr.resource_id=#{resourceId}
   </insert>
 
+  <insert id="batchInsertRoleMenuByRoleIdAndResourceIds">
+    INSERT INTO role_menu (role_id, menu_id)
+    select distinct rr.role_id, rl.menu_id
+    FROM role_resource rr INNER join resource_link rl
+    ON rr.resource_id = rl.resource_id
+    WHERE rr.resource_id in
+    <foreach open="(" close=")" collection="resourceIds" item="resourceId" separator=",">
+      #{resourceId}
+    </foreach>
+    AND rr.role_id=#{roleId}
+  </insert>
 </mapper>

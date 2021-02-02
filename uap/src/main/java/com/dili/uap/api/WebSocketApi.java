@@ -89,7 +89,7 @@ public class WebSocketApi {
     @StreamListener("testTopic")
     public void listener(DelayMessage message){
         logger.info("==================================");
-        logger.info(DateUtils.format(new Date())+"接收到消息:"+message.getBody());
+        logger.info(DateUtils.format(new Date())+",延时队列接收到消息:"+message.getBody());
     }
 
     /**

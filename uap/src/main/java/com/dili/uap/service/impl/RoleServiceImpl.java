@@ -1,30 +1,12 @@
 package com.dili.uap.service.impl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.alibaba.fastjson.JSON;
 import com.dili.logger.sdk.base.LoggerContext;
 import com.dili.ss.base.BaseServiceImpl;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.constants.UapConstants;
-import com.dili.uap.dao.RoleMapper;
-import com.dili.uap.dao.RoleMenuMapper;
-import com.dili.uap.dao.RoleResourceMapper;
-import com.dili.uap.dao.SystemMapper;
-import com.dili.uap.dao.UserMapper;
-import com.dili.uap.dao.UserRoleMapper;
+import com.dili.uap.dao.*;
 import com.dili.uap.domain.RoleMenu;
 import com.dili.uap.domain.RoleResource;
 import com.dili.uap.domain.UserRole;
@@ -36,9 +18,18 @@ import com.dili.uap.sdk.domain.Systems;
 import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.domain.dto.RoleUserDto;
 import com.dili.uap.sdk.session.SessionContext;
+import com.dili.uap.service.ResourceLinkService;
 import com.dili.uap.service.RoleService;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.*;
 
 /**
  * 由MyBatis Generator工具自动生成 This file was generated on 2018-05-18 11:45:41.
@@ -62,6 +53,8 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements Role
 	UserRoleMapper userRoleMapper;
 	@Autowired
 	private UserMapper userMapper;
+	@Autowired
+	private ResourceLinkService resourceLinkService;
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
@@ -246,10 +239,10 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements Role
 	public BaseOutput saveRoleMenuAndResource(Long roleId, String[] resourceIds) {
 		// 勾选的菜单数据集合
 		List<RoleMenu> roleMenus = Lists.newArrayList();
-		List<RoleMenu> toInsertRoleMenus = null;
 		// 勾选的资源ID集合
 		List<RoleResource> roleResources = Lists.newArrayList();
-		List<RoleResource> toInsertRoleResources = null;
+		// 勾选的resourceId
+		List<Long> resourceIdList = Lists.newArrayList();
 		/**
 		 * 循环所勾选的资源信息，分割出菜单、资源信息
 		 */
@@ -265,14 +258,17 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements Role
 				// 如果是资源关系，则组装角色-资源信息
 				if (id.startsWith(UapConstants.RESOURCE_PREFIX)) {
 					RoleResource roleResource = DTOUtils.newInstance(RoleResource.class);
-					roleResource.setResourceId(Long.valueOf(id.replace(UapConstants.RESOURCE_PREFIX, "")));
+					Long resourceId = Long.valueOf(id.replace(UapConstants.RESOURCE_PREFIX, ""));
+					roleResource.setResourceId(resourceId);
 					roleResource.setRoleId(roleId);
 					roleResources.add(roleResource);
+					resourceIdList.add(resourceId);
 				}
 			}
 		}
 		UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
-		// 超级管理员权限最大
+		// 超级管理员权限最大，删除所有选择角色的菜单资源权限，并重新添加
+		// 普通用户则需要判断是否有菜单和资源的权限，并且只能更新当前用户有权限的菜单和资源
 		if (userTicket.getUserName().equals(this.adminName)) {
 			RoleMenu rmCondition = DTOUtils.newInstance(RoleMenu.class);
 			rmCondition.setRoleId(roleId);
@@ -286,6 +282,8 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements Role
 			if (CollectionUtils.isNotEmpty(roleResources)) {
 				this.roleResourceMapper.insertList(roleResources);
 			}
+			//插入内链菜单
+			resourceLinkService.batchInsertRoleMenuByRoleIdAndResourceIds(roleId, resourceIdList);
 			List<Long> menuIds = new ArrayList<>(roleMenus.size());
 			roleMenus.forEach(rm -> menuIds.add(rm.getMenuId()));
 			LoggerContext.put("roleMenus", JSON.toJSONString(menuIds));
@@ -294,42 +292,49 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements Role
 			LoggerContext.put("roleResources", JSON.toJSONString(logResourceIds));
 			return BaseOutput.success("操作成功");
 		}
-		final StringBuilder sb = new StringBuilder();
-		if (CollectionUtils.isNotEmpty(roleMenus)) {
-			toInsertRoleMenus = this.getActualDao().selectInsertRoleMenuByLoggedUserId(roleMenus, roleId, userTicket.getId());
-		}
-		if (CollectionUtils.isNotEmpty(roleResources)) {
-			toInsertRoleResources = this.getActualDao().selectInsertRoleResourceByLoggedUserId(roleResources, roleId, userTicket.getId());
-		}
-		Map param = new HashMap<>(2);
+//		List<RoleMenu> toInsertRoleMenus = null;
+//		List<RoleResource> toInsertRoleResources = null;
+//		if (CollectionUtils.isNotEmpty(roleMenus)) {
+//			toInsertRoleMenus = this.getActualDao().selectInsertRoleMenuByLoggedUserId(roleMenus, roleId, userTicket.getId());
+//		}
+//		if (CollectionUtils.isNotEmpty(roleResources)) {
+//			toInsertRoleResources = this.getActualDao().selectInsertRoleResourceByLoggedUserId(roleResources, roleId, userTicket.getId());
+//		}
+		Map param = new HashMap<>(4);
 		param.put("roleId", roleId);
 		param.put("loginUserId", userTicket.getId());
 		// 删除对应的角色-菜单信息
 		getActualDao().deleteRoleMenuByRoleId(param);
 		// 删除对应的角色-资源信息
 		getActualDao().deleteRoleResourceByRoleId(param);
-		if (CollectionUtils.isNotEmpty(toInsertRoleMenus)) {
-			roleMenuMapper.insertList(toInsertRoleMenus);
+		if (CollectionUtils.isNotEmpty(roleMenus)) {
+			roleMenuMapper.insertList(roleMenus);
 		}
-		if (CollectionUtils.isNotEmpty(toInsertRoleResources)) {
-			roleResourceMapper.insertList(toInsertRoleResources);
+		if (CollectionUtils.isNotEmpty(roleResources)) {
+			roleResourceMapper.insertList(roleResources);
 		}
-		List<SystemResourceDto> resources = this.getActualDao().selectLimittedUpdateMenuList(roleMenus, roleResources, roleId, userTicket.getId());
-		if (CollectionUtils.isNotEmpty(resources)) {
-			sb.append("当前登录用户权限不足，以下权限修改不成功：");
-			resources.forEach(s -> sb.append(s.getName()).append(','));
+		//插入内链菜单
+		resourceLinkService.batchInsertRoleMenuByRoleIdAndResourceIds(roleId, resourceIdList);
+
+		//可能其它用户已经修改当前登录用户的权限，需要在此提示当前用户修改的部分权限不成功
+//		List<SystemResourceDto> resources = this.getActualDao().selectLimittedUpdateMenuList(roleMenus, roleResources, roleId, userTicket.getId());
+//		final StringBuilder sb = new StringBuilder();
+//		if (CollectionUtils.isNotEmpty(resources)) {
+//			sb.append("当前登录用户权限不足，以下权限修改不成功：");
+//			resources.forEach(s -> sb.append(s.getName()).append(','));
+//		}
+		if(CollectionUtils.isNotEmpty(roleMenus)){
+			List<Long> menuIds = new ArrayList<>(roleMenus.size());
+			roleMenus.forEach(rm -> menuIds.add(rm.getMenuId()));
+			LoggerContext.put("roleMenus", JSON.toJSONString(roleMenus));
 		}
-		if(CollectionUtils.isNotEmpty(toInsertRoleMenus)){
-			List<Long> menuIds = new ArrayList<>(toInsertRoleMenus.size());
-			toInsertRoleMenus.forEach(rm -> menuIds.add(rm.getMenuId()));
-			LoggerContext.put("roleMenus", JSON.toJSONString(toInsertRoleMenus));
+		if(CollectionUtils.isNotEmpty(roleResources)){
+			List<Long> logResourceIds = new ArrayList<>(roleResources.size());
+			roleResources.forEach(rr -> logResourceIds.add(rr.getResourceId()));
+			LoggerContext.put("roleResources", JSON.toJSONString(roleResources));
 		}
-		if(CollectionUtils.isNotEmpty(toInsertRoleResources)){
-			List<Long> logResourceIds = new ArrayList<>(toInsertRoleResources.size());
-			toInsertRoleResources.forEach(rr -> logResourceIds.add(rr.getResourceId()));
-			LoggerContext.put("roleResources", JSON.toJSONString(toInsertRoleResources));
-		}
-		return BaseOutput.success(StringUtils.isEmpty(sb) ? "操作成功" : sb.substring(0, sb.length() - 1));
+//		return BaseOutput.success(StringUtils.isEmpty(sb) ? "操作成功" : sb.substring(0, sb.length() - 1));
+		return BaseOutput.success("操作成功");
 	}
 
 	@Override

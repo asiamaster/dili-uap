@@ -99,9 +99,6 @@
 			where m.id = rm.menu_id
 			and
 			rm.role_id = ur.role_id
-        <![CDATA[
-        and m.`type` <=1
-        ]]>
 			and ur.user_id = #{loginUserId}
 			) a)
 		</if>

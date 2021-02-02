@@ -99,6 +99,8 @@ public class RoleController {
      * 查询Role
      *
      * @param role
+     * @param queryModel, 打开页面时为false， 查询parentId为空， firmCode为角色公司编码的角色
+     *                    后续查询为true, 树节点展开
      * @return
      * @throws Exception
      */
