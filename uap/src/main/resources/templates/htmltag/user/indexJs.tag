@@ -278,8 +278,10 @@
         $("#saveUser").linkbutton("disable");
         var _formData = removeKeyStartWith($("#_form").serializeObject(true),"_");
         var _url = null;
+        var isInsert = null;
         // 没有id就新增
         if(_formData.id == null || _formData.id==""){
+            isInsert = "Y";
             _url = "${contextPath}/user/insert.action";
         }else{// 有id就修改
             _url = "${contextPath}/user/update.action";
@@ -305,6 +307,10 @@
                 swal('错误', '远程访问失败', 'error');
             }
         });
+        if(isInsert == "Y"){
+            $('#menuTree').tree("reload");
+            $("#menuTreePanel").height($("#menuTreePanel").height());
+        }
     }
 
     // 根据主键删除
@@ -346,6 +352,8 @@
                     swal('错误', '远程访问失败', 'error');
                 }
             });
+            $('#menuTree').tree("reload");
+            $("#menuTreePanel").height($("#menuTreePanel").height());
         });
     }
 
