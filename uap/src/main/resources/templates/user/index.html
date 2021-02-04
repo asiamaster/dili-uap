@@ -43,21 +43,28 @@
 <!--									data-options="label:'归属部门:',labelAlign:'right',editable:false,_idField:'id',_textField:'name',_parentIdField:'parentId',loadFilter:treeLoadFilter" />-->
 <!--							</div>-->
 							<input type="hidden" name="firmCode" id="firmCode" value="${firmCode}" style="width: 100%" />
-							<input type="hidden" name="departmentId" id="departmentId" value="${departmentId}" style="width: 100%" />
-							<div class="search-item">
+							<input type="hidden" name="departmentId" id="departmentId" style="width: 100%" />
+							<div class="search-item" style="width: 230px">
 								<input class="easyui-combobox" name="roleId" id="roleId" panelHeight="auto" style="width: 100%"
-									data-options="label:'角色类型:',labelAlign:'right',editable:false,valueField:'id',textField:'roleName'" />
+									data-options="label:'角色类型:',labelAlign:'right',labelWidth:80,editable:false,valueField:'id',textField:'roleName'" />
 							</div>
-							<div class="search-item">
-								<input class="easyui-combobox" name="state" id="state" style="width: 160px" data-options="labelAlign:'right',editable:false,labelWidth:60" panelHeight="auto" label="状态:" />
+							<div class="search-item" style="width: 150px">
+								<input class="easyui-combobox" name="state" id="state" style="width: 100%" data-options="labelAlign:'right',editable:false,labelWidth:60" panelHeight="auto" label="状态:" />
 								<#comboProvider _id="state" _provider='userStateProvider' _queryParams='{emptyText:"-- 全部 --"}' />
 							</div>
-							<div class="search-item">
-								<input class="easyui-textbox" name="keywords" id="keywords" style="width: 160px" data-options="prompt:'用户账号/联系手机/真实姓名'" />
+							<div class="search-item" style="width: 252px">
+								<input class="easyui-textbox" name="keywords" id="keywords" style="width: 100%" data-options="prompt:'用户账号/联系手机/真实姓名',label:'名称/手机:',labelAlign:'right',labelWidth:92" />
 							</div>
-							<div class="search-item" style="width:450px;">
-								<input class="easyui-datetimebox" name="lastLoginTimeStart" id="lastLoginTimeStart" style="width: 59%" data-options="labelAlign:'right',editable:false,labelWidth:100" panelHeight="auto" label="最后登录时间:" />-
-								<input class="easyui-datetimebox" name="lastLoginTimeEnd" id="lastLoginTimeEnd" style="width: 36%" data-options="labelAlign:'center',editable:false" panelHeight="auto" />
+							<div class="search-item"  style="width: 180px">
+								<input class="easyui-textbox" name="positionName" id="positionName" style="width:100%" data-options="label:'岗位:',labelAlign:'right',labelWidth:60"/>
+							</div>
+							<div class="search-item" style="width:360px;">
+								<input class="easyui-datetimebox" name="createTimeStart" id="createTimeStart" style="width: 59%" data-options="labelAlign:'right',editable:false,labelWidth:80" panelHeight="auto" label="创建时间:" />-
+								<input class="easyui-datetimebox" name="createTimeEnd" id="createTimeEnd" style="width: 36%" data-options="labelAlign:'center',editable:false" panelHeight="auto" />
+							</div>
+							<div class="search-item" style="width:380px;">
+								<input class="easyui-datetimebox" name="lastLoginTimeStart" id="lastLoginTimeStart" style="width: 61%" data-options="labelAlign:'right',editable:false,labelWidth:100" panelHeight="auto" label="最后登录时间:" />-
+								<input class="easyui-datetimebox" name="lastLoginTimeEnd" id="lastLoginTimeEnd" style="width: 34%" data-options="labelAlign:'center',editable:false" panelHeight="auto" />
 							</div>
 
 							<div class="search-wrap-btn">

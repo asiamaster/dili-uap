@@ -223,12 +223,12 @@ public interface UserService extends BaseService<User, Long> {
 	List<HashMap<String, Object>> getUserCountByDepartmentIds(Map<String,Object> map);
 
 	/**
-	 * 将superiorId置空
+	 * 将相关信息置空
 	 *
-	 * @param superiorId   上级id
+	 * @param user
 	 * @return
 	 */
-	Integer updateBySuperiorId(Long superiorId);
+	Integer updateByUser(User user);
 
 	/**
 	 * 根据部门ids获取几个部门总人数

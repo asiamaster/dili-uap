@@ -2,10 +2,12 @@ package com.dili.uap.service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.dili.ss.base.BaseService;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.uap.sdk.domain.Department;
+import com.dili.uap.sdk.domain.dto.DepartmentDto;
 
 /**
  * 由MyBatis Generator工具自动生成 This file was generated on 2018-05-22 16:10:05.
@@ -88,4 +90,19 @@ public interface DepartmentService extends BaseService<Department, Long> {
 	 * @return
 	 */
 	List<Long> getSeniorDepartmentIds();
+
+	/**
+	 * 获取查询部门及其上级部门
+	 * set id集合
+	 * @return
+	 */
+	List<Map> getDepartmentTree(Department department);
+
+	/**
+	 * 删除部门及用户相关部门
+	 * id 部门id
+	 * @return
+	 */
+	void deleteDepartment(Long id);
+
 }

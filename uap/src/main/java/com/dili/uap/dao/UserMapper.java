@@ -66,20 +66,12 @@ public interface UserMapper extends MyMapper<User> {
 	List<User> findUsersByResourceCode(String resourceCode, Long marketId);
 
 	/**
-	 * 将positionId置空
+	 * 将相关置空
 	 *
-	 * @param positionId   职位id
+	 * @param user
 	 * @return
 	 */
-	Integer updateByPositionId(Long positionId);
-
-	/**
-	 * 将superiorId置空
-	 *
-	 * @param superiorId   上级id
-	 * @return
-	 */
-	Integer updateBySuperiorId(Long superiorId);
+	Integer updateByUser(User user);
 
 	/**
 	 * 根据部门id获取各部门人数

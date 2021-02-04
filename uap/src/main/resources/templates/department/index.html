@@ -6,6 +6,44 @@
         <div id="nav" align="left">
             <#nav/>
         </div>
+        <div class="easyui-panel" style="width:100%;" align="left">
+            <form id="form" class="easyui-form" method="post" fit="true">
+                <table style="padding:10px;">
+                    <tr>
+                        <td style="padding:5px;">
+                            <%if(isGroup){%>
+                            <input class="easyui-combobox" name="firmCode"  id="firm" label="市场:" panelHeight="500" editable="false"style="width:100%;"
+                                   labelAlign="right" data-options="onLoadSuccess:function(){
+                                var datas=$('#firm').combobox('getData');
+                                if(datas.length>=2){
+                                   var defaultValue=datas[1].value;
+                                   if(defaultValue!=$('#firm').combobox('getValue')){
+                                    //$('#firm').combobox('select',defaultValue);
+                                   }
+                                }
+                               }"/>
+                            <#comboProvider _id="firm" _provider='firmCodeProvider' />
+                            <%}%>
+                        </td>
+                        <td style="padding:5px;">
+                            <input class="easyui-textbox" name="name" id="name" style="width:100%" data-options="label:'部门名称:'" labelAlign="right" />
+                        </td>
+                        <td style="padding:5px;">
+                            <select id="cc" class="easyui-combobox" name="departmentType" style="width:200px;" data-options="label:'部门类型:'" labelAlign="right" >
+                                <option value="">-- 请选择 --</option>
+                                <option value=1>业务部门</option>
+                                <option value=2>行政部门</option>
+                            </select>
+                        </td>
+                        <td>
+                            <a href="#" class="easyui-linkbutton" iconCls="icon-search" id="queryBtn"
+                               onclick="queryGrid()">查询</a>
+                            <a href="javascript:void(0)" class="easyui-linkbutton" onclick="clearForm()">清除</a>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </div>
     </div>
     <!-- 中央布局 -->
     <!-- ====================================================================================================================== -->
@@ -22,6 +60,7 @@
                 <thead>
                 <tr>
                     <th data-options="field:'id',hidden:true">id</th>
+                    <th data-options="field:'firmCode',hidden:true">firmCode</th>
                     <th data-options="field:'name',width:'20%',editor : {
 										type : 'textbox',
 										options : {
@@ -38,7 +77,7 @@
                        textField:'label',
                        data:[
                            {label:'业务部门',value:1},
-                           {label:'运营部门',value:2}]
+                           {label:'行政部门',value:2}]
                     }
                    }">部门类型</th>
                     <th data-options="field:'code',width:'20%'">编码</th>
@@ -48,30 +87,8 @@
                 </tr>
                 </thead>
             </table>
+
             <div id="toolbar" style="padding: 10px 5px 10px 30px;background: #FFFFFF">
-                <%if(isGroup){%>
-                <span>市场：</span>
-                <input class="easyui-combobox" name="firm"  id="firm"  panelWidth="auto" panelHeight="500" editable="false"style="width:8%;"
-                       labelAlign="right" data-options="onLoadSuccess:function(){
-                            var datas=$('#firm').combobox('getData');
-                       		if(datas.length>=2){
-                       		   var defaultValue=datas[1].value;
-                       		   if(defaultValue!=$('#firm').combobox('getValue')){
-                       		   	//$('#firm').combobox('select',defaultValue);
-                       		   }
-                       		}
-                       },onChange:function(newValue,oldValue){
-                            window.firmCode = newValue;
-                            setOptBtnDisplay(false);
-                            try{
-                               $('#grid').treegrid('reload', {firmCode:newValue});
-                            }catch(e){
-                            }
-                          
-                           
-                       }"/>
-                <#comboProvider _id="firm" _provider='firmCodeProvider' />
-                <%}%>
                 <#resource code="insertDepartment">
                     <a href="#" class="easyui-linkbutton" iconCls="icon-add" onclick="openInsert()" plain="true">新增</a>
                 </#resource>
@@ -87,6 +104,7 @@
         </div>
     </div>
 </div>
+
 <script type="text/javascript">
     var dataAuth = {
         addDept: true,

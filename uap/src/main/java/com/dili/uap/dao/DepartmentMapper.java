@@ -5,6 +5,7 @@ import com.dili.uap.sdk.domain.Department;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface DepartmentMapper extends MyMapper<Department> {
 
@@ -38,4 +39,27 @@ public interface DepartmentMapper extends MyMapper<Department> {
 	 * @return
 	 */
 	List<Long> getSeniorDepartmentIds();
+
+	/**
+	 * 获取id集合的所有父级部门
+	 * set id集合
+	 * @return
+	 */
+	List<String> getDepartmentParentList(Set<String> set);
+
+	/**
+	 * 查询部门列表及其所属市场
+	 *
+	 * @param queryMap
+	 * @return
+	 */
+	List<Map> getDepartmentTree(Map<String,Set<String>> queryMap);
+
+	/**
+	 * 查询部门
+	 *
+	 * @param department
+	 * @return
+	 */
+	List<Department> queryDepartments(Department department);
 }

@@ -24,11 +24,32 @@
     id, parent_id, firm_code, name, code, department_type, description, created_id, created, 
     modified, modified_id
   </sql>
+
+  <select id="queryDepartments" parameterType="com.dili.uap.sdk.domain.Department" resultMap="BaseResultMap">
+    SELECT
+        id
+        ,firm_code
+        ,parent_id
+    FROM
+    department
+    <where>
+        <if test="firmCode != null and firmCode != ''">
+            and firm_code = #{firmCode}
+        </if>
+        <if test="name != null and name != ''">
+            and name like <![CDATA[concat('%',#{name},'%')]]>
+        </if>
+        <if test="departmentType != null and departmentType != ''">
+            and department_type = #{departmentType}
+        </if>
+    </where>
+  </select>
+
   <select id="selectBy" parameterType="java.lang.Long" resultMap="BaseResultMap">
     <!--
       WARNING - @mbg.generated
     -->
-    select 
+    select
     <include refid="Base_Column_List" />
     from department
     where id = #{id,jdbcType=BIGINT}
@@ -37,17 +58,22 @@
     <!-- 根据firmcode查询部门 -->
     <select id="listDepartments" parameterType="map" resultType="map">
         SELECT
-        concat('firm_',#{firmCode}) AS id
+        concat('firm_',code) AS id
         ,null AS parentId
-        ,#{firmCode} AS firmCode
-        ,(select name from firm where code=#{firmCode}) AS name
+        ,code AS firmCode
+        ,name AS name
         ,null AS code
         ,null AS description
         ,null AS created_id
         ,null AS created
         ,null AS modified
         ,null AS modified_id
-        ,null AS departmentType  
+        ,null AS departmentType
+        FROM
+        firm
+        <if test="firmCode != null and firmCode != ''">
+            WHERE code = #{firmCode}
+        </if>
         union all
 
         SELECT
@@ -61,6 +87,12 @@
         <if test="firmCode != null and firmCode != ''">
             and d.firm_code = #{firmCode}
         </if>
+        <if test="name != null and name != ''">
+            and d.name like <![CDATA[concat('%',#{name},'%')]]>
+        </if>
+        <if test="departmentType != null and departmentType != ''">
+            and d.department_type = #{departmentType}
+        </if>
         <if test="sort !=null">
             ORDER BY `${sort}`
             <if test="order !=null">
@@ -68,11 +100,63 @@
             </if>
         </if>
     </select>
-	
+
+    <!-- 查询部门列表及其所属市场 -->
+    <select id="getDepartmentTree" parameterType="map" resultType="map">
+        SELECT
+        concat('firm_',code) AS id
+        ,null AS parentId
+        ,code AS firmCode
+        ,name AS name
+        ,null AS code
+        ,null AS description
+        ,null AS created_id
+        ,null AS created
+        ,null AS modified
+        ,null AS modified_id
+        ,null AS departmentType
+        FROM
+        firm
+        <if test="firmCodeSet != null">
+            WHERE code IN
+            <foreach open="(" close=")" collection="firmCodeSet" item="code" separator=",">
+                #{code}
+            </foreach>
+        </if>
+
+        UNION ALL
+
+        SELECT
+        concat('department_',id) AS id
+        ,case when parent_id is null then concat('firm_',firm_code) else concat('department_',parent_id) end as parentId
+        , firm_code AS firmCode, name, code, description, created_id, created, modified,
+        modified_id,department_type AS departmentType
+        FROM
+        department d
+        <if test="connectiveSet != null">
+            WHERE d.id IN
+            <foreach open="(" close=")" collection="connectiveSet" item="id" separator=",">
+                #{id}
+            </foreach>
+        </if>
+
+        <if test="sort !=null">
+            ORDER BY `${sort}`
+            <if test="order !=null">
+                ${order}
+            </if>
+        </if>
+    </select>
+
 	<select id="getChildDepartments" parameterType="java.lang.Long" resultMap="BaseResultMap">
 		{call getChildDepartments(#{id})}
 	</select>
 
+	<select id="getDepartmentParentList" parameterType="java.lang.String" resultType="java.lang.String">
+        <foreach open="(" close=")" collection="set" item="id" separator="UNION ALL">
+		     select getDepartmentParentList(#{id})
+        </foreach>
+	</select>
 
     <!-- 根据市场查询部门列表 -->
     <select id="listUserDepartment" parameterType="java.lang.String" resultType="map">

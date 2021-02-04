@@ -767,8 +767,8 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 	}
 
 	@Override
-	public Integer updateBySuperiorId(Long superiorId) {
-		return userMapper.updateBySuperiorId(superiorId);
+	public Integer updateByUser(User user) {
+		return userMapper.updateByUser(user);
 	}
 
 	@Override
