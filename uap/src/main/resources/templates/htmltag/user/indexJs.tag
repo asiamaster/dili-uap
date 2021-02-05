@@ -527,6 +527,9 @@
         } else {
             document.onkeyup = getKey;
         }
+        $('#stop_btn').linkbutton('disable');
+        $('#play_btn').linkbutton('disable');
+        $('#unlock_btn').linkbutton('disable');
         initUserGrid();
         queryGrid();
         //绑定搜索框键盘改变事件

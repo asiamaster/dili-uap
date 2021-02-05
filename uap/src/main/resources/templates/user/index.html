@@ -109,9 +109,9 @@
 					<#resource code="updateUser"> <a href="#" class="easyui-linkbutton" iconCls="icon-edit" onclick="openUpdate()" plain="true">修改</a> </#resource>
 					<#resource code="deleteUser"> <a href="#" class="easyui-linkbutton" iconCls="icon-remove" onclick="del()" plain="true">删除</a> </#resource>
 					<#resource code="resetPass"> <a href="#" class="easyui-linkbutton" iconCls="icon-reset" onclick="resetPass()" plain="true">密码重置</a> </#resource>
-					<#resource code="enabledUser"> <a href="#" class="easyui-linkbutton" iconCls="icon-play" onclick="doEnable(true)" plain="true">启用</a> </#resource>
-					<#resource code="disabledUser"> <a href="#" class="easyui-linkbutton" iconCls="icon-stop" onclick="doEnable(false)" plain="true">禁用</a> </#resource>
-					<#resource code="unlockUser"> <a href="#" class="easyui-linkbutton" iconCls="icon-unlock" onclick="doUnlock()" plain="true">解锁</a> </#resource>
+					<#resource code="enabledUser"> <a href="#" id="play_btn" class="easyui-linkbutton" iconCls="icon-play" onclick="doEnable(true)" plain="true">启用</a> </#resource>
+					<#resource code="disabledUser"> <a href="#" id="stop_btn" class="easyui-linkbutton" iconCls="icon-stop" onclick="doEnable(false)" plain="true">禁用</a> </#resource>
+					<#resource code="unlockUser"> <a href="#" id="unlock_btn" class="easyui-linkbutton" iconCls="icon-unlock" onclick="doUnlock()" plain="true">解锁</a> </#resource>
 					<#resource code="exportUser"> <a href="#" class="easyui-linkbutton" iconCls="icon-export" onclick="doExport('userGrid')" plain="true">导出</a> </#resource>
 				</div>
 			</div>
