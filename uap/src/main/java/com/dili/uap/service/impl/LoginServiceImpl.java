@@ -27,7 +27,7 @@ import com.dili.uap.sdk.constant.SessionConstants;
 import com.dili.uap.sdk.domain.*;
 import com.dili.uap.sdk.glossary.SystemType;
 import com.dili.uap.sdk.service.AuthService;
-import com.dili.uap.sdk.service.JwtService;
+import com.dili.uap.sdk.service.UserJwtService;
 import com.dili.uap.sdk.service.redis.ManageRedisUtil;
 import com.dili.uap.sdk.util.KeyBuilder;
 import com.dili.uap.sdk.util.WebContent;
@@ -92,7 +92,7 @@ public class LoginServiceImpl implements LoginService {
 	private SystemConfigMapper systemConfigMapper;
 
 	@Autowired
-	private JwtService jwtService;
+	private UserJwtService userJwtService;
 
 	@Autowired
 	private AuthService authService;
@@ -223,7 +223,7 @@ public class LoginServiceImpl implements LoginService {
 			// 返回用户信息需要屏蔽用户的密码
 			user.setPassword(null);
 			loginResult.setUser(userTicket);
-			String accessToken = jwtService.generateTokenByRSA256(userTicket, SystemType.getSystemType(systemType));
+			String accessToken = userJwtService.generateUserTokenByRSA256(userTicket, SystemType.getSystemType(systemType));
 			//刷新token
 			String refreshToken = UUID.randomUUID().toString();
 			loginResult.setAccessToken(accessToken);

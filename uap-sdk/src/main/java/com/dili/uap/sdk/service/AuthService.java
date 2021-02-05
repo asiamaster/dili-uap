@@ -22,7 +22,7 @@ import javax.annotation.Resource;
 public class AuthService {
     private static final Logger log = LoggerFactory.getLogger(AuthService.class);
     @Resource
-    private JwtService jwtService;
+    private UserJwtService userJwtService;
     @Resource
     UserRedis userRedis;
 
@@ -35,7 +35,7 @@ public class AuthService {
      */
     public UserTicket getUserTicket(String accessToken, String refreshToken) {
         //选读取accessToken
-        UserTicket userTicket = jwtService.getUserTicket(accessToken);
+        UserTicket userTicket = userJwtService.getUserTicket(accessToken);
         if (null != userTicket) {
             return userTicket;
         }
@@ -58,7 +58,7 @@ public class AuthService {
      */
     public UserTicket getGatewayUserTicket(String accessToken, String refreshToken) {
         //选读取accessToken
-        UserTicket userTicket = jwtService.getUserTicket(accessToken);
+        UserTicket userTicket = userJwtService.getUserTicket(accessToken);
         if (null != userTicket) {
             return userTicket;
         }
@@ -81,7 +81,7 @@ public class AuthService {
      * @return
      */
     public UserToken getUserToken(String accessToken, String refreshToken) {
-        UserTicket userTicket = jwtService.getUserTicket(accessToken);
+        UserTicket userTicket = userJwtService.getUserTicket(accessToken);
         if (null != userTicket) {
             UserToken userToken = DTOUtils.newInstance(UserToken.class);
             userToken.setRefreshToken(refreshToken);
@@ -108,7 +108,7 @@ public class AuthService {
      * @return
      */
     public UserToken getGatewayUserToken(String accessToken, String refreshToken) {
-        UserTicket userTicket = jwtService.getUserTicket(accessToken);
+        UserTicket userTicket = userJwtService.getUserTicket(accessToken);
         if (null != userTicket) {
             UserToken userToken = DTOUtils.newInstance(UserToken.class);
             userToken.setRefreshToken(refreshToken);

@@ -8,7 +8,7 @@ import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.domain.dto.UserToken;
 import com.dili.uap.sdk.glossary.SystemType;
 import com.dili.uap.sdk.glossary.TokenStep;
-import com.dili.uap.sdk.service.JwtService;
+import com.dili.uap.sdk.service.UserJwtService;
 import com.dili.uap.sdk.util.KeyBuilder;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
@@ -33,7 +33,7 @@ public class UserRedis {
 	@Resource(name="manageRedisUtil")
 	private ManageRedisUtil redisUtil;
 	@Resource
-	private JwtService jwtService;
+	private UserJwtService userJwtService;
 	@Resource
 	private DynamicConfig dynamicConfig;
 	@Resource
@@ -64,7 +64,7 @@ public class UserRedis {
 					userToken.setAccessToken(cachedAccessToken);
 					userToken.setTokenStep(TokenStep.REFRESH_CACHE.getCode());
 				}else {// 根据redis中的userTicket重新签发
-					String accessToken = jwtService.generateTokenByRSA256(userTicket, SystemType.getSystemType(userTicket.getSystemType()));
+					String accessToken = userJwtService.generateUserTokenByRSA256(userTicket, SystemType.getSystemType(userTicket.getSystemType()));
 					redisUtil.set(refreshToken+":cache", accessToken, 10L);
 					userToken.setAccessToken(accessToken);
 					userToken.setTokenStep(TokenStep.REFRESH_TOKEN.getCode());
