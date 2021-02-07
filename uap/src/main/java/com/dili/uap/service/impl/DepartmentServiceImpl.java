@@ -257,8 +257,8 @@ public class DepartmentServiceImpl extends BaseServiceImpl<Department, Long> imp
 	@Transactional(rollbackFor = Exception.class)
 	public void deleteDepartment(Long id) {
 		this.delete(Long.valueOf(id));
-		User user = DTOUtils.newDTO(User.class);
-		user.setDepartmentId(Long.valueOf(id));
-		userMapper.updateByUser(user);
+//		User user = DTOUtils.newDTO(User.class);
+//		user.setDepartmentId(Long.valueOf(id));
+//		userMapper.updateByUser(user);
 	}
 }
