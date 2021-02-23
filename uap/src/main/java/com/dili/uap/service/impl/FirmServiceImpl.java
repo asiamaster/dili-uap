@@ -38,6 +38,7 @@ import com.dili.uap.domain.dto.FirmAddDto;
 import com.dili.uap.domain.dto.FirmListDto;
 import com.dili.uap.domain.dto.FirmUpdateDto;
 import com.dili.uap.domain.dto.PaymentFirmDto;
+import com.dili.uap.glossary.Yn;
 import com.dili.uap.rpc.PayRpc;
 import com.dili.uap.rpc.UidRpc;
 import com.dili.uap.sdk.domain.Department;
@@ -159,7 +160,7 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 			return BaseOutput.failure("已存在相同编码的商户");
 		}
 		Firm firm = this.getActualDao().selectByPrimaryKey(dto.getId());
-		if (!firm.getFirmState().equals(FirmState.UNREVIEWED.getValue())&&!firm.getFirmState().equals(FirmState.ENABLED.getValue())) {
+		if (!firm.getFirmState().equals(FirmState.UNREVIEWED.getValue()) && !firm.getFirmState().equals(FirmState.ENABLED.getValue())) {
 			return BaseOutput.failure("当前状态不能修改商户信息");
 		}
 		Firm query = DTOUtils.newInstance(Firm.class);
@@ -424,7 +425,7 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 	public List<Firm> getAllChildrenByParentId(Long parentId) {
 		if (parentId == null) {
 			Example example = new Example(Firm.class);
-			example.createCriteria().andIsNull("parentId");
+			example.createCriteria().andIsNull("parentId").andEqualTo("state", FirmState.ENABLED.getValue()).andEqualTo("deleted", Yn.NO.getCode());
 			return this.getActualDao().selectByExample(example);
 		}
 		return this.getActualDao().selectAllChildrenFirms(parentId);
