@@ -109,7 +109,7 @@ public interface UserService extends BaseService<User, Long> {
 	 * @param userId 用户ID
 	 * @return
 	 */
-	List<UserDataDto> getUserDataAuthForTree(Long userId);
+	List<Map> getUserDataAuthForTree(Long userId);
 
 	/**
 	 * 保存用户的角色信息

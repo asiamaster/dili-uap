@@ -90,8 +90,9 @@
 	</sql>
 
 	<!-- 查询用户数据权限,超级管理员不用传入loginUserId参数 -->
-	<select id="selectUserDatas" parameterType="map" resultType="com.dili.uap.domain.dto.UserDataDto">
+	<select id="selectUserDatas" parameterType="map" resultType="map">
 		SELECT d.id AS treeId
+		, d.`firm_code` AS firmCode
 		, CASE WHEN d.parent_id is null THEN CONCAT('firm_',d.firm_code) ELSE d.parent_id END AS parentId
 		, d.`name`
 		, CASE WHEN ud.id IS NULL THEN FALSE ELSE TRUE END AS checked
@@ -104,7 +105,7 @@
 		LEFT JOIN (SELECT u.* from user_data_auth u where u.user_id = #{userId} AND u.ref_code='department') ud
 		ON d.id = ud.value
 		UNION ALL
-		SELECT CONCAT('firm_',f.`code`) AS treeId, NULL AS parentId,
+		SELECT CONCAT('firm_',f.`code`) AS treeId, f.`code` AS firmCode, NULL AS parentId,
 		f.`name`, CASE WHEN ud.id IS NULL THEN FALSE ELSE TRUE END AS checked
 		<if test="loginUserId == null">
 			FROM firm f

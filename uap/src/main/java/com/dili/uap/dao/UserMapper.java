@@ -37,7 +37,7 @@ public interface UserMapper extends MyMapper<User> {
 	 * @param params 查询参数(key:userId(用户ID)、firmCode(市场code))
 	 * @return
 	 */
-	List<UserDataDto> selectUserDatas(Map<String, Object> params);
+	List<Map> selectUserDatas(Map<String, Object> params);
 
 	/**
 	 * 根据用户，查询用户对应角色，部门信息
