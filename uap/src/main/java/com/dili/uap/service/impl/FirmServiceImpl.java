@@ -425,7 +425,7 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 	public List<Firm> getAllChildrenByParentId(Long parentId) {
 		if (parentId == null) {
 			Example example = new Example(Firm.class);
-			example.createCriteria().andIsNull("parentId").andEqualTo("state", FirmState.ENABLED.getValue()).andEqualTo("deleted", Yn.NO.getCode());
+			example.createCriteria().andIsNull("parentId").andEqualTo("firmState", FirmState.ENABLED.getValue()).andEqualTo("deleted", Yn.NO.getCode());
 			return this.getActualDao().selectByExample(example);
 		}
 		return this.getActualDao().selectAllChildrenFirms(parentId);
