@@ -441,7 +441,7 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 		if (firm == null) {
 			return BaseOutput.failure("商户不存在");
 		}
-		if (!firm.getFirmState().equals(FirmState.UNREVIEWED.getValue())) {
+		if (!firm.getFirmState().equals(FirmState.UNREVIEWED.getValue()) && !firm.getFirmState().equals(FirmState.ENABLED.getValue())) {
 			return BaseOutput.failure("当前状态不能提交审批");
 		}
 		firm.setFirmState(FirmState.APPROVING.getValue());
