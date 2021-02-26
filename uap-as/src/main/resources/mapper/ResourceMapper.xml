@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dili.uap.as.mapper.ResourceMapper">
+	<resultMap id="BaseResultMap" type="com.dili.uap.as.domain.Resource">
+		<!-- WARNING - @mbg.generated -->
+		<id column="id" jdbcType="BIGINT" property="id" />
+		<result column="name" jdbcType="VARCHAR" property="name" />
+		<result column="description" jdbcType="VARCHAR" property="description" />
+		<result column="menu_id" jdbcType="BIGINT" property="menuId" />
+		<result column="code" jdbcType="VARCHAR" property="code" />
+		<result column="created" jdbcType="TIMESTAMP" property="created" />
+		<result column="modified" jdbcType="TIMESTAMP" property="modified" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		<!-- WARNING - @mbg.generated -->
+		id, name, description, menu_id, code, created, modified
+	</sql>
+
+	<select id="listByUserId" resultMap="BaseResultMap">
+		SELECT
+		r.id,
+		r.`code`,
+		r.created,
+		r.description,
+		r.menu_id,
+		r.system_type,
+		r.`name`,
+		r.`system_type`
+		FROM role_resource rr
+		INNER JOIN resource r ON rr.resource_id = r.id
+		INNER JOIN user_role ur ON rr.role_id = ur.role_id
+		WHERE r.`system_type`= #{systemType}
+		AND ur.user_id = #{userId}
+	</select>
+
+	<select id="listByUserIdAndSystemId" resultMap="BaseResultMap">
+		SELECT
+		r.id, r.`code`, r.created, r.description, r.menu_id,
+		r.`name`,r.`system_type`
+		FROM
+		role_resource rr, resource r, user_role ur, menu m
+		where rr.role_id =
+		ur.role_id
+		and rr.resource_id = r.id
+		and ur.user_id = #{arg0}
+		AND r.menu_id = m.id
+		AND m.system_id = ${arg1}
+	</select>
+
+	<select id="findResourceCodeByUserId" parameterType="Long" resultType="java.lang.String">
+		SELECT r.code FROM `resource` r RIGHT JOIN (
+		SELECT DISTINCT rr.resource_id AS resource_id
+		FROM `role_resource` rr
+		LEFT JOIN
+		user_role ru ON ru.role_id = rr.role_id
+		WHERE
+		ru.user_id=#{userId})rru
+		ON r.id = rru.resource_id
+	</select>
+
+	<select id="listResourceCodesByUserId" resultType="java.lang.String">
+		SELECT
+		r.`code`
+		FROM
+		`resource` r
+		RIGHT JOIN (
+		SELECT DISTINCT
+		rr.resource_id AS resource_id
+		FROM
+		`role_resource` rr
+		LEFT JOIN user_role ru ON ru.role_id = rr.role_id
+		WHERE
+		ru.user_id = #{userId}
+		) rru ON r.id =
+		rru.resource_id WHERE r.`code` IN
+		<foreach collection="resourceCodes" item="code" open="(" separator="," close=")">
+			#{code}
+		</foreach>
+	</select>
+
+	<select id="listResourceCodeByMenuUrl" parameterType="map" resultType="java.lang.String">
+		SELECT r.code
+		FROM `resource` r, `menu` m, `role_resource` rr, `user_role` ur
+		where r.menu_id = m.id
+		AND r.id =
+		rr.resource_id
+		AND rr.role_id = ur.role_id
+		AND m.url=#{url}
+		AND ur.user_id=${userId}
+	</select>
+</mapper>

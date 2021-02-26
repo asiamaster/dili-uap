@@ -1,19 +1,24 @@
 package com.dili.uap.sdk.domain.dto;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class UserDepartmentRoleQuery implements Serializable {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -6910318745874677983L;
 
 	private Long userId;
 	private Long departmentId;
-	private String role;
-
+	private Long roleId;
 	private String realName;
+	private List<Long> departmentIds;
+
+	public static long getSerialVersionUID() {
+		return serialVersionUID;
+	}
 
 	public String getRealName() {
 		return realName;
@@ -21,11 +26,6 @@ public class UserDepartmentRoleQuery implements Serializable {
 
 	public void setRealName(String realName) {
 		this.realName = realName;
-	}
-
-	public static long getSerialVersionUID() {
-
-		return serialVersionUID;
 	}
 
 	public Long getUserId() {
@@ -44,12 +44,20 @@ public class UserDepartmentRoleQuery implements Serializable {
 		this.departmentId = departmentId;
 	}
 
-	public String getRole() {
-		return role;
+	public Long getRoleId() {
+		return roleId;
 	}
 
-	public void setRole(String role) {
-		this.role = role;
+	public void setRoleId(Long roleId) {
+		this.roleId = roleId;
+	}
+
+	public List<Long> getDepartmentIds() {
+		return departmentIds;
+	}
+
+	public void setDepartmentIds(List<Long> departmentIds) {
+		this.departmentIds = departmentIds;
 	}
 
 }

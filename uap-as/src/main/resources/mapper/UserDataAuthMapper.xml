@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dili.uap.as.mapper.UserDataAuthMapper">
+	<resultMap id="BaseResultMap" type="com.dili.uap.sdk.domain.UserDataAuth">
+		<!-- WARNING - @mbg.generated -->
+		<id column="id" jdbcType="BIGINT" property="id" />
+		<result column="ref_code" jdbcType="VARCHAR" property="refCode" />
+		<result column="user_id" jdbcType="BIGINT" property="userId" />
+		<result column="value" jdbcType="VARCHAR" property="value" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		<!-- WARNING - @mbg.generated -->
+		id, ref_code, user_id, value
+	</sql>
+
+	<delete id="deleteUserDataAuth" parameterType="map">
+		DELETE FROM user_data_auth
+		WHERE id IN(
+		SELECT a.id FROM (
+		SELECT id
+		FROM user_data_auth
+		WHERE ( ref_code, `value` ) IN ( SELECT ref_code, `value` FROM
+		user_data_auth WHERE user_id = #{loggedUserId} )
+		) a)
+		AND
+		user_id=#{userId}
+	</delete>
+
+	<select id="selectUserDataAuthValue" resultType="java.lang.String">
+		select value from user_data_auth where 1=1
+		<if test="userId != null">
+			and user_id = #{userId,jdbcType=BIGINT}
+		</if>
+		<if test="refCode != null">
+			and ref_code = #{refCode,jdbcType=VARCHAR}
+		</if>
+
+	</select>
+
+	<select id="selectIntersectionUpdateUserDatas" resultMap="BaseResultMap">
+		SELECT
+		id, ref_code, #{userId} AS user_id, value
+		FROM
+		user_data_auth
+		WHERE 1 = 1 AND
+		<if test="saveDatas != null and saveDatas.size()>0">
+			(ref_code,`value`) IN(
+			<foreach collection="saveDatas" item="dataAuth" separator=",">
+				(#{dataAuth.refCode},#{dataAuth.value})
+			</foreach>
+			)
+		</if>
+		AND user_id = #{loggedUserId}
+	</select>
+</mapper>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>智慧农批经营管理平台</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="keywords" content="uap" />
+    <meta name="description" content="智慧农批经营管理平台" />
+    <meta name="author" content="dili">
+    <style>
+        /*消除google浏览器黄色框*/
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus {
+            box-shadow:0 0 0 60px #FFF inset;
+            -webkit-text-fill-color: #666;
+        }
+    </style>
+    <!-- jquery -->
+    <link rel="shortcut icon" href="${contextPath}/resources/images/icon/dili-logo.png" />
+    <script type="text/javascript" src="${contextPath}/resources/easyui/js/jquery-3.2.1.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="${contextPath}/resources/css/login.css">
+</head>
+
+<body>
+<div class="loginwrap">
+    <div class="login">
+        <h2 class="login-title"><img src="${contextPath}/resources/images/login-title.png" alt="智慧农批经营管理平台"></h2>
+
+        <form id="loginForm" class="login-form" method="post" action="${contextPath}/api/oauth-server/authorize">
+            <table class="userinfo">
+                <tbody>
+                <tr>
+                    <td width="40" class="login-icon login-user-icon">
+                    </td>
+                    <td>
+                        <input id="userName" name="userName" value="" type="text" placeholder="请输入账号" />
+                    </td>
+                </tr>
+                <tr>
+                    <td width="40" class="login-icon login-password-icon"></td>
+                    <td>
+                        <input id="password" name="password" value="" type="password" placeholder="请输入密码" />
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div id="msg" class="login-msg"></div>
+            <div class="">
+                <input type="button" class="submit" value="登录" onclick="doLogin()">
+            </div>
+            <div style="margin-top:25px; text-align: center">
+                <a target="_blank" href="${contextPath}/static/clientDownload.html">客户端下载</a>
+            </div>
+            <input type="hidden" id="client_id" name="client_id" value="${clientId!}" >
+            <input type="hidden" id="response_type" name="response_type" value="code" >
+            <input type="hidden" id="redirect_uri" name="redirect_uri" value="${redirectUri!}" >
+        </form>
+        <div id="errMsg"></div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function doLogin() {
+        var username = document.getElementById("userName").value;
+        if (null == username || "" == username) {
+            $("#msg").html("账号不能为空");
+            return false;
+        }
+
+        var password = document.getElementById("password").value;
+        if (null == password || "" == password) {
+            $("#msg").html("密码不能为空");
+            return false;
+        }
+        if(username.length < 2 || username.length > 20){
+            $("#msg").html("用户名长度不能小于2位或大于20位");
+            return false;
+        }
+        if(password.length < 6 || password.length > 20){
+            $("#msg").html("密码长度不能小于6位或大于20位");
+            return false;
+        }
+        if(!validUserName(username)){
+            $("#msg").html("用户名只能包含中文、英文、数字和下划线");
+            return false;
+        }
+
+        document.getElementById("loginForm").submit();
+    }
+
+    /*******************************************************************************
+     * 绑定指定表单元素类型的回车事件
+     *
+     * @param formId
+     *            表单
+     * @param element
+     *            元素类型 (input/select/radio/...)
+     * @param subFunction
+     *            回车后要执行的js函数
+     * @param eventName
+     *            键盘事件 (keyup/keydown/keypress...)
+     */
+    function bindEnter(formId, element, subFunction, eventName) {
+        $("#" + formId + " " + element).bind(eventName, function(event) {
+            //回车
+            if (event.keyCode == '13') {
+                subFunction();
+            }
+        });
+    }
+
+
+    /*******************************************************************************
+     * 表单回车事件绑定 表单光标定位
+     * @param formId
+     * @param subFunction 回车要执行的函数
+     */
+    function bindFormEvent(formId, subFunction) {
+        if (subFunction && subFunction != null) {
+            bindEnter(formId, 'input', subFunction, 'keyup');
+        }
+    }
+
+    function validUserName(value) {
+        return /^[a-zA-Z0-9\u4e00-\u9fa5_]+$/.test(value);
+    }
+
+    $(function() {
+        <% if(has(msg)){%>
+            $("#msg").html("${msg}");
+        <%}%>
+        window.setTimeout(function() {
+            $("#userName").focus();
+        }, 0);
+        bindFormEvent("loginForm", doLogin);
+    });
+</script>
+</body>
+
+</html>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dili.uap.as.mapper.SystemMapper">
+  <resultMap id="BaseResultMap" type="com.dili.uap.sdk.domain.Systems">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="parent_id" jdbcType="BIGINT" property="parentId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="icon_url" jdbcType="VARCHAR" property="iconUrl" />
+    <result column="firm_code" jdbcType="VARCHAR" property="firmCode" />
+    <result column="logo_url" jdbcType="VARCHAR" property="logoUrl" />
+    <result column="created" jdbcType="TIMESTAMP" property="created" />
+    <result column="modified" jdbcType="TIMESTAMP" property="modified" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="is_client" jdbcType="TINYINT" property="isClient" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    id, parent_id, name, code, description, url, icon_url, firm_code, logo_url, created, is_client,
+    modified, type
+  </sql>
+
+  <select id="listByUserId" resultType="com.dili.uap.sdk.domain.Systems">
+    select distinct s.id, s.code, s.name, s.url, s.icon_url, s.logo_url, s.type, s.order_number, s.index_url, s.description, s.is_client
+    from systems s, menu m, user_role ur, role_menu rm
+    where m.system_id  = s.id
+    and m.id = rm.menu_id
+    and rm.role_id = ur.role_id
+    and ur.user_id = #{userId}
+    <if test="systemType != null">
+    and s.type = #{systemType}
+    </if>
+    order by s.order_number asc
+  </select>
+  
+</mapper>

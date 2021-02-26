@@ -11,9 +11,8 @@ import com.dili.uap.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext;
-import org.springframework.context.ApplicationListener;
-import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -23,7 +22,8 @@ import java.util.List;
  * Created by asiamaster on 2018/5/24
  */
 @Component
-public class ResumeLockedUserJob implements ApplicationListener<ContextRefreshedEvent> {
+//public class ResumeLockedUserJob implements ApplicationListener<ContextRefreshedEvent> {
+public class ResumeLockedUserJob implements ApplicationRunner {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ResumeLockedUserJob.class);
 
@@ -33,13 +33,18 @@ public class ResumeLockedUserJob implements ApplicationListener<ContextRefreshed
 	@Autowired
 	private SystemConfigMapper systemConfigMapper;
 
+//	@Override
+//	public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
+//		if(!(contextRefreshedEvent.getApplicationContext() instanceof AnnotationConfigServletWebServerApplicationContext)) {
+//			return;
+//		}
+//		//系统启动时扫描一次锁定用户
+//        resumeLockedUser();
+//	}
+
 	@Override
-	public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
-		if(!(contextRefreshedEvent.getApplicationContext() instanceof AnnotationConfigServletWebServerApplicationContext)) {
-			return;
-		}
-		//系统启动时扫描一次锁定用户
-        resumeLockedUser();
+	public void run(ApplicationArguments args) throws Exception {
+		resumeLockedUser();
 	}
 
 	/**

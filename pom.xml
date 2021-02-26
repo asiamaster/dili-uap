@@ -17,11 +17,12 @@
 	</parent>
 	<modules>
 		<module>uap-sdk</module>
+		<module>uap-as</module>
 		<module>uap</module>
 	</modules>
 
 	<properties>
-		<java.version>1.8</java.version>
+		<java.version>13</java.version>
 
 		<!-- MyBatis Generator -->
 		<!-- Java接口和实体类 -->
