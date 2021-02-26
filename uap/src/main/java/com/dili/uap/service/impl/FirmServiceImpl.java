@@ -7,6 +7,8 @@ import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -64,6 +66,8 @@ import tk.mybatis.mapper.entity.Example;
  */
 @Service
 public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements FirmService {
+
+	private static final Logger log = LoggerFactory.getLogger(FirmServiceImpl.class);
 
 	/**
 	 * 调用支付系统商户注册接口默认密码
@@ -297,7 +301,12 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 				List<Long> departmentIds = new ArrayList<Long>(firms.size());
 				departments.forEach(d -> departmentIds.add(d.getId()));
 				example.createCriteria().andEqualTo("refCode", DataAuthType.DEPARTMENT.getCode()).andEqualTo("userId", adminUser.getId()).andIn("value", departmentIds);
-				this.userDataAuthMapper.deleteByExample(example);
+				try {
+					this.userDataAuthMapper.deleteByExample(example);
+				} catch (Exception e) {
+					log.error("删除用户权限失败,userId:{},departmentIds:{}",adminUser.getId(),JSON.toJSONString(departmentIds),e);
+					throw new AppException("删除用户权限失败");
+				}
 				List<UserDataAuth> dataAuthList = new ArrayList<UserDataAuth>(departments.size());
 				for (Department d : departments) {
 					UserDataAuth depDataAuth = DTOUtils.newInstance(UserDataAuth.class);
