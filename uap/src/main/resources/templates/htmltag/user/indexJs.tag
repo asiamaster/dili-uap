@@ -300,6 +300,10 @@
                 if(ret.success){
                     userGrid.datagrid("reload");
                     $('#editDlg').dialog('close');
+                    if(isInsert == "Y"){
+                        $('#menuTree').tree("reload");
+                        $("#menuTreePanel").height($("#menuTreePanel").height());
+                    }
                 }else{
                     swal('错误', ret.result, 'error');
                 }
@@ -309,10 +313,7 @@
                 swal('错误', '远程访问失败', 'error');
             }
         });
-        if(isInsert == "Y"){
-            $('#menuTree').tree("reload");
-            $("#menuTreePanel").height($("#menuTreePanel").height());
-        }
+
     }
 
     // 根据主键删除
@@ -346,6 +347,8 @@
                 success : function(data) {
                     if (data.success) {
                         userGrid.datagrid("reload");
+                        $('#menuTree').tree("reload");
+                        $("#menuTreePanel").height($("#menuTreePanel").height());
                     } else {
                         swal('错误', data.message, 'error');
                     }
@@ -354,8 +357,6 @@
                     swal('错误', '远程访问失败', 'error');
                 }
             });
-            $('#menuTree').tree("reload");
-            $("#menuTreePanel").height($("#menuTreePanel").height());
         });
     }
 

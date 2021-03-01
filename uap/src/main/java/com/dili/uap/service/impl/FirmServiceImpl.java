@@ -450,7 +450,7 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 		if (firm == null) {
 			return BaseOutput.failure("商户不存在");
 		}
-		if (!firm.getFirmState().equals(FirmState.UNREVIEWED.getValue()) && !firm.getFirmState().equals(FirmState.ENABLED.getValue())) {
+		if (!firm.getFirmState().equals(FirmState.UNREVIEWED.getValue())) {
 			return BaseOutput.failure("当前状态不能提交审批");
 		}
 		firm.setFirmState(FirmState.APPROVING.getValue());
@@ -459,7 +459,7 @@ public class FirmServiceImpl extends BaseServiceImpl<Firm, Long> implements Firm
 			return BaseOutput.failure("更新商户状态失败");
 		}
 
-		if (StringUtils.isNotEmpty(taskId)) {
+		if (StringUtils.isNotEmpty(taskId) && !"undefined".equals(taskId)) {
 			if (this.isNeedClaim(taskId)) {
 				BaseOutput<String> output = this.taskRpc.claim(taskId, user.getId().toString());
 				if (!output.isSuccess()) {
