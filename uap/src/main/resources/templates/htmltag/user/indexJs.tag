@@ -280,10 +280,8 @@
         $("#saveUser").linkbutton("disable");
         var _formData = removeKeyStartWith($("#_form").serializeObject(true),"_");
         var _url = null;
-        var isInsert = null;
         // 没有id就新增
         if(_formData.id == null || _formData.id==""){
-            isInsert = "Y";
             _url = "${contextPath}/user/insert.action";
         }else{// 有id就修改
             _url = "${contextPath}/user/update.action";
@@ -300,10 +298,8 @@
                 if(ret.success){
                     userGrid.datagrid("reload");
                     $('#editDlg').dialog('close');
-                    if(isInsert == "Y"){
-                        $('#menuTree').tree("reload");
-                        $("#menuTreePanel").height($("#menuTreePanel").height());
-                    }
+                    $('#menuTree').tree("reload");
+                    $("#menuTreePanel").height($("#menuTreePanel").height());
                 }else{
                     swal('错误', ret.result, 'error');
                 }
