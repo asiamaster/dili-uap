@@ -2,6 +2,7 @@ package com.dili.uap.api;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.dili.ss.constant.ResultCode;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.domain.PageOutput;
 import com.dili.ss.dto.DTOUtils;
@@ -15,7 +16,9 @@ import com.dili.uap.domain.dto.UserDto;
 import com.dili.uap.glossary.UserState;
 import com.dili.uap.sdk.domain.Department;
 import com.dili.uap.sdk.domain.User;
+import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.domain.dto.UserQuery;
+import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.service.DepartmentService;
 import com.dili.uap.service.LoginService;
 import com.dili.uap.service.RoleService;
@@ -25,18 +28,10 @@ import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Date;
-import java.util.Arrays;
+import java.util.*;
 
 /**
  * 由MyBatis Generator工具自动生成 This file was generated on 2017-07-11 16:56:50.
@@ -58,6 +53,19 @@ public class UserApi {
 
 	@Autowired
 	LoginService loginService;
+
+	/**
+	 * 授权获取用户信息
+	 * @return
+	 */
+	@RequestMapping(value = "/user.api", method = { RequestMethod.GET, RequestMethod.POST })
+	public @ResponseBody BaseOutput<UserTicket> user() {
+		UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
+		if(userTicket == null){
+			return BaseOutput.failure(ResultCode.UNAUTHORIZED, "用户未登录");
+		}
+		return BaseOutput.success().setData(userTicket);
+	}
 
 	/**
 	 * 查询User实体接口

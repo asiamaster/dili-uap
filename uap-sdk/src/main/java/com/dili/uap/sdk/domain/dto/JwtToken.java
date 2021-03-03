@@ -16,4 +16,18 @@ public interface JwtToken extends IDTO {
     String getRefreshToken();
     void setRefreshToken(String refreshToken);
 
+    /**
+     * 授权码参数的redirectUri，用于获取令牌时进行验证
+     * @return
+     */
+    String getRedirectUri();
+    void setRedirectUri(String redirectUri);
+
+    /**
+     * access token过期剩余时间(秒)
+     * @return
+     */
+    Long getExpires();
+    void setExpires(Long expires);
+
 }

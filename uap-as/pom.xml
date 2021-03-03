@@ -159,6 +159,17 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/me.zhyd.oauth/JustAuth -->
+<!--        <dependency>-->
+<!--            <groupId>me.zhyd.oauth</groupId>-->
+<!--            <artifactId>JustAuth</artifactId>-->
+<!--            <version>1.15.9</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>cn.hutool</groupId>-->
+<!--            <artifactId>hutool-http</artifactId>-->
+<!--            <version>5.2.5</version>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>com.dili</groupId>
             <artifactId>uap-sdk</artifactId>

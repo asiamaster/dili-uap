@@ -209,10 +209,14 @@ public class LoginServiceImpl implements LoginService {
 			user.setPassword(null);
 			loginResult.setUser(userTicket);
 			String accessToken = userJwtService.generateUserTokenByRSA256(userTicket, SystemType.getSystemType(systemType));
+			Long accessTokenTimeout = dynamicConfig.getAccessTokenTimeout(SystemType.getSystemType(systemType).getCode());
+			Long refreshTokenTimeout = dynamicConfig.getRefreshTokenTimeout(SystemType.getSystemType(systemType).getCode());
 			//刷新token
 			String refreshToken = UUID.randomUUID().toString();
 			loginResult.setAccessToken(accessToken);
 			loginResult.setRefreshToken(refreshToken);
+			loginResult.setAccessTokenTimeout(accessTokenTimeout);
+			loginResult.setRefreshTokenTimeout(refreshTokenTimeout);
 			loginResult.setLoginPath(loginDto.getLoginPath());
 			saveTokenInRedis(userTicket, refreshToken, systemType);
 			logLogin(user, loginDto, true, "登录成功");

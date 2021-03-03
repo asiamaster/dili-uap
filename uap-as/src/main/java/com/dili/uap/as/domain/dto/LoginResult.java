@@ -17,6 +17,14 @@ public interface LoginResult extends IDTO {
     String getRefreshToken();
     void setRefreshToken(String refreshToken);
 
+    //访问token超时(秒)
+    Long getAccessTokenTimeout();
+    void setAccessTokenTimeout(Long accessTokenTimeout);
+
+    //刷新token超时(秒)
+    Long getRefreshTokenTimeout();
+    void setRefreshTokenTimeout(Long accessTokenTimeout);
+
     //登录成功后的返回地址
     String getLoginPath();
     void setLoginPath(String loginPath);

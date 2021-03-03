@@ -15,8 +15,8 @@ import javax.persistence.Id;
  * 客户端
  * This file was generated on 2021-02-26 14:13:22.
  */
-@Table(name = "`client`")
-public interface Client extends IBaseDomain {
+@Table(name = "`oauth_client`")
+public interface OAuthClient extends IBaseDomain {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "`id`")

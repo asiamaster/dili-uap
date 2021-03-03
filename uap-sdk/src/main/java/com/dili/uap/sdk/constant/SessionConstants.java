@@ -13,6 +13,8 @@ public class SessionConstants {
 	//web socket放入属性的用户id key
 	public static final String USER_ID_KEY = APPLICATION_NAME + "userId";
 
+	public static final String OAUTH_ACCESS_TOKEN_KEY = "access_token";
+	public static final String OAUTH_REFRESH_TOKEN_KEY = "refresh_token";
 	public static final String ACCESS_TOKEN_KEY = APPLICATION_NAME + "accessToken";
 	public static final String REFRESH_TOKEN_KEY = APPLICATION_NAME + "refreshToken";
 

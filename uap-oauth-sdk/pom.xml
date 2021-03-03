@@ -2,10 +2,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>uap-sdk</artifactId>
-	<name>uap-sdk</name>
+	<artifactId>uap-oauth-sdk</artifactId>
+	<name>uap-oauth-sdk</name>
 	<version>${project.parent.version}</version>
-	<description>uap-sdk</description>
+	<description>uap-oauth-sdk</description>
 	<packaging>jar</packaging>
 
 	<!-- 父工程定义 -->
@@ -20,9 +20,20 @@
 	</properties>
 
 	<dependencies>
+		<!-- https://mvnrepository.com/artifact/me.zhyd.oauth/JustAuth -->
+		<dependency>
+			<groupId>me.zhyd.oauth</groupId>
+			<artifactId>JustAuth</artifactId>
+			<version>1.15.9</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-context -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-context</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>com.dili</groupId>
-			<artifactId>ss-beetl</artifactId>
+			<artifactId>ss-mvc</artifactId>
 			<version>${sharp-sword.version}</version>
 		</dependency>
 		<dependency>
@@ -35,31 +46,6 @@
 			<artifactId>ss-processor</artifactId>
 			<version>${sharp-sword.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-validation</artifactId>
-		</dependency>
-
-		<!-- =============== spring boot starters =============== -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<!--<version>${boot.version}</version> -->
-			<scope>test</scope>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-context -->
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-context</artifactId>
-		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/com.auth0/java-jwt -->
-		<dependency>
-			<groupId>com.auth0</groupId>
-			<artifactId>java-jwt</artifactId>
-			<version>3.12.0</version>
-		</dependency>
-
 	</dependencies>
 
 	<build>

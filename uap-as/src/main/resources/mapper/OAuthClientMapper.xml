@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.dili.uap.as.mapper.ClientMapper">
-  <resultMap id="BaseResultMap" type="com.dili.uap.as.domain.Client">
+<mapper namespace="com.dili.uap.as.mapper.OAuthClientMapper">
+  <resultMap id="BaseResultMap" type="com.dili.uap.as.domain.OAuthClient">
     <!--
       WARNING - @mbg.generated
     -->

@@ -24,19 +24,26 @@ public class AuthorizeService {
     private static final String AUTH_CODE_TOKENS_KEY_PREFIX = "authCode:token:";
 
     /**
-     * 保存授权码
+     * 保存授权码和令牌的关系，10分钟过期
+     * @param username
      * @param authCode
+     * @param accessToken
+     * @param refreshToken
+     * @param accessTokenTimeout
+     * @param redirectUri
      */
-    public void saveAuthCode(String username, String authCode, String accessToken, String refreshToken){
+    public void saveAuthCode(String username, String authCode, String accessToken, String refreshToken, Long accessTokenTimeout, String redirectUri){
         manageRedisUtil.set(AUTH_CODE_KEY_PREFIX+username, authCode, 10L, TimeUnit.MINUTES);
         JwtToken jwtToken = DTOUtils.newInstance(JwtToken.class);
         jwtToken.setAccessToken(accessToken);
         jwtToken.setRefreshToken(refreshToken);
+        jwtToken.setRedirectUri(redirectUri);
+        jwtToken.setExpires(accessTokenTimeout);
         manageRedisUtil.set(AUTH_CODE_TOKENS_KEY_PREFIX+authCode, JSON.toJSONString(jwtToken), 10L, TimeUnit.MINUTES);
     }
 
     /**
-     * 获取授权码
+     * 根据登录名获取授权码
      * @param username
      * @return
      */
@@ -51,6 +58,11 @@ public class AuthorizeService {
      */
     public JwtToken getJwtTokenByCode(String authCode){
         String jwtTokenStr = (String)manageRedisUtil.get(AUTH_CODE_TOKENS_KEY_PREFIX + authCode);
+        if(jwtTokenStr == null){
+            return null;
+        }
+        //读取后让授权码失效，授权码只能使用一次
+        manageRedisUtil.remove(AUTH_CODE_TOKENS_KEY_PREFIX + authCode);
         return JSON.parseObject(jwtTokenStr, JwtToken.class);
     }
 }

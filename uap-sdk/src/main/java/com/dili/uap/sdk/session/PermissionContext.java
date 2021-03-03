@@ -204,6 +204,9 @@ public class PermissionContext {
 			// 首先读取链接中的token
 			accessToken = req.getParameter(SessionConstants.ACCESS_TOKEN_KEY);
 			if (StringUtils.isBlank(accessToken)) {
+				accessToken = req.getParameter(SessionConstants.OAUTH_ACCESS_TOKEN_KEY);
+			}
+			if (StringUtils.isBlank(accessToken)) {
 				accessToken = req.getHeader(SessionConstants.ACCESS_TOKEN_KEY);
 			}
 			if (StringUtils.isNotBlank(accessToken)) {
@@ -224,6 +227,9 @@ public class PermissionContext {
 		if (refreshToken == null) {
 			// 首先读取链接中的token
 			refreshToken = req.getParameter(SessionConstants.REFRESH_TOKEN_KEY);
+			if (StringUtils.isBlank(refreshToken)) {
+				refreshToken = req.getParameter(SessionConstants.OAUTH_REFRESH_TOKEN_KEY);
+			}
 			if (StringUtils.isBlank(refreshToken)) {
 				refreshToken = req.getHeader(SessionConstants.REFRESH_TOKEN_KEY);
 			}
