@@ -3,6 +3,7 @@ package com.dili.uap.controller;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -95,7 +96,16 @@ public class LoginLogController {
 		}
 		System.out.println(JSON.toJSONString(query));
 		PageOutput<List<BusinessLog>> output = this.logRpc.listPage(query);
-		return new EasyuiPageOutput(output.getTotal(), output.getData()).toString();
+		List<BusinessLog> datas = output.getData();
+		Iterator<BusinessLog> it = datas.iterator();
+		while(it.hasNext()){
+			BusinessLog businessLog = it.next();
+			String notes = businessLog.getNotes();
+			if(StringUtils.isNotBlank(notes) && notes.startsWith("{")){
+				it.remove();
+			}
+		}
+		return new EasyuiPageOutput((long) datas.size(), datas).toString();
 	}
 
 	/**
