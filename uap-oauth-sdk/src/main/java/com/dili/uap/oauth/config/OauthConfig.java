@@ -17,9 +17,10 @@ public class OauthConfig {
 	private String clientId;
 	//客户端密钥
 	private String clientSecret;
-
-
-
+	//oauth登录成功后跳转的controller路径，需要根据request.getAttr中的authUser继续处理
+	private String indexPath;
+	//oauth登录失败后跳转的controller路径，带有exception异常类为参数
+	private String exceptionPath;
 	/**
 	 * uap上下文路径
 	 * @return
@@ -70,5 +71,40 @@ public class OauthConfig {
 	@Value("${oauth.clientSecret:}")
 	public void setClientSecret(String clientSecret) {
 		this.clientSecret = clientSecret;
+	}
+
+	/**
+	 * oauth登录成功后跳转的controller路径
+	 * @return
+	 */
+	public String getIndexPath() {
+		return indexPath;
+	}
+
+	/**
+	 * oauth登录成功后跳转的controller路径，需要根据request.getAttr中的authUser继续处理
+	 * @param indexPath
+	 */
+	@Value("${oauth.indexPath:}")
+	public void setIndexPath(String indexPath) {
+		this.indexPath = indexPath;
+	}
+
+	/**
+	 * oauth登录失败后跳转的controller路径，带有exception异常类为参数
+	 * @return
+	 */
+	public String getExceptionPath() {
+		return exceptionPath;
+	}
+
+	/**
+	 * oauth登录失败后跳转的controller路径，带有exception异常类为参数
+	 * 可以是redirect:开头的重定向
+	 * @param exceptionPath
+	 */
+	@Value("${oauth.exceptionPath:error/default}")
+	public void setExceptionPath(String exceptionPath) {
+		this.exceptionPath = exceptionPath;
 	}
 }

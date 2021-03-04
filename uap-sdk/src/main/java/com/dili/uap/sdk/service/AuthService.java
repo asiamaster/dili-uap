@@ -101,6 +101,24 @@ public class AuthService {
     }
 
     /**
+     * 刷新token，推迟redis中的所有用户信息，但不回写response header和cookie
+     * @param refreshToken
+     * @return
+     */
+    public UserToken refreshUserToken(String refreshToken) {
+        //accessToken超时，则根据refreshToken重新生成
+        UserToken userToken = userRedis.applyAccessToken(refreshToken);
+        //redis超时，无法获取到用户信息
+        if(userToken == null){
+            return null;
+        }
+        if(TokenStep.REFRESH_TOKEN.getCode().equals(userToken.getTokenStep())) {
+            userRedis.defer(userToken.getRefreshToken(), userToken.getUserTicket());
+        }
+        return userToken;
+    }
+
+    /**
      * 根据accessToken和refreshToken获取用户及token信息，用于网关
      * 如果accessToken过期，则将redis超时推后dynaSessionConstants.getSessionTimeout()的时长<br/>
      * @param accessToken

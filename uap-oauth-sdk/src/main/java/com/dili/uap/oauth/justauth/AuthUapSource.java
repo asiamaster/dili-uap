@@ -33,7 +33,16 @@ public enum AuthUapSource implements AuthSource {
          */
         @Override
         public String userInfo() {
-            return "http://uap.diligrp.com/userApi/user.api";
+            return "http://uap.diligrp.com:8081/api/oauth-server/user";
+        }
+
+        /**
+         * 获取刷新token的api
+         * @return
+         */
+        @Override
+        public String refresh() {
+            return "http://uap.diligrp.com:8081/api/oauth-server/token";
         }
     }
 }

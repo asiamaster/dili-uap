@@ -54,6 +54,7 @@ public class UserRedis {
 		userToken.setRefreshToken(refreshToken);
 		UserTicket userTicket = JSON.parseObject(userTicketJSON, UserTicket.class);
 		userToken.setUserTicket(userTicket);
+		userToken.setExpires(dynamicConfig.getAccessTokenTimeout(userTicket.getSystemType()));
 		//锁定获取accessToken，10秒
 		if (uapRedisDistributedLock.tryGetLockSync(refreshToken, refreshToken, 10L)) {
 			try {

@@ -4,14 +4,19 @@ import com.alibaba.fastjson.JSONObject;
 import com.xkcoding.http.support.HttpHeader;
 import me.zhyd.oauth.cache.AuthStateCache;
 import me.zhyd.oauth.config.AuthConfig;
+import me.zhyd.oauth.enums.AuthResponseStatus;
 import me.zhyd.oauth.enums.AuthUserGender;
 import me.zhyd.oauth.exception.AuthException;
 import me.zhyd.oauth.model.AuthCallback;
+import me.zhyd.oauth.model.AuthResponse;
 import me.zhyd.oauth.model.AuthToken;
 import me.zhyd.oauth.model.AuthUser;
 import me.zhyd.oauth.request.AuthDefaultRequest;
+import me.zhyd.oauth.utils.GlobalAuthUtils;
 import me.zhyd.oauth.utils.HttpUtils;
 import me.zhyd.oauth.utils.UrlBuilder;
+
+import java.util.Map;
 
 /**
  * @author: WM
@@ -82,6 +87,43 @@ public class AuthUapRequest extends AuthDefaultRequest{
     public String authorize(String state) {
         return UrlBuilder.fromBaseUrl(super.authorize(state))
 //                .queryParam("scope", "read_user+openid")
+                .build();
+    }
+
+    @Override
+    public AuthResponse refresh(AuthToken authToken) {
+//        AuthResponse.builder()
+//                .code(AuthResponseStatus.SUCCESS.getCode())
+//                .data(getAuthToken(refreshTokenUrl(authToken.getRefreshToken())))
+//                .build();
+        String response = new HttpUtils(config.getHttpConfig()).get(refreshTokenUrl(authToken.getRefreshToken()));
+        return AuthResponse.builder().code(AuthResponseStatus.SUCCESS.getCode()).data(getAuthToken(response)).build();
+    }
+
+    private AuthToken getAuthToken(String response) {
+        Map<String, String> accessTokenObject = GlobalAuthUtils.parseStringToMap(response);
+        if (!accessTokenObject.containsKey("access_token") || accessTokenObject.containsKey("code")) {
+            throw new AuthException(accessTokenObject.get("msg"));
+        }
+        return AuthToken.builder()
+                .accessToken(accessTokenObject.get("access_token"))
+                .expireIn(Integer.parseInt(accessTokenObject.getOrDefault("expires_in", "0")))
+                .refreshToken(accessTokenObject.get("refresh_token"))
+                .build();
+    }
+
+    /**
+     * 返回获取accessToken的url
+     *
+     * @param refreshToken oauth返回的refreshtoken
+     * @return 返回获取accessToken的url
+     */
+    @Override
+    protected String refreshTokenUrl(String refreshToken) {
+        return UrlBuilder.fromBaseUrl(source.refresh())
+                .queryParam("client_key", config.getClientId())
+                .queryParam("refresh_token", refreshToken)
+                .queryParam("grant_type", "refresh_token")
                 .build();
     }
 

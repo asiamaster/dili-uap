@@ -2,7 +2,6 @@ package com.dili.uap.api;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.dili.ss.constant.ResultCode;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.domain.PageOutput;
 import com.dili.ss.dto.DTOUtils;
@@ -16,9 +15,7 @@ import com.dili.uap.domain.dto.UserDto;
 import com.dili.uap.glossary.UserState;
 import com.dili.uap.sdk.domain.Department;
 import com.dili.uap.sdk.domain.User;
-import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.domain.dto.UserQuery;
-import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.service.DepartmentService;
 import com.dili.uap.service.LoginService;
 import com.dili.uap.service.RoleService;
@@ -53,19 +50,6 @@ public class UserApi {
 
 	@Autowired
 	LoginService loginService;
-
-	/**
-	 * 授权获取用户信息
-	 * @return
-	 */
-	@RequestMapping(value = "/user.api", method = { RequestMethod.GET, RequestMethod.POST })
-	public @ResponseBody BaseOutput<UserTicket> user() {
-		UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
-		if(userTicket == null){
-			return BaseOutput.failure(ResultCode.UNAUTHORIZED, "用户未登录");
-		}
-		return BaseOutput.success().setData(userTicket);
-	}
 
 	/**
 	 * 查询User实体接口

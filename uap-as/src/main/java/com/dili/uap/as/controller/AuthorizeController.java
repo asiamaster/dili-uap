@@ -1,5 +1,6 @@
 package com.dili.uap.as.controller;
 
+import com.dili.ss.constant.ResultCode;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.as.domain.OAuthClient;
@@ -8,8 +9,12 @@ import com.dili.uap.as.domain.dto.LoginResult;
 import com.dili.uap.as.service.AuthorizeService;
 import com.dili.uap.as.service.LoginService;
 import com.dili.uap.as.service.OAuthClientService;
+import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.domain.dto.JwtToken;
+import com.dili.uap.sdk.domain.dto.UserToken;
 import com.dili.uap.sdk.exception.UapLoginException;
+import com.dili.uap.sdk.service.AuthService;
+import com.dili.uap.sdk.session.SessionContext;
 import org.apache.oltu.oauth2.as.issuer.MD5Generator;
 import org.apache.oltu.oauth2.as.issuer.OAuthIssuerImpl;
 import org.apache.oltu.oauth2.as.request.OAuthAuthzRequest;
@@ -20,7 +25,9 @@ import org.apache.oltu.oauth2.common.error.OAuthError;
 import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.apache.oltu.oauth2.common.message.OAuthResponse;
+import org.apache.oltu.oauth2.common.message.types.GrantType;
 import org.apache.oltu.oauth2.common.message.types.ResponseType;
+import org.apache.oltu.oauth2.common.message.types.TokenType;
 import org.apache.oltu.oauth2.common.utils.OAuthUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -29,9 +36,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -62,6 +67,8 @@ public class AuthorizeController {
     private AuthorizeService authorizeService;
     @Autowired
     private LoginService loginService;
+    @Autowired
+    private AuthService authService;
 
     /**
      * 跳转到Login页面
@@ -94,10 +101,10 @@ public class AuthorizeController {
                 //生成错误信息,告知客户端不存在
                return buildResponseEntity(HttpServletResponse.SC_BAD_REQUEST, OAuthError.TokenResponse.INVALID_CLIENT, "客户端验证失败，如错误的client_id/client_secret");
             }
-            request.setAttribute("redirectUri", oauthRequest.getRedirectURI());
-            request.setAttribute("clientId", oauthRequest.getClientId());
-            request.setAttribute("responseType", oauthRequest.getResponseType());
-            request.setAttribute("state", oauthRequest.getState());
+            request.setAttribute(OAuth.OAUTH_REDIRECT_URI, oauthRequest.getRedirectURI());
+            request.setAttribute(OAuth.OAUTH_CLIENT_ID, oauthRequest.getClientId());
+            request.setAttribute(OAuth.OAUTH_RESPONSE_TYPE, oauthRequest.getResponseType());
+            request.setAttribute(OAuth.OAUTH_STATE, oauthRequest.getState());
             //转到授权登录页面
             return "login/index";
         } catch ( OAuthProblemException e) {
@@ -191,22 +198,24 @@ public class AuthorizeController {
         } catch (UapLoginException e){
             //构建OAuth 授权请求
             OAuthAuthzRequest oauthRequest = new OAuthAuthzRequest(request);
-            request.setAttribute("redirectUri", oauthRequest.getRedirectURI());
-            request.setAttribute("clientId", oauthRequest.getClientId());
-            request.setAttribute("responseType", oauthRequest.getResponseType());
+            request.setAttribute(OAuth.OAUTH_REDIRECT_URI, oauthRequest.getRedirectURI());
+            request.setAttribute(OAuth.OAUTH_CLIENT_ID, oauthRequest.getClientId());
+            request.setAttribute(OAuth.OAUTH_RESPONSE_TYPE, oauthRequest.getResponseType());
+            request.setAttribute(OAuth.OAUTH_STATE, oauthRequest.getState());
             return "login/index";
         }
     }
 
     /**
-     * 获取令牌
+     * 通过授权码获取令牌
      * http://uap.diligrp.com:8081/api/oauth-server/token?grant_type=authorization_code&client_id=hszx&code=code&redirect_uri=https://www.baidu.com
      * # Access Token Request
-     * grant_type：必须的。值必须是"authorization_code"。
+     * grant_type：必须的。值必须是"authorization_code"或"refresh_token"
      * code：必须的。值是从授权服务器那里接收的授权码。
      * redirect_uri：如果在授权请求的时候包含"redirect_uri"参数，那么这里也需要包含"redirect_uri"参数。而且，这两处的"redirect_uri"必须完全相同。
      * client_id：如果客户端不需要认证，那么必须带的该参数。
      * client_secret:客户端密钥
+     *
      * # Access Token Response
      *  HTTP/1.1 200 OK
      *  Content-Type: application/json;charset=UTF-8
@@ -235,33 +244,58 @@ public class AuthorizeController {
             if(null != responseEntity){
                 return responseEntity;
             }
-            String authzCode = oauthRequest.getCode();
-            JwtToken jwtToken = authorizeService.getJwtTokenByCode(authzCode);
-            if(jwtToken == null){
-                return buildResponseEntity(HttpServletResponse.SC_UNAUTHORIZED, OAuthError.TokenResponse.INVALID_GRANT, "访问令牌不存在或已过期，请重新验证");
-            }
-            if(!jwtToken.getRedirectUri().equals(oauthRequest.getRedirectURI())){
-                return buildResponseEntity(HttpServletResponse.SC_UNAUTHORIZED, OAuthError.TokenResponse.INVALID_REQUEST, "重定向URI验证失败");
+            OAuthResponse response = null;
+            //grantType为授权码
+            if(GrantType.AUTHORIZATION_CODE.toString().equalsIgnoreCase(oauthRequest.getGrantType())){
+                String authzCode = oauthRequest.getCode();
+                JwtToken jwtToken = authorizeService.getJwtTokenByCode(authzCode);
+                if(jwtToken == null){
+                    return buildResponseEntity(HttpServletResponse.SC_UNAUTHORIZED, OAuthError.TokenResponse.INVALID_REQUEST, "访问令牌不存在或已过期，请重新验证");
+                }
+                if(!jwtToken.getRedirectUri().equals(oauthRequest.getRedirectURI())){
+                    return buildResponseEntity(HttpServletResponse.SC_UNAUTHORIZED, OAuthError.TokenResponse.INVALID_REQUEST, "重定向URI验证失败");
+                }
+                // 生成OAuth响应
+                response = OAuthASResponse
+                        .tokenResponse(HttpServletResponse.SC_OK)
+                        .setTokenType(TokenType.BEARER.toString())
+                        .setAccessToken(jwtToken.getAccessToken())
+                        .setExpiresIn(jwtToken.getExpires().toString())
+                        .setRefreshToken(jwtToken.getRefreshToken())
+                        .buildJSONMessage();
+            }else{//grantType为刷新token
+                UserToken userToken = authService.refreshUserToken(oauthRequest.getRefreshToken());
+                // 生成OAuth响应
+                response = OAuthASResponse
+                        .tokenResponse(HttpServletResponse.SC_OK)
+                        .setTokenType(TokenType.BEARER.toString())
+                        .setAccessToken(userToken.getAccessToken())
+                        .setExpiresIn(userToken.getExpires().toString())
+                        .setRefreshToken(userToken.getRefreshToken())
+                        .buildJSONMessage();
             }
             // some code
 //            OAuthIssuer oauthIssuerImpl = new OAuthIssuerImpl(new MD5Generator());
 //            String accessToken = oauthIssuerImpl.accessToken();
 //            String refreshToken = oauthIssuerImpl.refreshToken();
-
-            // 生成OAuth响应
-            OAuthResponse response = OAuthASResponse
-                    .tokenResponse(HttpServletResponse.SC_OK)
-                    .setTokenType("bearer")
-                    .setAccessToken(jwtToken.getAccessToken())
-                    .setExpiresIn(jwtToken.getExpires().toString())
-                    .setRefreshToken(jwtToken.getRefreshToken())
-                    .buildJSONMessage();
             return new ResponseEntity(response.getBody(), HttpStatus.valueOf(response.getResponseStatus()));
-            //if something goes wrong
         } catch(OAuthProblemException ex) {
             return buildResponseEntity(HttpServletResponse.SC_BAD_REQUEST, OAuthError.TokenResponse.INVALID_GRANT, ex.getMessage());
         }
+    }
 
+
+    /**
+     * oauth授权，从header获取用户信息
+     * @return
+     */
+    @RequestMapping(value = "/user", method = { RequestMethod.GET, RequestMethod.POST })
+    public @ResponseBody BaseOutput<UserTicket> user() {
+        UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
+        if(userTicket == null){
+            return BaseOutput.failure(ResultCode.UNAUTHORIZED, "用户未登录");
+        }
+        return BaseOutput.success().setData(userTicket);
     }
 
     /**
@@ -281,7 +315,7 @@ public class AuthorizeController {
         String redirectURI = oauthRequest.getRedirectURI();
         if(clientId == null || clientSecret == null || code == null
                 || grantType == null  || redirectURI == null
-                || !"authorization_code".equalsIgnoreCase(grantType)){
+                || (!GrantType.AUTHORIZATION_CODE.toString().equalsIgnoreCase(grantType) && !GrantType.REFRESH_TOKEN.toString().equalsIgnoreCase(grantType))){
             OAuthResponse oAuthResponse = OAuthResponse
                     .errorResponse(HttpServletResponse.SC_BAD_REQUEST)
                     .setError(OAuthError.TokenResponse.INVALID_REQUEST)

@@ -1,17 +1,24 @@
 package com.dili.uap.oauth.justauth;
 
+import com.dili.ss.constant.ResultCode;
+import com.dili.ss.exception.BusinessException;
 import com.dili.uap.oauth.config.OauthConfig;
 import me.zhyd.oauth.config.AuthConfig;
 import me.zhyd.oauth.exception.AuthException;
 import me.zhyd.oauth.model.AuthCallback;
+import me.zhyd.oauth.model.AuthResponse;
+import me.zhyd.oauth.model.AuthUser;
 import me.zhyd.oauth.request.AuthRequest;
 import me.zhyd.oauth.utils.AuthStateUtils;
+import me.zhyd.oauth.utils.UrlBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
@@ -46,9 +53,21 @@ public class JustAuthController {
      * @return 第三方平台的用户信息
      */
     @RequestMapping(value = "/callback/{source}", method = {RequestMethod.GET, RequestMethod.POST})
-    public Object login(@PathVariable("source") String source, AuthCallback callback) {
+    public ModelAndView login(@PathVariable("source") String source, AuthCallback callback, HttpServletRequest request) {
         AuthRequest authRequest = getAuthRequest(source);
-        return authRequest.login(callback);
+        AuthResponse<AuthUser> response = authRequest.login(callback);
+        if (response.ok()) {
+            request.setAttribute("authUser", response.getData());
+            //跳转到内部controller继续处理
+            return new ModelAndView(request.getContextPath()+oauthConfig.getIndexPath());
+        }
+        String exceptionPath = oauthConfig.getExceptionPath();
+        if (exceptionPath.trim().startsWith("redirect:")) {
+            return new ModelAndView(UrlBuilder.fromBaseUrl(exceptionPath).queryParam("exMsg", response.getMsg()).build());
+        }
+        request.setAttribute("exception", new BusinessException(ResultCode.UNAUTHORIZED, response.getMsg()));
+        request.setAttribute("exMsg", response.getMsg());
+        return new ModelAndView(exceptionPath);
     }
 
     /**
@@ -56,9 +75,9 @@ public class JustAuthController {
      *
      * @return AuthRequest
      */
-    // ...
     private AuthRequest getAuthRequest(String source) {
         AuthRequest authRequest = null;
+        source = source.toLowerCase();
         switch (source) {
             case "uap":
                 authRequest = new AuthUapRequest(AuthConfig.builder()
