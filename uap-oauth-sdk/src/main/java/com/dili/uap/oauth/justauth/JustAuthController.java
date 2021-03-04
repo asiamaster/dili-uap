@@ -1,8 +1,8 @@
 package com.dili.uap.oauth.justauth;
 
-import com.dili.ss.constant.ResultCode;
-import com.dili.ss.exception.BusinessException;
 import com.dili.uap.oauth.config.OauthConfig;
+import com.dili.uap.oauth.constant.ResultCode;
+import com.dili.uap.oauth.exception.BusinessException;
 import me.zhyd.oauth.config.AuthConfig;
 import me.zhyd.oauth.exception.AuthException;
 import me.zhyd.oauth.model.AuthCallback;

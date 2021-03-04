@@ -32,20 +32,28 @@
 			<artifactId>spring-cloud-context</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.dili</groupId>
-			<artifactId>ss-mvc</artifactId>
-			<version>${sharp-sword.version}</version>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.dili</groupId>
-			<artifactId>ss-redis</artifactId>
-			<version>${sharp-sword.version}</version>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>com.dili</groupId>
-			<artifactId>ss-processor</artifactId>
-			<version>${sharp-sword.version}</version>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>com.dili</groupId>-->
+<!--			<artifactId>ss-mvc</artifactId>-->
+<!--			<version>${sharp-sword.version}</version>-->
+<!--		</dependency>-->
+<!--		<dependency>-->
+<!--			<groupId>com.dili</groupId>-->
+<!--			<artifactId>ss-redis</artifactId>-->
+<!--			<version>${sharp-sword.version}</version>-->
+<!--		</dependency>-->
+<!--		<dependency>-->
+<!--			<groupId>com.dili</groupId>-->
+<!--			<artifactId>ss-processor</artifactId>-->
+<!--			<version>${sharp-sword.version}</version>-->
+<!--		</dependency>-->
 	</dependencies>
 
 	<build>
