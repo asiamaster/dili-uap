@@ -411,8 +411,11 @@ public class LoginServiceImpl implements LoginService {
 		LoggerContext.put(LoggerConstant.LOG_BUSINESS_ID_KEY, loginDto.getUserId());
 		LoggerContext.put(LoggerConstant.LOG_OPERATOR_ID_KEY, loginDto.getUserId());
 		if (user != null) {
+			Firm firm = DTOUtils.newDTO(Firm.class);
+			firm.setCode(user.getFirmCode());
+			Firm result = firmMapper.selectOne(firm);
 			LoggerContext.put(LoggerConstant.LOG_NOTES_KEY, user.getRealName());
-			LoggerContext.put(LoggerConstant.LOG_MARKET_ID_KEY, user.getFirmCode());
+			LoggerContext.put(LoggerConstant.LOG_MARKET_ID_KEY, result.getId());
 		}
 		LoggerContext.put("msg", msg);
 	}
