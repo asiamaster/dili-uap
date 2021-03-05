@@ -70,6 +70,29 @@ public class JustAuthController {
         return new ModelAndView(exceptionPath);
     }
 
+//    @RequestMapping("/refresh/{source}/{uuid}")
+//    @ResponseBody
+//    public Object refreshAuth(@PathVariable("source") String source, @PathVariable("uuid") String uuid) {
+//        AuthRequest authRequest = getAuthRequest(source.toLowerCase());
+//
+//        AuthUser user = userService.getByUuid(uuid);
+//        if (null == user) {
+//            return Response.error("用户不存在");
+//        }
+//        AuthResponse<AuthToken> response = null;
+//        try {
+//            response = authRequest.refresh(user.getToken());
+//            if (response.ok()) {
+//                user.setToken(response.getData());
+//                userService.save(user);
+//                return Response.success("用户 [" + user.getUsername() + "] 的 access token 已刷新！新的 accessToken: " + response.getData().getAccessToken());
+//            }
+//            return Response.error("用户 [" + user.getUsername() + "] 的 access token 刷新失败！" + response.getMsg());
+//        } catch (AuthException e) {
+//            return Response.error(e.getErrorMsg());
+//        }
+//    }
+
     /**
      * 获取授权Request
      *

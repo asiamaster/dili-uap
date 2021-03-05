@@ -12,6 +12,7 @@ import com.dili.ss.dto.IBaseDomain;
 import com.dili.ss.exception.AppException;
 import com.dili.ss.mvc.util.RequestUtils;
 import com.dili.uap.constants.UapConstants;
+import com.dili.uap.oauth.constant.ResultCode;
 import com.dili.uap.sdk.constant.SessionConstants;
 import com.dili.uap.sdk.domain.Systems;
 import com.dili.uap.sdk.domain.User;
@@ -310,7 +311,11 @@ public class IndexController {
 		if(userTicket  == null){
 			return BaseOutput.failure("用户未登录");
 		}
-		return annunciateRpc.getNoReadCountByTargetId(userTicket.getId());
+		try {
+			return annunciateRpc.getNoReadCountByTargetId(userTicket.getId());
+		} catch (Exception e) {
+			return BaseOutput.failure(ResultCode.REMOTE_ERROR, e.getMessage());
+		}
 	}
 
 	/**
