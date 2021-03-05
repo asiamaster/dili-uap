@@ -254,6 +254,16 @@
             }
         }
 
+        //日期转换
+		function getDate(date) {
+			var month = date.getMonth() + 1;
+			var day = date.getDate();
+			month = (month.toString().length == 1) ? ("0" + month) : month;
+			day = (day.toString().length == 1) ? ("0" + day) : day;
+			//当前日期 yyyy-MM-dd
+			return date.getFullYear() + '-' + month + '-' + day+' 00:00:00';
+		}
+
         /**
          * 绑定页面回车事件，以及初始化页面时的光标定位
          * @formId
@@ -291,6 +301,8 @@
             });
             //表格仅显示下边框
             $('#grid').datagrid('getPanel').removeClass('lines-both lines-no lines-right lines-bottom').addClass("lines-bottom");
+            //设置默认时间
+			$('#startExceptionTime').datetimebox('setValue', getDate(new Date(new Date().getTime() - (1000 * 60 * 60 * 24)*7)));
             //打开页面时查询
             queryGrid();
         })
