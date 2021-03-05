@@ -130,7 +130,7 @@ public class IndexController {
 				modelMap.put("taskCenterUrl", taskCenterUrl);
 			}
 			if(UapConstants.ISS_SYSTEM_CODE.equals(systemCode)){
-				saveLog(request,userTicket,null,null,"login","login");
+				saveLog(request,userTicket,null,null,"issLogin","issLogin");
 			}
 			return INDEX_PATH;
 		} else {

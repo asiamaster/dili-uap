@@ -94,18 +94,28 @@ public class LoginLogController {
 				}
 			});
 		}
+		if(null != loginLog.getPage()){
+			query.setPage(loginLog.getPage());
+		}else{
+			query.setPage(1);
+		}
+		if(null != loginLog.getRows()){
+			query.setRows(loginLog.getRows());
+		}else{
+			query.setRows(50);
+		}
 		System.out.println(JSON.toJSONString(query));
 		PageOutput<List<BusinessLog>> output = this.logRpc.listPage(query);
-		List<BusinessLog> datas = output.getData();
-		Iterator<BusinessLog> it = datas.iterator();
-		while(it.hasNext()){
-			BusinessLog businessLog = it.next();
-			String notes = businessLog.getNotes();
-			if(StringUtils.isNotBlank(notes) && notes.startsWith("{")){
-				it.remove();
-			}
-		}
-		return new EasyuiPageOutput((long) datas.size(), datas).toString();
+//		List<BusinessLog> datas = output.getData();
+//		Iterator<BusinessLog> it = datas.iterator();
+//		while(it.hasNext()){
+//			BusinessLog businessLog = it.next();
+//			String notes = businessLog.getNotes();
+//			if(StringUtils.isNotBlank(notes) && notes.startsWith("{")){
+//				it.remove();
+//			}
+//		}
+		return new EasyuiPageOutput(output.getTotal(), output.getData()).toString();
 	}
 
 	/**
