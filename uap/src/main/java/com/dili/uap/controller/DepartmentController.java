@@ -8,10 +8,12 @@ import com.dili.ss.domain.EasyuiPageOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.constants.UapConstants;
 import com.dili.uap.sdk.domain.Department;
+import com.dili.uap.sdk.domain.User;
 import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.service.DepartmentService;
 import com.dili.uap.service.FirmService;
+import com.dili.uap.service.UserService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +39,9 @@ public class DepartmentController {
 
 	@Autowired
 	FirmService firmService;
+
+	@Autowired
+	UserService userService;
 
 	@Value("${uap.adminName:admin}")
 	private String adminName;
@@ -163,6 +168,12 @@ public class DepartmentController {
 		List<Department> departments = departmentService.list(department);
 		if (!CollectionUtils.isEmpty(departments)) {
 			return BaseOutput.failure("当前部门有下级部门，无法删除");
+		}
+		User user = DTOUtils.newDTO(User.class);
+		user.setDepartmentId(Long.valueOf(id));
+		List<User> userList = userService.list(user);
+		if(!CollectionUtils.isEmpty(userList)){
+			return BaseOutput.failure("当前部门下还存在用户,无法删除");
 		}
 		department = this.departmentService.get(Long.valueOf(id));
 		departmentService.deleteDepartment(Long.valueOf(id));
