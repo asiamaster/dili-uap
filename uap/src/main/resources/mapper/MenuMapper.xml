@@ -129,7 +129,7 @@
 		s.created,
 		s.modified,
 		NULL AS icon_cls,
-		s.`type`,
+		4 AS `type`,
 		NULL AS `shortcut`
 		FROM
 		menu m

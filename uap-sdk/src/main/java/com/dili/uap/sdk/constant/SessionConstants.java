@@ -8,6 +8,7 @@ public class SessionConstants {
 	public static final String APPLICATION_NAME = "UAP_";
 	// Session Data的key prefix，后面加sessionId
 	public static final String REFRESH_TOKEN_KEY_PREFIX = APPLICATION_NAME + "refreshToken:";
+	public static final String OAUTH_REFRESH_TOKEN_KEY_PREFIX = APPLICATION_NAME + "oauth_refreshToken:";
 	// Cookie, Request, Header, Session中取sessionId的key
 	public static final String SESSION_ID = APPLICATION_NAME + "sessionId";
 	//web socket放入属性的用户id key
@@ -32,6 +33,7 @@ public class SessionConstants {
 
 	// key:userId - value:refreshToken
 	public static final String USERID_REFRESH_TOKEN_KEY = APPLICATION_NAME + "userIdRefreshToken:userId:";
+	public static final String OAUTH_USERID_REFRESH_TOKEN_KEY = APPLICATION_NAME + "oauth_userIdRefreshToken:userId:";
 
 	// 登录密码错误锁定的key
 	public static final String USER_PWD_ERROR_KEY = APPLICATION_NAME + "user_pwd_error:";

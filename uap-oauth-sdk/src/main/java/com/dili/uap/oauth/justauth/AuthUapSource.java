@@ -1,5 +1,6 @@
 package com.dili.uap.oauth.justauth;
 
+import com.dili.uap.oauth.component.SingletonConfig;
 import me.zhyd.oauth.config.AuthSource;
 
 /**
@@ -15,7 +16,7 @@ public enum AuthUapSource implements AuthSource {
          */
         @Override
         public String authorize() {
-            return "http://uap.diligrp.com:8081/api/oauth-server/authorize";
+            return SingletonConfig.getAuthServerHost()+"/api/oauth-server/authorize";
         }
 
         /**
@@ -24,7 +25,7 @@ public enum AuthUapSource implements AuthSource {
          */
         @Override
         public String accessToken() {
-            return "http://uap.diligrp.com:8081/api/oauth-server/token";
+            return SingletonConfig.getAuthServerHost()+"/api/oauth-server/token";
         }
 
         /**
@@ -33,7 +34,7 @@ public enum AuthUapSource implements AuthSource {
          */
         @Override
         public String userInfo() {
-            return "http://uap.diligrp.com:8081/api/oauth-server/user";
+            return SingletonConfig.getAuthServerHost()+"/api/oauth-server/user";
         }
 
         /**
@@ -42,7 +43,7 @@ public enum AuthUapSource implements AuthSource {
          */
         @Override
         public String refresh() {
-            return "http://uap.diligrp.com:8081/api/oauth-server/token";
+            return SingletonConfig.getAuthServerHost()+"/api/oauth-server/token";
         }
     }
 }

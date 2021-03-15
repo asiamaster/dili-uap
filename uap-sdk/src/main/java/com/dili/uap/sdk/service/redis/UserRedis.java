@@ -84,6 +84,50 @@ public class UserRedis {
 	}
 
 	/**
+	 * 申请新的accessToken
+	 * 如果redis中的refreshToken超时，则返回空
+	 * @param refreshToken
+	 * @return
+	 */
+	public UserToken applyOAuthAccessToken(String refreshToken) {
+		String userTicketJSON = redisUtil.get(KeyBuilder.buildOAuthRefreshTokenKey(refreshToken), String.class);
+		if (StringUtils.isEmpty(userTicketJSON)) {
+			return null;
+		}
+		UserToken userToken = DTOUtils.newInstance(UserToken.class);
+		userToken.setRefreshToken(refreshToken);
+		UserTicket userTicket = JSON.parseObject(userTicketJSON, UserTicket.class);
+		userToken.setUserTicket(userTicket);
+		userToken.setExpires(dynamicConfig.getAccessTokenTimeout(userTicket.getSystemType()));
+		//锁定获取accessToken，10秒
+		if (uapRedisDistributedLock.tryGetLockSync(refreshToken, refreshToken, 10L)) {
+			try {
+				// 先从缓存中取 accessToken，
+				// 如果取到，则说明前一个过期的请求已经生成了accessToken(并可能也推后了redis过期时长)
+				String cachedAccessToken = redisUtil.get(refreshToken+":cache", String.class);
+				if(cachedAccessToken != null){
+					userToken.setAccessToken(cachedAccessToken);
+					userToken.setTokenStep(TokenStep.REFRESH_CACHE.getCode());
+				}else {// 根据redis中的userTicket重新签发
+					String accessToken = userJwtService.generateUserTokenByRSA256(userTicket, SystemType.getSystemType(userTicket.getSystemType()));
+					redisUtil.set(refreshToken+":cache", accessToken, 10L);
+					userToken.setAccessToken(accessToken);
+					userToken.setTokenStep(TokenStep.REFRESH_TOKEN.getCode());
+				}
+			} finally {
+				//完成后释放锁
+				if (uapRedisDistributedLock.exists(refreshToken)) {
+					uapRedisDistributedLock.releaseLock(refreshToken, refreshToken);
+				}
+			}
+		}else{
+			log.error("获取分布式锁失败");
+			return null;
+		}
+		return userToken;
+	}
+
+	/**
 	 * 推迟redis session过期时间
 	 * 
 	 * @param refreshToken

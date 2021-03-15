@@ -4,11 +4,13 @@ import com.dili.ss.constant.ResultCode;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.as.domain.OAuthClient;
+import com.dili.uap.as.domain.OauthClientPrivilege;
 import com.dili.uap.as.domain.dto.LoginDto;
 import com.dili.uap.as.domain.dto.LoginResult;
 import com.dili.uap.as.service.AuthorizeService;
 import com.dili.uap.as.service.LoginService;
 import com.dili.uap.as.service.OAuthClientService;
+import com.dili.uap.as.service.OauthClientPrivilegeService;
 import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.domain.dto.JwtToken;
 import com.dili.uap.sdk.domain.dto.UserToken;
@@ -44,6 +46,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 /**
  * 遵循rfc6749协议
@@ -69,6 +72,8 @@ public class AuthorizeController {
     private LoginService loginService;
     @Autowired
     private AuthService authService;
+    @Autowired
+    private OauthClientPrivilegeService oauthClientPrivilegeService;
 
     /**
      * 跳转到Login页面
@@ -97,10 +102,12 @@ public class AuthorizeController {
                 return buildResponseEntity(HttpServletResponse.SC_BAD_REQUEST, OAuthError.TokenResponse.INVALID_GRANT, "参数验证失败");
             }
             //根据传入的clientId 判断 客户端是否存在
-            if (null == oAuthClientService.getByCode(oauthRequest.getClientId())) {
+            OAuthClient oAuthClient = oAuthClientService.getByCode(oauthRequest.getClientId());
+            if (null == oAuthClient) {
                 //生成错误信息,告知客户端不存在
                return buildResponseEntity(HttpServletResponse.SC_BAD_REQUEST, OAuthError.TokenResponse.INVALID_CLIENT, "客户端验证失败，如错误的client_id/client_secret");
             }
+            request.setAttribute("clientName", oAuthClient.getName());
             request.setAttribute(OAuth.OAUTH_REDIRECT_URI, oauthRequest.getRedirectURI());
             request.setAttribute(OAuth.OAUTH_CLIENT_ID, oauthRequest.getClientId());
             request.setAttribute(OAuth.OAUTH_RESPONSE_TYPE, oauthRequest.getResponseType());
@@ -140,7 +147,8 @@ public class AuthorizeController {
             //构建OAuth 授权请求
             OAuthAuthzRequest oauthRequest = new OAuthAuthzRequest(request);
             //根据传入的clientId 判断 客户端是否存在
-            if (null == oAuthClientService.getByCode(oauthRequest.getClientId())) {
+            OAuthClient oAuthClient = oAuthClientService.getByCode(oauthRequest.getClientId());
+            if (null == oAuthClient) {
                 //生成错误信息,告知客户端不存在
                 OAuthResponse oauthResponse = OAuthASResponse
                         .errorResponse(HttpServletResponse.SC_BAD_REQUEST)
@@ -161,6 +169,19 @@ public class AuthorizeController {
                         .buildJSONMessage();
                 return new ResponseEntity(
                         oauthResponse.getBody(), HttpStatus.valueOf(oauthResponse.getResponseStatus()));
+            }
+            //根据用户选择的clientPrivileges，插入不存在的权限
+            String[] clientPrivileges = request.getParameterValues("clientPrivilege");
+            OauthClientPrivilege oauthClientPrivilege = DTOUtils.newInstance(OauthClientPrivilege.class);
+            oauthClientPrivilege.setUserId(loginResult.getUser().getId());
+            oauthClientPrivilege.setOauthClientId(oAuthClient.getId());
+            List<OauthClientPrivilege> oauthClientPrivileges = oauthClientPrivilegeService.list(oauthClientPrivilege);
+            for (String clientPrivilege : clientPrivileges) {
+                OauthClientPrivilege oauthClientPrivilege1 = getOauthClientPrivilege(oauthClientPrivileges, Integer.parseInt(clientPrivilege));
+                if(oauthClientPrivilege1 == null){
+                    oauthClientPrivilege.setPrivilege(Integer.parseInt(clientPrivilege));
+                    oauthClientPrivilegeService.insertSelective(oauthClientPrivilege);
+                }
             }
             //生成授权码
             String authorizationCode = null;
@@ -202,14 +223,17 @@ public class AuthorizeController {
             request.setAttribute(OAuth.OAUTH_CLIENT_ID, oauthRequest.getClientId());
             request.setAttribute(OAuth.OAUTH_RESPONSE_TYPE, oauthRequest.getResponseType());
             request.setAttribute(OAuth.OAUTH_STATE, oauthRequest.getState());
+            request.setAttribute("msg", e.getMessage());
             return "login/index";
         }
     }
 
     /**
      * 通过授权码获取令牌
+     *
      * http://uap.diligrp.com:8081/api/oauth-server/token?grant_type=authorization_code&client_id=hszx&code=code&redirect_uri=https://www.baidu.com
      * # Access Token Request
+     * header: Context-Type必须是application/x-www-form-urlencoded
      * grant_type：必须的。值必须是"authorization_code"或"refresh_token"
      * code：必须的。值是从授权服务器那里接收的授权码。
      * redirect_uri：如果在授权请求的时候包含"redirect_uri"参数，那么这里也需要包含"redirect_uri"参数。而且，这两处的"redirect_uri"必须完全相同。
@@ -234,17 +258,18 @@ public class AuthorizeController {
      * @throws URISyntaxException
      */
     @PostMapping(value="/token")
+//    @ResponseBody
     public Object token(HttpServletRequest request)
             throws ServletException, IOException, OAuthSystemException {
         OAuthTokenRequest oauthRequest = null;
         try {
             oauthRequest = new OAuthTokenRequest(request);
+            OAuthResponse response = null;
             //验证client code和密钥
             ResponseEntity responseEntity = validateTokenRequest(oauthRequest);
             if(null != responseEntity){
                 return responseEntity;
             }
-            OAuthResponse response = null;
             //grantType为授权码
             if(GrantType.AUTHORIZATION_CODE.toString().equalsIgnoreCase(oauthRequest.getGrantType())){
                 String authzCode = oauthRequest.getCode();
@@ -263,8 +288,11 @@ public class AuthorizeController {
                         .setExpiresIn(jwtToken.getExpires().toString())
                         .setRefreshToken(jwtToken.getRefreshToken())
                         .buildJSONMessage();
-            }else{//grantType为刷新token
-                UserToken userToken = authService.refreshUserToken(oauthRequest.getRefreshToken());
+            }else if(GrantType.REFRESH_TOKEN.toString().equalsIgnoreCase(oauthRequest.getGrantType())){//grantType为刷新token
+                UserToken userToken = authService.refreshOAuthUserToken(oauthRequest.getRefreshToken());
+                if(userToken == null){
+                    return buildResponseEntity(HttpServletResponse.SC_BAD_REQUEST, OAuthError.TokenResponse.INVALID_GRANT, "refresh_token过期");
+                }
                 // 生成OAuth响应
                 response = OAuthASResponse
                         .tokenResponse(HttpServletResponse.SC_OK)
@@ -273,6 +301,8 @@ public class AuthorizeController {
                         .setExpiresIn(userToken.getExpires().toString())
                         .setRefreshToken(userToken.getRefreshToken())
                         .buildJSONMessage();
+            }else{
+                return buildResponseEntity(HttpServletResponse.SC_BAD_REQUEST, OAuthError.TokenResponse.INVALID_GRANT, "无效的grantType参数");
             }
             // some code
 //            OAuthIssuer oauthIssuerImpl = new OAuthIssuerImpl(new MD5Generator());
@@ -299,6 +329,21 @@ public class AuthorizeController {
     }
 
     /**
+     * 根据privilege获取OauthClientPrivilege
+     * @param oauthClientPrivileges
+     * @param privilege
+     * @return
+     */
+    private OauthClientPrivilege getOauthClientPrivilege(List<OauthClientPrivilege> oauthClientPrivileges, Integer privilege){
+        for (OauthClientPrivilege oauthClientPrivilege : oauthClientPrivileges) {
+            if (oauthClientPrivilege.getPrivilege().equals(privilege)) {
+                return oauthClientPrivilege;
+            }
+        }
+        return null;
+    }
+
+    /**
      * 验证token请求参数
      * 包括: clientId、clientSecret、grantType、redirectURI和code不为空
      * 包括：oauthClient的code和密钥校验
@@ -311,11 +356,8 @@ public class AuthorizeController {
         String clientId = oauthRequest.getClientId();
         String clientSecret = oauthRequest.getClientSecret();
         String grantType = oauthRequest.getGrantType();
-        String code = oauthRequest.getCode();
         String redirectURI = oauthRequest.getRedirectURI();
-        if(clientId == null || clientSecret == null || code == null
-                || grantType == null  || redirectURI == null
-                || (!GrantType.AUTHORIZATION_CODE.toString().equalsIgnoreCase(grantType) && !GrantType.REFRESH_TOKEN.toString().equalsIgnoreCase(grantType))){
+        if(clientId == null || clientSecret == null || grantType == null){
             OAuthResponse oAuthResponse = OAuthResponse
                     .errorResponse(HttpServletResponse.SC_BAD_REQUEST)
                     .setError(OAuthError.TokenResponse.INVALID_REQUEST)
@@ -323,6 +365,22 @@ public class AuthorizeController {
                     .buildJSONMessage();
             return new ResponseEntity(oAuthResponse.getBody(), HttpStatus.valueOf(oAuthResponse.getResponseStatus()));
         }
+        if(GrantType.AUTHORIZATION_CODE.toString().equalsIgnoreCase(grantType) && (oauthRequest.getCode() == null || redirectURI == null)){
+            OAuthResponse oAuthResponse = OAuthResponse
+                    .errorResponse(HttpServletResponse.SC_BAD_REQUEST)
+                    .setError(OAuthError.TokenResponse.INVALID_REQUEST)
+                    .setErrorDescription("无效的请求参数:code")
+                    .buildJSONMessage();
+            return new ResponseEntity(oAuthResponse.getBody(), HttpStatus.valueOf(oAuthResponse.getResponseStatus()));
+        }else if(GrantType.REFRESH_TOKEN.toString().equalsIgnoreCase(grantType) && oauthRequest.getRefreshToken() == null){
+            OAuthResponse oAuthResponse = OAuthResponse
+                    .errorResponse(HttpServletResponse.SC_BAD_REQUEST)
+                    .setError(OAuthError.TokenResponse.INVALID_REQUEST)
+                    .setErrorDescription("无效的请求参数:refresh_token")
+                    .buildJSONMessage();
+            return new ResponseEntity(oAuthResponse.getBody(), HttpStatus.valueOf(oAuthResponse.getResponseStatus()));
+        }
+
         // 数据库校验客户端id是否正确
         OAuthClient oAuthClient = oAuthClientService.getByCode(clientId);
         if (null == oAuthClient) {
@@ -365,7 +423,7 @@ public class AuthorizeController {
     }
 
     /**
-     * 用户登录
+     * 用户授权登录
      * @param request
      * @return
      */
@@ -379,7 +437,7 @@ public class AuthorizeController {
             LoginDto loginDto = DTOUtils.newInstance(LoginDto.class);
             loginDto.setUserName(username);
             loginDto.setPassword(password);
-            BaseOutput<LoginResult> loginResultBaseOutput = loginService.loginWeb(loginDto);
+            BaseOutput<LoginResult> loginResultBaseOutput = loginService.oauthLogin(loginDto);
             if(!loginResultBaseOutput.isSuccess()){
                 throw new UapLoginException(loginResultBaseOutput.getMessage());
             }

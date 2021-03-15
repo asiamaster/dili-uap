@@ -17,4 +17,5 @@
     id, name, code, secret
   </sql>
 
+
 </mapper>

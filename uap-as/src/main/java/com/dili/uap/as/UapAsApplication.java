@@ -5,12 +5,9 @@ import com.dili.ss.retrofitful.annotation.RestfulScan;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.web.server.WebServerFactoryCustomizer;
-import org.springframework.boot.web.servlet.server.ConfigurableServletWebServerFactory;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
-import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -24,9 +21,9 @@ import java.text.DecimalFormat;
 @SpringBootApplication
 @EnableTransactionManagement
 @EnableDiscoveryClient
-@EnableFeignClients(basePackages = { "com.dili.uap.sdk.rpc" })
+//@EnableFeignClients(basePackages = { "com.dili.uap.sdk.rpc" })
 @ComponentScan(basePackages = { "com.dili.ss", "com.dili.uap"})
-@RestfulScan({ "com.dili.uap.rpc", "com.dili.uap.sdk.rpc"})
+@RestfulScan({ "com.dili.uap.sdk.rpc"})
 @MapperScan(basePackages = { "com.dili.uap.as.mapper", "com.dili.ss.dao" })
 @DTOScan(value = { "com.dili.ss", "com.dili.uap"})
 public class UapAsApplication extends SpringBootServletInitializer implements CommandLineRunner {
@@ -58,14 +55,14 @@ public class UapAsApplication extends SpringBootServletInitializer implements Co
     /**
      * 设置服务端口
      */
-    @SuppressWarnings("rawtypes")
-    @Bean
-    public WebServerFactoryCustomizer webServerFactoryCustomizer(){
-        return new WebServerFactoryCustomizer<ConfigurableServletWebServerFactory>() {
-            @Override
-            public void customize(ConfigurableServletWebServerFactory factory) {
-                factory.setPort(8081);
-            }
-        };
-    }
+//    @SuppressWarnings("rawtypes")
+//    @Bean
+//    public WebServerFactoryCustomizer webServerFactoryCustomizer(){
+//        return new WebServerFactoryCustomizer<ConfigurableServletWebServerFactory>() {
+//            @Override
+//            public void customize(ConfigurableServletWebServerFactory factory) {
+//                factory.setPort(8081);
+//            }
+//        };
+//    }
 }

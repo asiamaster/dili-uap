@@ -1,35 +1,45 @@
 package com.dili.uap.oauth.justauth;
 
+import com.alibaba.fastjson.JSON;
 import com.dili.uap.oauth.config.OauthConfig;
 import com.dili.uap.oauth.constant.ResultCode;
+import com.dili.uap.oauth.domain.Response;
 import com.dili.uap.oauth.exception.BusinessException;
 import me.zhyd.oauth.config.AuthConfig;
 import me.zhyd.oauth.exception.AuthException;
 import me.zhyd.oauth.model.AuthCallback;
 import me.zhyd.oauth.model.AuthResponse;
+import me.zhyd.oauth.model.AuthToken;
 import me.zhyd.oauth.model.AuthUser;
 import me.zhyd.oauth.request.AuthRequest;
 import me.zhyd.oauth.utils.AuthStateUtils;
 import me.zhyd.oauth.utils.UrlBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URLEncoder;
+import java.util.regex.Pattern;
 
 /**
  * 实战演示如何使用JustAuth实现第三方登录
  * @author wangmi
  */
-@RestController
+@Controller
 @RequestMapping("/api/oauth")
 public class JustAuthController {
-
+    private static Pattern ip = Pattern.compile("^(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[0-9]{1,2})(\\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[0-9]{1,2})){3}$");
     @Autowired
     OauthConfig oauthConfig;
     /**
@@ -53,13 +63,19 @@ public class JustAuthController {
      * @return 第三方平台的用户信息
      */
     @RequestMapping(value = "/callback/{source}", method = {RequestMethod.GET, RequestMethod.POST})
-    public ModelAndView login(@PathVariable("source") String source, AuthCallback callback, HttpServletRequest request) {
+    public ModelAndView login(@PathVariable("source") String source, AuthCallback callback, HttpServletRequest request, HttpServletResponse servletResponse) {
         AuthRequest authRequest = getAuthRequest(source);
         AuthResponse<AuthUser> response = authRequest.login(callback);
         if (response.ok()) {
-            request.setAttribute("authUser", response.getData());
-            //跳转到内部controller继续处理
-            return new ModelAndView(request.getContextPath()+oauthConfig.getIndexPath());
+            if(oauthConfig.getIndexPath().trim().startsWith("redirect:")){
+                //设置cookie，一天过期
+                setCookie(servletResponse, "authUser", JSON.toJSONString(response.getData()),86400, getCookieDomain(request.getRequestURL().toString()) );
+                return new ModelAndView(oauthConfig.getIndexPath());
+            }else {
+                request.setAttribute("authUser", response.getData());
+                //跳转到内部controller继续处理
+                return new ModelAndView(request.getContextPath() + oauthConfig.getIndexPath());
+            }
         }
         String exceptionPath = oauthConfig.getExceptionPath();
         if (exceptionPath.trim().startsWith("redirect:")) {
@@ -70,28 +86,90 @@ public class JustAuthController {
         return new ModelAndView(exceptionPath);
     }
 
-//    @RequestMapping("/refresh/{source}/{uuid}")
-//    @ResponseBody
-//    public Object refreshAuth(@PathVariable("source") String source, @PathVariable("uuid") String uuid) {
-//        AuthRequest authRequest = getAuthRequest(source.toLowerCase());
-//
-//        AuthUser user = userService.getByUuid(uuid);
-//        if (null == user) {
-//            return Response.error("用户不存在");
-//        }
-//        AuthResponse<AuthToken> response = null;
-//        try {
-//            response = authRequest.refresh(user.getToken());
-//            if (response.ok()) {
-//                user.setToken(response.getData());
-//                userService.save(user);
-//                return Response.success("用户 [" + user.getUsername() + "] 的 access token 已刷新！新的 accessToken: " + response.getData().getAccessToken());
-//            }
-//            return Response.error("用户 [" + user.getUsername() + "] 的 access token 刷新失败！" + response.getMsg());
-//        } catch (AuthException e) {
-//            return Response.error(e.getErrorMsg());
-//        }
-//    }
+    @RequestMapping("/refresh/{source}/{uuid}")
+    @ResponseBody
+    public Object refreshAuth(@PathVariable("source") String source, @PathVariable("uuid") String uuid) {
+        AuthRequest authRequest = getAuthRequest(source.toLowerCase());
+        AuthToken authToken = new AuthToken();
+        authToken.setRefreshToken(getRefreshTokenByUuid(uuid));
+        AuthResponse<AuthToken> response = null;
+        try {
+            response = authRequest.refresh(authToken);
+            if (response.ok()) {
+                updateRefreshToken(uuid, response.getData().getRefreshToken());
+                return Response.success("用户 [" + uuid + "] 的 access token 已刷新", response.getData().getAccessToken());
+            }
+            return Response.error("用户 [" + uuid + "] 的 access token 刷新失败！" + response.getMsg());
+        } catch (AuthException e) {
+            return Response.error(e.getErrorMsg());
+        }
+    }
+
+    /**
+     * 子类实现
+     * 根据用户id获取refreshToken，如果用户不存在
+     * 可以`return Response.error("用户不存在");`
+     * @param uuid
+     * @return
+     */
+    protected String getRefreshTokenByUuid(String uuid){
+        return "915b908e-63a8-4340-833a-81873a47296c";
+    }
+
+    /**
+     * 子类实现
+     * 更新用户的refreshToken
+     * @param uuid
+     * @param refreshToken
+     */
+    protected void updateRefreshToken(String uuid, String refreshToken){
+
+    }
+
+    /**
+     * 设置COOKIE
+     *
+     * @param key
+     * @param val
+     */
+    private void setCookie(HttpServletResponse resp, String key, String val, Integer maxAge, String domain) {
+        Cookie cookie = null;
+        try {
+            val = val == null ? null : URLEncoder.encode(val, "utf-8");
+            cookie = new Cookie(key, val);
+            cookie.setDomain(domain);
+            cookie.setMaxAge(maxAge);
+            cookie.setPath("/");
+            cookie.setHttpOnly(true);
+            resp.addCookie(cookie);
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException("cookie写入失败");
+        }
+    }
+
+    private String getCookieDomain(String uri) {
+        try {
+            return getCookieDomain(new URI(uri));
+        } catch (URISyntaxException e) {
+            throw new RuntimeException("URI转换出错!");
+        }
+    }
+
+    private String getCookieDomain(URI uri) {
+        String host = uri.getHost();
+        if (ip.matcher(host).find()) {
+            return host;
+        }
+        switch (host) {
+            case "127.0.0.1":
+            case "localhost":
+                return host;
+            default:
+                break;
+        }
+        String[] strs = host.split("\\.");
+        return strs[strs.length - 2] + "." + strs[strs.length - 1];
+    }
 
     /**
      * 获取授权Request

@@ -8,6 +8,29 @@ import com.dili.uap.sdk.constant.SessionConstants;
  * @time: 2021/1/4 17:45
  */
 public class KeyBuilder {
+
+    /**
+     * 构建 oauth RefreshTokenKey->用户信息 KEY
+     * @param refreshToken
+     * @return
+     */
+    public static String buildOAuthRefreshTokenKey(String refreshToken){
+        return new StringBuilder().append(SessionConstants.OAUTH_REFRESH_TOKEN_KEY_PREFIX).append(refreshToken).toString();
+    }
+
+    /**
+     * 构建 用户id->refreshTokens KEY
+     * @param userId
+     * @param systemType
+     * @return
+     */
+    public static String buildOAuthUserIdRefreshTokenKey(String userId, Integer systemType){
+        return new StringBuilder()
+                .append(SessionConstants.OAUTH_USERID_REFRESH_TOKEN_KEY)
+                .append(systemType).append(":")
+                .append(userId).toString();
+    }
+
     /**
      * 构建 RefreshTokenKey->用户信息 KEY
      * @param refreshToken

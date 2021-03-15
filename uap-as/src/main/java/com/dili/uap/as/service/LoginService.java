@@ -28,6 +28,13 @@ public interface LoginService {
 	BaseOutput<LoginResult> loginWeb(LoginDto loginDto);
 
 	/**
+	 * 第三方授权登录
+	 * @param loginDto
+	 * @return
+	 */
+	BaseOutput<LoginResult> oauthLogin(LoginDto loginDto);
+
+	/**
 	 * 登录并标记(标记到Cookie) 根据用户名和密码登录，返回是否登录成功
 	 * 
 	 * @param loginDto

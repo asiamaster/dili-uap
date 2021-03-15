@@ -175,8 +175,8 @@ html {
     color: #666;
 }
 .login-msg {
-    height: 36px;
-    line-height:36px;
+    /*height: 36px;*/
+    /*line-height:36px;*/
     color: #f00;
 }
 .login-form .submit {

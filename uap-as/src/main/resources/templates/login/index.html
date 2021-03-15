@@ -9,6 +9,9 @@
     <meta name="keywords" content="uap" />
     <meta name="description" content="UAP授权登录" />
     <meta name="author" content="dili">
+    <link rel="stylesheet" href="/resources/bui/lib/bootstrap-4.4.1-dist/css/bootstrap.min.css" >
+    <script src="/resources/bui/lib/jquery/jquery-3.2.1.min.js"></script>
+    <script src="/resources/bui/lib/bootstrap-4.4.1-dist/js/bootstrap.bundle.min.js"></script>
     <style>
         /*消除google浏览器黄色框*/
         input:-webkit-autofill,
@@ -17,7 +20,18 @@
             box-shadow:0 0 0 60px #FFF inset;
             -webkit-text-fill-color: #666;
         }
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            display: inline-block;
+            text-align: center;
+            vertical-align: middle;
+            position: relative;
+        }
     </style>
+    <script>
+
+    </script>
     <!-- jquery -->
     <link rel="shortcut icon" href="${contextPath}/resources/images/icon/dili-logo.png" />
     <script type="text/javascript" src="${contextPath}/resources/easyui/js/jquery-3.2.1.min.js"></script>
@@ -27,8 +41,7 @@
 <body>
 <div class="loginwrap">
     <div class="login">
-        <h2 class="login-title"><img src="${contextPath}/resources/images/login-title.png" alt="UAP授权登录"></h2>
-
+        <h2 class="login-title"><img src="${contextPath}/resources/images/login-title.png" alt="授权登录"></h2>
         <form id="loginForm" class="login-form" method="post" action="${contextPath}/api/oauth-server/login">
             <table class="userinfo">
                 <tbody>
@@ -47,12 +60,22 @@
                 </tr>
                 </tbody>
             </table>
-            <div id="msg" class="login-msg"></div>
-            <div class="">
-                <input type="button" class="submit" value="登录" onclick="doLogin()">
+            <div style="padding-top: 10px;">
+                ${clientName!}将获得以下权限：
+                <hr>
+                <div style="margin-bottom:20px">
+                    <div id="checkbox-group">
+                        <div class="custom-control custom-checkbox custom-control-inline">
+                            <input type="checkbox" id="clientPrivilege" value="1" style="color:#999" checked="checked" name="clientPrivilege" onclick="return false;" class="custom-control-input" required>
+                            <label class="custom-control-label" style="color:#999;" for="clientPrivilege">获得您的昵称、头像、性别等基本信息:</label>
+                        </div>
+                    </div>
+                </div>
+                授权后表明你已同意 <a href="#">UAP登录服务协议</a>
             </div>
-            <div style="margin-top:25px; text-align: center">
-                <a target="_blank" href="${contextPath}/static/clientDownload.html">客户端下载</a>
+            <div id="msg" class="login-msg"></div>
+            <div >
+                <input type="button" class="submit" value="登录" onclick="doLogin()">
             </div>
             <input type="hidden" id="client_id" name="client_id" value="${client_id!}" >
             <input type="hidden" id="response_type" name="response_type" value="code" >
@@ -60,6 +83,7 @@
             <input type="hidden" id="state" name="state" value="${state!}" >
         </form>
         <div id="errMsg"></div>
+
     </div>
 </div>
 

@@ -86,6 +86,9 @@ public class UserJwtService extends JwtService {
      */
     public UserTicket getUserTicket(String token) {
         try {
+            if(token == null){
+                return null;
+            }
             return getUserTicket(verifierToken(token));
         } catch (JWTVerificationException e) {
             return null;

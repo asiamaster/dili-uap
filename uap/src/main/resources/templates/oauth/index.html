@@ -1,0 +1,21 @@
+<#body>
+
+    hello ${authUser.nickname!}(${authUser.username!}/${authUser.uuid!})
+<br/>
+<hr>
+    accessToken:${authUser.token.accessToken}
+<hr>
+<br/>
+refreshToken:${authUser.token.refreshToken}
+<hr>
+
+    <!-- ====================================================================================================================== -->
+    <!-- style & script 分隔线 -->
+    <!-- ====================================================================================================================== -->
+    <script type="text/javascript">
+
+        $(function () {
+
+        });
+    </script>
+</#body>

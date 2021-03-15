@@ -5,7 +5,7 @@ import com.dili.uap.as.domain.OAuthClient;
 
 /**
  * 由MyBatis Generator工具自动生成
- * This file was generated on 2021-02-26 14:13:22.
+ * This file was generated on 2021-03-08 12:45:30.
  */
 public interface OAuthClientService extends BaseService<OAuthClient, Long> {
 

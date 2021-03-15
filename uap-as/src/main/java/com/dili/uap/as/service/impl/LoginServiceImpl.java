@@ -162,6 +162,62 @@ public class LoginServiceImpl implements LoginService {
 		return BaseOutput.success("登录成功");
 	}
 
+	/**
+	 * 第三方授权登录
+	 * @param loginDto
+	 * @return
+	 */
+	@Override
+	public BaseOutput<LoginResult> oauthLogin(LoginDto loginDto) {
+		try {
+			BaseOutput<User> output = loginCheck(loginDto);
+			if(!output.isSuccess()){
+				return (BaseOutput)output;
+			}
+			User user = output.getData();
+			//更新用户登录时间
+			this.updateLoginTime(user);
+			// 登录成功后清除锁定计时
+//			clearUserLock(user.getId());
+			Firm condition = DTOUtils.newInstance(Firm.class);
+			condition.setCode(user.getFirmCode());
+			Firm firm = firmMapper.selectOne(condition);
+			UserTicket userTicket = DTOUtils.asInstance(user, UserTicket.class);
+			//设置登录的系统，用于区别不同的超时时间
+			userTicket.setSystemType(SystemType.WEB.getCode());
+			if (firm != null) {
+				// 用于makeCookieTag中获取firmId
+//				WebContent.put("firmId", firm.getId());
+				userTicket.setFirmId(firm.getId());
+				userTicket.setFirmName(firm.getName());
+			}
+			// 构建返回的登录信息
+			LoginResult loginResult = DTOUtils.newInstance(LoginResult.class);
+			// 返回用户信息需要屏蔽用户的密码
+			user.setPassword(null);
+			loginResult.setUser(userTicket);
+			String accessToken = userJwtService.generateUserTokenByRSA256(userTicket, SystemType.WEB);
+			Long accessTokenTimeout = dynamicConfig.getAccessTokenTimeout(SystemType.WEB.getCode());
+			Long refreshTokenTimeout = dynamicConfig.getRefreshTokenTimeout(SystemType.WEB.getCode());
+			//刷新token
+			String refreshToken = UUID.randomUUID().toString();
+			loginResult.setAccessToken(accessToken);
+			loginResult.setRefreshToken(refreshToken);
+			loginResult.setAccessTokenTimeout(accessTokenTimeout);
+			loginResult.setRefreshTokenTimeout(refreshTokenTimeout);
+			loginResult.setLoginPath(loginDto.getLoginPath());
+			saveOAuthTokenInRedis(userTicket, refreshToken, SystemType.WEB.getCode());
+//			logLogin(user, loginDto, true, "登录成功");
+			return BaseOutput.success("登录成功").setData(loginResult);
+		} catch (Exception e) {
+			LOG.error(e.getMessage());
+			if (loginDto.getUserId() != null) {
+				logLogin(null, loginDto, false, e.getMessage());
+			}
+			return BaseOutput.failure("登录失败").setMessage("登录失败:"+e.getMessage());
+		}
+	}
+
 	// ================================= 私有方法分割线  ====================================
 
 	/**
@@ -272,6 +328,23 @@ public class LoginServiceImpl implements LoginService {
 			return BaseOutput.failure("用户名或密码错误").setCode(ResultCode.NOT_AUTH_ERROR);
 		}
 		return BaseOutput.successData(user);
+	}
+
+	/**
+	 * 保存相关登录信息到redis
+	 * @param user
+	 * @param refreshToken
+	 * @param systemType 不同系统类型，超时时间不同
+	 */
+	private void saveOAuthTokenInRedis(UserTicket user, String refreshToken, Integer systemType) {
+		Long refreshTokenTimeOut = dynamicConfig.getRefreshTokenTimeout(systemType);
+		// 用于在SDK中根据sessionId获取用户信息，如果sessionId不存在，过期或者被挤，都会被权限系统拦截
+		this.redisUtil.set(KeyBuilder.buildOAuthRefreshTokenKey(refreshToken), JSON.toJSONString(user), refreshTokenTimeOut);
+		// redis: userID - token
+		BoundSetOperations<String, String> userIdRefreshTokens = redisUtil.getRedisTemplate().boundSetOps(
+				KeyBuilder.buildOAuthUserIdRefreshTokenKey(user.getId().toString(), systemType));
+		userIdRefreshTokens.add(refreshToken);
+		userIdRefreshTokens.expire(refreshTokenTimeOut, TimeUnit.SECONDS);
 	}
 
 	/**

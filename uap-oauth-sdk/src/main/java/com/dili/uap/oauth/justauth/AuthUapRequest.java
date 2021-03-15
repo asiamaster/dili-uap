@@ -12,11 +12,8 @@ import me.zhyd.oauth.model.AuthResponse;
 import me.zhyd.oauth.model.AuthToken;
 import me.zhyd.oauth.model.AuthUser;
 import me.zhyd.oauth.request.AuthDefaultRequest;
-import me.zhyd.oauth.utils.GlobalAuthUtils;
 import me.zhyd.oauth.utils.HttpUtils;
 import me.zhyd.oauth.utils.UrlBuilder;
-
-import java.util.Map;
 
 /**
  * @author: WM
@@ -96,19 +93,21 @@ public class AuthUapRequest extends AuthDefaultRequest{
 //                .code(AuthResponseStatus.SUCCESS.getCode())
 //                .data(getAuthToken(refreshTokenUrl(authToken.getRefreshToken())))
 //                .build();
-        String response = new HttpUtils(config.getHttpConfig()).get(refreshTokenUrl(authToken.getRefreshToken()));
+        HttpHeader httpHeader = new HttpHeader();
+        httpHeader.add("Content-Type", "application/x-www-form-urlencoded");
+        String response = new HttpUtils(config.getHttpConfig()).post(refreshTokenUrl(authToken.getRefreshToken()), null, httpHeader);
         return AuthResponse.builder().code(AuthResponseStatus.SUCCESS.getCode()).data(getAuthToken(response)).build();
     }
 
     private AuthToken getAuthToken(String response) {
-        Map<String, String> accessTokenObject = GlobalAuthUtils.parseStringToMap(response);
+        JSONObject accessTokenObject = JSONObject.parseObject(response);
         if (!accessTokenObject.containsKey("access_token") || accessTokenObject.containsKey("code")) {
-            throw new AuthException(accessTokenObject.get("msg"));
+            throw new AuthException(accessTokenObject.getString("error")+":"+accessTokenObject.getString("error_description"));
         }
         return AuthToken.builder()
-                .accessToken(accessTokenObject.get("access_token"))
-                .expireIn(Integer.parseInt(accessTokenObject.getOrDefault("expires_in", "0")))
-                .refreshToken(accessTokenObject.get("refresh_token"))
+                .accessToken(accessTokenObject.getString("access_token"))
+                .expireIn(accessTokenObject.getInteger("expires_in"))
+                .refreshToken(accessTokenObject.getString("refresh_token"))
                 .build();
     }
 
@@ -121,7 +120,8 @@ public class AuthUapRequest extends AuthDefaultRequest{
     @Override
     protected String refreshTokenUrl(String refreshToken) {
         return UrlBuilder.fromBaseUrl(source.refresh())
-                .queryParam("client_key", config.getClientId())
+                .queryParam("client_id", config.getClientId())
+                .queryParam("client_secret", config.getClientSecret())
                 .queryParam("refresh_token", refreshToken)
                 .queryParam("grant_type", "refresh_token")
                 .build();

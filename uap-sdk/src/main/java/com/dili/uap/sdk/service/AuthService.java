@@ -105,9 +105,9 @@ public class AuthService {
      * @param refreshToken
      * @return
      */
-    public UserToken refreshUserToken(String refreshToken) {
+    public UserToken refreshOAuthUserToken(String refreshToken) {
         //accessToken超时，则根据refreshToken重新生成
-        UserToken userToken = userRedis.applyAccessToken(refreshToken);
+        UserToken userToken = userRedis.applyOAuthAccessToken(refreshToken);
         //redis超时，无法获取到用户信息
         if(userToken == null){
             return null;

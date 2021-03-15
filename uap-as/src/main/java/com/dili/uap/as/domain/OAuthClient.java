@@ -1,5 +1,6 @@
 package com.dili.uap.as.domain;
 
+import com.dili.ss.domain.annotation.Like;
 import com.dili.ss.dto.IBaseDomain;
 import com.dili.ss.metadata.FieldEditor;
 import com.dili.ss.metadata.annotation.EditMode;
@@ -13,7 +14,7 @@ import javax.persistence.Id;
 /**
  * 由MyBatis Generator工具自动生成
  * 客户端
- * This file was generated on 2021-02-26 14:13:22.
+ * This file was generated on 2021-03-08 12:45:30.
  */
 @Table(name = "`oauth_client`")
 public interface OAuthClient extends IBaseDomain {
@@ -29,12 +30,13 @@ public interface OAuthClient extends IBaseDomain {
     @Column(name = "`name`")
     @FieldDef(label="名称", maxLength = 20)
     @EditMode(editor = FieldEditor.Text, required = true)
+    @Like
     String getName();
 
     void setName(String name);
 
     @Column(name = "`code`")
-    @FieldDef(label="编码", maxLength = 20)
+    @FieldDef(label="唯一编码(openId)", maxLength = 20)
     @EditMode(editor = FieldEditor.Text, required = true)
     String getCode();
 
