@@ -13,6 +13,7 @@ import com.dili.uap.domain.dto.LoginResult;
 import com.dili.uap.domain.dto.UserDto;
 import com.dili.uap.manager.DataAuthManager;
 import com.dili.uap.sdk.component.DataAuthSource;
+import com.dili.uap.sdk.constant.SessionConstants;
 import com.dili.uap.sdk.domain.DataAuthRef;
 import com.dili.uap.sdk.domain.Systems;
 import com.dili.uap.sdk.domain.UserDataAuth;
@@ -145,7 +146,7 @@ public class AuthenticationApi {
 	@PostMapping("/bindTerminal.api")
 	public BaseOutput<Object> bindTerminal(@RequestBody String json) {
 		JSONObject jsonObject = JSONObject.parseObject(json);
-		return this.terminalBindingService.bindByToken(jsonObject.getString("UAP_accessToken"), jsonObject.getString("UAP_refreshToken"), jsonObject.getString("terminalId"));
+		return this.terminalBindingService.bindByToken(jsonObject.getString(SessionConstants.APPLICATION_NAME+"accessToken"), jsonObject.getString(SessionConstants.APPLICATION_NAME+"refreshToken"), jsonObject.getString("terminalId"));
 	}
 
 	/**
@@ -179,7 +180,7 @@ public class AuthenticationApi {
 	public BaseOutput<UserTicket> authentication(@RequestBody String json) {
 		try {
 			JSONObject jsonObject = JSONObject.parseObject(json);
-			UserTicket userTicket = authService.getUserTicket(jsonObject.getString("UAP_accessToken"), jsonObject.getString("UAP_refreshToken"));
+			UserTicket userTicket = authService.getUserTicket(jsonObject.getString(SessionConstants.APPLICATION_NAME+"accessToken"), jsonObject.getString(SessionConstants.APPLICATION_NAME+"refreshToken"));
 			if(userTicket == null){
 				return BaseOutput.failure("用户未登录").setCode(ResultCode.NOT_AUTH_ERROR);
 			}
@@ -215,7 +216,7 @@ public class AuthenticationApi {
 	@ResponseBody
 	public BaseOutput<List<Systems>> listSystems(@RequestBody String json) {
 		JSONObject jsonObject = JSONObject.parseObject(json);
-		UserTicket userTicket = authService.getUserTicket(jsonObject.getString("UAP_accessToken"), jsonObject.getString("UAP_refreshToken"));
+		UserTicket userTicket = authService.getUserTicket(jsonObject.getString(SessionConstants.APPLICATION_NAME+"accessToken"), jsonObject.getString(SessionConstants.APPLICATION_NAME+"refreshToken"));
 		if (userTicket == null) {
 			return BaseOutput.failure("用户未登录").setCode(ResultCode.NOT_AUTH_ERROR);
 		}
@@ -231,7 +232,7 @@ public class AuthenticationApi {
 	@ResponseBody
 	public BaseOutput<ClientMenuDto> listSystemAndMenus(@RequestBody String json) {
 		JSONObject jsonObject = JSONObject.parseObject(json);
-		UserTicket userTicket = authService.getUserTicket(jsonObject.getString("UAP_accessToken"), jsonObject.getString("UAP_refreshToken"));
+		UserTicket userTicket = authService.getUserTicket(jsonObject.getString(SessionConstants.APPLICATION_NAME+"accessToken"), jsonObject.getString(SessionConstants.APPLICATION_NAME+"refreshToken"));
 		if (userTicket == null) {
 			return BaseOutput.failure("用户未登录").setCode(ResultCode.NOT_AUTH_ERROR);
 		}
@@ -251,7 +252,7 @@ public class AuthenticationApi {
 	@ResponseBody
 	public BaseOutput<List<Resource>> listResources(@RequestBody String json) {
 		JSONObject jsonObject = JSONObject.parseObject(json);
-		UserTicket userTicket = authService.getUserTicket(jsonObject.getString("UAP_accessToken"), jsonObject.getString("UAP_refreshToken"));
+		UserTicket userTicket = authService.getUserTicket(jsonObject.getString(SessionConstants.APPLICATION_NAME+"accessToken"), jsonObject.getString(SessionConstants.APPLICATION_NAME+"refreshToken"));
 		if (userTicket == null) {
 			return BaseOutput.failure("用户未登录").setCode(ResultCode.NOT_AUTH_ERROR);
 		}
@@ -270,7 +271,7 @@ public class AuthenticationApi {
 	@ResponseBody
 	public BaseOutput<List<UserDataAuth>> listDataAuthes(@RequestBody String json) {
 		JSONObject jsonObject = JSONObject.parseObject(json);
-		UserTicket userTicket = authService.getUserTicket(jsonObject.getString("UAP_accessToken"), jsonObject.getString("UAP_refreshToken"));
+		UserTicket userTicket = authService.getUserTicket(jsonObject.getString(SessionConstants.APPLICATION_NAME+"accessToken"), jsonObject.getString(SessionConstants.APPLICATION_NAME+"refreshToken"));
 		if (userTicket == null) {
 			return BaseOutput.failure("用户未登录").setCode(ResultCode.NOT_AUTH_ERROR);
 		}
@@ -287,7 +288,7 @@ public class AuthenticationApi {
 	@ResponseBody
 	public BaseOutput<Map<String, Map>> listDataAuthDetails(@RequestBody String json) {
 		JSONObject jsonObject = JSONObject.parseObject(json);
-		UserTicket userTicket = authService.getUserTicket(jsonObject.getString("UAP_accessToken"), jsonObject.getString("UAP_refreshToken"));
+		UserTicket userTicket = authService.getUserTicket(jsonObject.getString(SessionConstants.APPLICATION_NAME+"accessToken"), jsonObject.getString(SessionConstants.APPLICATION_NAME+"refreshToken"));
 		if (userTicket == null) {
 			return BaseOutput.failure("用户未登录").setCode(ResultCode.NOT_AUTH_ERROR);
 		}
@@ -323,8 +324,8 @@ public class AuthenticationApi {
 	@ResponseBody
 	public BaseOutput changePwd(@RequestBody String json) {
 		JSONObject jsonObject = JSONObject.parseObject(json);
-		String accessToken = jsonObject.getString("UAP_accessToken");
-		String refreshToken = jsonObject.getString("UAP_refreshToken");
+		String accessToken = jsonObject.getString(SessionConstants.APPLICATION_NAME+"accessToken");
+		String refreshToken = jsonObject.getString(SessionConstants.APPLICATION_NAME+"refreshToken");
 		String oldPassword = jsonObject.getString("oldPassword");
 		String newPassword = jsonObject.getString("newPassword");
 		String confirmPassword = jsonObject.getString("confirmPassword");
