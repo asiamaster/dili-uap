@@ -162,6 +162,8 @@
     //清空表单
     function clearForm() {
         $('#form').form('clear');
+        //去除部门树选择节点
+        $("#menuTree").find('.tree-node-selected').removeClass('tree-node-selected');
     }
 
 </script>

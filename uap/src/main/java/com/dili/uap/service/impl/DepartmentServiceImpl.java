@@ -11,6 +11,7 @@ import com.dili.uap.sdk.domain.Firm;
 import com.dili.uap.sdk.domain.User;
 import com.dili.uap.sdk.domain.UserDataAuth;
 import com.dili.uap.sdk.domain.UserTicket;
+import com.dili.uap.sdk.domain.dto.DepartmentDto;
 import com.dili.uap.sdk.glossary.DataAuthType;
 import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.service.DepartmentService;
@@ -78,6 +79,7 @@ public class DepartmentServiceImpl extends BaseServiceImpl<Department, Long> imp
 		}
 		// 更新市场管理员权限
 		Firm firm = this.firmService.getByCode(department.getFirmCode());
+		Long firmUserId = firm.getUserId();
 		if (firm.getUserId() != null && !firm.getUserId().equals(user.getId())) {
 			User adminUser = this.userMapper.selectByPrimaryKey(firm.getUserId());
 			userDataAuth = DTOUtils.newInstance(UserDataAuth.class);
@@ -91,7 +93,7 @@ public class DepartmentServiceImpl extends BaseServiceImpl<Department, Long> imp
 		}
 		while (firm.getParentId() != null) {
 			firm = this.firmMapper.selectByPrimaryKey(firm.getParentId());
-			if (firm.getUserId() != null && !firm.getUserId().equals(user.getId())) {
+			if (firm.getUserId() != null && !firm.getUserId().equals(user.getId()) && !firm.getUserId().equals(firmUserId)) {
 				User adminUser = this.userMapper.selectByPrimaryKey(firm.getUserId());
 				userDataAuth = DTOUtils.newInstance(UserDataAuth.class);
 				userDataAuth.setRefCode(DataAuthType.DEPARTMENT.getCode());
@@ -214,5 +216,49 @@ public class DepartmentServiceImpl extends BaseServiceImpl<Department, Long> imp
 	@Override
 	public List<Long> getSeniorDepartmentIds() {
 		return this.getActualDao().getSeniorDepartmentIds();
+	}
+
+	@Override
+	public List<Map> getDepartmentTree(Department department) {
+		Set<String> allSet = new HashSet<>();//不包括市场的所有查出来的部门id
+		Set<String> idSet = new HashSet<>();//需要去查询父节点的部门id集合
+		Set<String> connectiveSet = new HashSet<>();//根据idSet查出来的相关联部门id集合
+		Set<String> firmCodeSet = new HashSet<>();
+
+		List<Department> departments = this.getActualDao().queryDepartments(department);
+
+		if(null==departments||departments.size()<=0){
+			return Collections.emptyList();
+		}
+		for(Department dept:departments){
+			String departmentId =  String.valueOf(dept.getId());
+			allSet.add(departmentId);
+			firmCodeSet.add(dept.getFirmCode());
+			if(dept.getParentId()==null){
+				continue;
+			}
+			idSet.add(departmentId);
+		}
+		if(idSet!=null && idSet.size()>0){
+			List<String> idsList = this.getActualDao().getDepartmentParentList(idSet);
+			for(String ids:idsList){
+				String[] split = ids.split(",");
+				Collections.addAll(connectiveSet,split);
+			}
+		}
+		connectiveSet.addAll(allSet);
+		Map<String,Set<String>> queryMap = new HashMap<>();
+		queryMap.put("connectiveSet",connectiveSet);
+		queryMap.put("firmCodeSet",firmCodeSet);
+		return this.getActualDao().getDepartmentTree(queryMap);
+	}
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public void deleteDepartment(Long id) {
+		this.delete(Long.valueOf(id));
+//		User user = DTOUtils.newDTO(User.class);
+//		user.setDepartmentId(Long.valueOf(id));
+//		userMapper.updateByUser(user);
 	}
 }

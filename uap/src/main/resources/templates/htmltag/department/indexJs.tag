@@ -48,6 +48,20 @@
             $btnCancel.hide();
         }
     }
+
+    //表格查询
+    function queryGrid() {
+        var opts = $("#grid").treegrid("options");
+        if (null == opts.url || "" == opts.url) {
+            opts.url = "${contextPath}/department/list.action";
+        }
+        $("#grid").treegrid("load", bindGridMeta2Form("grid", "form"));
+    }
+
+    //清空表单
+    function clearForm() {
+        $('#form').form('clear');
+    }
     /**
 	 * 绑定页面回车事件，以及初始化页面时的光标定位
 	 * 
@@ -66,6 +80,17 @@
                 $("#btnSave").show();
                 $("#btnCancel").show();
             },
+            onBeginEdit: function (row) {
+                var editors = $("#grid").treegrid('getEditors', row.id);
+                editors[0].target.trigger('focus');
+                // 存在ID，数据编辑情况下,市场信息不可更改
+                var parentNode = $("#grid").treegrid('getParent',row.id);
+                if (parentNode && typeof (parentNode.id) != 'string') {
+                    row.parentId=parentNode.id;
+                }
+                row.firmCode = parentNode.firmCode;
+                setOptBtnDisplay(true);
+            },
             onEndEdit: function (row) {
             	row.children=undefined;
                 $("#btnSave").hide();
@@ -73,7 +98,7 @@
             },
             extendParams: function (row) {
                 return {
-                    firmCode: window.firmCode,
+                    //firmCode: window.firmCode,
                     parentId: row._parentId
                 }
             },

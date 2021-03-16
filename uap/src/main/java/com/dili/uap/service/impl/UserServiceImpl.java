@@ -405,7 +405,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 	}
 
 	@Override
-	public List<UserDataDto> getUserDataAuthForTree(Long userId) {
+	public List<Map> getUserDataAuthForTree(Long userId) {
 		// 获取需要分配数据权限的用户信息
 		User user = this.get(userId);
 		if (null == user) {
@@ -424,7 +424,14 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 		if (!userTicket.getUserName().equalsIgnoreCase(adminName)) {
 			params.put("loginUserId", userTicket.getId());
 		}
-		return getActualDao().selectUserDatas(params);
+		List<Map> list = getActualDao().selectUserDatas(params);
+		list.forEach(map ->{
+			Map<String, String> attributes = new HashMap<>(2);
+			attributes.put("firmCode", (String) map.get("firmCode"));
+			map.put("attributes",attributes);
+			map.remove("firmCode");
+		});
+		return list;
 	}
 
 	@Override
@@ -757,8 +764,8 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 	}
 
 	@Override
-	public Integer updateBySuperiorId(Long superiorId) {
-		return userMapper.updateBySuperiorId(superiorId);
+	public Integer updateByUser(User user) {
+		return userMapper.updateByUser(user);
 	}
 
 	@Override

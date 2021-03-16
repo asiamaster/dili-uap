@@ -10,6 +10,8 @@
     var dataAuthButton3 = true;
     // 其他商户数据权限--true:全选,false:全不选
     var dataAuthButton4 = true;
+    // 数据权限编辑中被选中用户的部门id
+    var selectdDepartment;
 
     /**
 	 * datagrid行点击事件 目前用于来判断 启禁用是否可点
@@ -296,6 +298,8 @@
                 if(ret.success){
                     userGrid.datagrid("reload");
                     $('#editDlg').dialog('close');
+                    $('#menuTree').tree("reload");
+                    $("#menuTreePanel").height($("#menuTreePanel").height());
                 }else{
                     swal('错误', ret.result, 'error');
                 }
@@ -305,6 +309,7 @@
                 swal('错误', '远程访问失败', 'error');
             }
         });
+
     }
 
     // 根据主键删除
@@ -338,6 +343,8 @@
                 success : function(data) {
                     if (data.success) {
                         userGrid.datagrid("reload");
+                        $('#menuTree').tree("reload");
+                        $("#menuTreePanel").height($("#menuTreePanel").height());
                     } else {
                         swal('错误', data.message, 'error');
                     }
@@ -519,6 +526,9 @@
         } else {
             document.onkeyup = getKey;
         }
+        $('#stop_btn').linkbutton('disable');
+        $('#play_btn').linkbutton('disable');
+        $('#unlock_btn').linkbutton('disable');
         initUserGrid();
         queryGrid();
         //绑定搜索框键盘改变事件
@@ -592,13 +602,20 @@
 	 * 编辑用户的数据权限
 	 */
     function editUserDataAuth() {
-
+        $("#otherMarket").hide();
+        $("#btn4").hide();
     	$("#dataTabs").tabs('select',0);
         var selected = userGrid.datagrid("getSelected");
         if (null == selected) {
             swal('警告', '请选中一条数据', 'warning');
             return;
         }
+        if(selected.$_departmentId){
+            selectdDepartment = selected.$_departmentId;
+        }else{
+            selectdDepartment = null;
+        }
+
         //新打开一个权限编辑框重置全选/全不选按钮
         dataAuthButton1 = true;
         dataAuthButton2 = true;
@@ -774,8 +791,8 @@
         var roots = _tree.tree('getRoots');
         if(type == 1){
             for (var i = 0; i < roots.length; i++) {
-                var firm = roots[i].id.split("_");
-                if(firmCode == firm[1]){
+                var nodeFirmCode = roots[i].attributes.firmCode;
+                if(firmCode == nodeFirmCode){
                     easyuiTreeChecked(_tree,dataAuthButton1,roots[i].id);
                     break;
                 }
@@ -783,21 +800,27 @@
             dataAuthButton1 = booleanChange(dataAuthButton1);
         }
         if(type == 2){
-            var node = _tree.tree('find', departmentId);
-            if(dataAuthButton2){
-                _tree.tree('check', node.target);
-            }else{
-                _tree.tree('uncheck', node.target);
+            if(selectdDepartment){
+                var node = _tree.tree('find', selectdDepartment);
+                if(node){
+                    if(dataAuthButton2){
+                        _tree.tree('check', node.target);
+                    }else{
+                        _tree.tree('uncheck', node.target);
+                    }
+                    dataAuthButton2 = booleanChange(dataAuthButton2);
+                }
             }
-            dataAuthButton2 = booleanChange(dataAuthButton2);
         }
         if(type == 3){
-            easyuiTreeChecked(_tree,dataAuthButton3,departmentId);
-            dataAuthButton3 = booleanChange(dataAuthButton3);
+            if(selectdDepartment) {
+                easyuiTreeChecked(_tree,dataAuthButton3,selectdDepartment);
+                dataAuthButton3 = booleanChange(dataAuthButton3);
+            }
         }
         if(type == 4){
             for (var i = 0; i < roots.length; i++) {
-                if("firm_"+firmCode==roots[i].id){
+                if(firmCode==roots[i].attributes.firmCode){
                     continue;
                 }
                 easyuiTreeChecked(_tree,dataAuthButton4,roots[i].id);
@@ -826,25 +849,27 @@
      */
     function easyuiTreeChecked(_tree,ifCheck, nodeId) {
         var node = _tree.tree('find', nodeId);
-        if (ifCheck) {
-            _tree.tree('check', node.target);
-            var childrenNodes = _tree.tree('getChildren', node.target);
-            for (var i = 0; i < childrenNodes.length; i++) {
+        if(node){
+            if (ifCheck) {
+                _tree.tree('check', node.target);
+                var childrenNodes = _tree.tree('getChildren', node.target);
+                for (var i = 0; i < childrenNodes.length; i++) {
 
-                var childreNode = _tree.tree('find', childrenNodes[i].id);
-                _tree.tree('check', childreNode.target);
-                easyuiTreeChecked(_tree,ifCheck,childrenNodes[i].id);
+                    var childreNode = _tree.tree('find', childrenNodes[i].id);
+                    _tree.tree('check', childreNode.target);
+                    easyuiTreeChecked(_tree,ifCheck,childrenNodes[i].id);
 
-            }
-        } else {
-            _tree.tree('uncheck', node.target);
-            var childrenNodes = _tree.tree('getChildren', node.target);
-            for (var i = 0; i < childrenNodes.length; i++) {
+                }
+            } else {
+                _tree.tree('uncheck', node.target);
+                var childrenNodes = _tree.tree('getChildren', node.target);
+                for (var i = 0; i < childrenNodes.length; i++) {
 
-                var childreNode = _tree.tree('find', childrenNodes[i].id);
-                _tree.tree('uncheck', childreNode.target);
-                easyuiTreeChecked(_tree,ifCheck,childrenNodes[i].id);
+                    var childreNode = _tree.tree('find', childrenNodes[i].id);
+                    _tree.tree('uncheck', childreNode.target);
+                    easyuiTreeChecked(_tree,ifCheck,childrenNodes[i].id);
 
+                }
             }
         }
     }
@@ -877,6 +902,7 @@
     function selectDataAuth(firmType){
         var _tree = $('#dataTree');
         var roots = _tree.tree('getRoots');
+        var hasOtherMarket = false;//是否有其他市场数据
         if(1 == firmType){
             $("#btn1").show();
             $("#btn2").show();
@@ -885,11 +911,12 @@
             $("#userMarket").css({"background":"#ffffff", "color":"black", "border":"#ffffff"});
             $("#otherMarket").css({"background":"#DDDDDD", "color":"#5599FF", "border":"#DDDDDD"});
             for (var i = 0; i < roots.length; i++) {
-                var firm = roots[i].id.split("_");
-                if(firmCode == firm[1]){
+                var nodeFirmCode = roots[i].attributes.firmCode;
+                if(firmCode == nodeFirmCode){
                     $(roots[i].target).show();
                     recursionTree(_tree,roots[i].id,true);
                 }else{
+                    hasOtherMarket = true;
                     $(roots[i].target).hide();
                     recursionTree(_tree,roots[i].id,false);
                 }
@@ -902,8 +929,8 @@
             $("#otherMarket").css({"background":"#ffffff", "color":"black", "border":"#ffffff"});
             $("#userMarket").css({"background":"#DDDDDD", "color":"#5599FF", "border":"#DDDDDD"});
             for (var i = 0; i < roots.length; i++) {
-                var firm = roots[i].id.split("_");
-                if(firmCode == firm[1]){
+                var nodeFirmCode = roots[i].attributes.firmCode;
+                if(firmCode == nodeFirmCode){
                    $(roots[i].target).hide();
                     recursionTree(_tree,roots[i].id,false);
                 }else{
@@ -911,6 +938,9 @@
                     recursionTree(_tree,roots[i].id,true);
                 }
             }
+        }
+        if(hasOtherMarket){
+            $("#otherMarket").show();
         }
     }
 

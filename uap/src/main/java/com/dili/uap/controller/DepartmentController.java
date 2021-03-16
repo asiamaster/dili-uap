@@ -8,10 +8,12 @@ import com.dili.ss.domain.EasyuiPageOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.constants.UapConstants;
 import com.dili.uap.sdk.domain.Department;
+import com.dili.uap.sdk.domain.User;
 import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.service.DepartmentService;
 import com.dili.uap.service.FirmService;
+import com.dili.uap.service.UserService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +39,9 @@ public class DepartmentController {
 
 	@Autowired
 	FirmService firmService;
+
+	@Autowired
+	UserService userService;
 
 	@Value("${uap.adminName:admin}")
 	private String adminName;
@@ -69,15 +74,16 @@ public class DepartmentController {
 		List<Map> list = Collections.emptyList();
 		// 如果有选中市场，则以选中市场为过滤条件
 		// 如果没有选中市场，集团用户不显示任何数据，非集团用户显示其所属于市场数据(页面上没有市场选择框)
-		if (StringUtils.isBlank(department.getFirmCode())) {
-			boolean isGroup = SessionContext.getSessionContext().getUserTicket().getFirmCode().equalsIgnoreCase(UapConstants.GROUP_CODE);
-			// 非集团用户
-			if (!isGroup) {
-				department.setFirmCode(SessionContext.getSessionContext().getUserTicket().getFirmCode());
-				list = departmentService.listDepartments(department);
-			}
-		} else {
+//		if (StringUtils.isBlank(department.getFirmCode())) {
+		boolean isGroup = SessionContext.getSessionContext().getUserTicket().getFirmCode().equalsIgnoreCase(UapConstants.GROUP_CODE);
+		// 非集团用户
+		if (!isGroup) {
+			department.setFirmCode(SessionContext.getSessionContext().getUserTicket().getFirmCode());
+		}
+		if(StringUtils.isBlank(department.getName())&&null == department.getDepartmentType()){
 			list = departmentService.listDepartments(department);
+		}else{
+			list = departmentService.getDepartmentTree(department);
 		}
 
 		return new EasyuiPageOutput((long)list.size(), list).toString();
@@ -163,8 +169,14 @@ public class DepartmentController {
 		if (!CollectionUtils.isEmpty(departments)) {
 			return BaseOutput.failure("当前部门有下级部门，无法删除");
 		}
+		User user = DTOUtils.newDTO(User.class);
+		user.setDepartmentId(Long.valueOf(id));
+		List<User> userList = userService.list(user);
+		if(!CollectionUtils.isEmpty(userList)){
+			return BaseOutput.failure("当前部门下还存在用户,无法删除");
+		}
 		department = this.departmentService.get(Long.valueOf(id));
-		departmentService.delete(Long.valueOf(id));
+		departmentService.deleteDepartment(Long.valueOf(id));
 		LoggerContext.put(LoggerConstant.LOG_BUSINESS_CODE_KEY, department.getCode());
 		LoggerContext.put(LoggerConstant.LOG_BUSINESS_ID_KEY, department.getId());
 		UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();

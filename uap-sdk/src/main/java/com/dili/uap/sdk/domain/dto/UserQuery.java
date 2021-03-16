@@ -44,6 +44,12 @@ public interface UserQuery extends User {
 	void setIds(List<String> ids);
 
 	@Operator(Operator.IN)
+	@Column(name = "`department_id`")
+	List<Long> getDepartmentIds();
+
+	void setDepartmentIds(List<Long> departmentIds);
+
+	@Operator(Operator.IN)
 	@Column(name = "`firm_code`")
 	List<String> getFirmCodes();
 

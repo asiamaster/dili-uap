@@ -56,6 +56,13 @@ public interface UserDto extends User {
 
 	void setUserRoles(String userRoles);
 
+	@Column(name = "`position_name`")
+	@FieldDef(label = "职位名称")
+	@Transient
+	String getPositionName();
+
+	void setPositionName(String positionName);
+
 	@Operator(Operator.IN)
 	@Column(name = "`id`")
 	List<String> getIds();
@@ -79,5 +86,17 @@ public interface UserDto extends User {
 	Date getLastLoginTimeEnd();
 
 	void setLastLoginTimeEnd(Date lastLoginTimeEnd);
+
+	@Operator(Operator.GREAT_EQUAL_THAN)
+	@Column(name = "`created`")
+	Date getCreateTimeStart();
+
+	void setCreateTimeStart(Date createTimeStart);
+
+	@Operator(Operator.LITTLE_EQUAL_THAN)
+	@Column(name = "`created`")
+	Date getCreateTimeEnd();
+
+	void setCreateTimeEnd(Date createTimeEnd);
 
 }

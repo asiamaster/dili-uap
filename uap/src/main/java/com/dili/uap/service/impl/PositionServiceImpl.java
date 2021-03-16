@@ -6,6 +6,7 @@ import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.dao.PositionMapper;
 import com.dili.uap.dao.UserMapper;
 import com.dili.uap.domain.Position;
+import com.dili.uap.sdk.domain.User;
 import com.dili.uap.service.PositionService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -87,7 +88,9 @@ public class PositionServiceImpl extends BaseServiceImpl<Position, Long> impleme
     @Transactional(rollbackFor = Exception.class)
     public BaseOutput deletePosition(Long id) {
         this.delete(id);
-        userMapper.updateByPositionId(id);
+        User user = DTOUtils.newDTO(User.class);
+        user.setPositionId(id);
+        userMapper.updateByUser(user);
         return BaseOutput.success();
     }
 }
