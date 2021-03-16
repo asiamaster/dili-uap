@@ -323,8 +323,8 @@ public class AuthenticationApi {
 	@ResponseBody
 	public BaseOutput changePwd(@RequestBody String json) {
 		JSONObject jsonObject = JSONObject.parseObject(json);
-		String accessToken = jsonObject.getString("accessToken");
-		String refreshToken = jsonObject.getString("refreshToken");
+		String accessToken = jsonObject.getString("UAP_accessToken");
+		String refreshToken = jsonObject.getString("UAP_refreshToken");
 		String oldPassword = jsonObject.getString("oldPassword");
 		String newPassword = jsonObject.getString("newPassword");
 		String confirmPassword = jsonObject.getString("confirmPassword");
