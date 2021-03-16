@@ -93,7 +93,7 @@ public class AuthenticationApi {
 	 * @param request
 	 * @return
 	 */
-	@PostMapping(value = "/loginWeb.api")
+	@PostMapping(value = "/loginWeb")
 	@ResponseBody
 	public BaseOutput<LoginResult> loginWeb(@RequestBody String json, HttpServletRequest request) throws Exception {
 		JSONObject jsonObject = JSONObject.parseObject(json);
@@ -115,7 +115,7 @@ public class AuthenticationApi {
 	 * @param request
 	 * @return
 	 */
-	@PostMapping(value = "/loginApp.api")
+	@PostMapping(value = "/loginApp")
 	@ResponseBody
 	public BaseOutput<LoginResult> loginApp(@RequestBody String json, HttpServletRequest request) {
 		JSONObject jsonObject = JSONObject.parseObject(json);
@@ -143,7 +143,7 @@ public class AuthenticationApi {
 	 * @return
 	 */
 	@ResponseBody
-	@PostMapping("/bindTerminal.api")
+	@PostMapping("/bindTerminal")
 	public BaseOutput<Object> bindTerminal(@RequestBody String json) {
 		JSONObject jsonObject = JSONObject.parseObject(json);
 		return this.terminalBindingService.bindByToken(jsonObject.getString(SessionConstants.APPLICATION_NAME+"accessToken"), jsonObject.getString(SessionConstants.APPLICATION_NAME+"refreshToken"), jsonObject.getString("terminalId"));
@@ -155,7 +155,7 @@ public class AuthenticationApi {
 	 * @param json userName和password
 	 * @return
 	 */
-//	@PostMapping(value = "/validate.api")
+//	@PostMapping(value = "/validate")
 //	@ResponseBody
 //	public BaseOutput<LoginResult> validate(@RequestBody String json) {
 //		try {
@@ -175,7 +175,7 @@ public class AuthenticationApi {
 	 * @param json key: accessToken, refreshToken
 	 * @return
 	 */
-	@PostMapping(value = "/authentication.api")
+	@PostMapping(value = "/authentication")
 	@ResponseBody
 	public BaseOutput<UserTicket> authentication(@RequestBody String json) {
 		try {
@@ -196,7 +196,7 @@ public class AuthenticationApi {
 	 * @param refreshToken
 	 * @return
 	 */
-	@RequestMapping(value = "/logout.api", method = { RequestMethod.GET, RequestMethod.POST })
+	@RequestMapping(value = "/logout", method = { RequestMethod.GET, RequestMethod.POST })
 	@ResponseBody
 	public BaseOutput logout(@RequestParam String refreshToken) {
 		try {
@@ -212,7 +212,7 @@ public class AuthenticationApi {
 	 * @param json key: accessToken, refreshToken
 	 * @return
 	 */
-	@PostMapping(value = "/listSystems.api")
+	@PostMapping(value = "/listSystems")
 	@ResponseBody
 	public BaseOutput<List<Systems>> listSystems(@RequestBody String json) {
 		JSONObject jsonObject = JSONObject.parseObject(json);
@@ -228,7 +228,7 @@ public class AuthenticationApi {
 	 * @param json key: accessToken, refreshToken, systemId(非必填)
 	 * @return
 	 */
-	@PostMapping(value = "/listSystemAndMenus.api")
+	@PostMapping(value = "/listSystemAndMenus")
 	@ResponseBody
 	public BaseOutput<ClientMenuDto> listSystemAndMenus(@RequestBody String json) {
 		JSONObject jsonObject = JSONObject.parseObject(json);
@@ -248,7 +248,7 @@ public class AuthenticationApi {
 	 * @param json key: accessToken, refreshToken, systemId(非必填)
 	 * @return
 	 */
-	@PostMapping(value = "/listResources.api")
+	@PostMapping(value = "/listResources")
 	@ResponseBody
 	public BaseOutput<List<Resource>> listResources(@RequestBody String json) {
 		JSONObject jsonObject = JSONObject.parseObject(json);
@@ -267,7 +267,7 @@ public class AuthenticationApi {
 	 * @param json key: accessToken, refreshToken, refCode
 	 * @return
 	 */
-	@PostMapping(value = "/listDataAuthes.api")
+	@PostMapping(value = "/listDataAuthes")
 	@ResponseBody
 	public BaseOutput<List<UserDataAuth>> listDataAuthes(@RequestBody String json) {
 		JSONObject jsonObject = JSONObject.parseObject(json);
@@ -284,7 +284,7 @@ public class AuthenticationApi {
 	 * @param json key: accessToken, refreshToken, refCode
 	 * @return
 	 */
-	@PostMapping(value = "/listDataAuthDetails.api")
+	@PostMapping(value = "/listDataAuthDetails")
 	@ResponseBody
 	public BaseOutput<Map<String, Map>> listDataAuthDetails(@RequestBody String json) {
 		JSONObject jsonObject = JSONObject.parseObject(json);
@@ -320,7 +320,7 @@ public class AuthenticationApi {
 	 * @param json key: accessToken, refreshToken, oldPassword, newPassword, confirmPassword
 	 * @return
 	 */
-	@PostMapping(value = "/changePwd.api")
+	@PostMapping(value = "/changePwd")
 	@ResponseBody
 	public BaseOutput changePwd(@RequestBody String json) {
 		JSONObject jsonObject = JSONObject.parseObject(json);
@@ -360,7 +360,7 @@ public class AuthenticationApi {
 	 * @param args
 	 * @throws Exception
 	 */
-	public static void main(String[] args) throws Exception {
+	public static void main1(String[] args) throws Exception {
 		// 私钥
 		String privateStr = "MIIBVAIBADANBgkqhkiG9w0BAQEFAASCAT4wggE6AgEAAkEAtmEBC5xciJySRAqchSYQR5tnEzsKO/dK0Fg1dVBKKPPwETD5HrQqcDPegRwoiZm8ASpVA2MKZd0iBHFU/M7wNQIDAQABAkEAtK25OWV4jqZ+iQXyNj6VVjtwjC6rXukIpwscOtKGBbalCLgRAs8Q0ZePqe9Duj3/vE8/ZZuTXjSlsJlVSCp/aQIhAPdo8I2aLJrkm/om/CtUHvlW1TCw14eP28zvChQzIx4zAiEAvLYMMVcHD7pe+Xj0hfnc+rmai/64zcjP4VpknqHI//cCIF8bRwWYE7eDU/ZokB1z2+hLme56vI+PHJZ9+Wjkc4aDAiBdJ0Rnir06n1ZIsdOK2yehQMOwfaH+OzWa2YM350cQSwIgOscoD26vCWCF3Q35Tn16RgRYSSyk28s+uqZs1Ld4PvU=";
 		privateStr = "MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAKA3uR1rkvjO05Sq6geO5tAgTKoGmOlph6r4MEpcDck05mwyMbAsZWp8LBCDcccAZNpafGynmCOaHS1LOIkWBB/a7jlOoDZQ5s6+SVGFtavnpChM2yObvbBmhI6VTNbfEeL/o+hwd3L/tsw6IN/p+ZiEUFl1GV5fq0ICnvDoOx1tAgMBAAECgYBLqmVjbpWHqe4krR8/mI6LRmXOerUmru8ioHn19EmSd8hG2uG6iQ0QYDpTRjCqwhXfRZKzoebpEXSsGnVF0L77KMgrsSQwBS7Q023gRK9xZgdPmOq7+wXizIEyahwElFFFg8QKJBH0GsVnOKhmsFjyM+tUY2mMcseFsXBXHBs14QJBANZrJRNV8fBlNs6VsW8GtEvRj0n5XA06SM/uE4XItaSM6Wa3150ssehrfmQyMudF5Xr4/abH6HO3G+Ovg/amBMkCQQC/ScOvRvtsJ0GM8D88uY23uT3R8FqnEkghPsYzjMaVGRAWFa24PIBr1mh5/DZ6nJXS7eYozhMjA9GdbO1h6xmFAkBfQmLKYFiIcK8UwLR/mv7m4EdEmiAnUEmg9yh9O1pXrLLVC8Ai+ARiOb+BTDwJO6hkJdKrEg1Xu3YMhaGfJsrhAkEAq4QtlN0VlS1Bxmiomv9ZhfHv720PK5zl1gFeYFyKtqepV9QKVxbQo2C1fyNZiekbIe00IURdvlivO/OuiczurQJAC6bMIu+Z4v7XkdzAdVvA/azKjAGQrQOCYGvwZPsqxOd65FcX8hmSwuIAOXo1Pjl7GeW/P2x0Cis667e5mn7xrg==";
