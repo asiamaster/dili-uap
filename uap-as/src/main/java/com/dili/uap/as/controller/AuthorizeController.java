@@ -40,10 +40,8 @@ import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -237,7 +235,7 @@ public class AuthorizeController {
      * grant_type：必须的。值必须是"authorization_code"或"refresh_token"
      * code：必须的。值是从授权服务器那里接收的授权码。
      * redirect_uri：如果在授权请求的时候包含"redirect_uri"参数，那么这里也需要包含"redirect_uri"参数。而且，这两处的"redirect_uri"必须完全相同。
-     * client_id：如果客户端不需要认证，那么必须带的该参数。
+     * client_id：如果客户端需要认证，那么必须带的该参数。
      * client_secret:客户端密钥
      *
      * # Access Token Response
@@ -259,8 +257,7 @@ public class AuthorizeController {
      */
     @PostMapping(value="/token")
 //    @ResponseBody
-    public Object token(HttpServletRequest request)
-            throws ServletException, IOException, OAuthSystemException {
+    public Object token(HttpServletRequest request) throws OAuthSystemException {
         OAuthTokenRequest oauthRequest = null;
         try {
             oauthRequest = new OAuthTokenRequest(request);

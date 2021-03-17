@@ -2,7 +2,6 @@ package com.dili.uap.oauth.justauth;
 
 import com.alibaba.fastjson.JSON;
 import com.dili.uap.oauth.config.OauthConfig;
-import com.dili.uap.oauth.constant.ResultCode;
 import com.dili.uap.oauth.domain.Response;
 import com.dili.uap.oauth.exception.BusinessException;
 import me.zhyd.oauth.config.AuthConfig;
@@ -63,7 +62,7 @@ public class JustAuthController {
      * @return 第三方平台的用户信息
      */
     @RequestMapping(value = "/callback/{source}", method = {RequestMethod.GET, RequestMethod.POST})
-    public ModelAndView login(@PathVariable("source") String source, AuthCallback callback, HttpServletRequest request, HttpServletResponse servletResponse) {
+    public ModelAndView callback(@PathVariable("source") String source, AuthCallback callback, HttpServletRequest request, HttpServletResponse servletResponse) {
         AuthRequest authRequest = getAuthRequest(source);
         AuthResponse<AuthUser> response = authRequest.login(callback);
         if (response.ok()) {
@@ -81,7 +80,7 @@ public class JustAuthController {
         if (exceptionPath.trim().startsWith("redirect:")) {
             return new ModelAndView(UrlBuilder.fromBaseUrl(exceptionPath).queryParam("exMsg", response.getMsg()).build());
         }
-        request.setAttribute("exception", new BusinessException(ResultCode.UNAUTHORIZED, response.getMsg()));
+        request.setAttribute("exception", new BusinessException(String.valueOf(response.getCode()), response.getMsg()));
         request.setAttribute("exMsg", response.getMsg());
         return new ModelAndView(exceptionPath);
     }
@@ -106,9 +105,8 @@ public class JustAuthController {
     }
 
     /**
-     * 子类实现
-     * 根据用户id获取refreshToken，如果用户不存在
-     * 可以`return Response.error("用户不存在");`
+     * 子类实现，用于刷新token时
+     * 根据用户id获取refreshToken，如果用户不存在，需要抛出AuthException异常
      * @param uuid
      * @return
      */
