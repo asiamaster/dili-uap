@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 public class OauthConfig {
 
 	//uap上下文路径
-	private String uapContextPath;
+	private String projectPath;
 	//客户端id
 	private String clientId;
 	//客户端密钥
@@ -22,20 +22,20 @@ public class OauthConfig {
 	//oauth登录失败后跳转的controller路径，带有exception异常类为参数
 	private String exceptionPath;
 	/**
-	 * uap上下文路径
+	 * 客户端项目上下文路径
 	 * @return
 	 */
-	public String getUapContextPath() {
-		return uapContextPath;
+	public String getProjectPath() {
+		return projectPath;
 	}
 
 	/**
-	 * uap上下文路径
+	 * 客户端项目上下文路径
 	 * @return
 	 */
-	@Value("${uap.contextPath:http://uap.diligrp.com}")
-	public void setUapContextPath(String uapContextPath) {
-		this.uapContextPath = uapContextPath;
+	@Value("${project.serverPath:}")
+	public void setProjectPath(String projectPath) {
+		this.projectPath = projectPath;
 	}
 
 	/**

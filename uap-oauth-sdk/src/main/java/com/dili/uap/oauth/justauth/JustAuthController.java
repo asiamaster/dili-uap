@@ -184,7 +184,7 @@ public class JustAuthController {
                 authRequest = new AuthUapRequest(AuthConfig.builder()
                         .clientId(oauthConfig.getClientId())
                         .clientSecret(oauthConfig.getClientSecret())
-                        .redirectUri(oauthConfig.getUapContextPath()+"/api/oauth/callback/uap")
+                        .redirectUri(oauthConfig.getProjectPath()+"/api/oauth/callback/uap")
                         .build());
                 break;
             default:
