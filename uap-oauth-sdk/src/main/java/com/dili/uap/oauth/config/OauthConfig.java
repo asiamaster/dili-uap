@@ -2,13 +2,13 @@ package com.dili.uap.oauth.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * UAP oauth动态配置
  */
 @RefreshScope
-@Component
+@Configuration
 public class OauthConfig {
 
 	//uap上下文路径
@@ -21,6 +21,26 @@ public class OauthConfig {
 	private String indexPath;
 	//oauth登录失败后跳转的controller路径，带有exception异常类为参数
 	private String exceptionPath;
+	//oauth授权服务器路径
+	private String oauthServerPath;
+
+	/**
+	 * oauth授权服务器路径
+	 * @return
+	 */
+	public String getOauthServerPath() {
+		return oauthServerPath;
+	}
+
+	/**
+	 * oauth授权服务器路径
+	 * @param oauthServerPath
+	 */
+	@Value("${oauth.serverPath:}")
+	public void setOauthServerPath(String oauthServerPath) {
+		this.oauthServerPath = oauthServerPath;
+	}
+
 	/**
 	 * 客户端项目上下文路径
 	 * @return

@@ -1,7 +1,7 @@
 # resource_link
-ALTER TABLE `resource_link` DROP COLUMN `resource_code`;
 alter table resource_link add resource_id BIGINT AFTER id;
 UPDATE resource_link rl, resource r SET rl.resource_id = r.id WHERE r.`code` = rl.resource_code;
+ALTER TABLE `resource_link` DROP COLUMN `resource_code`;
 
 # resource
 ALTER TABLE `resource` add `system_type` INT AFTER `code`;
