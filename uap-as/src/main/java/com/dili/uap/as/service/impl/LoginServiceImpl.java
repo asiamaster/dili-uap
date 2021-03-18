@@ -195,6 +195,7 @@ public class LoginServiceImpl implements LoginService {
 			LoginResult loginResult = DTOUtils.newInstance(LoginResult.class);
 			// 返回用户信息需要屏蔽用户的密码
 			user.setPassword(null);
+			userTicket.setPassword(null);
 			loginResult.setUser(userTicket);
 			String accessToken = userJwtService.generateUserTokenByRSA256(userTicket, SystemType.WEB);
 			Long accessTokenTimeout = dynamicConfig.getAccessTokenTimeout(SystemType.WEB.getCode());

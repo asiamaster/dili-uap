@@ -95,8 +95,8 @@ public class JustAuthController {
         try {
             response = authRequest.refresh(authToken);
             if (response.ok()) {
-                updateRefreshToken(uuid, response.getData().getRefreshToken());
-                return Response.success("用户 [" + uuid + "] 的 access token 已刷新", response.getData().getAccessToken());
+                updateRefreshToken(uuid, response.getData());
+                return Response.success("用户 [" + uuid + "] 的 access token 已刷新", response.getData());
             }
             return Response.error("用户 [" + uuid + "] 的 access token 刷新失败！" + response.getMsg());
         } catch (AuthException e) {
@@ -111,16 +111,16 @@ public class JustAuthController {
      * @return
      */
     protected String getRefreshTokenByUuid(String uuid){
-        return "915b908e-63a8-4340-833a-81873a47296c";
+        return "f7a6ec11-507a-4869-8f35-a6ddf4695ee8";
     }
 
     /**
-     * 子类实现
-     * 更新用户的refreshToken
+     * 子类实现(可选)
+     * (在缓存中)更新用户的refreshToken
      * @param uuid
-     * @param refreshToken
+     * @param authToken
      */
-    protected void updateRefreshToken(String uuid, String refreshToken){
+    protected void updateRefreshToken(String uuid, AuthToken authToken){
 
     }
 

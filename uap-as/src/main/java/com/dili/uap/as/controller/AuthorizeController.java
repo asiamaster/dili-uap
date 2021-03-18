@@ -256,7 +256,7 @@ public class AuthorizeController {
      * @throws URISyntaxException
      */
     @PostMapping(value="/token")
-//    @ResponseBody
+    @ResponseBody
     public Object token(HttpServletRequest request) throws OAuthSystemException {
         OAuthTokenRequest oauthRequest = null;
         try {
