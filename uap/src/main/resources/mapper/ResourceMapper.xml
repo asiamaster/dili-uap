@@ -42,9 +42,9 @@
 		where rr.role_id =
 		ur.role_id
 		and rr.resource_id = r.id
-		and ur.user_id = #{arg0}
+		and ur.user_id = #{userId}
 		AND r.menu_id = m.id
-		AND m.system_id = ${arg1}
+		AND m.system_id = ${systemId}
 	</select>
 
 	<select id="findResourceCodeByUserId" parameterType="Long" resultType="java.lang.String">

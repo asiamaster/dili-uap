@@ -28,7 +28,7 @@ public interface ResourceMapper extends MyMapper<Resource> {
 	 * @param systemId
 	 * @return
 	 */
-	List<Resource> listByUserIdAndSystemId(Long userId, Long systemId);
+	List<Resource> listByUserIdAndSystemId(@Param("userId")Long userId, @Param("systemId")Long systemId);
 
 	List<String> findResourceCodeByUserId(Long userId);
 

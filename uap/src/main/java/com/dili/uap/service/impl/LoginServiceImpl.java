@@ -126,6 +126,9 @@ public class LoginServiceImpl implements LoginService {
 			return result;
 		}
 		if (StringUtils.isNotBlank(loginDto.getDeviceType()) && StringUtils.isNotBlank(loginDto.getPushId())) {
+			if(!"android".equalsIgnoreCase(loginDto.getDeviceType()) && !"ios".equalsIgnoreCase(loginDto.getDeviceType())){
+				throw new AppException("不支持的deviceType");
+			}
 			this.userPushInfoMapper.deleteByUserIdOrPushId(result.getData().getUser().getId(), loginDto.getPushId());
 			UserPushInfo condition = DTOUtils.newInstance(UserPushInfo.class);
 			condition.setUserId(result.getData().getUser().getId());
