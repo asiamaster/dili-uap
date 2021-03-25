@@ -1,6 +1,7 @@
 package com.dili.uap.api;
 
 import com.alibaba.fastjson.JSONObject;
+import com.dili.logger.sdk.annotation.BusinessLogger;
 import com.dili.ss.constant.ResultCode;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
@@ -93,6 +94,7 @@ public class AuthenticationApi {
 	 * @param request
 	 * @return
 	 */
+	@BusinessLogger(businessType = "login_management", content = "系统登录:${systemCode}", operationType = "login", systemCode = "UAP")
 	@PostMapping(value = "/loginWeb")
 	@ResponseBody
 	public BaseOutput<LoginResult> loginWeb(@RequestBody String json, HttpServletRequest request) throws Exception {
@@ -115,6 +117,7 @@ public class AuthenticationApi {
 	 * @param request
 	 * @return
 	 */
+	@BusinessLogger(businessType = "login_management", content = "系统登录:${systemCode}", operationType = "login", systemCode = "UAP")
 	@PostMapping(value = "/loginApp")
 	@ResponseBody
 	public BaseOutput<LoginResult> loginApp(@RequestBody String json, HttpServletRequest request) {
