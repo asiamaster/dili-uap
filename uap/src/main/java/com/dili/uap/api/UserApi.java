@@ -260,6 +260,43 @@ public class UserApi {
 	}
 
 	/**
+	 * 通过app注册用户(新增password,confirmPassword,positionId,superiorId,gender参数,去掉position参数)
+	 *
+	 * @param json
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/registeryUserByApp.api")
+	public BaseOutput registeryUserByApp(@RequestBody String json) {
+		JSONObject jo = JSON.parseObject(json);
+		String password = jo.getString("password");
+		String confirmPassword = jo.getString("confirmPassword");
+		if (StringUtils.isBlank(password) && StringUtils.isBlank(confirmPassword)){
+			return BaseOutput.failure("密码不能为空");
+		}
+		if (password.trim().length() < 6 || password.trim().length() > 20) {
+			return BaseOutput.failure("密码长度限定为6-20");
+		}
+		if (!password.equals(confirmPassword)) {
+			return BaseOutput.failure("两次密码输入不一致,请重新输入");
+		}
+		UserDto user = DTOUtils.newInstance(UserDto.class);
+		user.setUserName(jo.getString("userName"));
+		user.setPassword(jo.getString("password"));
+		user.setRealName(jo.getString("realName"));
+		user.setCellphone(jo.getString("cellphone"));
+		user.setEmail(jo.getString("email"));
+		user.setPositionId(jo.getLong("positionId"));
+		user.setCardNumber(jo.getString("cardNumber"));
+		user.setFirmCode(jo.getString("firmCode"));
+		user.setDepartmentId(jo.getLong("departmentId"));
+		user.setDescription(jo.getString("description"));
+		user.setSuperiorId(jo.getLong("superiorId"));
+		user.setGender(jo.getInteger("gender"));
+		return userService.registeryUserByApp(user);
+	}
+
+	/**
 	 * 设置用户对象
 	 *
 	 * @param userName     用户名

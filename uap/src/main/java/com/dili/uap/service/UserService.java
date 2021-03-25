@@ -207,6 +207,15 @@ public interface UserService extends BaseService<User, Long> {
 	BaseOutput registeryByApp(User user);
 
 	/**
+	 * 通过app注册用户(新)
+	 *
+	 * @param user
+	 *
+	 * @return
+	 */
+	BaseOutput registeryUserByApp(User user);
+
+	/**
 	 * 获取进厅数据权限
 	 * 
 	 * @param id

@@ -90,6 +90,26 @@ public interface UserRpc {
 	BaseOutput<Object> registeryByApp(@VOField("userName") String userName, @VOField("realName") String realName, @VOField("cellphone") String cellphone, @VOField("email") String email, @VOField("position") String position, @VOField("cardNumber") String cardNumber, @VOField("firmCode") String firmCode, @VOField("departmentId") Long departmentId, @VOField("description") String description);
 
 	/**
+	 *通过app注册用户(新增password,confirmPassword,positionId,superiorId,gender参数,去掉position参数)
+	 * @param  userName 用户名
+	 * @param  realName 真实姓名
+	 * @param  cellphone 手机号码
+	 * @param  email 邮箱
+	 * @param  cardNumber 卡号
+	 * @param  firmCode 归属市场编码
+	 * @param  departmentId 归属部门
+	 * @param  description 备注
+	 * @param  password 密码
+	 * @param  confirmPassword 确认密码
+	 * @param  positionId 职位id
+	 * @param  superiorId 上级id
+	 * @param  gender 性别 0：男 1：女
+	 * @return
+	 */
+	@POST("/userApi/registeryUserByApp.api")
+	BaseOutput<Object> registeryUserByApp(@VOField("userName") String userName, @VOField("realName") String realName, @VOField("cellphone") String cellphone, @VOField("email") String email, @VOField("cardNumber") String cardNumber, @VOField("firmCode") String firmCode, @VOField("departmentId") Long departmentId, @VOField("description") String description, @VOField("password") String password, @VOField("confirmPassword") String confirmPassword, @VOField("positionId") Long positionId, @VOField("superiorId") Long superiorId, @VOField("gender") Integer gender);
+
+	/**
 	 * 小程序修改密码
 	 *
 	 * @param userId

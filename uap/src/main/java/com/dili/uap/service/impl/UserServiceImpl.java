@@ -187,7 +187,11 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 			} else {
 				user.setState(UserState.INACTIVE.getCode());
 			}
-			user.setPassword(encryptPwd(UapConstants.DEFAULT_PASS));
+			if(StringUtils.isBlank(user.getPassword())){
+				user.setPassword(encryptPwd(UapConstants.DEFAULT_PASS));
+			}else{
+				user.setPassword(encryptPwd(user.getPassword()));
+			}
 			user.setCreated(new Date());
 			user.setModified(new Date());
 			if (null == user.getSerialNumber()){
@@ -693,6 +697,20 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 			return BaseOutput.failure(save.getMessage());
 		}
 		user.setState(UserState.DISABLED.getCode());
+		this.updateSelective(user);
+		return BaseOutput.success("注册用户成功");
+	}
+
+	@Transactional(rollbackFor = Exception.class)
+	public BaseOutput registeryUserByApp(User user) {
+		if (user == null) {
+			return BaseOutput.failure("用户数据丢失");
+		}
+		BaseOutput save = this.save(user);
+		if (!save.isSuccess()) {
+			return BaseOutput.failure(save.getMessage());
+		}
+		user.setState(UserState.INACTIVE.getCode());
 		this.updateSelective(user);
 		return BaseOutput.success("注册用户成功");
 	}
