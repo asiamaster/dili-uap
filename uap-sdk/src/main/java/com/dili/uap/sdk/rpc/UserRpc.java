@@ -107,7 +107,7 @@ public interface UserRpc {
 	 * @return
 	 */
 	@POST("/userApi/registeryUserByApp.api")
-	BaseOutput<Object> registeryUserByApp(@VOField("userName") String userName, @VOField("realName") String realName, @VOField("cellphone") String cellphone, @VOField("email") String email, @VOField("cardNumber") String cardNumber, @VOField("firmCode") String firmCode, @VOField("departmentId") Long departmentId, @VOField("description") String description, @VOField("password") String password, @VOField("confirmPassword") String confirmPassword, @VOField("positionId") Long positionId, @VOField("superiorId") Long superiorId, @VOField("gender") Integer gender);
+	BaseOutput<Object> registeryUserByApp(@VOField("userName") String userName, @VOField("realName") String realName, @VOField("cellphone") String cellphone, @VOField("email") String email, @VOField(value = "cardNumber", required = false) String cardNumber, @VOField("firmCode") String firmCode, @VOField("departmentId") Long departmentId, @VOField(value = "description", required = false) String description, @VOField("password") String password, @VOField("confirmPassword") String confirmPassword, @VOField("positionId") Long positionId, @VOField(value = "superiorId", required = false) Long superiorId, @VOField(value = "gender", required = false) Integer gender);
 
 	/**
 	 * 小程序修改密码
