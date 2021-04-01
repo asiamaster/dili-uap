@@ -84,7 +84,8 @@ public class SessionFilter implements Filter {
 			// 如果是框架导出，需要手动设置SessionId到Header中，因为restful取不到cookies
 			if (pc.getReq().getRequestURI().trim().endsWith("/export/serverExport.action")) {
 				MutableHttpServletRequest mreq = new MutableHttpServletRequest(req);
-				mreq.putHeader(SessionConstants.SESSION_ID, pc.getAccessToken());
+				mreq.putHeader(SessionConstants.ACCESS_TOKEN_KEY, pc.getAccessToken());
+				mreq.putHeader(SessionConstants.REFRESH_TOKEN_KEY, pc.getRefreshToken());
 				req = mreq;
 				WebContent.put(req);
 			}

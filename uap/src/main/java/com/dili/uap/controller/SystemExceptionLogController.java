@@ -9,7 +9,6 @@ import com.dili.ss.domain.EasyuiPageOutput;
 import com.dili.ss.domain.PageOutput;
 import com.dili.ss.util.DateUtils;
 import com.dili.uap.domain.dto.SystemExceptionLogDto;
-import com.dili.uap.sdk.constant.SessionConstants;
 import com.dili.uap.sdk.domain.SystemExceptionLog;
 import com.dili.uap.sdk.glossary.ExceptionType;
 import com.dili.uap.service.SystemExceptionLogService;
@@ -68,22 +67,20 @@ public class SystemExceptionLogController {
 	 */
 	@RequestMapping(value = "/listPage.action", method = { RequestMethod.GET, RequestMethod.POST })
 	public @ResponseBody String listPage(SystemExceptionLogDto systemExceptionLog, HttpServletRequest req) throws Exception {
-		if (StringUtils.isNotBlank(req.getHeader(SessionConstants.SESSION_ID))) {
-			if (systemExceptionLog.getEndExceptionTime() == null) {
-				systemExceptionLog.setEndExceptionTime(new Date());
-			}
-			if (systemExceptionLog.getStartExceptionTime() == null) {
-				Calendar calendar = Calendar.getInstance();
-				calendar.add(Calendar.DAY_OF_MONTH, -31);
-				calendar.set(Calendar.HOUR_OF_DAY, 0);
-				calendar.set(Calendar.MINUTE, 0);
-				calendar.set(Calendar.MILLISECOND, 0);
-				systemExceptionLog.setStartExceptionTime(calendar.getTime());
-			} else {
-				int diff = DateUtils.differentDays(systemExceptionLog.getStartExceptionTime(), systemExceptionLog.getEndExceptionTime());
-				if (diff > 31) {
-					return JSON.toJSONString(BaseOutput.failure("只能导出31天以内的数据"));
-				}
+		if (systemExceptionLog.getEndExceptionTime() == null) {
+			systemExceptionLog.setEndExceptionTime(new Date());
+		}
+		if (systemExceptionLog.getStartExceptionTime() == null) {
+			Calendar calendar = Calendar.getInstance();
+			calendar.add(Calendar.DAY_OF_MONTH, -31);
+			calendar.set(Calendar.HOUR_OF_DAY, 0);
+			calendar.set(Calendar.MINUTE, 0);
+			calendar.set(Calendar.MILLISECOND, 0);
+			systemExceptionLog.setStartExceptionTime(calendar.getTime());
+		} else {
+			int diff = DateUtils.differentDays(systemExceptionLog.getStartExceptionTime(), systemExceptionLog.getEndExceptionTime());
+			if (diff > 31) {
+				return JSON.toJSONString(BaseOutput.failure("只能导出31天以内的数据"));
 			}
 		}
 		ExceptionLogQueryInput query = new ExceptionLogQueryInput();

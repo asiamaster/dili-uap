@@ -159,7 +159,7 @@ public class IndexController {
 			if (user == null) {
 				throw new NotLoginException("登录用户不存在");
 			}
-			modelMap.put("sessionId", getSessionId(req));
+			modelMap.put("accessToken", getAccessToken(req));
 			modelMap.put("userName", user.getUserName());
 			modelMap.put("password", user.getPassword());
 			modelMap.put("systems", systems);
@@ -379,24 +379,47 @@ public class IndexController {
 	}
 
 	/**
-	 * 获取sessionId
-	 *
-	 * @param req
+	 * 从URL参数、header和Cookie中获取Token
+	 * 没有取到，返回null
 	 * @return
 	 */
-	private String getSessionId(HttpServletRequest req) {
-		String sessionId = null;
-		// 首先读取链接中的session
-		sessionId = req.getParameter(SessionConstants.SESSION_ID);
-		if (StringUtils.isBlank(sessionId)) {
-			sessionId = req.getHeader(SessionConstants.SESSION_ID);
+	public String getAccessToken(HttpServletRequest req) {
+		// 首先读取链接中的token
+		String accessToken = req.getParameter(SessionConstants.ACCESS_TOKEN_KEY);
+		if (StringUtils.isBlank(accessToken)) {
+			accessToken = req.getParameter(SessionConstants.OAUTH_ACCESS_TOKEN_KEY);
 		}
-		if (StringUtils.isNotBlank(sessionId)) {
-			WebContent.setCookie(SessionConstants.SESSION_ID, sessionId);
+		if (StringUtils.isBlank(accessToken)) {
+			accessToken = req.getHeader(SessionConstants.ACCESS_TOKEN_KEY);
+		}
+		if (StringUtils.isNotBlank(accessToken)) {
+			WebContent.setCookie(SessionConstants.ACCESS_TOKEN_KEY, accessToken);
 		} else {
-			sessionId = WebContent.getCookieVal(SessionConstants.SESSION_ID);
+			accessToken = WebContent.getCookieVal(SessionConstants.ACCESS_TOKEN_KEY);
 		}
-		return sessionId;
+		return accessToken;
+	}
+
+	/**
+	 * 从URL参数、header和Cookie中获取Token
+	 * 没有取到，返回null
+	 * @return
+	 */
+	public String getRefreshToken(HttpServletRequest req) {
+		// 首先读取链接中的token
+		String refreshToken = req.getParameter(SessionConstants.REFRESH_TOKEN_KEY);
+		if (StringUtils.isBlank(refreshToken)) {
+			refreshToken = req.getParameter(SessionConstants.OAUTH_REFRESH_TOKEN_KEY);
+		}
+		if (StringUtils.isBlank(refreshToken)) {
+			refreshToken = req.getHeader(SessionConstants.REFRESH_TOKEN_KEY);
+		}
+		if (StringUtils.isNotBlank(refreshToken)) {
+			WebContent.setCookie(SessionConstants.REFRESH_TOKEN_KEY, refreshToken);
+		} else {
+			refreshToken = WebContent.getCookieVal(SessionConstants.REFRESH_TOKEN_KEY);
+		}
+		return refreshToken;
 	}
 
 	/**

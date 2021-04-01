@@ -27,7 +27,8 @@ public class DataAuthApiService extends AbstractApiService {
             Map<String, String> param = new HashMap<>();
             param.put("type", type);
             param.put("userId", SessionContext.getSessionContext().getUserTicket().getId().toString());
-            param.put(SessionConstants.SESSION_ID, pc.getAccessToken());
+            param.put(SessionConstants.ACCESS_TOKEN_KEY, pc.getAccessToken());
+            param.put(SessionConstants.REFRESH_TOKEN_KEY, pc.getRefreshToken());
             httpGet("/dataAuthApi/refreshAuthData.api", param);
         } catch (IOException e) {
             log.info("刷新数据权限出现异常!", e);

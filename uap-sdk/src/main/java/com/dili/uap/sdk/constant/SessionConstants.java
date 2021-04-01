@@ -9,8 +9,6 @@ public class SessionConstants {
 	// Session Data的key prefix，后面加sessionId
 	public static final String REFRESH_TOKEN_KEY_PREFIX = APPLICATION_NAME + "refreshToken:";
 	public static final String OAUTH_REFRESH_TOKEN_KEY_PREFIX = APPLICATION_NAME + "oauth_refreshToken:";
-	// Cookie, Request, Header, Session中取sessionId的key
-	public static final String SESSION_ID = APPLICATION_NAME + "sessionId";
 	//web socket放入属性的用户id key
 	public static final String USER_ID_KEY = APPLICATION_NAME + "userId";
 
