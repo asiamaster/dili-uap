@@ -38,10 +38,6 @@ public class PermissionContext {
 	// 查询字符串
 	private String queryString;
 
-	private String accessToken;
-
-	private String refreshToken;
-
 	private ManageConfig config;
 
 	private AuthService authService;
@@ -200,20 +196,18 @@ public class PermissionContext {
 	 * @return
 	 */
 	public String getAccessToken() {
-		if (accessToken == null) {
-			// 首先读取链接中的token
-			accessToken = req.getParameter(SessionConstants.ACCESS_TOKEN_KEY);
-			if (StringUtils.isBlank(accessToken)) {
-				accessToken = req.getParameter(SessionConstants.OAUTH_ACCESS_TOKEN_KEY);
-			}
-			if (StringUtils.isBlank(accessToken)) {
-				accessToken = req.getHeader(SessionConstants.ACCESS_TOKEN_KEY);
-			}
-			if (StringUtils.isNotBlank(accessToken)) {
-				WebContent.setCookie(SessionConstants.ACCESS_TOKEN_KEY, accessToken);
-			} else {
-				accessToken = WebContent.getCookieVal(SessionConstants.ACCESS_TOKEN_KEY);
-			}
+		// 首先读取链接中的token
+		String accessToken = req.getParameter(SessionConstants.ACCESS_TOKEN_KEY);
+		if (StringUtils.isBlank(accessToken)) {
+			accessToken = req.getParameter(SessionConstants.OAUTH_ACCESS_TOKEN_KEY);
+		}
+		if (StringUtils.isBlank(accessToken)) {
+			accessToken = req.getHeader(SessionConstants.ACCESS_TOKEN_KEY);
+		}
+		if (StringUtils.isNotBlank(accessToken)) {
+			WebContent.setCookie(SessionConstants.ACCESS_TOKEN_KEY, accessToken);
+		} else {
+			accessToken = WebContent.getCookieVal(SessionConstants.ACCESS_TOKEN_KEY);
 		}
 		return accessToken;
 	}
@@ -224,20 +218,18 @@ public class PermissionContext {
 	 * @return
 	 */
 	public String getRefreshToken() {
-		if (refreshToken == null) {
-			// 首先读取链接中的token
-			refreshToken = req.getParameter(SessionConstants.REFRESH_TOKEN_KEY);
-			if (StringUtils.isBlank(refreshToken)) {
-				refreshToken = req.getParameter(SessionConstants.OAUTH_REFRESH_TOKEN_KEY);
-			}
-			if (StringUtils.isBlank(refreshToken)) {
-				refreshToken = req.getHeader(SessionConstants.REFRESH_TOKEN_KEY);
-			}
-			if (StringUtils.isNotBlank(refreshToken)) {
-				WebContent.setCookie(SessionConstants.REFRESH_TOKEN_KEY, refreshToken);
-			} else {
-				refreshToken = WebContent.getCookieVal(SessionConstants.REFRESH_TOKEN_KEY);
-			}
+		// 首先读取链接中的token
+		String refreshToken = req.getParameter(SessionConstants.REFRESH_TOKEN_KEY);
+		if (StringUtils.isBlank(refreshToken)) {
+			refreshToken = req.getParameter(SessionConstants.OAUTH_REFRESH_TOKEN_KEY);
+		}
+		if (StringUtils.isBlank(refreshToken)) {
+			refreshToken = req.getHeader(SessionConstants.REFRESH_TOKEN_KEY);
+		}
+		if (StringUtils.isNotBlank(refreshToken)) {
+			WebContent.setCookie(SessionConstants.REFRESH_TOKEN_KEY, refreshToken);
+		} else {
+			refreshToken = WebContent.getCookieVal(SessionConstants.REFRESH_TOKEN_KEY);
 		}
 		return refreshToken;
 	}
