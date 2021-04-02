@@ -243,11 +243,7 @@ public class PermissionContext {
 		if (accessToken == null) {
 			return null;
 		}
-		String refreshToken = getRefreshToken();
-		if (refreshToken == null) {
-			return null;
-		}
-		return authService.getUserTicket(accessToken, refreshToken);
+		return authService.getUserTicket(accessToken, getRefreshToken());
 	}
 
 }
