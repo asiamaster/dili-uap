@@ -710,8 +710,6 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 		if (!save.isSuccess()) {
 			return BaseOutput.failure(save.getMessage());
 		}
-		user.setState(UserState.INACTIVE.getCode());
-		this.updateSelective(user);
 		return BaseOutput.success("注册用户成功");
 	}
 
