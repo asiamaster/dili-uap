@@ -5,8 +5,6 @@ import com.dili.ss.retrofitful.annotation.RestfulScan;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.web.server.WebServerFactoryCustomizer;
-import org.springframework.boot.web.servlet.server.ConfigurableServletWebServerFactory;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
@@ -83,14 +81,14 @@ public class UapApplication extends SpringBootServletInitializer implements Comm
 	/**
 	 * 设置服务端口
 	 */
-	@SuppressWarnings("rawtypes")
-	@Bean
-	public WebServerFactoryCustomizer webServerFactoryCustomizer(){
-		return new WebServerFactoryCustomizer<ConfigurableServletWebServerFactory>() {
-			@Override
-			public void customize(ConfigurableServletWebServerFactory factory) {
-				factory.setPort(80);
-			}
-		};
-	}
+//	@SuppressWarnings("rawtypes")
+//	@Bean
+//	public WebServerFactoryCustomizer webServerFactoryCustomizer(){
+//		return new WebServerFactoryCustomizer<ConfigurableServletWebServerFactory>() {
+//			@Override
+//			public void customize(ConfigurableServletWebServerFactory factory) {
+//				factory.setPort(80);
+//			}
+//		};
+//	}
 }
