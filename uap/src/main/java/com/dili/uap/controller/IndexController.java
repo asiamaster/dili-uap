@@ -6,13 +6,13 @@ import com.dili.cms.sdk.rpc.AnnunciateRpc;
 import com.dili.commons.rabbitmq.RabbitMQMessageService;
 import com.dili.logger.sdk.domain.BusinessLog;
 import com.dili.logger.sdk.rpc.BusinessLogRpc;
+import com.dili.ss.constant.ResultCode;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.dto.IBaseDomain;
 import com.dili.ss.exception.AppException;
 import com.dili.ss.mvc.util.RequestUtils;
 import com.dili.uap.constants.UapConstants;
-import com.dili.uap.oauth.constant.ResultCode;
 import com.dili.uap.sdk.constant.SessionConstants;
 import com.dili.uap.sdk.domain.Systems;
 import com.dili.uap.sdk.domain.User;
@@ -39,6 +39,8 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+//import com.dili.uap.oauth.constant.ResultCode;
 
 /**
  * 首页控制器
