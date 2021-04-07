@@ -75,7 +75,7 @@ public class AuthorizeController {
 
     /**
      * 跳转到Login页面
-     * http://uap.diligrp.com:8081/api/oauth-server/authorize?response_type=code&client_id=hszx&state=uuid&redirect_uri=https://www.baidu.com
+     * http://as.diligrp.com:8396/api/oauth-server/authorize?response_type=code&client_id=hszx&state=uuid&redirect_uri=https://www.baidu.com
      * # Authorization Request
      * 客户端通过使用“application/x-www-form-urlencoding”格式向授权端点URI的查询组件添加以下参数来构造请求URI
      * - response_type：必须的。值必须是"code"。
