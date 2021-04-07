@@ -36,6 +36,7 @@ public class ManageRedisInitializer {
 
         /* ========= 基本配置 ========= */
         RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration();
+        System.out.println("--redis host:"+manageRedisConfig.getHost()+",port:"+manageRedisConfig.getPort()+",db:"+manageRedisConfig.getDatabase());
         configuration.setHostName(manageRedisConfig.getHost());
         configuration.setPort(manageRedisConfig.getPort());
         configuration.setDatabase(manageRedisConfig.getDatabase());
