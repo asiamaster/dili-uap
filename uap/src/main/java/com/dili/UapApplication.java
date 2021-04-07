@@ -74,7 +74,7 @@ public class UapApplication extends SpringBootServletInitializer implements Comm
 		long totalMemory = Runtime.getRuntime().totalMemory();
 		long freeMemory = Runtime.getRuntime().freeMemory();
 		DecimalFormat decimalFormat = new DecimalFormat("#,###");
-		System.out.println("maxMemory:" + decimalFormat.format(maxMemory) + ",totalMemory:" + decimalFormat.format(totalMemory) + ",freeMemory:" + decimalFormat.format(freeMemory));
+		System.out.println("maxMemory:" + decimalFormat.format(maxMemory>>10>>10) + "MB,totalMemory:" + decimalFormat.format(totalMemory>>10>>10) + "MB,freeMemory:" + decimalFormat.format(freeMemory>>10>>10)+"MB");
 		System.out.println("项目启动完成!");
 	}
 

@@ -16,14 +16,12 @@ import com.dili.uap.sdk.domain.dto.AnnunciateMessages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
-import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -44,9 +42,6 @@ public class WebSocketApi {
     @Autowired
 //    StandaloneRedisDelayQueueImpl redisDelayQueue;
     DistributedRedisDelayQueueImpl redisDelayQueue;
-
-    @Resource(name = "stringRedisTemplate")
-    private StringRedisTemplate redisTemplate;
 
     /**
      * add

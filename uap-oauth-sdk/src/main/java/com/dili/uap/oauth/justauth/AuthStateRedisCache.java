@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class AuthStateRedisCache implements AuthStateCache {
 
-    @Resource(name = "stringRedisTemplate")
+    @Resource(name = "manageRedisTemplate")
     private RedisTemplate<String, String> redisTemplate;
 
     private ValueOperations<String, String> valueOperations;
