@@ -40,10 +40,7 @@ public class SessionContext {
 
 	public static synchronized SessionContext getSessionContext() {
 		SessionContext context = holder.get();
-		if (context == null) {
-			new SessionContext();
-		}
-		return holder.get();
+		return context == null ? new SessionContext() : context;
 	}
 
 	public static synchronized void remove() {
