@@ -1,6 +1,8 @@
 package com.dili.uap.oauth.justauth;
 
 import com.alibaba.fastjson.JSONObject;
+import com.xkcoding.http.config.HttpConfig;
+import com.xkcoding.http.constants.Constants;
 import com.xkcoding.http.support.HttpHeader;
 import me.zhyd.oauth.cache.AuthStateCache;
 import me.zhyd.oauth.config.AuthConfig;
@@ -35,7 +37,11 @@ public class AuthUapRequest extends AuthDefaultRequest{
 //        String responseBody = doPostAuthorizationCode(authCallback.getCode());
         HttpHeader httpHeader = new HttpHeader();
         httpHeader.add("Content-Type", "application/x-www-form-urlencoded");
-        String responseBody = new HttpUtils(config.getHttpConfig()).post(accessTokenUrl(authCallback.getCode()), null, httpHeader);
+        HttpConfig httpConfig = config.getHttpConfig();
+        httpConfig = httpConfig == null ? new HttpConfig() : httpConfig;
+        //默认3秒过期
+        httpConfig.setTimeout(Constants.DEFAULT_TIMEOUT);
+        String responseBody = new HttpUtils(httpConfig).post(accessTokenUrl(authCallback.getCode()), null, httpHeader);
         JSONObject object = JSONObject.parseObject(responseBody);
         this.checkResponse(object);
         return AuthToken.builder()
