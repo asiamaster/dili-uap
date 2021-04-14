@@ -27,7 +27,7 @@
     </parent>
 
     <build>
-        <finalName>uap</finalName>
+        <finalName>uap-as</finalName>
         <!-- 资源文件过滤 -->
         <resources>
             <resource>
