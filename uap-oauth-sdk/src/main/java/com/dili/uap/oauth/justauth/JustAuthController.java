@@ -111,7 +111,7 @@ public class JustAuthController {
      * @return
      */
     protected String getRefreshTokenByUuid(String uuid){
-        return "f7a6ec11-507a-4869-8f35-a6ddf4695ee8";
+        return "";
     }
 
     /**
@@ -119,8 +119,9 @@ public class JustAuthController {
      * (在缓存中)更新用户的refreshToken
      * @param uuid
      * @param authToken
+     * @return 返回BaseOutput对象的JSON
      */
-    protected void updateRefreshToken(String uuid, AuthToken authToken){
+    protected void updateRefreshToken(String uuid, AuthToken authToken) {
 
     }
 
