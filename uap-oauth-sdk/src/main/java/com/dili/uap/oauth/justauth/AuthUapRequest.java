@@ -1,8 +1,8 @@
 package com.dili.uap.oauth.justauth;
 
 import com.alibaba.fastjson.JSONObject;
+import com.dili.uap.oauth.component.SingletonConfig;
 import com.xkcoding.http.config.HttpConfig;
-import com.xkcoding.http.constants.Constants;
 import com.xkcoding.http.support.HttpHeader;
 import me.zhyd.oauth.cache.AuthStateCache;
 import me.zhyd.oauth.config.AuthConfig;
@@ -39,8 +39,8 @@ public class AuthUapRequest extends AuthDefaultRequest{
         httpHeader.add("Content-Type", "application/x-www-form-urlencoded");
         HttpConfig httpConfig = config.getHttpConfig();
         httpConfig = httpConfig == null ? new HttpConfig() : httpConfig;
-        //默认3秒过期
-        httpConfig.setTimeout(Constants.DEFAULT_TIMEOUT);
+        //默认5秒过期
+        httpConfig.setTimeout(SingletonConfig.getHttpTimeout());
         String responseBody = new HttpUtils(httpConfig).post(accessTokenUrl(authCallback.getCode()), null, httpHeader);
         JSONObject object = JSONObject.parseObject(responseBody);
         this.checkResponse(object);
@@ -101,7 +101,11 @@ public class AuthUapRequest extends AuthDefaultRequest{
 //                .build();
         HttpHeader httpHeader = new HttpHeader();
         httpHeader.add("Content-Type", "application/x-www-form-urlencoded");
-        String response = new HttpUtils(config.getHttpConfig()).post(refreshTokenUrl(authToken.getRefreshToken()), null, httpHeader);
+        HttpConfig httpConfig = config.getHttpConfig();
+        httpConfig = httpConfig == null ? new HttpConfig() : httpConfig;
+        //默认5秒过期
+        httpConfig.setTimeout(SingletonConfig.getHttpTimeout());
+        String response = new HttpUtils(httpConfig).post(refreshTokenUrl(authToken.getRefreshToken()), null, httpHeader);
         return AuthResponse.builder().code(AuthResponseStatus.SUCCESS.getCode()).data(getAuthToken(response)).build();
     }
 
