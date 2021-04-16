@@ -63,6 +63,9 @@ public class AuthUapRequest extends AuthDefaultRequest{
         JSONObject jsonObject = object.getJSONObject("data");
 //        this.checkResponse(object);
         Integer gender = jsonObject.getInteger("gender");
+        if(gender == null){
+            gender = Integer.parseInt(AuthUserGender.UNKNOWN.getCode());
+        }
         return AuthUser.builder()
                 .uuid(jsonObject.getString("id"))
                 .username(jsonObject.getString("userName"))
