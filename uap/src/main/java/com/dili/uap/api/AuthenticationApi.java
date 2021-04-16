@@ -307,7 +307,7 @@ public class AuthenticationApi {
 			return BaseOutput.failure("数据权限引用不存在");
 		}
 		// 从Redis获取用户有权限的UserDataAuth列表
-		List<Map> userDataAuthes = this.dataAuthRedis.dataAuth(refCode, userTicket.getId(), userTicket.getSystemType());
+		List<Map> userDataAuthes = this.dataAuthRedis.dataAuth(refCode, userTicket.getId());
 		if (CollectionUtils.isEmpty(userDataAuthes)) {
 			return BaseOutput.success("调用成功").setData(userDataAuthes);
 		}

@@ -92,7 +92,7 @@ public class SessionContext {
 		if (getUserTicket() == null || getUserTicket().getId() == null) {
 			return list;
 		}
-		return dataAuthRedis.dataAuth(type, getUserTicket().getId(), getUserTicket().getSystemType());
+		return dataAuthRedis.dataAuth(type, getUserTicket().getId());
 	}
 
 }

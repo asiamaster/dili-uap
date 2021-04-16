@@ -144,7 +144,7 @@ public class UserRedis {
 		redisUtil.expire(KeyBuilder.buildUserSystemKey(userId.toString(), userTicket.getSystemType()), refreshTokenTimeout, TimeUnit.SECONDS);
 		redisUtil.expire(KeyBuilder.buildUserMenuUrlKey(userId.toString(), userTicket.getSystemType()), refreshTokenTimeout, TimeUnit.SECONDS);
 		redisUtil.expire(KeyBuilder.buildUserResourceCodeKey(userId.toString(), userTicket.getSystemType()), refreshTokenTimeout, TimeUnit.SECONDS);
-		redisUtil.expire(KeyBuilder.buildUserDataAuthKey(userId.toString(), userTicket.getSystemType()), refreshTokenTimeout, TimeUnit.SECONDS);
+		redisUtil.expire(KeyBuilder.buildUserDataAuthKey(userId.toString()), refreshTokenTimeout, TimeUnit.SECONDS);
 	}
 
 	/**

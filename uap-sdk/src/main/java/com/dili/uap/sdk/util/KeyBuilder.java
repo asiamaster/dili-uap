@@ -86,11 +86,10 @@ public class KeyBuilder {
     /**
      * 构建 用户数据权限 KEY
      * @param userId
-     * @param systemType
      * @return
      */
-    public static String buildUserDataAuthKey(String userId, Integer systemType){
-        return buildKey(userId, systemType, SessionConstants.USER_DATA_AUTH_KEY);
+    public static String buildUserDataAuthKey(String userId){
+        return new StringBuilder().append(SessionConstants.USER_DATA_AUTH_KEY).append(userId).toString();
     }
 
     /**

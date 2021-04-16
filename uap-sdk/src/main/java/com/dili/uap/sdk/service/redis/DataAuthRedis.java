@@ -1,7 +1,6 @@
 package com.dili.uap.sdk.service.redis;
 
 import com.alibaba.fastjson.JSONObject;
-import com.dili.uap.sdk.constant.SessionConstants;
 import com.dili.uap.sdk.util.KeyBuilder;
 import org.springframework.data.redis.core.BoundSetOperations;
 import org.springframework.stereotype.Service;
@@ -26,8 +25,8 @@ public class DataAuthRedis {
      * @param userId    用户id
      * @return  UserDataAuth列表
      */
-    public List<Map> dataAuth(String refCode, Long userId, Integer systemType) {
-        BoundSetOperations<String, String> boundSetOperations = redisUtil.getRedisTemplate().boundSetOps (KeyBuilder.buildUserDataAuthKey(userId.toString(), systemType));
+    public List<Map> dataAuth(String refCode, Long userId) {
+        BoundSetOperations<String, String> boundSetOperations = redisUtil.getRedisTemplate().boundSetOps (KeyBuilder.buildUserDataAuthKey(userId.toString()));
         List<Map> dataAuthList = new ArrayList<>();
         if(boundSetOperations.size() <= 0) {
             return dataAuthList;
@@ -50,7 +49,7 @@ public class DataAuthRedis {
      * @return  UserDataAuth List<Map>
      */
     public List<String> dataAuthValues(String refCode, Long userId) {
-        BoundSetOperations<String, String> boundSetOperations = redisUtil.getRedisTemplate().boundSetOps (SessionConstants.USER_DATA_AUTH_KEY + userId);
+        BoundSetOperations<String, String> boundSetOperations = redisUtil.getRedisTemplate().boundSetOps (KeyBuilder.buildUserDataAuthKey(userId.toString()));
         List<String> dataAuthList = new ArrayList<>();
         if(boundSetOperations.size()<=0) {
             return dataAuthList;
@@ -72,7 +71,7 @@ public class DataAuthRedis {
      * @return UserDataAuth List<Map>
      */
     public List<Map> dataAuth(Long userId) {
-        BoundSetOperations<String, String> boundSetOperations = redisUtil.getRedisTemplate().boundSetOps (SessionConstants.USER_DATA_AUTH_KEY + userId);
+        BoundSetOperations<String, String> boundSetOperations = redisUtil.getRedisTemplate().boundSetOps (KeyBuilder.buildUserDataAuthKey(userId.toString()));
         List<Map> dataAuthMap = new ArrayList<>();
         if(boundSetOperations.size() <= 0) {
             return dataAuthMap;

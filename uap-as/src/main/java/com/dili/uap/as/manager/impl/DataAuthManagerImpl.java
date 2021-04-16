@@ -71,7 +71,7 @@ public class DataAuthManagerImpl implements DataAuthManager {
 		userDataAuth.setUserId(userId);
 		// 查询数据权限，需要合并下面的部门数据权限列表
 		List<UserDataAuth> userDataAuths = this.userDataAuthMapper.select(userDataAuth);
-		String key = KeyBuilder.buildUserDataAuthKey(userId.toString(), systemType);
+		String key = KeyBuilder.buildUserDataAuthKey(userId.toString());
 		this.redisUtil.remove(key);
 		if (CollectionUtils.isEmpty(userDataAuths)) {
 			return;
