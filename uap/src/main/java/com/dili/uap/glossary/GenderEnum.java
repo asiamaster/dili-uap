@@ -8,6 +8,7 @@ package com.dili.uap.glossary;
  */
 public enum GenderEnum {
 
+    UNKNOWN(-1, "未知"),
     FEMALE(0, "男"),
     MALE(1, "女");
 

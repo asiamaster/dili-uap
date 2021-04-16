@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -39,7 +40,10 @@ public class GenderProvider implements ValueProvider {
         if (null == object) {
             return null;
         }
-        ValuePair<?> valuePair = BUFFER.stream().filter(val -> object.toString().equals(val.getValue())).findFirst().orElseGet(null);
+        Optional<ValuePair<?>> first = BUFFER.stream().filter(val -> {
+            return object.toString().equals(val.getValue());
+        }).findFirst();
+        ValuePair<?> valuePair = BUFFER.stream().filter(val -> object.toString().equals(val.getValue())).findFirst().orElse(null);
         if (null != valuePair) {
             return valuePair.getText();
         }
