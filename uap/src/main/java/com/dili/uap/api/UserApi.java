@@ -490,7 +490,7 @@ public class UserApi {
 				break;
 			//手机号码
 			case 3:
-				regex = "^[1][3-8][0-9]{9}$";
+				regex = "^[1][3-9][0-9]{9}$";
 				break;
 			//邮箱
 			case 4:
