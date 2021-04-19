@@ -56,6 +56,29 @@ public class AuthService {
      * @param refreshToken
      * @return
      */
+    public UserTicket getOAuthUserTicket(String accessToken, String refreshToken) {
+        //选读取accessToken
+        UserTicket userTicket = userJwtService.getOAuthUserTicket(accessToken);
+        if (null != userTicket) {
+            return userTicket;
+        }
+        //accessToken超时，则根据refreshToken重新生成
+        UserToken userToken = userRedis.applyAccessToken(refreshToken);
+        //redis超时，无法获取到用户信息
+        if(userToken == null){
+            return null;
+        }
+        setCookieResponseAndDefer(userToken);
+        return userToken.getUserTicket();
+    }
+
+    /**
+     * 根据accessToken和refreshToken获取用户信息
+     * 如果accessToken过期，则将redis超时推后dynaSessionConstants.getSessionTimeout()的时长<br/>
+     * @param accessToken
+     * @param refreshToken
+     * @return
+     */
     public UserTicket getGatewayUserTicket(String accessToken, String refreshToken) {
         //选读取accessToken
         UserTicket userTicket = userJwtService.getUserTicket(accessToken);

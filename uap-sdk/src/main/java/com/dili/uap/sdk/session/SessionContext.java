@@ -57,6 +57,13 @@ public class SessionContext {
 		return userTicket;
 	}
 
+	public UserTicket getOAuthUserTicket() {
+		if (userTicket == null) {
+			userTicket = authService.getOAuthUserTicket(pc.getAccessToken(), pc.getRefreshToken());
+		}
+		return userTicket;
+	}
+
 	public ManageConfig getManageConfig() {
 		return pc.getConfig();
 	}

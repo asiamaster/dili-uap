@@ -5,6 +5,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.auth0.jwt.interfaces.JWTVerifier;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.exception.InternalException;
 import com.dili.ss.util.DateUtils;
@@ -30,13 +31,15 @@ public class UserJwtService extends JwtService {
     @Resource
     private DynamicConfig dynamicConfig;
 
+    private static RSAKeyPair rsaKeyPair = null;
+
     /**
      * 初始化密钥
      * @throws Exception
      */
     @PostConstruct
     public void init() throws Exception {
-        RSAUtils.getRSAKeyPair(dynamicConfig.getPublicKey(), dynamicConfig.getPrivateKey());
+        rsaKeyPair = RSAUtils.createRSAKeyPair(dynamicConfig.getPublicKey(), dynamicConfig.getPrivateKey());
     }
 
     /**
@@ -79,6 +82,18 @@ public class UserJwtService extends JwtService {
     }
 
     /**
+     * 指定系统类型(SystemType)获取签发的oauth user token，返回给前端
+     * @param user
+     * @return
+     * @throws Exception
+     */
+    public String generateOAuthUserTokenByRSA256(UserTicket user, SystemType systemType) {
+        Algorithm algorithm = Algorithm.RSA256(
+                rsaKeyPair.getPublicKey(), rsaKeyPair.getPrivateKey());
+        return createToken(algorithm, ISSUER, systemType.name(), DateUtils.addSeconds(new Date(), dynamicConfig.getAccessTokenTimeout(systemType.getCode()).intValue()), user);
+    }
+
+    /**
      * 验证并获取UserTicket
      * @param token
      * @return
@@ -93,6 +108,40 @@ public class UserJwtService extends JwtService {
         } catch (JWTVerificationException e) {
             return null;
         }
+    }
+
+    /**
+     * 验证并获取OAuth UserTicket
+     * @param token
+     * @return
+     * @throws Exception
+     */
+    public UserTicket getOAuthUserTicket(String token) {
+        try {
+            if(token == null){
+                return null;
+            }
+            return getUserTicket(verifierOAuthToken(token));
+        } catch (JWTVerificationException e) {
+            return null;
+        }
+    }
+
+
+    /**
+     * 验证oauth token
+     * @param token
+     * @return
+     * @throws Exception
+     */
+    public DecodedJWT verifierOAuthToken(String token) throws JWTVerificationException{
+        //其实按照规定只需要传递 publicKey 来校验即可，这可能是auth0 的缺点
+        Algorithm algorithm = Algorithm.RSA256(rsaKeyPair.getPublicKey(), rsaKeyPair.getPrivateKey());
+        JWTVerifier verifier = JWT.require(algorithm)
+                .withIssuer(ISSUER)
+                //Reusable verifier instance 可复用的验证实例
+                .build();
+        return verifier.verify(token);
     }
 
     /**

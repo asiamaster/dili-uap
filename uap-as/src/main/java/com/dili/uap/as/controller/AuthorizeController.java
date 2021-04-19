@@ -318,7 +318,7 @@ public class AuthorizeController {
      */
     @RequestMapping(value = "/user", method = { RequestMethod.GET, RequestMethod.POST })
     public @ResponseBody BaseOutput<UserTicket> user() {
-        UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
+        UserTicket userTicket = SessionContext.getSessionContext().getOAuthUserTicket();
         if(userTicket == null){
             return BaseOutput.failure(ResultCode.UNAUTHORIZED, "用户未登录");
         }

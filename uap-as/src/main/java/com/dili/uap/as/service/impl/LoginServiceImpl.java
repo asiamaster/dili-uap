@@ -197,7 +197,7 @@ public class LoginServiceImpl implements LoginService {
 			user.setPassword(null);
 			userTicket.setPassword(null);
 			loginResult.setUser(userTicket);
-			String accessToken = userJwtService.generateUserTokenByRSA256(userTicket, SystemType.WEB);
+			String accessToken = userJwtService.generateOAuthUserTokenByRSA256(userTicket, SystemType.WEB);
 			Long accessTokenTimeout = dynamicConfig.getAccessTokenTimeout(SystemType.WEB.getCode());
 			Long refreshTokenTimeout = dynamicConfig.getRefreshTokenTimeout(SystemType.WEB.getCode());
 			//刷新token
