@@ -179,25 +179,25 @@ public class LoginServiceImpl implements LoginService {
 			this.updateLoginTime(user);
 			// 登录成功后清除锁定计时
 //			clearUserLock(user.getId());
-			Firm condition = DTOUtils.newInstance(Firm.class);
-			condition.setCode(user.getFirmCode());
-			Firm firm = firmMapper.selectOne(condition);
-			UserTicket userTicket = DTOUtils.asInstance(user, UserTicket.class);
+			UserTicket oAuthTicket = DTOUtils.asInstance(user, UserTicket.class);
+			oAuthTicket.setOpenId(loginDto.getOpenId());
 			//设置登录的系统，用于区别不同的超时时间
-			userTicket.setSystemType(SystemType.WEB.getCode());
-			if (firm != null) {
-				// 用于makeCookieTag中获取firmId
-//				WebContent.put("firmId", firm.getId());
-				userTicket.setFirmId(firm.getId());
-				userTicket.setFirmName(firm.getName());
-			}
+			oAuthTicket.setSystemType(SystemType.WEB.getCode());
+//			Firm condition = DTOUtils.newInstance(Firm.class);
+//			condition.setCode(user.getFirmCode());
+//			Firm firm = firmMapper.selectOne(condition);
+//			if (firm != null) {
+//				// 用于makeCookieTag中获取firmId
+////				WebContent.put("firmId", firm.getId());
+//				userTicket.setFirmId(firm.getId());
+//				userTicket.setFirmName(firm.getName());
+//			}
 			// 构建返回的登录信息
 			LoginResult loginResult = DTOUtils.newInstance(LoginResult.class);
+			clearExtInfo(oAuthTicket);
 			// 返回用户信息需要屏蔽用户的密码
-			user.setPassword(null);
-			userTicket.setPassword(null);
-			loginResult.setUser(userTicket);
-			String accessToken = userJwtService.generateOAuthUserTokenByRSA256(userTicket, SystemType.WEB);
+			loginResult.setUser(oAuthTicket);
+			String accessToken = userJwtService.generateOAuthUserTokenByRSA256(oAuthTicket, SystemType.WEB);
 			Long accessTokenTimeout = dynamicConfig.getAccessTokenTimeout(SystemType.WEB.getCode());
 			Long refreshTokenTimeout = dynamicConfig.getRefreshTokenTimeout(SystemType.WEB.getCode());
 			//刷新token
@@ -207,7 +207,7 @@ public class LoginServiceImpl implements LoginService {
 			loginResult.setAccessTokenTimeout(accessTokenTimeout);
 			loginResult.setRefreshTokenTimeout(refreshTokenTimeout);
 			loginResult.setLoginPath(loginDto.getLoginPath());
-			saveOAuthTokenInRedis(userTicket, refreshToken, SystemType.WEB.getCode());
+			saveOAuthTokenInRedis(oAuthTicket, refreshToken, SystemType.WEB.getCode());
 //			logLogin(user, loginDto, true, "登录成功");
 			return BaseOutput.success("登录成功").setData(loginResult);
 		} catch (Exception e) {
@@ -219,7 +219,110 @@ public class LoginServiceImpl implements LoginService {
 		}
 	}
 
+	/**
+	 * 用户id和refreshToken的1对多关系保存到redis
+	 * @param userId
+	 * @param refreshToken
+	 */
+	public void setUserIdRefreshTokens(String userId, Integer systemType, String refreshToken, Long refreshTokenTimeOut) {
+		BoundSetOperations<String, String> userIdRefreshTokens = redisUtil.getRedisTemplate().boundSetOps(
+				KeyBuilder.buildUserIdRefreshTokenKey(userId, systemType));
+		userIdRefreshTokens.add(refreshToken);
+		userIdRefreshTokens.expire(refreshTokenTimeOut, TimeUnit.SECONDS);
+	}
+
+	/**
+	 * 异步记录登出日志
+	 */
+	@Override
+	public void logLogout(UserTicket user) {
+		LoggerContext.put(LoggerConstant.LOG_BUSINESS_CODE_KEY, user.getUserName());
+		LoggerContext.put(LoggerConstant.LOG_BUSINESS_ID_KEY, user.getId());
+		LoggerContext.put(LoggerConstant.LOG_OPERATOR_ID_KEY, user.getId());
+		LoggerContext.put(LoggerConstant.LOG_MARKET_ID_KEY, user.getFirmId());
+		LoggerContext.put(LoggerConstant.LOG_NOTES_KEY, user.getRealName());
+		LoggerContext.put("msg", "系统登出");
+	}
+
+	/**
+	 * 锁定用户
+	 *
+	 * @param user
+	 */
+	@Override
+	public boolean lockUser(User user) {
+		// 判断是否要进行密码错误检查，不检查就不需要锁定用户了
+		if (!pwdErrorCheck) {
+			return false;
+		}
+		if (user == null) {
+			return false;
+		}
+		String key = SessionConstants.USER_PWD_ERROR_KEY + user.getId();
+		BoundListOperations<Object, Object> ops = redisUtil.getRedisTemplate().boundListOps(key);
+		while (true) {
+			Object s = ops.index(0);
+			if (s == null) {
+				break;
+			}
+			Long t = Long.valueOf(s.toString());
+			if (t == 0) {
+				break;
+			}
+			Long nt = System.currentTimeMillis() - t;
+			if (nt < pwdErrorRange) {
+				break;
+			}
+			ops.rightPop();
+		}
+		ops.leftPush(String.valueOf(System.currentTimeMillis()));
+		// 查询系统配置的密码错误锁定次数
+		SystemConfig systemConfigCondition = DTOUtils.newInstance(SystemConfig.class);
+		systemConfigCondition.setCode(UapConstants.LOGIN_FAILED_TIMES);
+		systemConfigCondition.setSystemCode(UapConstants.UAP_SYSTEM_CODE);
+		SystemConfig systemConfig = systemConfigMapper.selectOne(systemConfigCondition);
+		// 以系统变量配置为主，没有则使用配置文件中的配置
+		if (StringUtils.isNotBlank(systemConfig.getValue())) {
+			pwdErrorCount = Integer.parseInt(systemConfig.getValue());
+		}
+		// 在锁定次数范围内不锁定
+		if (ops.size() < Integer.parseInt(systemConfig.getValue())) {
+			return false;
+		}
+		// 如果当前用户不是锁定状态，则进行锁定
+		if (!user.getState().equals(UserState.LOCKED.getCode())) {
+			User updateUser = DTOUtils.newInstance(User.class);
+			updateUser.setId(user.getId());
+			updateUser.setLocked(new Date());
+			updateUser.setState(UserState.LOCKED.getCode());
+			this.userMapper.updateByPrimaryKeySelective(updateUser);
+			// 清空计时器
+			redisUtil.getRedisTemplate().delete(key);
+			return true;
+		}
+		return false;
+	}
+
 	// ================================= 私有方法分割线  ====================================
+
+	/**
+	 * 清除oauth登录用户的扩展信息
+	 * @param userTicket
+	 */
+	private void clearExtInfo(UserTicket userTicket){
+		userTicket.setPassword(null);
+		userTicket.setFirmCode(null);
+		userTicket.setFirmId(null);
+		userTicket.setFirmName(null);
+		userTicket.setDepartmentId(null);
+		userTicket.setPosition(null);
+		userTicket.setPositionId(null);
+		userTicket.setCardNumber(null);
+		userTicket.setSerialNumber(null);
+		userTicket.setSuperiorId(null);
+		userTicket.setLocked(null);
+		userTicket.setRealName(null);
+	}
 
 	/**
 	 * 根据系统类型登录
@@ -251,21 +354,21 @@ public class LoginServiceImpl implements LoginService {
 			Firm condition = DTOUtils.newInstance(Firm.class);
 			condition.setCode(user.getFirmCode());
 			Firm firm = firmMapper.selectOne(condition);
-			UserTicket userTicket = DTOUtils.asInstance(user, UserTicket.class);
+			UserTicket oAuthTicket = DTOUtils.asInstance(user, UserTicket.class);
 			//设置登录的系统，用于区别不同的超时时间
-			userTicket.setSystemType(systemType);
+			oAuthTicket.setSystemType(systemType);
 			if (firm != null) {
 				// 用于makeCookieTag中获取firmId
 //				WebContent.put("firmId", firm.getId());
-				userTicket.setFirmId(firm.getId());
-				userTicket.setFirmName(firm.getName());
+				oAuthTicket.setFirmId(firm.getId());
+				oAuthTicket.setFirmName(firm.getName());
 			}
 			// 构建返回的登录信息
 			LoginResult loginResult = DTOUtils.newInstance(LoginResult.class);
 			// 返回用户信息需要屏蔽用户的密码
 			user.setPassword(null);
-			loginResult.setUser(userTicket);
-			String accessToken = userJwtService.generateUserTokenByRSA256(userTicket, SystemType.getSystemType(systemType));
+			loginResult.setUser(oAuthTicket);
+			String accessToken = userJwtService.generateUserTokenByRSA256(oAuthTicket, SystemType.getSystemType(systemType));
 			Long accessTokenTimeout = dynamicConfig.getAccessTokenTimeout(SystemType.getSystemType(systemType).getCode());
 			Long refreshTokenTimeout = dynamicConfig.getRefreshTokenTimeout(SystemType.getSystemType(systemType).getCode());
 			//刷新token
@@ -275,7 +378,7 @@ public class LoginServiceImpl implements LoginService {
 			loginResult.setAccessTokenTimeout(accessTokenTimeout);
 			loginResult.setRefreshTokenTimeout(refreshTokenTimeout);
 			loginResult.setLoginPath(loginDto.getLoginPath());
-			saveTokenInRedis(userTicket, refreshToken, systemType);
+			saveTokenInRedis(oAuthTicket, refreshToken, systemType);
 			logLogin(user, loginDto, true, "登录成功");
 			return BaseOutput.success("登录成功").setData(loginResult);
 		} catch (Exception e) {
@@ -362,59 +465,6 @@ public class LoginServiceImpl implements LoginService {
 		setUserIdRefreshTokens(user.getId().toString(), systemType, refreshToken, refreshTokenTimeOut);
 	}
 
-	/**
-	 * 用户id和refreshToken的1对多关系保存到redis
-	 * @param userId
-	 * @param refreshToken
-	 */
-	public void setUserIdRefreshTokens(String userId, Integer systemType, String refreshToken, Long refreshTokenTimeOut) {
-		BoundSetOperations<String, String> userIdRefreshTokens = redisUtil.getRedisTemplate().boundSetOps(
-				KeyBuilder.buildUserIdRefreshTokenKey(userId, systemType));
-		userIdRefreshTokens.add(refreshToken);
-		userIdRefreshTokens.expire(refreshTokenTimeOut, TimeUnit.SECONDS);
-	}
-
-	/**
-	 * 更新用户登录时间
-	 * @param user
-	 */
-	private void updateLoginTime(User user) {
-		user.setLastLoginTime(new Date());
-		int rows = this.userMapper.updateByPrimaryKeySelective(user);
-		if (rows <= 0) {
-			throw new AppException("更新用户登陆时间失败");
-		}
-	}
-
-	/**
-	 * 异步记录登录日志
-	 */
-	private void logLogin(User user, LoginDto loginDto, boolean isSuccess, String msg) {
-		// 设置系统名称
-		LoggerContext.put(LoggerConstant.LOG_SYSTEM_CODE_KEY, loginDto.getSystemCode());
-		LoggerContext.put(LoggerConstant.LOG_BUSINESS_CODE_KEY, loginDto.getUserName());
-		LoggerContext.put(LoggerConstant.LOG_BUSINESS_ID_KEY, loginDto.getUserId());
-		LoggerContext.put(LoggerConstant.LOG_OPERATOR_ID_KEY, loginDto.getUserId());
-		if (user != null) {
-			LoggerContext.put(LoggerConstant.LOG_NOTES_KEY, user.getRealName());
-			LoggerContext.put(LoggerConstant.LOG_MARKET_ID_KEY, user.getFirmCode());
-		}
-		LoggerContext.put("msg", msg);
-	}
-
-	/**
-	 * 异步记录登出日志
-	 */
-	@Override
-	public void logLogout(UserTicket user) {
-		LoggerContext.put(LoggerConstant.LOG_BUSINESS_CODE_KEY, user.getUserName());
-		LoggerContext.put(LoggerConstant.LOG_BUSINESS_ID_KEY, user.getId());
-		LoggerContext.put(LoggerConstant.LOG_OPERATOR_ID_KEY, user.getId());
-		LoggerContext.put(LoggerConstant.LOG_MARKET_ID_KEY, user.getFirmId());
-		LoggerContext.put(LoggerConstant.LOG_NOTES_KEY, user.getRealName());
-		LoggerContext.put("msg", "系统登出");
-	}
-	
 //	/**
 //	 * 用户登陆 挤掉 旧token登陆用户
 //	 *
@@ -432,21 +482,6 @@ public class LoginServiceImpl implements LoginService {
 //			}
 //		}
 //	}
-
-	/**
-	 * 记录token和登录地址到Cookie
-	 * @param accessToken
-	 * @param refreshToken
-	 */
-	private void makeCookieTag(String accessToken, String refreshToken) {
-		String referer = WebUtil.fetchReferer(WebContent.getRequest());
-		WebContent.setCookie(SessionConstants.ACCESS_TOKEN_KEY, accessToken);
-		WebContent.setCookie(SessionConstants.REFRESH_TOKEN_KEY, refreshToken);
-//		WebContent.setCookie(SessionConstants.COOKIE_USER_ID_KEY, user.getId().toString());
-//		WebContent.setCookie(SessionConstants.COOKIE_USER_NAME_KEY, user.getUserName());
-//		WebContent.setCookie(SessionConstants.COOKIE_FIRM_ID_KEY, String.valueOf(WebContent.get("firmId")));
-		WebContent.setCookie(SessionConstants.COOKIE_LOGIN_PATH_KEY, referer);
-	}
 
 	/**
 	 * 缓存用户相关信息到Redis
@@ -481,10 +516,53 @@ public class LoginServiceImpl implements LoginService {
 //		this.sessionRedisManager.setUserIdSessionIdKey(user.getId().toString(), sessionId);
 //		LOG.debug("UserName: " + user.getUserName() + " | SessionId:" + sessionId + " | SessionData:" + sessionData);
 //	}
-	
+
+	/**
+	 * 记录token和登录地址到Cookie
+	 * @param accessToken
+	 * @param refreshToken
+	 */
+	private void makeCookieTag(String accessToken, String refreshToken) {
+		String referer = WebUtil.fetchReferer(WebContent.getRequest());
+		WebContent.setCookie(SessionConstants.ACCESS_TOKEN_KEY, accessToken);
+		WebContent.setCookie(SessionConstants.REFRESH_TOKEN_KEY, refreshToken);
+//		WebContent.setCookie(SessionConstants.COOKIE_USER_ID_KEY, user.getId().toString());
+//		WebContent.setCookie(SessionConstants.COOKIE_USER_NAME_KEY, user.getUserName());
+//		WebContent.setCookie(SessionConstants.COOKIE_FIRM_ID_KEY, String.valueOf(WebContent.get("firmId")));
+		WebContent.setCookie(SessionConstants.COOKIE_LOGIN_PATH_KEY, referer);
+	}
+
+	/**
+	 * 更新用户登录时间
+	 * @param user
+	 */
+	private void updateLoginTime(User user) {
+		user.setLastLoginTime(new Date());
+		int rows = this.userMapper.updateByPrimaryKeySelective(user);
+		if (rows <= 0) {
+			throw new AppException("更新用户登陆时间失败");
+		}
+	}
+
+	/**
+	 * 异步记录登录日志
+	 */
+	private void logLogin(User user, LoginDto loginDto, boolean isSuccess, String msg) {
+		// 设置系统名称
+		LoggerContext.put(LoggerConstant.LOG_SYSTEM_CODE_KEY, loginDto.getSystemCode());
+		LoggerContext.put(LoggerConstant.LOG_BUSINESS_CODE_KEY, loginDto.getUserName());
+		LoggerContext.put(LoggerConstant.LOG_BUSINESS_ID_KEY, loginDto.getUserId());
+		LoggerContext.put(LoggerConstant.LOG_OPERATOR_ID_KEY, loginDto.getUserId());
+		if (user != null) {
+			LoggerContext.put(LoggerConstant.LOG_NOTES_KEY, user.getRealName());
+			LoggerContext.put(LoggerConstant.LOG_MARKET_ID_KEY, user.getFirmCode());
+		}
+		LoggerContext.put("msg", msg);
+	}
+
 	/**
 	 * 加密
-	 * 
+	 *
 	 * @param passwd
 	 * @return
 	 */
@@ -494,70 +572,12 @@ public class LoginServiceImpl implements LoginService {
 
 	/**
 	 * 清空用户登录密码错误锁定次数
-	 * 
+	 *
 	 * @param userId
 	 */
 	private void clearUserLock(Long userId) {
 		redisUtil.remove(SessionConstants.USER_PWD_ERROR_KEY + userId);
 	}
 
-	/**
-	 * 锁定用户
-	 * 
-	 * @param user
-	 */
-	@Override
-	public boolean lockUser(User user) {
-		// 判断是否要进行密码错误检查，不检查就不需要锁定用户了
-		if (!pwdErrorCheck) {
-			return false;
-		}
-		if (user == null) {
-			return false;
-		}
-		String key = SessionConstants.USER_PWD_ERROR_KEY + user.getId();
-		BoundListOperations<Object, Object> ops = redisUtil.getRedisTemplate().boundListOps(key);
-		while (true) {
-			Object s = ops.index(0);
-			if (s == null) {
-				break;
-			}
-			Long t = Long.valueOf(s.toString());
-			if (t == 0) {
-				break;
-			}
-			Long nt = System.currentTimeMillis() - t;
-			if (nt < pwdErrorRange) {
-				break;
-			}
-			ops.rightPop();
-		}
-		ops.leftPush(String.valueOf(System.currentTimeMillis()));
-		// 查询系统配置的密码错误锁定次数
-		SystemConfig systemConfigCondition = DTOUtils.newInstance(SystemConfig.class);
-		systemConfigCondition.setCode(UapConstants.LOGIN_FAILED_TIMES);
-		systemConfigCondition.setSystemCode(UapConstants.UAP_SYSTEM_CODE);
-		SystemConfig systemConfig = systemConfigMapper.selectOne(systemConfigCondition);
-		// 以系统变量配置为主，没有则使用配置文件中的配置
-		if (StringUtils.isNotBlank(systemConfig.getValue())) {
-			pwdErrorCount = Integer.parseInt(systemConfig.getValue());
-		}
-		// 在锁定次数范围内不锁定
-		if (ops.size() < Integer.parseInt(systemConfig.getValue())) {
-			return false;
-		}
-		// 如果当前用户不是锁定状态，则进行锁定
-		if (!user.getState().equals(UserState.LOCKED.getCode())) {
-			User updateUser = DTOUtils.newInstance(User.class);
-			updateUser.setId(user.getId());
-			updateUser.setLocked(new Date());
-			updateUser.setState(UserState.LOCKED.getCode());
-			this.userMapper.updateByPrimaryKeySelective(updateUser);
-			// 清空计时器
-			redisUtil.getRedisTemplate().delete(key);
-			return true;
-		}
-		return false;
-	}
 
 }

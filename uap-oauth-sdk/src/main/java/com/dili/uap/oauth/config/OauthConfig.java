@@ -23,6 +23,8 @@ public class OauthConfig {
 	private String exceptionPath;
 	//oauth授权服务器路径
 	private String oauthServerPath;
+	//oauth资源服务器路径
+	private String oauthResourcePath;
 	//http超时配置
 	private Integer httpTimeout;
 
@@ -41,6 +43,23 @@ public class OauthConfig {
 	@Value("${oauth.httpTimeout:3000}")
 	public void setHttpTimeout(Integer httpTimeout) {
 		this.httpTimeout = httpTimeout;
+	}
+
+	/**
+	 * oauth资源服务器路径
+	 * @return
+	 */
+	public String getOauthResourcePath() {
+		return oauthResourcePath;
+	}
+
+	/**
+	 * oauth资源服务器路径
+	 * @return
+	 */
+	@Value("${oauth.resourcePath:}")
+	public void setOauthResourcePath(String oauthResourcePath) {
+		this.oauthResourcePath = oauthResourcePath;
 	}
 
 	/**

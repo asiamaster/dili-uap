@@ -6,12 +6,7 @@ import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.dao.DepartmentMapper;
 import com.dili.uap.dao.FirmMapper;
 import com.dili.uap.dao.UserMapper;
-import com.dili.uap.sdk.domain.Department;
-import com.dili.uap.sdk.domain.Firm;
-import com.dili.uap.sdk.domain.User;
-import com.dili.uap.sdk.domain.UserDataAuth;
-import com.dili.uap.sdk.domain.UserTicket;
-import com.dili.uap.sdk.domain.dto.DepartmentDto;
+import com.dili.uap.sdk.domain.*;
 import com.dili.uap.sdk.glossary.DataAuthType;
 import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.service.DepartmentService;
@@ -155,11 +150,6 @@ public class DepartmentServiceImpl extends BaseServiceImpl<Department, Long> imp
 	@Override
 	public Department getDepartment(Department department) {
 		return this.getActualDao().selectOne(department);
-	}
-
-	@Override
-	public List<Department> findByUserId(Long userId) {
-		return this.getActualDao().findByUserId(userId);
 	}
 
 	@Override

@@ -137,4 +137,16 @@ public interface UserTicket extends User {
 
 	void setSystemType(Integer systemType);
 
+	@FieldDef(label="openId", maxLength = 20)
+	@EditMode(editor = FieldEditor.Text)
+	String getOpenId();
+
+	void setOpenId(String openId);
+
+	@FieldDef(label="归属部门名称", maxLength = 20)
+	@EditMode(editor = FieldEditor.Text)
+	String getDepartmentName();
+
+	void setDepartmentName(String departmentName);
+
 }

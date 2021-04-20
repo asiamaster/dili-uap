@@ -50,6 +50,13 @@ public interface LoginDto extends IDTO {
     void setSystemCode(String systemCode);
 
     /**
+     * 客户端code
+     * @return
+     */
+    String getOpenId();
+    void setOpenId(String openId);
+
+    /**
      * 登录市场编码
      * @return
      */

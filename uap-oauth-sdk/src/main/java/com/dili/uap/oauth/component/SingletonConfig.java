@@ -10,30 +10,53 @@ import org.springframework.util.StringUtils;
  * @time: 2021/3/11 9:49
  */
 public class SingletonConfig {
-    private static volatile String AUTH_SERVER_HOST = null;
+    private static volatile String AUTH_SERVER_PATH = null;
+    private static volatile String AUTH_RESOURCE_PATH = null;
     private static volatile Integer AUTH_HTTP_TIMEOUT = null;
     private SingletonConfig() {}
 
     /**
-     * 用于AuthUapSource中配置的验证服务器域名:IP
+     * 用于AuthUapSource中配置的验证服务器的路径(http://域名:IP)
      * @return
      */
-    public static String getAuthServerHost() {
-        if (AUTH_SERVER_HOST == null) {
+    public static String getAuthServerPath() {
+        if (AUTH_SERVER_PATH == null) {
             synchronized (SingletonConfig.class) {
-                if (AUTH_SERVER_HOST == null) {
+                if (AUTH_SERVER_PATH == null) {
                     OauthConfig oauthConfig = ApplicationContextUtil.getBean("oauthConfig", OauthConfig.class);
                     if(oauthConfig == null){
                         throw new RuntimeException("com.dili.uap.oauth.config.OauthConfig类未被spring扫描");
                     }
-                    AUTH_SERVER_HOST = oauthConfig.getOauthServerPath();
-                    if(StringUtils.isEmpty(AUTH_SERVER_HOST)){
+                    AUTH_SERVER_PATH = oauthConfig.getOauthServerPath();
+                    if(StringUtils.isEmpty(AUTH_SERVER_PATH)){
                         throw new RuntimeException("oauth.serverPath未配置");
                     }
                 }
             }
         }
-        return AUTH_SERVER_HOST;
+        return AUTH_SERVER_PATH;
+    }
+
+    /**
+     * 用于AuthUapSource中配置的资源服务器的路径(http://域名:IP)
+     * @return
+     */
+    public static String getAuthResourcePath() {
+        if (AUTH_RESOURCE_PATH == null) {
+            synchronized (SingletonConfig.class) {
+                if (AUTH_RESOURCE_PATH == null) {
+                    OauthConfig oauthConfig = ApplicationContextUtil.getBean("oauthConfig", OauthConfig.class);
+                    if(oauthConfig == null){
+                        throw new RuntimeException("com.dili.uap.oauth.config.OauthConfig类未被spring扫描");
+                    }
+                    AUTH_RESOURCE_PATH = oauthConfig.getOauthResourcePath();
+                    if(StringUtils.isEmpty(AUTH_RESOURCE_PATH)){
+                        throw new RuntimeException("oauth.serverPath未配置");
+                    }
+                }
+            }
+        }
+        return AUTH_RESOURCE_PATH;
     }
 
     /**

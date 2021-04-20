@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dili.uap.dao.OauthClientPrivilegeMapper">
+  <resultMap id="BaseResultMap" type="com.dili.uap.domain.OauthClientPrivilege">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="oauth_client_id" jdbcType="BIGINT" property="oauthClientId" />
+    <result column="privilege" jdbcType="INTEGER" property="privilege" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    id, oauth_client_id, privilege, user_id
+  </sql>
+  <select id="existsPrivilege" parameterType="com.dili.uap.domain.dto.OauthClientPrivilegeQuery" resultType="boolean">
+    SELECT count(1) cnt
+    FROM oauth_client_privilege ocp
+    INNER JOIN oauth_client oc ON ocp.oauth_client_id = oc.id
+    where 1=1
+    <if test="code != null">
+        and oc.code=#{code}
+    </if>
+    <if test="privilege != null">
+      and ocp.privilege = #{privilege,jdbcType=INTEGER}
+    </if>
+    <if test="userId != null">
+      and ocp.user_id = #{userId,jdbcType=BIGINT}
+    </if>
+  </select>
+
+</mapper>

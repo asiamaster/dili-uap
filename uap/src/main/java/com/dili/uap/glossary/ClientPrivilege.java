@@ -1,4 +1,4 @@
-package com.dili.uap.as.glossary;
+package com.dili.uap.glossary;
 
 /**
  * 用户授权范围

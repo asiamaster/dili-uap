@@ -57,9 +57,9 @@ public class SessionContext {
 		return userTicket;
 	}
 
-	public UserTicket getOAuthUserTicket() {
+	public UserTicket getOAuthTicket() {
 		if (userTicket == null) {
-			userTicket = authService.getOAuthUserTicket(pc.getAccessToken(), pc.getRefreshToken());
+			userTicket = authService.getOAuthTicket(pc.getAccessToken(), pc.getRefreshToken());
 		}
 		return userTicket;
 	}

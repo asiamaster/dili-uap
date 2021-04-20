@@ -56,7 +56,7 @@ public class AuthService {
      * @param refreshToken
      * @return
      */
-    public UserTicket getOAuthUserTicket(String accessToken, String refreshToken) {
+    public UserTicket getOAuthTicket(String accessToken, String refreshToken) {
         //选读取accessToken
         UserTicket userTicket = userJwtService.getOAuthUserTicket(accessToken);
         if (null != userTicket) {

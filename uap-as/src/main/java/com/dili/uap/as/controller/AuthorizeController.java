@@ -1,6 +1,5 @@
 package com.dili.uap.as.controller;
 
-import com.dili.ss.constant.ResultCode;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.as.domain.OAuthClient;
@@ -11,12 +10,10 @@ import com.dili.uap.as.service.AuthorizeService;
 import com.dili.uap.as.service.LoginService;
 import com.dili.uap.as.service.OAuthClientService;
 import com.dili.uap.as.service.OauthClientPrivilegeService;
-import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.domain.dto.JwtToken;
 import com.dili.uap.sdk.domain.dto.UserToken;
 import com.dili.uap.sdk.exception.UapLoginException;
 import com.dili.uap.sdk.service.AuthService;
-import com.dili.uap.sdk.session.SessionContext;
 import org.apache.oltu.oauth2.as.issuer.MD5Generator;
 import org.apache.oltu.oauth2.as.issuer.OAuthIssuerImpl;
 import org.apache.oltu.oauth2.as.request.OAuthAuthzRequest;
@@ -38,7 +35,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -157,7 +157,7 @@ public class AuthorizeController {
                         oauthResponse.getBody(), HttpStatus.valueOf(oauthResponse.getResponseStatus()));
             }
             //登录失败会抛出UapLoginException，在下面catch块处理
-            LoginResult loginResult = login(request);
+            LoginResult loginResult = login(request, oauthRequest.getClientId());
             if(loginResult == null){
                 //生成错误信息,告知客户端不存在
                 OAuthResponse oauthResponse = OAuthASResponse
@@ -173,13 +173,12 @@ public class AuthorizeController {
             OauthClientPrivilege oauthClientPrivilege = DTOUtils.newInstance(OauthClientPrivilege.class);
             oauthClientPrivilege.setUserId(loginResult.getUser().getId());
             oauthClientPrivilege.setOauthClientId(oAuthClient.getId());
-            List<OauthClientPrivilege> oauthClientPrivileges = oauthClientPrivilegeService.list(oauthClientPrivilege);
+            //先删除该openid和用户的所有权限
+            oauthClientPrivilegeService.deleteByExample(oauthClientPrivilege);
             for (String clientPrivilege : clientPrivileges) {
-                OauthClientPrivilege oauthClientPrivilege1 = getOauthClientPrivilege(oauthClientPrivileges, Integer.parseInt(clientPrivilege));
-                if(oauthClientPrivilege1 == null){
-                    oauthClientPrivilege.setPrivilege(Integer.parseInt(clientPrivilege));
-                    oauthClientPrivilegeService.insertSelective(oauthClientPrivilege);
-                }
+                oauthClientPrivilege.setPrivilege(Integer.parseInt(clientPrivilege));
+                oauthClientPrivilegeService.insertSelective(oauthClientPrivilege);
+                oauthClientPrivilege.setId(null);
             }
             //生成授权码
             String authorizationCode = null;
@@ -311,20 +310,6 @@ public class AuthorizeController {
         }
     }
 
-
-    /**
-     * oauth授权，从header获取用户信息
-     * @return
-     */
-    @RequestMapping(value = "/user", method = { RequestMethod.GET, RequestMethod.POST })
-    public @ResponseBody BaseOutput<UserTicket> user() {
-        UserTicket userTicket = SessionContext.getSessionContext().getOAuthUserTicket();
-        if(userTicket == null){
-            return BaseOutput.failure(ResultCode.UNAUTHORIZED, "用户未登录");
-        }
-        return BaseOutput.success().setData(userTicket);
-    }
-
     /**
      * 根据privilege获取OauthClientPrivilege
      * @param oauthClientPrivileges
@@ -424,7 +409,7 @@ public class AuthorizeController {
      * @param request
      * @return
      */
-    private LoginResult login(HttpServletRequest request) {
+    private LoginResult login(HttpServletRequest request, String openId) {
         String username = request.getParameter("userName");
         String password = request.getParameter("password");
         if(StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
@@ -434,6 +419,7 @@ public class AuthorizeController {
             LoginDto loginDto = DTOUtils.newInstance(LoginDto.class);
             loginDto.setUserName(username);
             loginDto.setPassword(password);
+            loginDto.setOpenId(openId);
             BaseOutput<LoginResult> loginResultBaseOutput = loginService.oauthLogin(loginDto);
             if(!loginResultBaseOutput.isSuccess()){
                 throw new UapLoginException(loginResultBaseOutput.getMessage());

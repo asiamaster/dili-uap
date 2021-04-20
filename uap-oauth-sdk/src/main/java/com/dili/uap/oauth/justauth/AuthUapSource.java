@@ -16,7 +16,7 @@ public enum AuthUapSource implements AuthSource {
          */
         @Override
         public String authorize() {
-            return SingletonConfig.getAuthServerHost()+"/api/oauth-server/authorize";
+            return SingletonConfig.getAuthServerPath()+"/api/oauth-server/authorize";
         }
 
         /**
@@ -25,7 +25,7 @@ public enum AuthUapSource implements AuthSource {
          */
         @Override
         public String accessToken() {
-            return SingletonConfig.getAuthServerHost()+"/api/oauth-server/token";
+            return SingletonConfig.getAuthServerPath()+"/api/oauth-server/token";
         }
 
         /**
@@ -34,7 +34,7 @@ public enum AuthUapSource implements AuthSource {
          */
         @Override
         public String userInfo() {
-            return SingletonConfig.getAuthServerHost()+"/api/oauth-server/user";
+            return SingletonConfig.getAuthResourcePath()+"/api/oauth-resource/user";
         }
 
         /**
@@ -43,7 +43,7 @@ public enum AuthUapSource implements AuthSource {
          */
         @Override
         public String refresh() {
-            return SingletonConfig.getAuthServerHost()+"/api/oauth-server/token";
+            return SingletonConfig.getAuthServerPath()+"/api/oauth-server/token";
         }
     }
 }

@@ -26,6 +26,7 @@ import com.dili.uap.domain.dto.UserDepartmentRole;
 import com.dili.uap.domain.dto.UserDepartmentRoleQuery;
 import com.dili.uap.domain.dto.UserDto;
 import com.dili.uap.glossary.UserState;
+import com.dili.uap.oauth.exception.BusinessException;
 import com.dili.uap.rpc.ProjectRpc;
 import com.dili.uap.sdk.constant.SessionConstants;
 import com.dili.uap.sdk.domain.*;
@@ -787,5 +788,36 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 	@Override
 	public List<HashMap<Long, Long>> getUserCountByDepartments(List<Map<String,Object>> map) {
 		return userMapper.getUserCountByDepartments(map);
+	}
+
+	@Override
+	public UserTicket buildOAuthOrg(UserTicket userTicket) {
+		User user = get(userTicket.getId());
+		if (user == null) {
+			throw new BusinessException(ResultCode.DATA_ERROR, "用户不存在");
+		}
+		UserTicket newUserTicket = DTOUtils.newInstance(UserTicket.class);
+		newUserTicket.setId(userTicket.getId());
+		newUserTicket.setOpenId(userTicket.getOpenId());
+		//构建用户市场
+		if(user.getFirmCode() != null) {
+			newUserTicket.setFirmCode(user.getFirmCode());
+			Firm condition = DTOUtils.newInstance(Firm.class);
+			condition.setCode(user.getFirmCode());
+			Firm firm = firmMapper.selectOne(condition);
+			if (firm != null) {
+				newUserTicket.setFirmId(firm.getId());
+				newUserTicket.setFirmName(firm.getName());
+			}
+		}
+		//构建用户部门
+		if(user.getDepartmentId() != null) {
+			newUserTicket.setDepartmentId(user.getDepartmentId());
+			Department department = departmentMapper.selectByPrimaryKey(user.getDepartmentId());
+			if (department != null) {
+				newUserTicket.setDepartmentName(department.getName());
+			}
+		}
+		return newUserTicket;
 	}
 }

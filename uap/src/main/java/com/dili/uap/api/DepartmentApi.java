@@ -1,23 +1,18 @@
 package com.dili.uap.api;
 
-import java.util.List;
-import java.util.Objects;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.dili.ss.domain.BaseOutput;
 import com.dili.uap.sdk.domain.Department;
 import com.dili.uap.sdk.domain.Firm;
 import com.dili.uap.sdk.domain.dto.DepartmentDto;
 import com.dili.uap.service.DepartmentService;
 import com.dili.uap.service.FirmService;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Objects;
 
 /**
  * 部门接口
@@ -82,19 +77,6 @@ public class DepartmentApi {
 	@RequestMapping(value = "/listByDepartment.api", method = { RequestMethod.GET, RequestMethod.POST })
 	public BaseOutput<List<Department>> listByDepartment(Department department) {
 		return BaseOutput.success().setData(this.departmentService.listByExample(department));
-	}
-
-	/**
-	 * 根据userID查询所在部门列表
-	 * 
-	 * @param userId
-	 * @return
-	 */
-	@ResponseBody
-	@RequestMapping(value = "/findByUserId.api", method = { RequestMethod.GET, RequestMethod.POST })
-	public BaseOutput<List<Department>> findByUserId(@RequestBody Long userId) {
-		List<Department> findByUserId = this.departmentService.findByUserId(userId);
-		return BaseOutput.success().setData(findByUserId);
 	}
 
 	/**

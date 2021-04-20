@@ -9,6 +9,7 @@ import com.dili.uap.domain.dto.UserDepartmentRoleQuery;
 import com.dili.uap.domain.dto.UserDto;
 import com.dili.uap.sdk.domain.User;
 import com.dili.uap.sdk.domain.UserDataAuth;
+import com.dili.uap.sdk.domain.UserTicket;
 
 import java.util.HashMap;
 import java.util.List;
@@ -247,4 +248,10 @@ public interface UserService extends BaseService<User, Long> {
 	 */
 	List<HashMap<Long, Long>> getUserCountByDepartments(List<Map<String,Object>> map);
 
+	/**
+	 * 根据用户基本信息构建用户组织信息
+	 * @param userTicket
+	 * @return
+	 */
+	UserTicket buildOAuthOrg(UserTicket userTicket);
 }

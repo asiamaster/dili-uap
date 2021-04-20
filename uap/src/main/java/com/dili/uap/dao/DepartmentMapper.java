@@ -17,8 +17,6 @@ public interface DepartmentMapper extends MyMapper<Department> {
 	 */
 	List<Map> listDepartments(Department department);
 
-	List<Department> findByUserId(Long userId);
-
 	/**
 	 * 根据父级id查询所有子部门，包含子部门的子部门
 	 * 
