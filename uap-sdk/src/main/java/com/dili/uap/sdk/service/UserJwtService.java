@@ -7,7 +7,6 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
 import com.dili.ss.dto.DTOUtils;
-import com.dili.ss.exception.InternalException;
 import com.dili.ss.util.DateUtils;
 import com.dili.ss.util.RSAKeyPair;
 import com.dili.ss.util.RSAUtils;
@@ -31,7 +30,7 @@ public class UserJwtService extends JwtService {
     @Resource
     private DynamicConfig dynamicConfig;
 
-    private static RSAKeyPair rsaKeyPair = null;
+    private static RSAKeyPair oauthRsaKeyPair = null;
 
     /**
      * 初始化密钥
@@ -39,7 +38,8 @@ public class UserJwtService extends JwtService {
      */
     @PostConstruct
     public void init() throws Exception {
-        rsaKeyPair = RSAUtils.createRSAKeyPair(dynamicConfig.getPublicKey(), dynamicConfig.getPrivateKey());
+        uapRsaKeyPair = RSAUtils.createRSAKeyPair(dynamicConfig.getPublicKey(), dynamicConfig.getPrivateKey());
+        oauthRsaKeyPair = RSAUtils.createRSAKeyPair(dynamicConfig.getOauthPublicKey(), dynamicConfig.getOauthPrivateKey());
     }
 
     /**
@@ -69,15 +69,8 @@ public class UserJwtService extends JwtService {
      * @throws Exception
      */
     public String generateUserTokenByRSA256(UserTicket user, SystemType systemType) {
-        // 获取公钥/私钥
-        RSAKeyPair rsa256Key = null;
-        try {
-            rsa256Key = RSAUtils.getRSAKeyPair();
-        } catch (Exception e) {
-            throw new InternalException(e.getMessage());
-        }
         Algorithm algorithm = Algorithm.RSA256(
-                rsa256Key.getPublicKey(), rsa256Key.getPrivateKey());
+                uapRsaKeyPair.getPublicKey(), uapRsaKeyPair.getPrivateKey());
         return createToken(algorithm, ISSUER, systemType.name(), DateUtils.addSeconds(new Date(), dynamicConfig.getAccessTokenTimeout(systemType.getCode()).intValue()), user);
     }
 
@@ -89,7 +82,7 @@ public class UserJwtService extends JwtService {
      */
     public String generateOAuthUserTokenByRSA256(UserTicket user, SystemType systemType) {
         Algorithm algorithm = Algorithm.RSA256(
-                rsaKeyPair.getPublicKey(), rsaKeyPair.getPrivateKey());
+                oauthRsaKeyPair.getPublicKey(), oauthRsaKeyPair.getPrivateKey());
         return createToken(algorithm, ISSUER, systemType.name(), DateUtils.addSeconds(new Date(), dynamicConfig.getAccessTokenTimeout(systemType.getCode()).intValue()), user);
     }
 
@@ -136,7 +129,7 @@ public class UserJwtService extends JwtService {
      */
     public DecodedJWT verifierOAuthToken(String token) throws JWTVerificationException{
         //其实按照规定只需要传递 publicKey 来校验即可，这可能是auth0 的缺点
-        Algorithm algorithm = Algorithm.RSA256(rsaKeyPair.getPublicKey(), rsaKeyPair.getPrivateKey());
+        Algorithm algorithm = Algorithm.RSA256(oauthRsaKeyPair.getPublicKey(), oauthRsaKeyPair.getPrivateKey());
         JWTVerifier verifier = JWT.require(algorithm)
                 .withIssuer(ISSUER)
                 //Reusable verifier instance 可复用的验证实例

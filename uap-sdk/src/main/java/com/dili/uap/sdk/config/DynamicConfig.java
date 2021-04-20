@@ -28,22 +28,77 @@ public class DynamicConfig {
 	//JWT私钥
 	private String privateKey;
 
+	//JWT公钥
+	private String oauthPublicKey;
+	//JWT私钥
+	private String oauthPrivateKey;
+
+	/**
+	 * uap公钥
+	 * @return
+	 */
 	public String getPublicKey() {
 		return publicKey;
 	}
 
+	/**
+	 * uap公钥
+	 * @param publicKey
+	 */
 	@Value("${uap.jwt.publicKey:MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCz4D01cJbbLdzUprznyrz4bueMWkLZNSBHuxXjynn4WnaELTidvA6280h7WHP+87iNmZAtvrmcEWGPCBvGrNRFzpqtN7c8h6E12SESVWjuF4VkH/tUN/F4UJLtNPEnsmmVAdarwn/c5RJqFVA2sFVlm6Zc2FV3QyPdrdMfa9AizwIDAQAB}")
 	public void setPublicKey(String publicKey) {
 		this.publicKey = publicKey;
 	}
 
+	/**
+	 * uap私钥
+	 * @return
+	 */
 	public String getPrivateKey() {
 		return privateKey;
 	}
 
+	/**
+	 * uap私钥
+	 * @param privateKey
+	 */
 	@Value("${uap.jwt.privateKey:MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBALPgPTVwltst3NSmvOfKvPhu54xaQtk1IEe7FePKefhadoQtOJ28DrbzSHtYc/7zuI2ZkC2+uZwRYY8IG8as1EXOmq03tzyHoTXZIRJVaO4XhWQf+1Q38XhQku008SeyaZUB1qvCf9zlEmoVUDawVWWbplzYVXdDI92t0x9r0CLPAgMBAAECgYEAqCPLc4G8MkOLsmfuG0njHOMmpIbXCAzmEMcr7hOdse517JYM3z0kEBYXwdzsCP0vnYVXRbuL6vxAUqBEvpFdlhMYDNeDbKlqfWbvAa2RP6stib4OWR85gYbssRn3kh4IY1VWn+GeSbc5ztjSVXKnRbS+ezd0OmXJqiKzPpQtNMECQQDylOWkFeKgegAEzMXM/9VjjgXFoNb8AJVT8QXj2/m4ndL17/n4YHOwbMo0PDy69NKKMDAG3EnTNKBL0xIq2NMhAkEAvdNkMoI7Cedd35xG5bqB+GxWvrZPZN/QHhmQiUGO/CvslHL7QKeit4auDi30g3aUKbo07w/WfxL/me6yJRkn7wJAcXAtv0C4vOCwV45GxWmxqR+GFXf0cN349ssUPQzmR24OdBHnrD22e/8zw5+Tqr3IIvUL0Hl9UHYgq7Sln0HL4QJBAKn0u3Axg5SRb04GyL9kpnt63IuyBRGnBdn9P5h0dwW2egJLlENGE/zHe808PgD6SRu3GS+1eXGa2/jBawSmKkcCQGxLhtbCa08GrcQOHNYrtSfKRn+hJRKvwAWK4K64OGC94spgtPX5H3Ks3QxUGBWAtdlP+OVugfIfZ3Esim+2xSA=}")
 	public void setPrivateKey(String privateKey) {
 		this.privateKey = privateKey;
+	}
+
+	/**
+	 * oauth公钥
+	 * @return
+	 */
+	public String getOauthPublicKey() {
+		return oauthPublicKey;
+	}
+
+	/**
+	 * oauth公钥
+	 * @param oauthPublicKey
+	 */
+	@Value("${uap.jwt.oauth.publicKey:MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCpqlIgY4TaSkt/FrzKZR5lq5z3GM5LofUzJjw9/eAltMD9NDDSkBv2S6OzeQapLNiYa2OKTCEjI8r6aUMIC8uoqGIjqWFflgZu0lwDd20Ks4UiMiOYNysWomhTfva1RbXU8kW/ebllKacb6r9DD0xyjV3WSWvbVVymwXruiYsNwQIDAQAB}")
+	public void setOauthPublicKey(String oauthPublicKey) {
+		this.oauthPublicKey = oauthPublicKey;
+	}
+
+	/**
+	 * oauth私钥
+	 * @return
+	 */
+	public String getOauthPrivateKey() {
+		return oauthPrivateKey;
+	}
+
+	/**
+	 * oauth私钥
+	 * @param oauthPrivateKey
+	 */
+	@Value("${uap.jwt.oauth.privateKey:MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAKmqUiBjhNpKS38WvMplHmWrnPcYzkuh9TMmPD394CW0wP00MNKQG/ZLo7N5Bqks2JhrY4pMISMjyvppQwgLy6ioYiOpYV+WBm7SXAN3bQqzhSIyI5g3KxaiaFN+9rVFtdTyRb95uWUppxvqv0MPTHKNXdZJa9tVXKbBeu6Jiw3BAgMBAAECgYAC2lhTLxk2ynUGiA1Yoeam8wHKreIaJ3kGCSiOKkywlZ+BInWHtOCjfZYdGHXiNlzWA0hDNRCBlMJ+/3IfGoOsJVYzVaXWOCAjKiSvEGK4hzcx84UmWAofvUSRAhV1bWYRy/Vgz+EvLAUMqAf8eIg3pzSzhRSj5neCiZS1t57KmQJBANOynz7YZ6DIsIrIrVYlhrT2YGcaIBO5EW3BiPuLvrSSm93YAKLeusNwkhCdQ7uFv35uil+aRpZXAnGJJXGtfusCQQDNK+BxslmI532iNateqGgh7qkArQskuwPz/+6aE0P1JUSwQ8Bn0DMt8Z6CLBonenXdI6D81Jr+WJLeSjlzvXMDAkBV7glpzxmxUAUpMG/7qdvWFLPo5dfjaZnDfW2G/aB5V5FhKU6IzfPtZQJFMDDQK2ghf+k3CT5hxAu/3jWOwSflAkEAgX60Bo7e2/3f2cWuB+ya7O/JU1fktKYk9JgQbMbEGbIQDIB2rA9IfjMGLHrRdyFfytd2AJ3fxbD54btPT7G/KQJAOWyPCloR/HEX01tozvsIAzAqZHus0zWCvnOgBhitjAGkAYsAmECfktgBsrbdOBSJWPrSoQVtcnPajtaKHIhFXQ==}")
+	public void setOauthPrivateKey(String oauthPrivateKey) {
+		this.oauthPrivateKey = oauthPrivateKey;
 	}
 
 	/**
