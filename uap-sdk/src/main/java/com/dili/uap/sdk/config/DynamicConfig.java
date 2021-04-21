@@ -14,7 +14,7 @@ public class DynamicConfig {
 	//WEB端超时, 单位(秒)
 	//默认为1800秒
 	private Long WEB_ACCESS_TOKEN_TIMEOUT;
-	//默认3600秒
+	//默认14400秒(4小时)
 	private Long WEB_REFRESH_TOKEN_TIMEOUT;
 	//移动端超时, 单位(秒)
 	//默认为1800秒
@@ -147,7 +147,7 @@ public class DynamicConfig {
 	 * WEB端refreshToken超时
 	 * @param webRefreshTokenTimeout
 	 */
-	@Value("${uap.webRefreshTokenTimeout:3600}")
+	@Value("${uap.webRefreshTokenTimeout:14400}")
 	public void setWebRefreshTokenTimeout(Long webRefreshTokenTimeout) {
 		WEB_REFRESH_TOKEN_TIMEOUT = webRefreshTokenTimeout;
 	}
