@@ -76,7 +76,12 @@ $(function () {
 
 //清空datagrid选择
 function gridLoadSuccess(data) {
+    if(data.code && data.code != 200){
+        swal('警告','登录超时', 'warning');
+        return;
+    }
     $(this).datagrid("clearSelections");
 }
+
 
 
