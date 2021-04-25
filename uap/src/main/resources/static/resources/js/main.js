@@ -76,12 +76,33 @@ $(function () {
 
 //清空datagrid选择
 function gridLoadSuccess(data) {
-    if(data.code && data.code != 200){
-        swal('警告','登录超时', 'warning');
-        return;
-    }
+    // if(data.code && data.code != 200){
+    //     swal('警告','登录超时', 'warning');
+    //     return;
+    // }
     $(this).datagrid("clearSelections");
 }
 
+$.ajaxSetup({
+    statusCode: {
+        401: function() {
+            // swal('警告','登录超时', 'warning');
+            swal({
+                title: '警告！',
+                text: '登录超时',
+                timer: 2000
+            }).then(
+                function () {
+                    top.toLogin();
+                },
+                // handling the promise rejection
+                function (dismiss) {
+                    top.toLogin();
+                }
+            )
+
+        }
+    }
+});
 
 

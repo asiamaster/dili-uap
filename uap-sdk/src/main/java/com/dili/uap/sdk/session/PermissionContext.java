@@ -1,9 +1,7 @@
 package com.dili.uap.sdk.session;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.dili.ss.domain.BaseOutput;
-import com.dili.ss.util.BeanConver;
 import com.dili.ss.util.SpringUtil;
 import com.dili.uap.sdk.config.ManageConfig;
 import com.dili.uap.sdk.constant.SessionConstants;
@@ -17,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Map;
 
 /**
  * 权限上下文
@@ -173,17 +170,9 @@ public class PermissionContext {
 			sendRedirect("/error/noAccess.do");
 			return;
 		}
-		resp.setContentType("application/json;charset=UTF-8");
-		BaseOutput baseOutput = BaseOutput.failure("登录超时").setCode("401");
-		Map<String, Object> stringObjectMap = null;
-		try {
-			stringObjectMap = BeanConver.transformObjectToMap(baseOutput);
-		} catch (Exception e) {
-			//dont care
-		}
-		stringObjectMap.put("rows", new JSONArray());
-		stringObjectMap.put("total", 0);
-		resp.getWriter().write(JSON.toJSONString(stringObjectMap));
+//		resp.setContentType("application/json;charset=UTF-8");
+		resp.setStatus(401);
+//		resp.getWriter().write(JSON.toJSONString(BaseOutput.failure("登录超时").setCode("401")));
 		resp.flushBuffer();
 	}
 
