@@ -282,8 +282,10 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements Role
 			if (CollectionUtils.isNotEmpty(roleResources)) {
 				this.roleResourceMapper.insertList(roleResources);
 			}
-			//插入内链菜单
-			resourceLinkService.batchInsertRoleMenuByRoleIdAndResourceIds(roleId, resourceIdList);
+			if(resourceIdList!=null && resourceIdList.size()>0){
+				//插入内链菜单
+				resourceLinkService.batchInsertRoleMenuByRoleIdAndResourceIds(roleId, resourceIdList);
+			}
 			List<Long> menuIds = new ArrayList<>(roleMenus.size());
 			roleMenus.forEach(rm -> menuIds.add(rm.getMenuId()));
 			LoggerContext.put("roleMenus", JSON.toJSONString(menuIds));
@@ -313,8 +315,10 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements Role
 		if (CollectionUtils.isNotEmpty(roleResources)) {
 			roleResourceMapper.insertList(roleResources);
 		}
-		//插入内链菜单
-		resourceLinkService.batchInsertRoleMenuByRoleIdAndResourceIds(roleId, resourceIdList);
+		if(resourceIdList!=null && resourceIdList.size()>0){
+			//插入内链菜单
+			resourceLinkService.batchInsertRoleMenuByRoleIdAndResourceIds(roleId, resourceIdList);
+		}
 
 		//可能其它用户已经修改当前登录用户的权限，需要在此提示当前用户修改的部分权限不成功
 //		List<SystemResourceDto> resources = this.getActualDao().selectLimittedUpdateMenuList(roleMenus, roleResources, roleId, userTicket.getId());
