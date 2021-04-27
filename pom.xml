@@ -18,8 +18,8 @@
 	<modules>
 		<module>uap-sdk</module>
 		<module>uap-oauth-sdk</module>
-<!--		<module>uap-as</module>-->
-<!--		<module>uap</module>-->
+		<module>uap-as</module>
+		<module>uap</module>
 	</modules>
 
 	<properties>
