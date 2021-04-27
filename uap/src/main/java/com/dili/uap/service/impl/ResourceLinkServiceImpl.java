@@ -10,6 +10,7 @@ import com.dili.uap.domain.ResourceLink;
 import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.service.ResourceLinkService;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,6 +62,9 @@ public class ResourceLinkServiceImpl extends BaseServiceImpl<ResourceLink, Long>
 
     @Override
     public int batchInsertRoleMenuByRoleIdAndResourceIds(Long roleId, List<Long> resourceIds) {
+        if(CollectionUtils.isEmpty(resourceIds)){
+            return 0;
+        }
         return getActualDao().batchInsertRoleMenuByRoleIdAndResourceIds(roleId, resourceIds);
     }
 

@@ -37,10 +37,13 @@
     select distinct rr.role_id, rl.menu_id
     FROM role_resource rr INNER join resource_link rl
     ON rr.resource_id = rl.resource_id
-    WHERE rr.resource_id in
-    <foreach open="(" close=")" collection="resourceIds" item="resourceId" separator=",">
-      #{resourceId}
-    </foreach>
+    WHERE 1=1
+    <if test="resourceIds != null">
+      and rr.resource_id in
+      <foreach open="(" close=")" collection="resourceIds" item="resourceId" separator=",">
+        #{resourceId}
+      </foreach>
+    </if>
     AND rr.role_id=#{roleId}
   </insert>
 </mapper>
