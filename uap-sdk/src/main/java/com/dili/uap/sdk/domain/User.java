@@ -128,7 +128,7 @@ public interface User extends IBaseDomain, IMybatisForceParams {
 	@FieldDef(label = "手机号码", maxLength = 24)
 	@EditMode(editor = FieldEditor.Text)
 	@NotNull(message = "手机号码不能为空", groups = { AddView.class, ModifyView.class })
-	@Pattern(regexp = "^1[3-8]\\d{9}$", message = "手机号格式不正确", groups = { AddView.class, ModifyView.class })
+	@Pattern(regexp = "^1[3-9]\\d{9}$", message = "手机号格式不正确", groups = { AddView.class, ModifyView.class })
 	String getCellphone();
 
 	void setCellphone(String cellphone);
