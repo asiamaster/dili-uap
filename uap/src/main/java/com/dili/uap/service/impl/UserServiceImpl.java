@@ -369,15 +369,15 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 	@Override
 	@SentinelResource(value = "UserServiceImpl.selectForEasyuiPage", entryType = EntryType.IN, blockHandler = "selectForEasyuiPageBlockHandler")
 	public EasyuiPageOutput selectForEasyuiPage(UserDto domain, boolean useProvider) throws Exception {
-		if (domain.getRows() != null && domain.getRows() >= 1) {
-			PageHelper.startPage(domain.getPage(), domain.getRows());
-		}
 		if (StringUtils.isNotBlank(domain.getSort())) {
 			domain.setSort(POJOUtils.humpToLineFast(domain.getSort()));
 		}
 		String firmCode = SessionContext.getSessionContext().getUserTicket().getFirmCode();
 		if (!UapConstants.GROUP_CODE.equals(firmCode)) {
 			domain.setFirmCode(firmCode);
+		}
+		if (domain.getRows() != null && domain.getRows() >= 1) {
+			PageHelper.startPage(domain.getPage(), domain.getRows());
 		}
 		List<UserDto> users = getActualDao().selectForPage(domain);
 		long total = users instanceof Page ? ((Page) users).getTotal() : (long) users.size();
