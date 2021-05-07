@@ -249,4 +249,13 @@
 		</foreach>
 	</select>
 
+	<select id="getIdsByName" parameterType="java.lang.String" resultType="java.lang.Long">
+		SELECT
+			id
+		FROM
+			user
+		WHERE
+			(user_name like <![CDATA[concat('%',#{keywords},'%')]]> or real_name like <![CDATA[concat('%',#{keywords},'%')]]>)
+	</select>
+
 </mapper>

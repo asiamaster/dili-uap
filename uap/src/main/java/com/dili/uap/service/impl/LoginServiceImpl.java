@@ -342,6 +342,9 @@ public class LoginServiceImpl implements LoginService {
 			LoggerContext.put(LoggerConstant.LOG_NOTES_KEY, user.getRealName());
 			LoggerContext.put(LoggerConstant.LOG_MARKET_ID_KEY, result.getId());
 		}
+		if(!isSuccess){
+			LoggerContext.put(LoggerConstant.LOG_CONTENT_KEY,UapConstants.LOGIN_FAIL_CONTENT+loginDto.getSystemCode());
+		}
 		LoggerContext.put("msg", msg);
 	}
 

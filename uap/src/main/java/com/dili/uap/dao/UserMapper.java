@@ -2,7 +2,6 @@ package com.dili.uap.dao;
 
 import com.dili.ss.base.MyMapper;
 import com.dili.uap.sdk.domain.User;
-import com.dili.uap.domain.dto.UserDataDto;
 import com.dili.uap.domain.dto.UserDepartmentRole;
 import com.dili.uap.domain.dto.UserDepartmentRoleQuery;
 import com.dili.uap.domain.dto.UserDto;
@@ -10,6 +9,7 @@ import com.dili.uap.domain.dto.UserDto;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -88,4 +88,12 @@ public interface UserMapper extends MyMapper<User> {
 	 * @return
 	 */
 	List<HashMap<Long, Long>> getUserCountByDepartments(List<Map<String,Object>> map);
+
+	/**
+	 * 根据userName和realName获取userIds
+	 *
+	 * @param keywords
+	 * @return
+	 */
+    Set<Long> getIdsByName(String keywords);
 }

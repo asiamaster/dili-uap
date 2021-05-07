@@ -791,6 +791,11 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 	}
 
 	@Override
+	public Set<Long> getIdsByName(String keywords) {
+		return userMapper.getIdsByName(keywords);
+	}
+
+	@Override
 	public UserTicket buildOAuthOrg(UserTicket userTicket) {
 		User user = get(userTicket.getId());
 		if (user == null) {

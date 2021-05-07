@@ -3,9 +3,15 @@ package com.dili.uap.controller;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
+import com.dili.ss.dto.DTOUtils;
+import com.dili.ss.metadata.ValueProviderUtils;
+import com.dili.uap.constants.UapConstants;
+import com.dili.uap.sdk.domain.User;
+import com.dili.uap.service.UserService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -36,6 +42,8 @@ public class LoginLogController {
 	LoginLogService loginLogService;
 	@Autowired
 	private BusinessLogRpc logRpc;
+	@Autowired
+	private UserService userService;
 
 	/**
 	 * 跳转到LoginLog页面
@@ -84,6 +92,24 @@ public class LoginLogController {
 		if (StringUtils.isNotBlank(loginLog.getSystemCode())) {
 			query.setSystemCode(loginLog.getSystemCode());
 		}
+		if (StringUtils.isNotBlank(loginLog.getIp())) {
+			query.setRemoteIp(loginLog.getIp());
+		}
+		if (StringUtils.isNotBlank(loginLog.getUserName())) {
+			Set<Long> set = userService.getIdsByName(loginLog.getUserName());
+			query.setBusinessIdSet(set);
+		}
+		if(loginLog.getSuccess() != null){
+			//
+			if(loginLog.getSuccess() == 1){
+				query.setContent(UapConstants.LOGIN_SUCCESS_CONTENT);
+			}
+			if(loginLog.getSuccess() == 0){
+				query.setContent(UapConstants.LOGIN_FAIL_CONTENT);
+			}
+			//传0,查询content值时结果不高亮
+			query.setContentIsHighlight(0);
+		}
 		if (StringUtils.isNotBlank(loginLog.getType())) {
 			query.setOperationType(loginLog.getType());
 		} else {
@@ -106,16 +132,9 @@ public class LoginLogController {
 		}
 		System.out.println(JSON.toJSONString(query));
 		PageOutput<List<BusinessLog>> output = this.logRpc.listPage(query);
-//		List<BusinessLog> datas = output.getData();
-//		Iterator<BusinessLog> it = datas.iterator();
-//		while(it.hasNext()){
-//			BusinessLog businessLog = it.next();
-//			String notes = businessLog.getNotes();
-//			if(StringUtils.isNotBlank(notes) && notes.startsWith("{")){
-//				it.remove();
-//			}
-//		}
-		return new EasyuiPageOutput(output.getTotal(), output.getData()).toString();
+		List<Map> maps = ValueProviderUtils.buildDataByProvider(loginLog, output.getData());
+
+		return new EasyuiPageOutput(output.getTotal(), maps).toString();
 	}
 
 	/**
