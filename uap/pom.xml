@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>uap</artifactId>
 	<description>uap</description>
@@ -24,7 +24,7 @@
 	<parent>
 		<artifactId>dili-uap</artifactId>
 		<groupId>com.dili</groupId>
-		<version>3.1.1-SNAPSHOT</version>
+		<version>3.1.2-SNAPSHOT</version>
 	</parent>
 
 	<build>
@@ -89,7 +89,7 @@
 		<dependency>
 			<groupId>com.dili</groupId>
 			<artifactId>bpmc-sdk</artifactId>
-			<version>1.4.1-SNAPSHOT</version>
+			<version>1.4.2-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.springframework.cloud</groupId>
@@ -100,7 +100,7 @@
 		<dependency>
 			<groupId>com.dili</groupId>
 			<artifactId>commons-server</artifactId>
-			<version>1.3.4-SNAPSHOT</version>
+			<version>1.3.5-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<artifactId>assets-sdk</artifactId>
@@ -147,15 +147,15 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-amqp</artifactId>
 		</dependency>
-<!--		<dependency>-->
-<!--			<groupId>org.springframework.security.oauth</groupId>-->
-<!--			<artifactId>spring-security-oauth2</artifactId>-->
-<!--			<version>2.3.3.RELEASE</version>-->
-<!--		</dependency>-->
-<!--		<dependency>-->
-<!--			<groupId>org.springframework.boot</groupId>-->
-<!--			<artifactId>spring-boot-starter-security</artifactId>-->
-<!--		</dependency>-->
+		<!--		<dependency>-->
+		<!--			<groupId>org.springframework.security.oauth</groupId>-->
+		<!--			<artifactId>spring-security-oauth2</artifactId>-->
+		<!--			<version>2.3.3.RELEASE</version>-->
+		<!--		</dependency>-->
+		<!--		<dependency>-->
+		<!--			<groupId>org.springframework.boot</groupId>-->
+		<!--			<artifactId>spring-boot-starter-security</artifactId>-->
+		<!--		</dependency>-->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-collections4</artifactId>
@@ -172,11 +172,11 @@
 		<!-- <artifactId>ss-idempotent</artifactId> -->
 		<!-- <version>${sharp-sword.version}</version> -->
 		<!-- </dependency> -->
-<!--		 <dependency>-->
-<!--		 <groupId>com.dili</groupId>-->
-<!--		 <artifactId>ss-seata</artifactId>-->
-<!--		 <version>${sharp-sword.version}</version>-->
-<!--		 </dependency>-->
+		<!--		 <dependency>-->
+		<!--		 <groupId>com.dili</groupId>-->
+		<!--		 <artifactId>ss-seata</artifactId>-->
+		<!--		 <version>${sharp-sword.version}</version>-->
+		<!--		 </dependency>-->
 
 		<dependency>
 			<groupId>com.alibaba.cloud</groupId>
@@ -212,7 +212,7 @@
 		<dependency>
 			<groupId>com.dili</groupId>
 			<artifactId>cms-sdk</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
+			<version>1.0.1-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.springframework.cloud</groupId>
@@ -225,16 +225,16 @@
 			<artifactId>ss-processor</artifactId>
 			<version>${sharp-sword.version}</version>
 		</dependency>
-<!--		<dependency>-->
-<!--			<groupId>com.dili</groupId>-->
-<!--			<artifactId>ss-oplog</artifactId>-->
-<!--			<version>${sharp-sword.version}</version>-->
-<!--		</dependency>-->
+		<!--		<dependency>-->
+		<!--			<groupId>com.dili</groupId>-->
+		<!--			<artifactId>ss-oplog</artifactId>-->
+		<!--			<version>${sharp-sword.version}</version>-->
+		<!--		</dependency>-->
 
 		<dependency>
 			<groupId>com.dili</groupId>
 			<artifactId>logger-sdk</artifactId>
-			<version>1.0.1-SNAPSHOT</version>
+			<version>1.0.2-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
