@@ -14,6 +14,7 @@ import com.dili.uap.sdk.domain.UserTicket;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 由MyBatis Generator工具自动生成 This file was generated on 2018-05-18 10:46:46.
@@ -247,6 +248,14 @@ public interface UserService extends BaseService<User, Long> {
 	 * @return
 	 */
 	List<HashMap<Long, Long>> getUserCountByDepartments(List<Map<String,Object>> map);
+
+	/**
+	 * 根据userName和realName获取userIds
+	 *
+	 * @param keywords
+	 * @return
+	 */
+	Set<Long> getIdsByName(String keywords);
 
 	/**
 	 * 根据用户基本信息构建用户组织信息

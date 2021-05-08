@@ -794,7 +794,6 @@
                 var nodeFirmCode = roots[i].attributes.firmCode;
                 if(firmCode == nodeFirmCode){
                     easyuiTreeChecked(_tree,dataAuthButton1,roots[i].id);
-                    break;
                 }
             }
             dataAuthButton1 = booleanChange(dataAuthButton1);

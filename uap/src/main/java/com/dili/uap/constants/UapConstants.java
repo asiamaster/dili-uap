@@ -82,4 +82,14 @@ public class UapConstants {
 	 */
 	public static final String FIRM_ADD_APPROVE_PROCESS_KEY = "firmAddProcess";
 
+	/**
+	 * 系统登录成功日志信息
+	 */
+	public static final String LOGIN_SUCCESS_CONTENT = "系统登录:";
+
+	/**
+	 * 系统登录失败日志信息
+	 */
+	public static final String LOGIN_FAIL_CONTENT = "登录失败:";
+
 }
