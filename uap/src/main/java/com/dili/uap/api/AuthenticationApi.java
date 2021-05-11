@@ -15,10 +15,7 @@ import com.dili.uap.domain.dto.UserDto;
 import com.dili.uap.manager.DataAuthManager;
 import com.dili.uap.sdk.component.DataAuthSource;
 import com.dili.uap.sdk.constant.SessionConstants;
-import com.dili.uap.sdk.domain.DataAuthRef;
-import com.dili.uap.sdk.domain.Systems;
-import com.dili.uap.sdk.domain.UserDataAuth;
-import com.dili.uap.sdk.domain.UserTicket;
+import com.dili.uap.sdk.domain.*;
 import com.dili.uap.sdk.domain.dto.ClientMenuDto;
 import com.dili.uap.sdk.service.AuthService;
 import com.dili.uap.sdk.service.redis.DataAuthRedis;
@@ -263,6 +260,31 @@ public class AuthenticationApi {
 			return BaseOutput.success("调用成功").setData(this.resourceMapper.listByUserId(userTicket.getId(), userTicket.getSystemType()));
 		}
 		return BaseOutput.success("调用成功").setData(this.resourceMapper.listByUserIdAndSystemId(userTicket.getId(), jsonObject.getLong("systemId")));
+	}
+
+	/**
+	 * 根据卡号和资源编码校验用户是否有权限
+	 * @param json key: cardNumber， resourceCode
+	 * @return
+	 */
+	@PostMapping(value = "/validCardResource")
+	@ResponseBody
+	public BaseOutput<List<Resource>> validCardResource(@RequestBody String json) {
+		JSONObject jsonObject = JSONObject.parseObject(json);
+		String cardNumber = jsonObject.getString("cardNumber");
+		String resourceCode = jsonObject.getString("resourceCode");
+		if (cardNumber == null || resourceCode == null) {
+			return BaseOutput.failure("参数校验失败").setCode(ResultCode.PARAMS_ERROR);
+		}
+		User user = userService.getByCardNumber(cardNumber);
+		if (user == null) {
+			return BaseOutput.failure("未找到用户").setCode(ResultCode.DATA_ERROR);
+		}
+		boolean flag = resourceMapper.existsByUserIdAndCode(user.getId(), resourceCode);
+		if(!flag){
+			return BaseOutput.failure("用户未授权").setCode(ResultCode.NOT_AUTH_ERROR);
+		}
+		return BaseOutput.success("校验通过");
 	}
 
 	/**

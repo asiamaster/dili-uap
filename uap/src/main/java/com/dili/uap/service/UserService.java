@@ -37,6 +37,13 @@ public interface UserService extends BaseService<User, Long> {
 	List<User> findUserByRole(Long roleId);
 
 	/**
+	 * 根据卡号获取用户
+	 * @param cardNumber
+	 * @return
+	 */
+	User getByCardNumber(String cardNumber);
+
+	/**
 	 * 修改密码
 	 * 
 	 * @param userId 用户ID

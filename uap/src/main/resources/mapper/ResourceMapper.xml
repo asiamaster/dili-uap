@@ -88,4 +88,13 @@
 		AND m.url=#{url}
 		AND ur.user_id=${userId}
 	</select>
+
+	<select id="existsByUserIdAndCode" resultType="boolean">
+		SELECT COUNT(r.id)
+		FROM user_role ur
+		INNER JOIN role_resource rr ON ur.role_id = rr.role_id
+		INNER JOIN resource r ON rr.resource_id = r.id
+		where ur.user_id = #{userId} AND r.code=#{code}
+		LIMIT 1
+	</select>
 </mapper>

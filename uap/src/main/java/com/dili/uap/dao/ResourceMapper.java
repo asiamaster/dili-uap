@@ -41,6 +41,14 @@ public interface ResourceMapper extends MyMapper<Resource> {
 	List<String> listResourceCodeByMenuUrl(Map param);
 
 	/**
+	 * 根据用户id和资源code判断是否存在
+	 * @param userId
+	 * @param code
+	 * @return
+	 */
+	boolean existsByUserIdAndCode(@Param("userId") Long userId, @Param("code") String code);
+
+	/**
 	 * 根据用户ID获取用户所属权限信息名称
 	 * 
 	 * @param userId        用户名

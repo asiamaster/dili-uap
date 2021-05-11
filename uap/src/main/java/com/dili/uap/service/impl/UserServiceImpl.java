@@ -115,6 +115,13 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 		return getActualDao().findUserByRole(roleId);
 	}
 
+	@Override
+	public User getByCardNumber(String cardNumber){
+		User condition = DTOUtils.newInstance(User.class);
+		condition.setCardNumber(cardNumber);
+		return getActualDao().selectOne(condition);
+	}
+
 	@Transactional
 	@Override
 	public BaseOutput<Object> changePwd(Long userId, UserDto user) {
