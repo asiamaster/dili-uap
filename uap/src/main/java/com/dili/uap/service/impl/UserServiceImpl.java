@@ -20,6 +20,7 @@ import com.dili.ss.util.POJOUtils;
 import com.dili.uap.boot.RabbitConfiguration;
 import com.dili.uap.constants.UapConstants;
 import com.dili.uap.dao.*;
+import com.dili.uap.domain.Position;
 import com.dili.uap.domain.UserRole;
 import com.dili.uap.domain.dto.UserDataDto;
 import com.dili.uap.domain.dto.UserDepartmentRole;
@@ -34,9 +35,7 @@ import com.dili.uap.sdk.glossary.DataAuthType;
 import com.dili.uap.sdk.service.redis.UserRedis;
 import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.sdk.util.WebContent;
-import com.dili.uap.service.DataAuthRefService;
-import com.dili.uap.service.LoginService;
-import com.dili.uap.service.UserService;
+import com.dili.uap.service.*;
 import com.dili.uap.utils.MD5Util;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
@@ -51,6 +50,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * 由MyBatis Generator工具自动生成 This file was generated on 2018-05-18 10:46:46.
@@ -95,6 +95,12 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 	private TradeRoomRpc tradeRoomRpc;
 	@Autowired
 	private  UserMapper userMapper;
+	@Autowired
+	FirmService firmService;
+	@Autowired
+	DepartmentService departmentService;
+	@Autowired
+	PositionService positionService;
 
 	@Override
 	public void logout(String refreshToken) {
@@ -161,83 +167,65 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
+	public BaseOutput register(UserDto user){
+		if (user.getPassword() == null || !user.getPassword().equals(user.getConfirmPassword())) {
+			return BaseOutput.failure("两次密码输入不一致,请重新输入");
+		}
+		if(null != user.getGender() && 0 != user.getGender() && 1 != user.getGender()){
+			return BaseOutput.failure("性别格式错误");
+		}
+		String firmCode = user.getFirmCode();
+		if(StringUtils.isNotBlank(firmCode)){
+			Firm firm = firmService.getByCode(firmCode);
+			if(firm == null){
+				return BaseOutput.failure("市场输入错误,找不到该市场");
+			}
+		}else{
+			return BaseOutput.failure("市场不能为空");
+		}
+		Long departmentId = user.getDepartmentId();
+		if(departmentId != null){
+			Department department = departmentService.get(departmentId);
+			if(department == null){
+				return BaseOutput.failure("部门输入错误,找不到该部门");
+			}
+		}
+		Long positionId = user.getPositionId();
+		if(positionId != null){
+			Position position = positionService.get(positionId);
+			if(position == null){
+				return BaseOutput.failure("职位输入错误,找不到该职位");
+			}
+		}
+		Long superiorId = user.getSuperiorId();
+		if(superiorId != null){
+			User superior = get(superiorId);
+			if(superior == null){
+				return BaseOutput.failure("上级输入错误,找不到该上级用户");
+			}
+		}
+		BaseOutput validOutput = validUser(user);
+		if(!validOutput.isSuccess()){
+			return validOutput;
+		}
+		return save(user);
+	}
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
 	public BaseOutput save(User user) {
 		if (StringUtils.isNotBlank(user.getUserName())) {
 			user.setUserName(user.getUserName().toLowerCase());
 		}
-		// 验证邮箱是否重复
-		User query = DTOUtils.newInstance(User.class);
-		query.setEmail(user.getEmail());
-		List<User> userList = getActualDao().select(query);
+		String msg = null;
 		// 用户新增
 		if (null == user.getId()) {
-			if (CollectionUtils.isNotEmpty(userList)) {
-				return BaseOutput.failure("邮箱已存在");
-			}
-			query.setEmail(null);
-			query.setCellphone(user.getCellphone());
-			userList = getActualDao().select(query);
-			if (CollectionUtils.isNotEmpty(userList)) {
-				return BaseOutput.failure("手机号码已存在");
-			}
-			query.setCellphone(null);
-			query.setUserName(user.getUserName());
-			userList = getActualDao().select(query);
-			if (CollectionUtils.isNotEmpty(userList)) {
-				return BaseOutput.failure("用户账号已存在");
-			} else {
-				user.setState(UserState.INACTIVE.getCode());
-			}
-			if(StringUtils.isBlank(user.getPassword())){
-				user.setPassword(encryptPwd(UapConstants.DEFAULT_PASS));
-			}else{
-				user.setPassword(encryptPwd(user.getPassword()));
-			}
-			user.setCreated(new Date());
-			user.setModified(new Date());
-			if (null == user.getSerialNumber()){
-				user.setSerialNumber("000");
-			}
-			getActualDao().insertUseGeneratedKeys(user);
-
-			User newUser = DTOUtils.newInstance(User.class);
-			newUser.setUserName(user.getUserName());
-			newUser.setPassword(user.getPassword());
-			newUser.setRealName(user.getRealName());
-			newUser.setEmail(user.getEmail());
-			newUser.setSerialNumber(user.getSerialNumber());
-			newUser.setCellphone(user.getCellphone());
-			String json = JSON.toJSONString(newUser);
-			json = AESUtils.encrypt(json, aesKey);
-			amqpTemplate.convertAndSend(RabbitConfiguration.UAP_TOPIC_EXCHANGE, RabbitConfiguration.UAP_ADD_USER_KEY, json);
-			//默认分配本部门权限 dataRange:1 所有人
-			this.saveUserDatas(user.getId(),new String[]{String.valueOf(user.getDepartmentId())},1L);
+			msg = insertBySave(user);
 		} else {
-			if (CollectionUtils.isNotEmpty(userList)) {
-				// 匹配是否有用户ID不等当前修改记录的用户
-				boolean result = userList.stream().anyMatch(u -> !u.getId().equals(user.getId()));
-				if (result) {
-					return BaseOutput.failure("邮箱已存在");
-				}
-			}
-			query.setEmail(null);
-			query.setCellphone(user.getCellphone());
-			userList = getActualDao().select(query);
-			if (CollectionUtils.isNotEmpty(userList)) {
-				// 匹配是否有用户ID不等当前修改记录的用户
-				boolean result = userList.stream().anyMatch(u -> !u.getId().equals(user.getId()));
-				if (result) {
-					return BaseOutput.failure("手机号码已存在");
-				}
-			}
-			User update = DTOUtils.asInstance(user, User.class);
-			DTO go = DTOUtils.go(update);
-			go.remove("userName");
-			go.remove("password");
-			go.remove("firmCode");
-			go.remove("created");
-			go.remove("modified");
-			this.updateExactSimple(update);
+			msg = updateBySave(user);
+		}
+		if(msg != null){
+			return BaseOutput.failure(ResultCode.DATA_ERROR, msg);
 		}
 		return BaseOutput.success("操作成功");
 	}
@@ -470,56 +458,6 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 		return BaseOutput.success("操作成功").setData(saveDatas);
 	}
 
-	private List<UserDataAuth> convertToSaveUserDatas(Long userId, Long dataRange, String[] dataIds) {
-		// 保存用户数据范围信息
-		List<UserDataAuth> saveDatas = new ArrayList<>();
-		UserDataAuth ud = DTOUtils.newInstance(UserDataAuth.class);
-		ud.setUserId(userId);
-		ud.setValue(String.valueOf(dataRange));
-		ud.setRefCode(DataAuthType.DATA_RANGE.getCode());
-		saveDatas.add(ud);
-		// 需要保存的用户部门和市场信息
-		if (null != dataIds && dataIds.length > 0) {
-			for (String id : dataIds) {
-				ud = DTOUtils.newInstance(UserDataAuth.class);
-				ud.setUserId(userId);
-				if (id.startsWith(UapConstants.ALM_PROJECT_PREFIX)) {
-					String value = id.replace(UapConstants.ALM_PROJECT_PREFIX, "");
-					if (!value.equals("0")) {
-						ud.setRefCode(DataAuthType.PROJECT.getCode());
-						ud.setValue(value);
-						saveDatas.add(ud);
-					}
-				} else if (id.startsWith(UapConstants.FIRM_PREFIX)) {
-					if (id.startsWith(UapConstants.FIRM_PREFIX)) {
-						ud.setRefCode(DataAuthType.MARKET.getCode());
-						ud.setValue(id.replace(UapConstants.FIRM_PREFIX, ""));
-					} else {
-						ud.setRefCode(DataAuthType.DEPARTMENT.getCode());
-						ud.setValue(id);
-					}
-					saveDatas.add(ud);
-				} else if (id.startsWith(UapConstants.TRADING_HALL_PREFIX)) {
-					String value = id.replace(UapConstants.TRADING_HALL_PREFIX, "");
-					if (!value.equals("0")) {
-						ud.setRefCode(DataAuthType.TRADING_HALL.getCode());
-						ud.setValue(value);
-						saveDatas.add(ud);
-					}
-				} else {
-					if (id.startsWith(UapConstants.FIRM_PREFIX)) {
-						ud.setRefCode(DataAuthType.MARKET.getCode());
-						ud.setValue(id.replace(UapConstants.FIRM_PREFIX, ""));
-					} else {
-						ud.setRefCode(DataAuthType.DEPARTMENT.getCode());
-						ud.setValue(id);
-					}
-					saveDatas.add(ud);
-				}
-			}
-		}
-		return saveDatas;
-	}
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
@@ -561,16 +499,6 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 		userRoleMapper.delete(userRole);
 		// 删除用户本身
 		return super.delete(id);
-	}
-
-	/**
-	 * 对密码加密
-	 * 
-	 * @param passwd
-	 * @return
-	 */
-	private String encryptPwd(String passwd) {
-		return md5Util.getMD5ofStr(passwd).substring(6, 24);
 	}
 
 	@Override
@@ -689,7 +617,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 	}
 
 	@Transactional(rollbackFor = Exception.class)
-	public BaseOutput registeryByApp(User user) {
+	public BaseOutput registeryDisabledUser(User user) {
 		if (user == null) {
 			return BaseOutput.failure("用户数据丢失");
 		}
@@ -699,18 +627,6 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 		}
 		user.setState(UserState.DISABLED.getCode());
 		this.updateSelective(user);
-		return BaseOutput.success("注册用户成功");
-	}
-
-	@Transactional(rollbackFor = Exception.class)
-	public BaseOutput registeryUserByApp(User user) {
-		if (user == null) {
-			return BaseOutput.failure("用户数据丢失");
-		}
-		BaseOutput save = this.save(user);
-		if (!save.isSuccess()) {
-			return BaseOutput.failure(save.getMessage());
-		}
 		return BaseOutput.success("注册用户成功");
 	}
 
@@ -824,5 +740,233 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 			}
 		}
 		return newUserTicket;
+	}
+
+	/**
+	 * 用户信息校验
+	 *
+	 * @param  info
+	 * @return 验证通过返回true
+	 */
+	private boolean regexCheck(String info,Integer type) {
+		if(StringUtils.isBlank(info)){
+			return false;
+		}
+		String regex = null;
+		switch (type){
+			//用户账号
+			case 1:
+				regex = "^[a-zA-Z0-9_\\u4e00-\\u9fa5]{2,20}$";
+				break;
+			//真实姓名
+			case 2:
+				regex = "^[\u4e00-\u9fa5]{2,5}$";
+				break;
+			//手机号码
+			case 3:
+				regex = "^[1][3-9][0-9]{9}$";
+				break;
+			//邮箱
+			case 4:
+				regex = "^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$";
+				break;
+			//密码
+			case 5:
+				regex = "^.{6,20}$";
+				break;
+
+		}
+		return Pattern.matches(regex,info);
+	}
+
+	/**
+	 * save方法调用的新增用户
+	 * @param user
+	 * @return
+	 */
+	private String insertBySave(User user){
+		// 验证邮箱是否重复
+		if(StringUtils.isNotBlank(user.getEmail())) {
+			User query = DTOUtils.newInstance(User.class);
+			query.setEmail(user.getEmail());
+			if (CollectionUtils.isNotEmpty(getActualDao().select(query))) {
+				return "邮箱已存在";
+			}
+		}
+		if(StringUtils.isNotBlank(user.getCellphone())) {
+			User query = DTOUtils.newInstance(User.class);
+			query.setCellphone(user.getCellphone());
+			List<User> userList = getActualDao().select(query);
+			if (CollectionUtils.isNotEmpty(userList)) {
+				return "手机号码已存在";
+			}
+		}
+		if(StringUtils.isNotBlank(user.getCellphone())) {
+			User query = DTOUtils.newInstance(User.class);
+			query.setUserName(user.getUserName());
+			List<User> userList = getActualDao().select(query);
+			if (CollectionUtils.isNotEmpty(userList)) {
+				return "用户账号已存在";
+			}
+		}
+		if (user.getState() == null) {
+			user.setState(UserState.NORMAL.getCode());
+		}
+		if(StringUtils.isBlank(user.getPassword())){
+			user.setPassword(encryptPwd(UapConstants.DEFAULT_PASS));
+		}else{
+			user.setPassword(encryptPwd(user.getPassword()));
+		}
+		user.setCreated(new Date());
+		user.setModified(new Date());
+		if (null == user.getSerialNumber()){
+			user.setSerialNumber("000");
+		}
+		getActualDao().insertUseGeneratedKeys(user);
+
+		User newUser = DTOUtils.newInstance(User.class);
+		newUser.setUserName(user.getUserName());
+		newUser.setPassword(user.getPassword());
+		newUser.setRealName(user.getRealName());
+		newUser.setEmail(user.getEmail());
+		newUser.setSerialNumber(user.getSerialNumber());
+		newUser.setCellphone(user.getCellphone());
+		String json = JSON.toJSONString(newUser);
+		json = AESUtils.encrypt(json, aesKey);
+		amqpTemplate.convertAndSend(RabbitConfiguration.UAP_TOPIC_EXCHANGE, RabbitConfiguration.UAP_ADD_USER_KEY, json);
+		//默认分配本部门权限 dataRange:1 所有人
+		this.saveUserDatas(user.getId(),new String[]{String.valueOf(user.getDepartmentId())},1L);
+		return null;
+	}
+
+	/**
+	 * save方法调用的更新用户
+	 * 返回异常消息
+	 * @param user
+	 * @return
+	 */
+	private String updateBySave(User user){
+		// 验证邮箱是否重复
+		User query = DTOUtils.newInstance(User.class);
+		query.setEmail(user.getEmail());
+		List<User> userList = getActualDao().select(query);
+		if (CollectionUtils.isNotEmpty(userList)) {
+			// 匹配是否有用户ID不等当前修改记录的用户
+			boolean result = userList.stream().anyMatch(u -> !u.getId().equals(user.getId()));
+			if (result) {
+				return "邮箱已存在";
+			}
+		}
+		query.setEmail(null);
+		query.setCellphone(user.getCellphone());
+		userList = getActualDao().select(query);
+		if (CollectionUtils.isNotEmpty(userList)) {
+			// 匹配是否有用户ID不等当前修改记录的用户
+			boolean result = userList.stream().anyMatch(u -> !u.getId().equals(user.getId()));
+			if (result) {
+				return "手机号码已存在";
+			}
+		}
+		User update = DTOUtils.asInstance(user, User.class);
+		DTO go = DTOUtils.go(update);
+		go.remove("userName");
+		go.remove("password");
+		go.remove("firmCode");
+		go.remove("created");
+		go.remove("modified");
+		this.updateExactSimple(update);
+		return null;
+	}
+
+	/**
+	 * 验证用户信息
+	 * @param user
+	 * @return
+	 */
+	private BaseOutput validUser(User user){
+		if(!regexCheck(user.getUserName(),1)){
+			return BaseOutput.failure("用户名格式错误,只能包含中文,英文,数字,下划线,长度为2-20");
+		}
+		if(!regexCheck(user.getRealName(),2)){
+			return BaseOutput.failure("真实姓名格式错误,只能输入中文汉字,长度为2-5");
+		}
+		if(!regexCheck(user.getCellphone(),3)){
+			return BaseOutput.failure("手机号格式错误");
+		}
+		if(!regexCheck(user.getEmail(),4)){
+			return BaseOutput.failure("邮箱格式错误");
+		}
+		if(!regexCheck(user.getPassword(),5)){
+			return BaseOutput.failure("密码格式错误,长度限定为6-20");
+		}
+		return BaseOutput.success();
+	}
+
+	/**
+	 * 转换用户id和数据权限
+	 * @param userId
+	 * @param dataRange
+	 * @param dataIds
+	 * @return
+	 */
+	private List<UserDataAuth> convertToSaveUserDatas(Long userId, Long dataRange, String[] dataIds) {
+		// 保存用户数据范围信息
+		List<UserDataAuth> saveDatas = new ArrayList<>();
+		UserDataAuth ud = DTOUtils.newInstance(UserDataAuth.class);
+		ud.setUserId(userId);
+		ud.setValue(String.valueOf(dataRange));
+		ud.setRefCode(DataAuthType.DATA_RANGE.getCode());
+		saveDatas.add(ud);
+		// 需要保存的用户部门和市场信息
+		if (null != dataIds && dataIds.length > 0) {
+			for (String id : dataIds) {
+				ud = DTOUtils.newInstance(UserDataAuth.class);
+				ud.setUserId(userId);
+				if (id.startsWith(UapConstants.ALM_PROJECT_PREFIX)) {
+					String value = id.replace(UapConstants.ALM_PROJECT_PREFIX, "");
+					if (!value.equals("0")) {
+						ud.setRefCode(DataAuthType.PROJECT.getCode());
+						ud.setValue(value);
+						saveDatas.add(ud);
+					}
+				} else if (id.startsWith(UapConstants.FIRM_PREFIX)) {
+					if (id.startsWith(UapConstants.FIRM_PREFIX)) {
+						ud.setRefCode(DataAuthType.MARKET.getCode());
+						ud.setValue(id.replace(UapConstants.FIRM_PREFIX, ""));
+					} else {
+						ud.setRefCode(DataAuthType.DEPARTMENT.getCode());
+						ud.setValue(id);
+					}
+					saveDatas.add(ud);
+				} else if (id.startsWith(UapConstants.TRADING_HALL_PREFIX)) {
+					String value = id.replace(UapConstants.TRADING_HALL_PREFIX, "");
+					if (!value.equals("0")) {
+						ud.setRefCode(DataAuthType.TRADING_HALL.getCode());
+						ud.setValue(value);
+						saveDatas.add(ud);
+					}
+				} else {
+					if (id.startsWith(UapConstants.FIRM_PREFIX)) {
+						ud.setRefCode(DataAuthType.MARKET.getCode());
+						ud.setValue(id.replace(UapConstants.FIRM_PREFIX, ""));
+					} else {
+						ud.setRefCode(DataAuthType.DEPARTMENT.getCode());
+						ud.setValue(id);
+					}
+					saveDatas.add(ud);
+				}
+			}
+		}
+		return saveDatas;
+	}
+
+	/**
+	 * 对密码加密
+	 *
+	 * @param passwd
+	 * @return
+	 */
+	private String encryptPwd(String passwd) {
+		return md5Util.getMD5ofStr(passwd).substring(6, 24);
 	}
 }

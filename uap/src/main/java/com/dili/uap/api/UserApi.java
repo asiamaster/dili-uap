@@ -8,22 +8,17 @@ import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.dto.IDTO;
 import com.dili.ss.util.DateUtils;
 import com.dili.uap.component.ResumeLockedUserJob;
-import com.dili.uap.domain.Position;
+import com.dili.uap.domain.OAuthClient;
 import com.dili.uap.domain.ScheduleMessage;
 import com.dili.uap.domain.dto.UserDepartmentRole;
 import com.dili.uap.domain.dto.UserDepartmentRoleQuery;
 import com.dili.uap.domain.dto.UserDto;
 import com.dili.uap.glossary.UserState;
+import com.dili.uap.oauth.constant.ResultCode;
 import com.dili.uap.sdk.domain.Department;
-import com.dili.uap.sdk.domain.Firm;
 import com.dili.uap.sdk.domain.User;
 import com.dili.uap.sdk.domain.dto.UserQuery;
-import com.dili.uap.service.DepartmentService;
-import com.dili.uap.service.LoginService;
-import com.dili.uap.service.RoleService;
-import com.dili.uap.service.UserService;
-import com.dili.uap.service.PositionService;
-import com.dili.uap.service.FirmService;
+import com.dili.uap.service.*;
 import com.github.pagehelper.Page;
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.lang.StringEscapeUtils;
@@ -33,7 +28,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
-import java.util.regex.Pattern;
 
 /**
  * 由MyBatis Generator工具自动生成 This file was generated on 2017-07-11 16:56:50.
@@ -61,6 +55,9 @@ public class UserApi {
 
 	@Autowired
 	FirmService firmService;
+
+	@Autowired
+	OAuthClientService oAuthClientService;
 	/**
 	 * 查询User实体接口
 	 *
@@ -247,105 +244,46 @@ public class UserApi {
 	}
 
 	/**
-	 * 通过app注册用户
+	 * 通过第三方客户端注册，最少只需要userName、clientCode和password三个字段
+	 * @param user
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/clientRegister.api")
+	public BaseOutput clientRegister(User user) {
+		if(user.getClientCode() == null || user.getClientCode().isBlank()){
+			return BaseOutput.failure(ResultCode.PARAMS_ERROR, "客户端编码不能为空");
+		}
+		OAuthClient oAuthClient = oAuthClientService.getByCode(user.getClientCode());
+		if(oAuthClient == null){
+			return BaseOutput.failure(ResultCode.PARAMS_ERROR, "客户端编码不存在");
+		}
+		return userService.save(user);
+	}
+
+	/**
+	 * IOS注册用户， 用于审核，注册的用户为禁用状态
 	 *
-	 * @param json
+	 * @param user
 	 * @return
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/registeryByApp.api")
-	public BaseOutput registeryByApp(@RequestBody String json) {
-		JSONObject jo = JSON.parseObject(json);
-		String userName = jo.getString("userName");
-		String realName = jo.getString("realName");
-		String cellphone = jo.getString("cellphone");
-		String email = jo.getString("email");
-		String position = jo.getString("position");
-		String cardNumber = jo.getString("cardNumber");
-		String firmCode = jo.getString("firmCode");
-		Long departmentId = jo.getLong("departmentId");
-		String description = jo.getString("description");
-		User user = this.setUser(userName, realName, cellphone, email, position, cardNumber, firmCode, departmentId, description);
-		return userService.registeryByApp(user);
+	public BaseOutput registeryByApp(User user) {
+		user.setState(UserState.DISABLED.getCode());
+		return userService.save(user);
 	}
 
 	/**
 	 * 通过app注册用户(新增password,confirmPassword,positionId,superiorId,gender参数,去掉position参数)
 	 *
-	 * @param json
+	 * @param user
 	 * @return
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/registeryUserByApp.api")
-	public BaseOutput registeryUserByApp(@RequestBody String json) {
-		JSONObject jsonObject = JSON.parseObject(json);
-		if(!regexCheck(jsonObject.getString("userName"),1)){
-			return BaseOutput.failure("用户名格式错误,只能包含中文,英文,数字,下划线,长度为2-20");
-		}
-		if(!regexCheck(jsonObject.getString("realName"),2)){
-			return BaseOutput.failure("真实姓名格式错误,只能输入中文汉字,长度为2-5");
-		}
-		if(!regexCheck(jsonObject.getString("cellphone"),3)){
-			return BaseOutput.failure("手机号格式错误");
-		}
-		if(!regexCheck(jsonObject.getString("email"),4)){
-			return BaseOutput.failure("邮箱格式错误");
-		}
-		String password = jsonObject.getString("password");
-		String confirmPassword = jsonObject.getString("confirmPassword");
-		if(!regexCheck(password,5)){
-			return BaseOutput.failure("密码格式错误,长度限定为6-20");
-		}
-		if (!password.equals(confirmPassword)) {
-			return BaseOutput.failure("两次密码输入不一致,请重新输入");
-		}
-		if(null != jsonObject.getInteger("gender") && 0 != jsonObject.getInteger("gender") && 1 != jsonObject.getInteger("gender")){
-			return BaseOutput.failure("性别格式错误");
-		}
-		String firmCode = jsonObject.getString("firmCode");
-		if(StringUtils.isNotBlank(firmCode)){
-			Firm firm = firmService.getByCode(firmCode);
-			if(firm == null){
-				return BaseOutput.failure("市场输入错误,找不到该市场");
-			}
-		}else{
-			return BaseOutput.failure("市场不能为空");
-		}
-		Long departmentId = jsonObject.getLong("departmentId");
-		if(departmentId != null){
-			Department department = departmentService.get(departmentId);
-			if(department == null){
-				return BaseOutput.failure("部门输入错误,找不到该部门");
-			}
-		}
-		Long positionId = jsonObject.getLong("positionId");
-		if(positionId != null){
-			Position position = positionService.get(positionId);
-			if(position == null){
-				return BaseOutput.failure("职位输入错误,找不到该职位");
-			}
-		}
-		Long superiorId = jsonObject.getLong("superiorId");
-		if(superiorId != null){
-			User user = userService.get(superiorId);
-			if(user == null){
-				return BaseOutput.failure("上级输入错误,找不到该上级用户");
-			}
-		}
-		UserDto user = DTOUtils.newInstance(UserDto.class);
-		user.setUserName(jsonObject.getString("userName"));
-		user.setPassword(password);
-		user.setRealName(jsonObject.getString("realName"));
-		user.setCellphone(jsonObject.getString("cellphone"));
-		user.setEmail(jsonObject.getString("email"));
-		user.setPositionId(jsonObject.getLong("positionId"));
-		user.setCardNumber(jsonObject.getString("cardNumber"));
-		user.setFirmCode(jsonObject.getString("firmCode"));
-		user.setDepartmentId(jsonObject.getLong("departmentId"));
-		user.setDescription(jsonObject.getString("description"));
-		user.setSuperiorId(jsonObject.getLong("superiorId"));
-		user.setGender(jsonObject.getInteger("gender"));
-		return userService.registeryUserByApp(user);
+	public BaseOutput registeryUserByApp(UserDto user) {
+		return userService.register(user);
 	}
 
 	/**
@@ -468,40 +406,5 @@ public class UserApi {
 		return BaseOutput.success().setData(resultMap);
 	}
 
-	/**
-	 * 用户信息校验
-	 *
-	 * @param  info
-	 * @return 验证通过返回true
-	 */
-	public static boolean regexCheck(String info,Integer type) {
-		if(StringUtils.isBlank(info)){
-			return false;
-		}
-		String regex = null;
-		switch (type){
-			//用户账号
-			case 1:
-				regex = "^[a-zA-Z0-9_\\u4e00-\\u9fa5]{2,20}$";
-				break;
-			//真实姓名
-			case 2:
-				regex = "^[\u4e00-\u9fa5]{2,5}$";
-				break;
-			//手机号码
-			case 3:
-				regex = "^[1][3-9][0-9]{9}$";
-				break;
-			//邮箱
-			case 4:
-				regex = "^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$";
-				break;
-			//密码
-			case 5:
-				regex = "^.{6,20}$";
-				break;
 
-		}
-		return Pattern.matches(regex,info);
-	}
 }

@@ -177,4 +177,8 @@ public interface User extends IBaseDomain, IMybatisForceParams {
 	Integer getGender();
 
 	void setGender(Integer gender);
+
+	@Column(name = "`client_code`")
+	String getClientCode();
+	void setClientCode(String clientCode);
 }

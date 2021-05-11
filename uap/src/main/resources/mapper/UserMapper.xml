@@ -19,13 +19,13 @@
 		<result column="cellphone" jdbcType="VARCHAR" property="cellphone" />
 		<result column="email" jdbcType="VARCHAR" property="email" />
 		<result column="push_id" jdbcType="VARCHAR" property="pushId" />
-		<result column="push_id" jdbcType="VARCHAR" property="pushId" />
+		<result column="client_code" jdbcType="VARCHAR" property="clientCode" />
 		<result column="last_login_time" jdbcType="TIMESTAMP" property="lastLoginTime" />
 	</resultMap>
 	<sql id="Base_Column_List">
 		<!-- WARNING - @mbg.generated -->
 		id, user_name, password, firm_code, department_id, position, card_number, created,
-		modified, state, real_name, serial_number, cellphone, email,locked,push_id,last_login_time
+		modified, state, real_name, serial_number, cellphone, email,locked,push_id,last_login_time, client_code
 	</sql>
 
 	<!-- 根据角色ID查询用户列表信息 -->

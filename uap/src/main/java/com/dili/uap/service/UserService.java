@@ -46,6 +46,12 @@ public interface UserService extends BaseService<User, Long> {
 	BaseOutput<Object> changePwd(Long userId, UserDto user);
 
 	/**
+	 * 用户注册，比save方法多了验证
+	 * @param user
+	 * @return
+	 */
+	BaseOutput register(UserDto user);
+	/**
 	 * 保存用户信息
 	 * 
 	 * @param user 用户信息对象
@@ -200,22 +206,13 @@ public interface UserService extends BaseService<User, Long> {
 	List<User> findUsersByResourceCode(String resourceCode, Long marketId);
 
 	/**
-	 * 通过app注册用户
+	 * 注册禁用的用户，用于IOS审核
 	 *
 	 * @param user
 	 * 
 	 * @return
 	 */
-	BaseOutput registeryByApp(User user);
-
-	/**
-	 * 通过app注册用户(新)
-	 *
-	 * @param user
-	 *
-	 * @return
-	 */
-	BaseOutput registeryUserByApp(User user);
+	BaseOutput registeryDisabledUser(User user);
 
 	/**
 	 * 获取进厅数据权限
