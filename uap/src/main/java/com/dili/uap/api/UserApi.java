@@ -8,6 +8,7 @@ import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.dto.IDTO;
 import com.dili.ss.util.DateUtils;
 import com.dili.uap.component.ResumeLockedUserJob;
+import com.dili.uap.constants.UapConstants;
 import com.dili.uap.domain.OAuthClient;
 import com.dili.uap.domain.ScheduleMessage;
 import com.dili.uap.domain.dto.UserDepartmentRole;
@@ -92,7 +93,7 @@ public class UserApi {
 	public BaseOutput<List<User>> listByExample(UserQuery user) {
 		if (StringUtils.isNotBlank(user.getKeyword())) {
 			String keyword = StringEscapeUtils.escapeSql(user.getKeyword());
-			user.setMetadata(IDTO.AND_CONDITION_EXPR, "(user_name like '%" + keyword + "%' or real_name like '%" + keyword + "%' or serial_number like '%" + keyword + "%')");
+			user.setMetadata(IDTO.AND_CONDITION_EXPR, "(user_name like '%" + keyword + "%' or real_name like '%" + keyword + "%' or cellphone like '%"+keyword + "%' or serial_number like '%" + keyword + "%')");
 		}
 		List<User> users = this.userService.listByExample(user);
 		return BaseOutput.success().setData(users);
@@ -258,6 +259,7 @@ public class UserApi {
 		if(oAuthClient == null){
 			return BaseOutput.failure(ResultCode.PARAMS_ERROR, "客户端编码不存在");
 		}
+		user.setFirmCode(UapConstants.EXTERNAL_FIRM);
 		return userService.save(user);
 	}
 

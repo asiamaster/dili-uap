@@ -224,6 +224,9 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 		if (StringUtils.isNotBlank(user.getUserName())) {
 			user.setUserName(user.getUserName().toLowerCase());
 		}
+		if(StringUtils.isBlank(user.getRealName())){
+			user.setRealName(user.getUserName());
+		}
 		String msg = null;
 		// 用户新增
 		if (null == user.getId()) {
@@ -792,32 +795,27 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 	 * @return
 	 */
 	private String insertBySave(User user){
+		User query = DTOUtils.newInstance(User.class);
+		query.setCellphone(user.getCellphone());
+		List<User> userList = getActualDao().select(query);
+		if (CollectionUtils.isNotEmpty(userList)) {
+			return "手机号码已存在";
+		}
+		query.setCellphone(null);
+		query.setUserName(user.getUserName());
+		if (CollectionUtils.isNotEmpty(getActualDao().select(query))) {
+			return "用户账号已存在";
+		}
+		if (user.getState() == null) {
+			user.setState(UserState.NORMAL.getCode());
+		}
 		// 验证邮箱是否重复
 		if(StringUtils.isNotBlank(user.getEmail())) {
-			User query = DTOUtils.newInstance(User.class);
+			query.setUserName(null);
 			query.setEmail(user.getEmail());
 			if (CollectionUtils.isNotEmpty(getActualDao().select(query))) {
 				return "邮箱已存在";
 			}
-		}
-		if(StringUtils.isNotBlank(user.getCellphone())) {
-			User query = DTOUtils.newInstance(User.class);
-			query.setCellphone(user.getCellphone());
-			List<User> userList = getActualDao().select(query);
-			if (CollectionUtils.isNotEmpty(userList)) {
-				return "手机号码已存在";
-			}
-		}
-		if(StringUtils.isNotBlank(user.getCellphone())) {
-			User query = DTOUtils.newInstance(User.class);
-			query.setUserName(user.getUserName());
-			List<User> userList = getActualDao().select(query);
-			if (CollectionUtils.isNotEmpty(userList)) {
-				return "用户账号已存在";
-			}
-		}
-		if (user.getState() == null) {
-			user.setState(UserState.NORMAL.getCode());
 		}
 		if(StringUtils.isBlank(user.getPassword())){
 			user.setPassword(encryptPwd(UapConstants.DEFAULT_PASS));

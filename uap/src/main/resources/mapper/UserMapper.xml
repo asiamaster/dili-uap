@@ -258,4 +258,7 @@
 			(user_name like <![CDATA[concat('%',#{keywords},'%')]]> or real_name like <![CDATA[concat('%',#{keywords},'%')]]>)
 	</select>
 
+	<select id="selectByUserNameOrCellphone" resultType="com.dili.uap.sdk.domain.User">
+		select u.* from user u WHERE u.cellphone = #{userName} or u.user_name = #{userName}
+	</select>
 </mapper>

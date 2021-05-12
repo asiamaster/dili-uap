@@ -21,6 +21,8 @@ public class UapConstants {
 	public static final String LOGIN_FAILED_TIMES = "loginFailedTimes";
 	// 锁定用户恢复时长(毫秒)，默认12小时
 	public static final String RESUME_DURATION = "resumeDuration";
+	//外部公司的code
+	public static final String EXTERNAL_FIRM = "external";
 
 	/**
 	 * 树状结构，系统ID前缀

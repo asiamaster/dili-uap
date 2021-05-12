@@ -34,6 +34,7 @@ import com.dili.uap.sdk.util.WebContent;
 import com.dili.uap.service.LoginService;
 import com.dili.uap.utils.MD5Util;
 import com.dili.uap.utils.WebUtil;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,6 +47,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -209,10 +211,10 @@ public class LoginServiceImpl implements LoginService {
 			this.dataAuthManager.initUserDataAuthesInRedis(user.getId(), systemType);
 
 //			LOG.info(String.format("用户登录成功，用户名[%s] | 用户IP[%s]", loginDto.getUserName(), loginDto.getIp()));
+			UserTicket userTicket = DTOUtils.asInstance(user, UserTicket.class);
 			Firm condition = DTOUtils.newInstance(Firm.class);
 			condition.setCode(user.getFirmCode());
 			Firm firm = firmMapper.selectOne(condition);
-			UserTicket userTicket = DTOUtils.asInstance(user, UserTicket.class);
 			//设置登录的系统，用于区别不同的超时时间
 			userTicket.setSystemType(systemType);
 			if (firm != null) {
@@ -257,12 +259,14 @@ public class LoginServiceImpl implements LoginService {
 		if (loginDto.getPassword().length() < 6 || loginDto.getPassword().length() > 20) {
 			return BaseOutput.failure("密码长度不能小于6位或大于20位!").setCode(ResultCode.PARAMS_ERROR);
 		}
-		User record = DTOUtils.newInstance(User.class);
-		record.setUserName(loginDto.getUserName());
-		User user = this.userMapper.selectOne(record);
-		if (user == null) {
+		List<User> users = this.userMapper.selectByUserNameOrCellphone(loginDto.getUserName());
+		if (CollectionUtils.isEmpty(users)) {
 			return BaseOutput.failure("用户名或密码错误");
 		}
+		if(users.size()>1){
+			return BaseOutput.failure("存在相同的用户名或手机号");
+		}
+		User user = users.get(0);
 		// 设置默认登录系统为UAP
 		if (StringUtils.isBlank(loginDto.getSystemCode())) {
 			loginDto.setSystemCode(UapConstants.UAP_SYSTEM_CODE);
@@ -336,11 +340,13 @@ public class LoginServiceImpl implements LoginService {
 		LoggerContext.put(LoggerConstant.LOG_BUSINESS_ID_KEY, loginDto.getUserId());
 		LoggerContext.put(LoggerConstant.LOG_OPERATOR_ID_KEY, loginDto.getUserId());
 		if (user != null) {
-			Firm firm = DTOUtils.newDTO(Firm.class);
-			firm.setCode(user.getFirmCode());
-			Firm result = firmMapper.selectOne(firm);
 			LoggerContext.put(LoggerConstant.LOG_NOTES_KEY, user.getRealName());
-			LoggerContext.put(LoggerConstant.LOG_MARKET_ID_KEY, result.getId());
+			if(user.getFirmCode() != null) {
+				Firm firm = DTOUtils.newDTO(Firm.class);
+				firm.setCode(user.getFirmCode());
+				Firm result = firmMapper.selectOne(firm);
+				LoggerContext.put(LoggerConstant.LOG_MARKET_ID_KEY, result.getId());
+			}
 		}
 		if(!isSuccess){
 			LoggerContext.put(LoggerConstant.LOG_CONTENT_KEY,UapConstants.LOGIN_FAIL_CONTENT+loginDto.getSystemCode());

@@ -1,17 +1,16 @@
 package com.dili.uap.dao;
 
 import com.dili.ss.base.MyMapper;
-import com.dili.uap.sdk.domain.User;
 import com.dili.uap.domain.dto.UserDepartmentRole;
 import com.dili.uap.domain.dto.UserDepartmentRoleQuery;
 import com.dili.uap.domain.dto.UserDto;
+import com.dili.uap.sdk.domain.User;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.apache.ibatis.annotations.Param;
 
 public interface UserMapper extends MyMapper<User> {
 
@@ -96,4 +95,11 @@ public interface UserMapper extends MyMapper<User> {
 	 * @return
 	 */
     Set<Long> getIdsByName(String keywords);
+
+	/**
+	 * 根据用户名和手机号查询，用于登录鉴权
+	 * @param userName
+	 * @return
+	 */
+	List<User> selectByUserNameOrCellphone(@Param("userName") String userName);
 }
