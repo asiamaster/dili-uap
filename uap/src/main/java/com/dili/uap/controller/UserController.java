@@ -12,6 +12,7 @@ import com.dili.ss.dto.IDTO;
 import com.dili.ss.metadata.ValueProviderUtils;
 import com.dili.uap.constants.UapConstants;
 import com.dili.uap.domain.dto.UserDto;
+import com.dili.uap.glossary.UserState;
 import com.dili.uap.sdk.component.DataAuthSource;
 import com.dili.uap.sdk.domain.*;
 import com.dili.uap.sdk.exception.NotLoginException;
@@ -38,7 +39,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -176,6 +176,7 @@ public class UserController {
 		if (StringUtils.isNotBlank(validator)) {
 			return BaseOutput.failure(validator);
 		}
+		user.setState(UserState.INACTIVE.getCode());
 		BaseOutput<Object> output = userService.save(user);
 		if (output.isSuccess()) {
 			LoggerContext.put(LoggerConstant.LOG_BUSINESS_CODE_KEY, user.getUserName());
