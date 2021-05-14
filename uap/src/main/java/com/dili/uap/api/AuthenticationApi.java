@@ -269,7 +269,7 @@ public class AuthenticationApi {
 	 */
 	@PostMapping(value = "/validCardResource")
 	@ResponseBody
-	public BaseOutput<List<Resource>> validCardResource(@RequestBody String json) {
+	public BaseOutput<String> validCardResource(@RequestBody String json) {
 		JSONObject jsonObject = JSONObject.parseObject(json);
 		String cardNumber = jsonObject.getString("cardNumber");
 		String resourceCode = jsonObject.getString("resourceCode");
