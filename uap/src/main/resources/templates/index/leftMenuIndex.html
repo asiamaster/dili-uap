@@ -432,14 +432,16 @@
         if(data  == 'toLogin'){
             toLogin();
         }
-        var dataJson = JSON.parse(data);
-        var cmd = dataJson.cmd;
+        let dataJson = JSON.parse(data);
+        let cmd = dataJson.cmd;
+        let systemCode = dataJson.systemCode;
         if (cmd && cmd == 'getToken') {
             clientOrigin = origin;
             let iframe = document.getElementById("mainPanelIframe");
             $.ajax({
                 type : "GET",
                 url : "${contextPath!}/login/getToken.action",
+                data:{systemCode: systemCode},
                 dataType : "json",
                 async : false,
                 success : function(output) {

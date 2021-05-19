@@ -45,6 +45,11 @@ public class ResourceServiceImpl extends BaseServiceImpl<Resource, Long> impleme
 		return this.getActualDao().listResourceCodesByUserId(userId, resourceCodes);
 	}
 
+	@Override
+	public List<String> listByUserIdAndSystemCode(Long userId, String systemCode) {
+		return this.getActualDao().listByUserIdAndSystemCode(userId, systemCode);
+	}
+
 	@Transactional
 	@Override
 	public void deleteResourceAndLink(Long id){

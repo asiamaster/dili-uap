@@ -33,6 +33,18 @@
 		AND ur.user_id = #{userId}
 	</select>
 
+	<select id="listByUserIdAndSystemCode" resultType="String">
+	SELECT
+	r.`code`
+	FROM
+	role_resource rr inner join resource r ON rr.resource_id = r.id
+	inner join user_role ur ON rr.role_id = ur.role_id
+	inner join menu m ON r.menu_id = m.id
+	INNER JOIN systems s ON m.system_id = s.id
+	where ur.user_id = #{userId}
+	AND s.code=#{systemCode}
+	</select>
+
 	<select id="listByUserIdAndSystemId" resultMap="BaseResultMap">
 		SELECT
 		r.id, r.`code`, r.created, r.description, r.menu_id,

@@ -3,6 +3,7 @@ package com.dili.uap.dao;
 import com.dili.ss.base.MyMapper;
 import com.dili.uap.sdk.domain.Menu;
 import com.dili.uap.sdk.domain.dto.ClientMenuDto;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -55,4 +56,12 @@ public interface MenuMapper extends MyMapper<Menu> {
 	 * @return
 	 */
 	List<ClientMenuDto> listSystemAndMenus(Map<String, Object> param);
+
+	/**
+	 * 根据用户id和系统编码查询菜单url，用于分离的前端页面路由守卫鉴权
+	 * @param userId
+	 * @param systemCode
+	 * @return
+	 */
+	List<String> listMenuUrlsByUserIdAndSystemCode(@Param("userId") Long userId, @Param("systemCode") String systemCode);
 }

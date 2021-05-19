@@ -84,7 +84,16 @@
 		<if test="systemType != null">
 			AND m.system_type =#{systemType}
 		</if>
+	</select>
 
+	<select id="listMenuUrlsByUserIdAndSystemCode" resultType="string">
+		SELECT distinct m.url
+		FROM menu m
+		INNER JOIN role_menu rm ON m.id = rm.menu_id
+		INNER JOIN user_role ur ON ur.role_id = rm.role_id
+		INNER JOIN systems s ON m.system_id = s.id
+		WHERE ur.user_id = #{userId}
+		AND s.code = #{systemCode}
 	</select>
 
 	<select id="listSystemAndMenus" parameterType="java.util.HashMap" resultMap="clientMenuRM">

@@ -2,6 +2,7 @@ package com.dili.uap.service;
 
 import com.dili.ss.base.BaseService;
 import com.dili.uap.domain.Resource;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -34,6 +35,14 @@ public interface ResourceService extends BaseService<Resource, Long> {
 	 * @return
 	 */
 	List<String> listResourceCodesByUserId(Long userId, List<String> resourceCodes);
+
+	/**
+	 * 根据用户id和系统code查询资源列表
+	 * @param userId
+	 * @param systemCode
+	 * @return
+	 */
+	List<String> listByUserIdAndSystemCode(@Param("userId")Long userId, @Param("systemCode")String systemCode);
 
 	/**
 	 * 根据资源id删除资源和资源链接，以及角色菜单关系

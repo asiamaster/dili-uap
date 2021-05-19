@@ -30,6 +30,20 @@ public interface ResourceMapper extends MyMapper<Resource> {
 	 */
 	List<Resource> listByUserIdAndSystemId(@Param("userId")Long userId, @Param("systemId")Long systemId);
 
+	/**
+	 * 根据用户id和系统code查询资源列表
+	 * @param userId
+	 * @param systemCode
+	 * @return
+	 */
+	List<String> listByUserIdAndSystemCode(@Param("userId")Long userId, @Param("systemCode")String systemCode);
+
+	/**
+	 * 根据用户id查询有权限的资源列表
+	 * @param userId
+	 * @param systemCode
+	 * @return
+	 */
 	List<String> findResourceCodeByUserId(Long userId);
 
 	/**

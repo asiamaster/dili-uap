@@ -206,4 +206,9 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, Long> implements Menu
 		resourceLinkService.deleteByExample(resourceLinkCondition);
 		return null;
 	}
+
+	@Override
+	public List<String> listMenuUrlsByUserIdAndSystemCode(Long userId, String systemCode){
+		return getActualDao().listMenuUrlsByUserIdAndSystemCode(userId, systemCode);
+	}
 }

@@ -1,5 +1,6 @@
 package com.dili.uap.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.dili.logger.sdk.annotation.BusinessLogger;
 import com.dili.logger.sdk.base.LoggerContext;
@@ -7,9 +8,14 @@ import com.dili.logger.sdk.glossary.LoggerConstant;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.domain.dto.LoginDto;
+import com.dili.uap.oauth.constant.ResultCode;
 import com.dili.uap.sdk.constant.SessionConstants;
+import com.dili.uap.sdk.domain.UserTicket;
+import com.dili.uap.sdk.session.SessionContext;
 import com.dili.uap.sdk.util.WebContent;
 import com.dili.uap.service.LoginService;
+import com.dili.uap.service.MenuService;
+import com.dili.uap.service.ResourceService;
 import com.dili.uap.service.UserService;
 import com.dili.uap.utils.WebUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -20,6 +26,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * 登录控制器
@@ -36,6 +43,12 @@ public class LoginController {
 
 	@Autowired
 	private UserService userService;
+
+	@Autowired
+	private MenuService menuService;
+
+	@Autowired
+	private ResourceService resourceService;
 
 	// 跳转到登录页面
 	public static final String INDEX_PATH = "login/index";
@@ -165,12 +178,20 @@ public class LoginController {
 	 */
 	@GetMapping(value = "/getToken.action")
 	@ResponseBody
-	public BaseOutput<String> getToken() {
+	public BaseOutput<String> getToken(@RequestParam String systemCode) {
 		String accessToken = WebContent.getCookieVal(SessionConstants.ACCESS_TOKEN_KEY);
 		String refreshToken = WebContent.getCookieVal(SessionConstants.REFRESH_TOKEN_KEY);
+		UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
+		if (userTicket == null) {
+			return BaseOutput.failure(ResultCode.NOT_AUTH_ERROR, "用户未登录");
+		}
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("accessToken", accessToken);
 		jsonObject.put("refreshToken", refreshToken);
+		List<String> menuUrls = menuService.listMenuUrlsByUserIdAndSystemCode(userTicket.getId(), systemCode);
+		jsonObject.put("menuUrls", JSONArray.toJSONString(menuUrls));
+		List<String> resourceCodes = resourceService.listByUserIdAndSystemCode(userTicket.getId(), systemCode);
+		jsonObject.put("resourceCodes", JSONArray.toJSONString(resourceCodes));
 		return BaseOutput.successData(jsonObject.toJSONString());
 	}
 }

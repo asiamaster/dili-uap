@@ -69,4 +69,12 @@ public interface MenuService extends BaseService<Menu, Long> {
      * @return
      */
     String deleteMenu(Long id);
+
+    /**
+     * 根据用户id和系统编码查询菜单url，用于分离的前端页面路由守卫鉴权
+     * @param userId
+     * @param systemCode
+     * @return
+     */
+    List<String> listMenuUrlsByUserIdAndSystemCode(Long userId, String systemCode);
 }
