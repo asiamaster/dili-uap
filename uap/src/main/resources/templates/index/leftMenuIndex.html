@@ -423,13 +423,38 @@
     function toUrl(url) {
         window.location.href = url;
     }
+    //前端页面的origin，用于postmessage
+    var clientOrigin;
     //监听子页面的toLogin事件消息
-    window.addEventListener('message',function(e){
+    window.addEventListener('message', function(e){
         var data = e.data;
         var origin = e.origin;
         if(data  == 'toLogin'){
             toLogin();
         }
+        var dataJson = JSON.parse(data);
+        var cmd = dataJson.cmd;
+        if (cmd && cmd == 'getToken') {
+            clientOrigin = origin;
+            let iframe = document.getElementById("mainPanelIframe");
+            $.ajax({
+                type : "GET",
+                url : "${contextPath!}/login/getToken.action",
+                dataType : "json",
+                async : false,
+                success : function(output) {
+                    if (output.code == "200") {
+                        let result = JSON.parse(output.data);
+                        result.cmd = "token_response";
+                        iframe.contentWindow.postMessage(JSON.stringify(result), origin);
+                    }
+                },
+                error : function() {
+                    swal('错误', '远程访问失败', 'error');
+                }
+            });
+        }
+
     },false);
 
     //点击系统菜单或用户菜单
@@ -474,6 +499,24 @@
     }
 
     function renderPage(title, url) {
+        <% if(system.isFrontend==1){%>
+            if(clientOrigin == null){
+                hrefPage(url);
+                return;
+            }
+            let iframe = document.getElementById("mainPanelIframe");
+            let data = {};
+            data.cmd = "routerPush";
+            data.url = url;
+            data.title = title;
+            iframe.contentWindow.postMessage(JSON.stringify(data), clientOrigin);
+        <%}else {%>
+            hrefPage(url);
+        <%}%>
+    }
+
+    function hrefPage(url){
+        clientOrigin = null;
         var content = '<iframe scrolling="auto" id="mainPanelIframe" frameborder="0" src="'+url+'" onLoad="" style="width:100%; height: 99.2%;"></iframe>';
         $('#mainPanel').panel({
             content:content,

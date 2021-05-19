@@ -123,4 +123,11 @@ public interface Systems extends IBaseDomain,IMybatisForceParams {
     Integer getIsClient();
     void setIsClient(Integer isClient);
 
+    @Column(name = "`is_frontend`")
+    @FieldDef(label="是否前端")
+    @EditMode(editor = FieldEditor.Combo, required = false)
+    Integer getIsFrontend();
+    void setIsFrontend(Integer frontend);
+
+
 }

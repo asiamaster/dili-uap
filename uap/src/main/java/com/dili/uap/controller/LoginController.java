@@ -1,11 +1,13 @@
 package com.dili.uap.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.dili.logger.sdk.annotation.BusinessLogger;
 import com.dili.logger.sdk.base.LoggerContext;
 import com.dili.logger.sdk.glossary.LoggerConstant;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.domain.dto.LoginDto;
+import com.dili.uap.sdk.constant.SessionConstants;
 import com.dili.uap.sdk.util.WebContent;
 import com.dili.uap.service.LoginService;
 import com.dili.uap.service.UserService;
@@ -15,10 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -155,9 +154,23 @@ public class LoginController {
 	 * @param modelMap
 	 * @return
 	 */
-	@RequestMapping(value = "/toLogin.html", method = RequestMethod.GET)
+	@GetMapping(value = "/toLogin.html")
 	public String toLogin(ModelMap modelMap) {
 		return "toLogin";
 	}
 
+	/**
+	 * 从cookie获取token
+	 * @return
+	 */
+	@GetMapping(value = "/getToken.action")
+	@ResponseBody
+	public BaseOutput<String> getToken() {
+		String accessToken = WebContent.getCookieVal(SessionConstants.ACCESS_TOKEN_KEY);
+		String refreshToken = WebContent.getCookieVal(SessionConstants.REFRESH_TOKEN_KEY);
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("accessToken", accessToken);
+		jsonObject.put("refreshToken", refreshToken);
+		return BaseOutput.successData(jsonObject.toJSONString());
+	}
 }

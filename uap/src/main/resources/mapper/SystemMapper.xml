@@ -18,6 +18,7 @@
     <result column="modified" jdbcType="TIMESTAMP" property="modified" />
     <result column="type" jdbcType="INTEGER" property="type" />
     <result column="is_client" jdbcType="TINYINT" property="isClient" />
+    <result column="is_frontend" jdbcType="TINYINT" property="isFrontend" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--
@@ -28,7 +29,7 @@
   </sql>
 
   <select id="listByUserId" resultType="com.dili.uap.sdk.domain.Systems">
-    select distinct s.id, s.code, s.name, s.url, s.icon_url, s.logo_url, s.type, s.order_number, s.index_url, s.description, s.is_client, s.parent_id
+    select distinct s.id, s.code, s.name, s.url, s.icon_url, s.logo_url, s.type, s.order_number, s.index_url, s.description, s.is_client, s.parent_id, s.is_frontend
     from systems s, menu m, user_role ur, role_menu rm
     where m.system_id  = s.id
     and m.id = rm.menu_id
