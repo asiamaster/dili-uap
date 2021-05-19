@@ -9,13 +9,11 @@ import com.dili.ss.dto.IDTO;
 import com.dili.ss.util.DateUtils;
 import com.dili.uap.component.ResumeLockedUserJob;
 import com.dili.uap.constants.UapConstants;
-import com.dili.uap.domain.OAuthClient;
 import com.dili.uap.domain.ScheduleMessage;
 import com.dili.uap.domain.dto.UserDepartmentRole;
 import com.dili.uap.domain.dto.UserDepartmentRoleQuery;
 import com.dili.uap.domain.dto.UserDto;
 import com.dili.uap.glossary.UserState;
-import com.dili.uap.oauth.constant.ResultCode;
 import com.dili.uap.sdk.domain.Department;
 import com.dili.uap.sdk.domain.User;
 import com.dili.uap.sdk.domain.dto.UserQuery;
@@ -57,8 +55,6 @@ public class UserApi {
 	@Autowired
 	FirmService firmService;
 
-	@Autowired
-	OAuthClientService oAuthClientService;
 	/**
 	 * 查询User实体接口
 	 *
@@ -252,12 +248,9 @@ public class UserApi {
 	@ResponseBody
 	@RequestMapping(value = "/clientRegister.api")
 	public BaseOutput clientRegister(User user) {
-		if(user.getClientCode() == null || user.getClientCode().isBlank()){
-			return BaseOutput.failure(ResultCode.PARAMS_ERROR, "客户端编码不能为空");
-		}
-		OAuthClient oAuthClient = oAuthClientService.getByCode(user.getClientCode());
-		if(oAuthClient == null){
-			return BaseOutput.failure(ResultCode.PARAMS_ERROR, "客户端编码不存在");
+		BaseOutput baseOutput = userService.clientRegisterCheck(user);
+		if(!baseOutput.isSuccess()){
+			return baseOutput;
 		}
 		user.setFirmCode(UapConstants.EXTERNAL_FIRM);
 		return userService.save(user);
