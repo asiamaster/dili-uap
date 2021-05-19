@@ -20,6 +20,7 @@ import com.dili.ss.util.POJOUtils;
 import com.dili.uap.boot.RabbitConfiguration;
 import com.dili.uap.constants.UapConstants;
 import com.dili.uap.dao.*;
+import com.dili.uap.domain.OAuthClient;
 import com.dili.uap.domain.Position;
 import com.dili.uap.domain.UserRole;
 import com.dili.uap.domain.dto.UserDataDto;
@@ -101,6 +102,8 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 	DepartmentService departmentService;
 	@Autowired
 	PositionService positionService;
+	@Autowired
+	OAuthClientService oAuthClientService;
 
 	@Override
 	public void logout(String refreshToken) {
@@ -170,6 +173,26 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 		json = AESUtils.encrypt(json, aesKey);
 		amqpTemplate.convertAndSend(RabbitConfiguration.UAP_TOPIC_EXCHANGE, RabbitConfiguration.UAP_CHANGE_PASSWORD_KEY, json);
 		return BaseOutput.success("修改密码成功");
+	}
+
+	@Override
+	public BaseOutput clientRegisterCheck(User user) {
+		if(user.getClientCode() == null || user.getClientCode().isBlank()){
+			return BaseOutput.failure(com.dili.uap.oauth.constant.ResultCode.PARAMS_ERROR, "客户端编码不能为空");
+		}
+		OAuthClient oAuthClient = oAuthClientService.getByCode(user.getClientCode());
+		if(oAuthClient == null){
+			return BaseOutput.failure(com.dili.uap.oauth.constant.ResultCode.PARAMS_ERROR, "客户端编码不存在");
+		}
+		if(!regexCheck(user.getUserName(),1)){
+			return BaseOutput.failure("用户名格式错误,只能包含中文,英文,数字,下划线,长度为2-20");
+		}
+		if(StringUtils.isNotBlank(user.getPassword())){
+			if(!regexCheck(user.getPassword(),5)){
+				return BaseOutput.failure("密码格式错误,长度限定为6-20");
+			}
+		}
+		return BaseOutput.success();
 	}
 
 	@Override
