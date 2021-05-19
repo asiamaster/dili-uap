@@ -53,6 +53,13 @@ public interface UserService extends BaseService<User, Long> {
 	BaseOutput<Object> changePwd(Long userId, UserDto user);
 
 	/**
+	 * api用户注册额外校验
+	 * @param user
+	 * @return
+	 */
+	BaseOutput registerExtraCheck(UserDto user);
+
+	/**
 	 * 用户注册，比save方法多了验证
 	 * @param user
 	 * @return

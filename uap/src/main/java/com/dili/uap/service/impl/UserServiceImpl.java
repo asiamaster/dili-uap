@@ -173,11 +173,22 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 	}
 
 	@Override
-	@Transactional(rollbackFor = Exception.class)
-	public BaseOutput register(UserDto user){
+	public BaseOutput registerExtraCheck(UserDto user) {
 		if (user.getPassword() == null || !user.getPassword().equals(user.getConfirmPassword())) {
 			return BaseOutput.failure("两次密码输入不一致,请重新输入");
 		}
+		if(StringUtils.isBlank(user.getEmail())){
+			return BaseOutput.failure("邮箱不能为空");
+		}
+		if(StringUtils.isBlank(user.getFirmCode())){
+			return BaseOutput.failure("市场不能为空");
+		}
+		return BaseOutput.success();
+	}
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public BaseOutput register(UserDto user){
 		if(null != user.getGender() && 0 != user.getGender() && 1 != user.getGender()){
 			return BaseOutput.failure("性别格式错误");
 		}
@@ -187,8 +198,6 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 			if(firm == null){
 				return BaseOutput.failure("市场输入错误,找不到该市场");
 			}
-		}else{
-			return BaseOutput.failure("市场不能为空");
 		}
 		Long departmentId = user.getDepartmentId();
 		if(departmentId != null){
@@ -796,10 +805,12 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 	 */
 	private String insertBySave(User user){
 		User query = DTOUtils.newInstance(User.class);
-		query.setCellphone(user.getCellphone());
-		List<User> userList = getActualDao().select(query);
-		if (CollectionUtils.isNotEmpty(userList)) {
-			return "手机号码已存在";
+		if(StringUtils.isNotBlank(user.getCellphone())){
+			query.setCellphone(user.getCellphone());
+			List<User> userList = getActualDao().select(query);
+			if (CollectionUtils.isNotEmpty(userList)) {
+				return "手机号码已存在";
+			}
 		}
 		query.setCellphone(null);
 		query.setUserName(user.getUserName());
@@ -898,11 +909,15 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 		if(!regexCheck(user.getCellphone(),3)){
 			return BaseOutput.failure("手机号格式错误");
 		}
-		if(!regexCheck(user.getEmail(),4)){
-			return BaseOutput.failure("邮箱格式错误");
+		if(StringUtils.isNotBlank(user.getEmail())) {
+			if (!regexCheck(user.getEmail(), 4)) {
+				return BaseOutput.failure("邮箱格式错误");
+			}
 		}
-		if(!regexCheck(user.getPassword(),5)){
-			return BaseOutput.failure("密码格式错误,长度限定为6-20");
+		if(StringUtils.isNotBlank(user.getPassword())){
+			if(!regexCheck(user.getPassword(),5)){
+				return BaseOutput.failure("密码格式错误,长度限定为6-20");
+			}
 		}
 		return BaseOutput.success();
 	}

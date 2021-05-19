@@ -271,9 +271,9 @@ public class UserApi {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/registeryByApp.api")
-	public BaseOutput registeryByApp(User user) {
+	public BaseOutput registeryByApp(UserDto user) {
 		user.setState(UserState.DISABLED.getCode());
-		return userService.save(user);
+		return userService.register(user);
 	}
 
 	/**
@@ -285,6 +285,10 @@ public class UserApi {
 	@ResponseBody
 	@RequestMapping(value = "/registeryUserByApp.api")
 	public BaseOutput registeryUserByApp(UserDto user) {
+		BaseOutput baseOutput = userService.registerExtraCheck(user);
+		if(!baseOutput.isSuccess()){
+			return baseOutput;
+		}
 		return userService.register(user);
 	}
 
