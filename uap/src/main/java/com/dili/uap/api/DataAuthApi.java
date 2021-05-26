@@ -1,29 +1,27 @@
 package com.dili.uap.api;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
+import com.dili.uap.component.CustomerCharacterTypeSourceService;
 import com.dili.uap.sdk.component.DataAuthSource;
 import com.dili.uap.sdk.domain.DataAuthRef;
 import com.dili.uap.sdk.domain.UserDataAuth;
+import com.dili.uap.sdk.glossary.DataAuthType;
 import com.dili.uap.sdk.service.DataAuthSourceService;
 import com.dili.uap.service.DataAuthRefService;
 import com.dili.uap.service.UserDataAuthService;
 import com.google.common.collect.Lists;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 数据权限Api
@@ -40,10 +38,30 @@ public class DataAuthApi {
 
     @Autowired
     private DataAuthRefService dataAuthRefService;
-    
+
+    @Autowired
+    private CustomerCharacterTypeSourceService customerCharacterTypeSourceService;
+
+    /**
+     * 查询客户角色类型
+     * @return
+     */
+    @PostMapping(value = "/listCustomerCharacterType.api")
+    @ResponseBody
+    public BaseOutput<List<Map<String, Object>>> listCustomerCharacterType(Long id) {
+        List<Map<String, Object>> dataAuthes = customerCharacterTypeSourceService.listDataAuthes(null);
+        List<String> selectUserDataAuthValue = userDataAuthService.listUserDataAuthValueByUserId(id, DataAuthType.CUSTOMER_TYPE.getCode());
+        for (Map<String, Object> dataAuth : dataAuthes) {
+            if(selectUserDataAuthValue.contains(dataAuth.get(CustomerCharacterTypeSourceService.NAME_KEY))){
+                dataAuth.put("checked", true);
+            }
+        }
+        return BaseOutput.successData(dataAuthes);
+    }
+
     /**
      * 根据条件查询用户数据权限value列表
-     * @param userDataAuth
+     * @param dataAuthRef
      * @return
      */
     @RequestMapping(value = "/listDataAuths.api", method = { RequestMethod.POST })

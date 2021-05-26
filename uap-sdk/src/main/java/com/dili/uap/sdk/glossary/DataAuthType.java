@@ -10,6 +10,8 @@ public enum DataAuthType {
 	DEPARTMENT("department", "部门"),
 	// 用户和市场关系的数据权限
 	MARKET("market", "市场"),
+	//客户类型
+	CUSTOMER_TYPE("customerType", "客户类型"),
 	// 项目关系的数据权限
 	PROJECT("project", "项目"), TRADING_HALL("trading_hall", "交易厅");
 

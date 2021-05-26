@@ -3,6 +3,7 @@ package com.dili.uap.api;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.dili.ss.domain.BaseOutput;
+import com.dili.ss.domain.EasyuiPageOutput;
 import com.dili.ss.domain.PageOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.dto.IDTO;
@@ -76,6 +77,17 @@ public class UserApi {
 	@RequestMapping(value = "/list.api", method = { RequestMethod.GET, RequestMethod.POST })
 	public @ResponseBody BaseOutput<List<User>> list(User user) {
 		return BaseOutput.success().setData(userService.list(user));
+	}
+
+	/**
+	 * 查询User列表接口
+	 *
+	 * @param user
+	 * @return
+	 */
+	@RequestMapping(value = "/listPage.api", method = { RequestMethod.GET, RequestMethod.POST })
+	public @ResponseBody EasyuiPageOutput listPage(UserDto user) throws Exception {
+		return userService.selectForEasyuiPage(user, true);
 	}
 
 	/**

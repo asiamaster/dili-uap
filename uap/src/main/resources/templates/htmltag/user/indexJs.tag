@@ -666,6 +666,14 @@
                 $('#tradingHallTree').tree("loadData", data.tradingHallDataAuth);
             }
          }, 'json');
+        //加载客户类型数据权限
+        $.post('${contextPath!}/dataAuthApi/listCustomerCharacterType.api', {id: selected.id}, function (ret) {
+            if (ret && ret.success) {
+                // data 中存有 数据权限范围选项，数据权限本身，当前所属的数据权限
+                var data = ret.data;
+                $('#customerCharacterTypeTree').tree("loadData", data);
+            }
+        }, 'json');
     }
     
     function onCascadeTreeLoadSuccess(){
