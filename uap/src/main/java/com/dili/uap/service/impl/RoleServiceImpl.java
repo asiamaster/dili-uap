@@ -52,8 +52,6 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements Role
 	@Autowired
 	UserRoleMapper userRoleMapper;
 	@Autowired
-	private UserMapper userMapper;
-	@Autowired
 	private ResourceLinkService resourceLinkService;
 
 	@Override
@@ -70,6 +68,13 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements Role
 		if (!role.getLeaf()) {
 			return BaseOutput.failure("包含子角色不能删除");
 		}
+		Map param = new HashMap(2);
+		param.put("roleId", id);
+		// 删除对应的角色-菜单信息
+		getActualDao().deleteRoleMenuByRoleId(param);
+		// 删除对应的角色-资源信息
+		getActualDao().deleteRoleResourceByRoleId(param);
+		// 删除角色
 		delete(id);
 		if (role.getParentId() != null) {
 			Role query = DTOUtils.newInstance(Role.class);
@@ -81,12 +86,6 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements Role
 				this.getActualDao().updateByPrimaryKeySelective(parent);
 			}
 		}
-		Map param = new HashMap(1);
-		param.put("roleId", id);
-		// 删除对应的角色-菜单信息
-		getActualDao().deleteRoleMenuByRoleId(param);
-		// 删除对应的角色-资源信息
-		getActualDao().deleteRoleResourceByRoleId(param);
 		// 删除角色信息
 		return BaseOutput.success();
 	}

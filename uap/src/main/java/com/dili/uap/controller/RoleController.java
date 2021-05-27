@@ -36,6 +36,7 @@ import javax.annotation.Resource;
 import java.io.FileNotFoundException;
 import java.util.*;
 import java.util.concurrent.Callable;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -299,14 +300,21 @@ public class RoleController {
     /**
      * 删除Role
      *
-     * @param id
+     * @param idStr
      * @return
      */
     @BusinessLogger(businessType = "role_management", content = "新增角色,市场编码：${firmCode}", operationType = "del", systemCode = "UAP")
     @RequestMapping(value = "/delete.action", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody
-    BaseOutput delete(Long id) {
+    BaseOutput delete(@RequestParam("id") String idStr) {
+        if(!isNumeric(idStr)){
+            return BaseOutput.failure("不能删除公司");
+        }
+        Long id = Long.parseLong(idStr);
         Role role = this.roleService.get(id);
+        if(role == null){
+            return BaseOutput.failure("不能删除公司");
+        }
         BaseOutput output = roleService.del(id);
         if (output.isSuccess()) {
             LoggerContext.put(LoggerConstant.LOG_BUSINESS_CODE_KEY, role.getRoleName());
@@ -386,6 +394,19 @@ public class RoleController {
             }
         }
         return output;
+    }
+
+    /**
+     * 判断是否数字
+     * @param str
+     * @return
+     */
+    private boolean isNumeric(String str){
+        if(str == null){
+            return false;
+        }
+        Pattern pattern = Pattern.compile("[0-9]*");
+        return pattern.matcher(str).matches();
     }
 
     /**
