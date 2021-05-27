@@ -79,9 +79,11 @@ public class DataAuthManagerImpl implements DataAuthManager {
 		BoundSetOperations<String, Object> ops = this.redisUtil.getRedisTemplate().boundSetOps(key);
 		Long sessionTimeout = SystemType.WEB.getCode().equals(systemType) ? dynamicConfig.getWebRefreshTokenTimeout() : dynamicConfig.getAppRefreshTokenTimeout();
 		ops.expire(sessionTimeout, TimeUnit.SECONDS);
-		for (UserDataAuth dataAuth : userDataAuths) {
-			ops.add(JSON.toJSONString(dataAuth));
+		String[] sets = new String[userDataAuths.size()];
+		for (int i = 0; i < userDataAuths.size(); i++) {
+			sets[i] = JSON.toJSONString(userDataAuths.get(i));
 		}
+		ops.add(sets);
 	}
 
 }

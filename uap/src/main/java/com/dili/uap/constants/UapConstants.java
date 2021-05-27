@@ -55,6 +55,14 @@ public class UapConstants {
 	 */
 	public static final String FIRM_PREFIX = "firm_";
 	/**
+	 * 数据权限树结构，部门code前缀
+	 */
+	public static final String DEPARTMENT_PREFIX = "department_";
+	/**
+	 * 数据权限树结构，客户类型code前缀
+	 */
+	public static final String CUSTOMER_TYPE_PREFIX = "customerType_";
+	/**
 	 * 树状结构，菜单ID前缀
 	 */
 	public static final String ALM_PROJECT_PREFIX = "alm_";

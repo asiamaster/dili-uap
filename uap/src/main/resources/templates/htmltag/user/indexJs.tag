@@ -684,7 +684,7 @@
     
 
     /**
-	 * 保存用户的角色信息
+	 * 保存用户的数据权限信息
 	 */
     function saveUserDatas() {
     	<#resource code="projectDataAuth">
@@ -700,6 +700,8 @@
         var nodes2 = $('#projectDateTree').tree('getChecked');
         </#resource>
          var nodes3 = $('#tradingHallTree').tree('getChecked');
+        //客户类型数据权限
+         var nodes4 = $('#customerCharacterTypeTree').tree('getChecked');
         // 节点选中的ID，包括 市场，角色
         var ids = [];
         for (var i = 0; i < nodes.length; i++) {
@@ -712,6 +714,9 @@
         </#resource>
         for (var i = 0; i < nodes3.length; i++) {
             ids.push(nodes3[i].id);
+        }
+        for (var i = 0; i < nodes4.length; i++) {
+            ids.push(nodes4[i].id);
         }
         var dataRange=$('input:radio[name="dataRange"]:checked').val();
         var selected = userGrid.datagrid("getSelected");

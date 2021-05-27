@@ -243,11 +243,11 @@
             swal('警告','请选中一条数据', 'warning');
             return;
         }
-        var opts = $('#userListGrid').treegrid("options");
+        var opts = $('#userListGrid').datagrid("options");
         if (null == opts.url || "" == opts.url) {
             opts.url = "${contextPath!}/user/findUserByRole.action";
         }
-        $("#userListGrid").treegrid("load",bindGridMeta2Data("userListGrid", {roleId:selected.id}));
+        $("#userListGrid").datagrid("load",bindGridMeta2Data("userListGrid", {roleId:selected.id}));
         $('#userListDlg').dialog('open');
         $('#userListDlg').dialog('center');
     }
@@ -256,7 +256,7 @@
 	 * 用户列表grid初始化
 	 */
     function initUserListGrid() {
-        $('#userListGrid').treegrid({
+        $('#userListGrid').datagrid({
             toolbar: [
                 {
                     iconCls:'icon-remove',
@@ -267,7 +267,7 @@
                 }
             ]
         });
-        $('#userListGrid').treegrid('getPanel').removeClass('lines-both lines-no lines-right lines-bottom').addClass("lines-bottom");
+        $('#userListGrid').datagrid('getPanel').removeClass('lines-both lines-no lines-right lines-bottom').addClass("lines-bottom");
     }
 
     /**
@@ -277,7 +277,7 @@
         // 获取选择的角色信息
         var selectedRole = roleGrid.treegrid("getSelected");
         // 选择的用户
-        var selectedUser = $("#userListGrid").treegrid("getSelected");
+        var selectedUser = $("#userListGrid").datagrid("getSelected");
         if (null == selectedUser) {
             swal('警告','请选中一条数据', 'warning');
             return;
@@ -296,7 +296,7 @@
             if (flag.dismiss == 'cancel') {
                 return;
             }
-            var index = $('#userListGrid').treegrid("getRowIndex", selectedUser);
+            var index = $('#userListGrid').datagrid("getRowIndex", selectedUser);
             $.ajax({
                 type: "POST",
                 url: "${contextPath!}/role/unbindRoleUser.action",

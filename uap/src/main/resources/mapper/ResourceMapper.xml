@@ -18,6 +18,7 @@
 
 	<select id="listByUserId" resultMap="BaseResultMap">
 		SELECT
+		distinct
 		r.id,
 		r.`code`,
 		r.created,

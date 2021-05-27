@@ -973,13 +973,8 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 						saveDatas.add(ud);
 					}
 				} else if (id.startsWith(UapConstants.FIRM_PREFIX)) {
-					if (id.startsWith(UapConstants.FIRM_PREFIX)) {
-						ud.setRefCode(DataAuthType.MARKET.getCode());
-						ud.setValue(id.replace(UapConstants.FIRM_PREFIX, ""));
-					} else {
-						ud.setRefCode(DataAuthType.DEPARTMENT.getCode());
-						ud.setValue(id);
-					}
+					ud.setRefCode(DataAuthType.MARKET.getCode());
+					ud.setValue(id.replace(UapConstants.FIRM_PREFIX, ""));
 					saveDatas.add(ud);
 				} else if (id.startsWith(UapConstants.TRADING_HALL_PREFIX)) {
 					String value = id.replace(UapConstants.TRADING_HALL_PREFIX, "");
@@ -988,14 +983,14 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 						ud.setValue(value);
 						saveDatas.add(ud);
 					}
+				} else if (id.startsWith(UapConstants.CUSTOMER_TYPE_PREFIX)) {
+					ud.setRefCode(DataAuthType.CUSTOMER_TYPE.getCode());
+					ud.setValue(id.replace(UapConstants.CUSTOMER_TYPE_PREFIX, ""));
+					saveDatas.add(ud);
+					//默认是部门数据权限
 				} else {
-					if (id.startsWith(UapConstants.FIRM_PREFIX)) {
-						ud.setRefCode(DataAuthType.MARKET.getCode());
-						ud.setValue(id.replace(UapConstants.FIRM_PREFIX, ""));
-					} else {
-						ud.setRefCode(DataAuthType.DEPARTMENT.getCode());
-						ud.setValue(id);
-					}
+					ud.setRefCode(DataAuthType.DEPARTMENT.getCode());
+					ud.setValue(id);
 					saveDatas.add(ud);
 				}
 			}

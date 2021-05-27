@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.component.CustomerCharacterTypeSourceService;
+import com.dili.uap.constants.UapConstants;
 import com.dili.uap.sdk.component.DataAuthSource;
 import com.dili.uap.sdk.domain.DataAuthRef;
 import com.dili.uap.sdk.domain.UserDataAuth;
@@ -55,6 +56,8 @@ public class DataAuthApi {
             if(selectUserDataAuthValue.contains(dataAuth.get(CustomerCharacterTypeSourceService.NAME_KEY))){
                 dataAuth.put("checked", true);
             }
+            //所有Value添加前缀
+            dataAuth.put(CustomerCharacterTypeSourceService.NAME_KEY, UapConstants.CUSTOMER_TYPE_PREFIX + dataAuth.get(CustomerCharacterTypeSourceService.NAME_KEY));
         }
         return BaseOutput.successData(dataAuthes);
     }

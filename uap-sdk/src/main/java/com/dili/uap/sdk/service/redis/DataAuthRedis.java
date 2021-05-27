@@ -9,6 +9,7 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 数据权限redis操作
@@ -76,8 +77,9 @@ public class DataAuthRedis {
         if(boundSetOperations.size() <= 0) {
             return dataAuthMap;
         }
+        Set<String> members = boundSetOperations.members();
         //根据类型过滤
-        for(String userDataAuthJson : boundSetOperations.members()) {
+        for(String userDataAuthJson : members) {
             dataAuthMap.add(JSONObject.parseObject(userDataAuthJson));
         }
         return dataAuthMap;
