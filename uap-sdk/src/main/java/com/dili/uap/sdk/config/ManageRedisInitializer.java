@@ -96,14 +96,6 @@ public class ManageRedisInitializer {
         //创建Redis缓存操作助手RedisTemplate对象
         StringRedisTemplate template = new StringRedisTemplate();
         template.setConnectionFactory(factory);
-        //以下代码为将RedisTemplate的Value序列化方式由JdkSerializationRedisSerializer更换为Jackson2JsonRedisSerializer
-        //此种序列化方式结果清晰、容易阅读、存储字节少、速度快，所以推荐更换
-        Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(Object.class);
-        ObjectMapper om = new ObjectMapper();
-        om.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
-        om.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
-        jackson2JsonRedisSerializer.setObjectMapper(om);
-        template.setValueSerializer(jackson2JsonRedisSerializer);
         template.afterPropertiesSet();
         return template;//StringRedisTemplate是RedisTempLate<String, String>的子类
     }
