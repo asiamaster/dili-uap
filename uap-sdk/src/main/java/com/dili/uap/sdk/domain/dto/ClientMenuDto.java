@@ -105,4 +105,19 @@ public interface ClientMenuDto extends IDTO {
 	Integer getShortcut();
 
 	void setShortcut(Integer shortcut);
+
+	@Column(name = "`index_url`")
+	@FieldDef(label="系统首页url", maxLength = 255)
+	@EditMode(editor = FieldEditor.Text, required = false)
+	String getIndexUrl();
+
+	void setIndexUrl(String indexUrl);
+
+	@Column(name = "`is_frontend`")
+	@FieldDef(label="是否前端")
+	@EditMode(editor = FieldEditor.Combo, required = false)
+	Integer getIsFrontend();
+	void setIsFrontend(Integer frontend);
+
+
 }
