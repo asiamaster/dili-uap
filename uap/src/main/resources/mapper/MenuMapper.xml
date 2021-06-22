@@ -115,8 +115,8 @@
         m.icon_cls,
         m.`type`,
         m.`shortcut`,
-        NULL AS index_url,
-        NULL AS is_frontend
+        s.index_url,
+        s.is_frontend
         FROM
         menu m
         INNER JOIN role_menu rm ON m.id = rm.menu_id
@@ -135,7 +135,7 @@
         SELECT DISTINCT
         s.`code` AS id,
         NULL AS parent_id,
-        NULL AS system_id,
+        s.id AS system_id,
         s.order_number,
         NULL AS url,
         s.`name`,
